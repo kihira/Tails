@@ -66,14 +66,14 @@ public class ModelFoxTail extends ModelBase {
 
     @Override
     public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, Entity entity) {
-        float angle = MathHelper.cos((entity.hashCode() + System.nanoTime() / 100000000F) / 5F) / 3.5F;
-        //float angle = MathHelper.cos(p_78087_7_.ticksExisted / 10F) / 3.5F;
-        this.tailBase.rotateAngleY = angle / 8F;
-        this.tail2.rotateAngleY = angle / 7F;
-        this.tail3.rotateAngleY = angle / 6F;
-        this.tail4.rotateAngleY = angle / 5.5F;
-        this.tail5.rotateAngleY = angle / 4.5F;
-        this.tail6.rotateAngleY = angle / 3.5F;
+        float seed = (entity.hashCode() + System.nanoTime() / 100000000F) / 5F;
+
+        this.tailBase.rotateAngleY = MathHelper.cos(seed) / 8F;
+        this.tail2.rotateAngleY = MathHelper.cos(seed - 1) / 8F;
+        this.tail3.rotateAngleY = MathHelper.cos(seed - 1.5F) / 8F;
+        this.tail4.rotateAngleY = MathHelper.cos(seed - 2F) / 20F;
+        this.tail5.rotateAngleY = MathHelper.cos(seed - 3) / 8F;
+        this.tail6.rotateAngleY = MathHelper.cos(seed - 4) / 8F;
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
