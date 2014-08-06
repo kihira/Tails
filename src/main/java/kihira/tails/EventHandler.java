@@ -17,27 +17,20 @@ package kihira.tails;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
+import kihira.tails.render.RenderDragonTail;
+import kihira.tails.render.RenderFoxTail;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import org.lwjgl.opengl.GL11;
 
 public class EventHandler {
 
-    ModelFoxTail modelFoxTail = new ModelFoxTail();
-    ResourceLocation tailTexture = new ResourceLocation("tails", "texture/foxTail.png");
+    RenderDragonTail renderDragonTail = new RenderDragonTail();
+    RenderFoxTail renderFoxTail = new RenderFoxTail();
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
         if (Tails.userList.contains(e.entityPlayer.getCommandSenderName()) && !e.entityPlayer.isInvisible()) {
-            GL11.glPushMatrix();
-            Minecraft.getMinecraft().renderEngine.bindTexture(tailTexture);
-            if (!e.entityPlayer.isSneaking()) GL11.glTranslatef(0F, 0.65F, 0.1F);
-            else GL11.glTranslatef(0F, 0.55F, 0.4F);
-            GL11.glScalef(0.8F, 0.8F, 0.8F);
-            modelFoxTail.render(e.entityPlayer, 0, 0, 0, 0, 0, 0.0625F);
-            GL11.glPopMatrix();
+            renderDragonTail.render(e.entityPlayer);
         }
     }
 }

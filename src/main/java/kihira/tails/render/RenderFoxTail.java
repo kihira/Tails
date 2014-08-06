@@ -1,0 +1,27 @@
+package kihira.tails.render;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import kihira.tails.model.ModelFoxTail;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+@SideOnly(Side.CLIENT)
+public class RenderFoxTail extends RenderTail {
+
+    private ModelFoxTail modelFoxTail = new ModelFoxTail();
+    private ResourceLocation tailTexture = new ResourceLocation("tails", "texture/foxTail.png");
+
+    @Override
+    public void render(EntityPlayer player) {
+        GL11.glPushMatrix();
+        Minecraft.getMinecraft().renderEngine.bindTexture(tailTexture);
+        if (!player.isSneaking()) GL11.glTranslatef(0F, 0.65F, 0.1F);
+        else GL11.glTranslatef(0F, 0.55F, 0.4F);
+        GL11.glScalef(0.8F, 0.8F, 0.8F);
+        modelFoxTail.render(player, 0, 0, 0, 0, 0, 0.0625F);
+        GL11.glPopMatrix();
+    }
+}

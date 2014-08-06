@@ -12,12 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package kihira.tails;
+package kihira.tails.model;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
 public class ModelFoxTail extends ModelBase {
@@ -65,6 +64,7 @@ public class ModelFoxTail extends ModelBase {
         tail5.addChild(tail6);
     }
 
+    @Override
     public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, Entity entity) {
         float angle = MathHelper.cos((entity.hashCode() + System.nanoTime() / 100000000F) / 5F) / 3.5F;
         //float angle = MathHelper.cos(p_78087_7_.ticksExisted / 10F) / 3.5F;
@@ -88,20 +88,6 @@ public class ModelFoxTail extends ModelBase {
 
     @Override
     public void render(Entity entity, float par2, float par3, float par4, float par5, float par6, float mult) {
-        if (entity instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) entity;
-            double d0 = player.posX - player.prevPosX;
-            double d2 = player.posY - player.prevPosY;
-            double d3 = d0 * d0 + d2 * d2;
-
-            setRotationDegrees(this.tailBase, -15F, 0F, 0F);
-            setRotationDegrees(this.tail2, -15F, 0F, 0F);
-            setRotationDegrees(this.tail3, -15F, 0F, 0F);
-            setRotationDegrees(this.tail4, -15F, 0F, 0F);
-            setRotationDegrees(this.tail5, 15F, 0F, 0F);
-            setRotationDegrees(this.tail6, 15F, 0F, 0F);
-        }
-
         super.render(entity, par2, par3, par4, par5, par6, mult);
         this.setRotationAngles(par2, par3, par4, par5, par6, mult, entity);
 
