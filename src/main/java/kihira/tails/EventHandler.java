@@ -19,18 +19,20 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.render.RenderDragonTail;
 import kihira.tails.render.RenderFoxTail;
+import kihira.tails.render.RenderRacoonTail;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 public class EventHandler {
 
     RenderDragonTail renderDragonTail = new RenderDragonTail();
     RenderFoxTail renderFoxTail = new RenderFoxTail();
+    RenderRacoonTail renderRacoonTail = new RenderRacoonTail();
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
         if (Tails.userList.contains(e.entityPlayer.getCommandSenderName()) && !e.entityPlayer.isInvisible()) {
-            renderDragonTail.render(e.entityPlayer);
+            renderRacoonTail.render(e.entityPlayer);
         }
     }
 }
