@@ -14,13 +14,21 @@
 
 package kihira.tails;
 
+import java.util.UUID;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.render.RenderDragonTail;
 import kihira.tails.render.RenderFoxTail;
 import kihira.tails.render.RenderRacoonTail;
+import kihira.tails.texture.TextureHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 
 public class EventHandler {
 
@@ -31,8 +39,33 @@ public class EventHandler {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
-        if (Tails.userList.contains(e.entityPlayer.getCommandSenderName()) && !e.entityPlayer.isInvisible()) {
-            renderRacoonTail.render(e.entityPlayer);
+    	if(TextureHelper.needsBuild(e.entityPlayer)) {
+			TextureHelper.buildPlayerInfo(e.entityPlayer);
+		}    	
+    	
+    	UUID id = e.entityPlayer.getGameProfile().getId();
+        if (TextureHelper.TailMap.containsKey(id) && TextureHelper.TailMap.get(id).hastail && !e.entityPlayer.isInvisible()) {
+        	TailInfo info = TextureHelper.TailMap.get(id);
+        	
+            renderDragonTail.render(e.entityPlayer, info);
         }
     }
+    
+    @SubscribeEvent
+    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent e) {
+    	TextureHelper.clearTailInfo(e.player);
+    }
+
+    /*@SubscribeEvent
+    public void onLivingUpdate(LivingEvent.LivingUpdateEvent e) {
+    	if (e.entityLiving instanceof EntityPlayer) {
+    		EntityPlayer p = (EntityPlayer)e.entityLiving;
+    		
+    		System.out.println(p.getGameProfile().getName());
+    		
+    		if(TextureHelper.needsBuild(p)) {
+    			TextureHelper.buildPlayerInfo(p);
+    		}
+    	}
+    }*/
 }

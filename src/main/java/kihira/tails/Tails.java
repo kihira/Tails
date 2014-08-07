@@ -36,7 +36,9 @@ public class Tails {
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
         if (e.getSide().isClient()) {
-            MinecraftForge.EVENT_BUS.register(new EventHandler());
+        	EventHandler handler = new EventHandler();
+            MinecraftForge.EVENT_BUS.register(handler);
+            FMLCommonHandler.instance().bus().register(handler);
             FMLCommonHandler.instance().bus().register(this);
 
             Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
