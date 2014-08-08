@@ -15,21 +15,21 @@ public class ModelDragonTail extends ModelTailBase {
     private ModelRenderer tail3;
 
     public ModelDragonTail() {
-        this.tailBase = new ModelRenderer(this, 0, 0);
+        this.tailBase = new ModelRenderer(this, 22, 0);
         this.tailBase.addBox(-2.5F, -2.5F, -2F, 5, 5, 8);
         this.setRotationDegrees(this.tailBase, -40F, 0F, 0F);
 
-        this.tail1 = new ModelRenderer(this, 0, 12);
+        this.tail1 = new ModelRenderer(this, 0, 0);
         this.tail1.addBox(-2F, -2F, 0F, 4, 4, 7);
         this.tail1.setRotationPoint(0F, 0.3F, 5F);
         this.setRotationDegrees(this.tail1, -8F, 0F, 0F);
 
-        this.tail2 = new ModelRenderer(this, 0, 0);
+        this.tail2 = new ModelRenderer(this, 0, 11);
         this.tail2.addBox(-1.5F, -1.5F, 0F, 3, 3, 8);
         this.tail2.setRotationPoint(0F, 0.2F, 5.5F);
         this.setRotationDegrees(this.tail2, 10F, 0F, 0F);
 
-        this.tail3 = new ModelRenderer(this, 0, 0);
+        this.tail3 = new ModelRenderer(this, 0, 22);
         this.tail3.addBox(-1F, -1F, 0F, 2, 2, 7);
         this.tail3.setRotationPoint(0F, 0.4F, 7.5F);
         this.setRotationDegrees(this.tail3, 20F, 0F, 0F);

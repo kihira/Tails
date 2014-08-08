@@ -39,7 +39,6 @@ public class Tails {
             EventHandler eventHandler = new EventHandler();
             MinecraftForge.EVENT_BUS.register(eventHandler);
             FMLCommonHandler.instance().bus().register(eventHandler);
-
             FMLCommonHandler.instance().bus().register(this);
 
             Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
