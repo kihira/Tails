@@ -1,11 +1,12 @@
 package kihira.tails.model;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 
-public class ModelRacoonTail extends ModelBase {
+import java.util.List;
+
+public class ModelRacoonTail extends ModelTailBase {
 
     ModelRenderer tailBase;
     ModelRenderer tail1;
@@ -56,5 +57,10 @@ public class ModelRacoonTail extends ModelBase {
         model.rotateAngleX = x;
         model.rotateAngleY = y;
         model.rotateAngleZ = z;
+    }
+
+    @Override
+    public List<String> getToggleableParts() {
+        return null;
     }
 }

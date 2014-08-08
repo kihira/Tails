@@ -14,12 +14,13 @@
 
 package kihira.tails.model;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 
-public class ModelFoxTail extends ModelBase {
+import java.util.List;
+
+public class ModelFoxTail extends ModelTailBase {
     ModelRenderer tailBase;
     ModelRenderer tail2;
     ModelRenderer tail3;
@@ -92,5 +93,10 @@ public class ModelFoxTail extends ModelBase {
         this.setRotationAngles(par2, par3, par4, par5, par6, mult, entity);
 
         tailBase.render(mult);
+    }
+
+    @Override
+    public List<String> getToggleableParts() {
+        return null;
     }
 }
