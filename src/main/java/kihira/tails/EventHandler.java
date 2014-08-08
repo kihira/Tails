@@ -73,7 +73,7 @@ public class EventHandler {
 		}
     }
     
-    private Gui g = new Gui();
+    /*private Gui g = new Gui();
     
     @SubscribeEvent
     public void onRenderExperienceBar(RenderGameOverlayEvent e)
@@ -104,5 +104,5 @@ public class EventHandler {
     	    tessellator.addVertexWithUV(5, 5, 0, 0.0, 0.0);
     	    tessellator.draw();
     	}
-    }
+    }*/
 }

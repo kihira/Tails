@@ -79,12 +79,9 @@ public class TextureHelper {
 		
 		String texturepath = "texture/dragonTail.png";
 		
-		System.out.println("tint 1: "+Integer.toHexString(tint1)+", tint 2: "+Integer.toHexString(tint2)+", tint 3: "+Integer.toHexString(tint3));
-		
 		ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+type+"_"+subtype+"_"+textureid);
 		Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturepath, tint1, tint2, tint3));
 		
-		//return null;
 		return new TailInfo(id, true, type, subtype, tailtexture);
 	}
 	

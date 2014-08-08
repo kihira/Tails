@@ -1,16 +1,12 @@
 package kihira.tails.texture;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
 import org.apache.logging.log4j.LogManager;
-
-import scala.Console;
 
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -63,11 +59,7 @@ public class TripleTintTexture extends AbstractTexture {
                 	g = green(c);
                 	b = blue(c);
                 	
-                	pixeldata[i] = colourise(r, g, this.tint1, b, this.tint2, a, this.tint3);
-                	
-                	if (i%200==0) {
-                		System.out.println("pixel "+i+":  c: "+Integer.toHexString((int)c)+", a: "+a+", r: "+r+", g: "+g+", b: "+b+", end: "+Integer.toHexString(pixeldata[i]));
-                	}
+                	pixeldata[i] = colourise(r, this.tint1, g, this.tint2, b, this.tint3, a);
                 }
                 
                 texture.setRGB(0, 0, w, h, pixeldata, 0, w);
@@ -75,7 +67,6 @@ public class TripleTintTexture extends AbstractTexture {
         }
         catch (IOException ioexception)
         {
-            //logger.error("Couldn\'t load layered image", ioexception);
         	LogManager.getLogger().error("Couldn\'t load tripe tint texture image", ioexception);
             return;
         }
@@ -83,17 +74,13 @@ public class TripleTintTexture extends AbstractTexture {
         TextureUtil.uploadTextureImage(this.getGlTextureId(), texture);
 	}
 
-	private int colourise(int tone, int weight1, int c1, int weight2, int c2, int weight3, int c3) {
-		double w1 = weight1/255.0;
-		double w2 = weight2/255.0;
-		double w3 = weight3/255.0;
+	private int colourise(int tone, int c1, int weight1, int c2, int weight2, int c3, int a) {
+		double w2 = weight1/255.0;
+		double w3 = weight2/255.0;
 		
-		w2 *= (1.0 - w3);
-		w1 *= (1.0 - (w3+w2));
+		w2 *= (1.0 - (w3));
 		
-		double wr = 1.0 - (w1+w2+w3);
-		
-		//System.out.println(w1+", "+w2+", "+w3+", "+wr);
+		double w1 = 1.0 - (w2+w3);
 		
 		double r1 = scale(red(c1), MINBRIGHTNESS) / 255.0;
 		double g1 = scale(green(c1), MINBRIGHTNESS) / 255.0;
@@ -107,13 +94,13 @@ public class TripleTintTexture extends AbstractTexture {
 		double g3 = scale(green(c3), MINBRIGHTNESS) / 255.0;
 		double b3 = scale(blue(c3), MINBRIGHTNESS) / 255.0;
 		
-		int rfinal = (int)Math.floor(tone * (r1*w1 + r2*w2 + r3*w3 + wr));
-		int gfinal = (int)Math.floor(tone * (g1*w1 + g2*w2 + g3*w3 + wr));
-		int bfinal = (int)Math.floor(tone * (b1*w1 + b2*w2 + b3*w3 + wr));
+		int rfinal = (int)Math.floor(tone * (r1*w1 + r2*w2 + r3*w3));
+		int gfinal = (int)Math.floor(tone * (g1*w1 + g2*w2 + g3*w3));
+		int bfinal = (int)Math.floor(tone * (b1*w1 + b2*w2 + b3*w3));
 		
 		//System.out.println(rfinal+", "+gfinal+", "+bfinal);
 		
-		return (int)compose(rfinal, gfinal, bfinal, 255);
+		return (int)compose(rfinal, gfinal, bfinal, a);
 	}
 	
 	private int compose(int r, int g, int b, int a) {
