@@ -83,21 +83,21 @@ public class ModelDragonTail extends ModelBase {
 
     public ModelDragonTail() {
 
-        tailBase = new ModelRenderer(this, 0, 0);
+        tailBase = new ModelRenderer(this, 22, 0);
         tailBase.addBox(-2.5F, -2.5F, -2F, 5, 5, 8);
         tailBase.rotateAngleX = (float) Math.toRadians(-40F);
 
-        tail1 = new ModelRenderer(this, 0, 12);
+        tail1 = new ModelRenderer(this, 0, 0);
         tail1.addBox(-2F, -2F, 0F, 4, 4, 7);
         tail1.setRotationPoint(0F, 0.3F, 5F);
         tail1.rotateAngleX = (float) Math.toRadians(-8F);
 
-        tail2 = new ModelRenderer(this, 0, 0);
+        tail2 = new ModelRenderer(this, 0, 11);
         tail2.addBox(-1.5F, -1.5F, 0F, 3, 3, 8);
         tail2.setRotationPoint(0F, 0.2F, 5.5F);
         tail2.rotateAngleX = (float) Math.toRadians(10F);
 
-        tail3 = new ModelRenderer(this, 0, 0);
+        tail3 = new ModelRenderer(this, 0, 22);
         tail3.addBox(-1F, -1F, 0F, 2, 2, 7);
         tail3.setRotationPoint(0F, 0.4F, 7.5F);
         tail3.rotateAngleX = (float) Math.toRadians(20F);
