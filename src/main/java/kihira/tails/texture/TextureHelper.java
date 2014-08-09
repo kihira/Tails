@@ -1,26 +1,22 @@
 package kihira.tails.texture;
 
-import java.awt.image.BufferedImage;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.UUID;
-
-import org.lwjgl.util.Point;
-
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-
-import cpw.mods.fml.relauncher.ReflectionHelper;
-
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import kihira.tails.EventHandler;
+import kihira.tails.TailInfo;
+import kihira.tails.render.RenderTail;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.util.Point;
 
-import kihira.tails.EventHandler;
-import kihira.tails.TailInfo;
-import kihira.tails.render.RenderTail;
+import java.awt.image.BufferedImage;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.UUID;
 
 public class TextureHelper {
 
@@ -52,7 +48,7 @@ public class TextureHelper {
             
             if (skintex instanceof ThreadDownloadImageData) {
             	ThreadDownloadImageData imagedata = (ThreadDownloadImageData)skintex;
-            	BufferedImage image = ReflectionHelper.getPrivateValue(ThreadDownloadImageData.class, imagedata, "bufferedImage");
+            	BufferedImage image = ObfuscationReflectionHelper.getPrivateValue(ThreadDownloadImageData.class, imagedata, "bufferedImage", "field_110560_d", "bpj.g");
             	
             	if (image == null) { return; }
             	
@@ -68,7 +64,7 @@ public class TextureHelper {
             }
         }
 	}
-	
+
 	private static TailInfo buildTailInfo(UUID id, BufferedImage skin) {
 		int data = skin.getRGB(dataPixel.getX(), dataPixel.getY());
 		
