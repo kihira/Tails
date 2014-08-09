@@ -8,6 +8,8 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderDragonTail extends RenderTail {
 
+	private String[] skinNames = {"dragonTail"};
+	
     private ModelDragonTail modelDragonTail = new ModelDragonTail();
     //private ResourceLocation dragonTailTexture = new ResourceLocation("tails", "texture/dragonTail.png");
 
@@ -21,5 +23,10 @@ public class RenderDragonTail extends RenderTail {
         this.modelDragonTail.render(player, 0, 0, 0, 0, 0, 0.0625F);
         GL11.glPopMatrix();
     }
+
+	@Override
+	public String[] getTextureNames() {
+		return skinNames;
+	}
     
 }

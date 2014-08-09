@@ -9,4 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 public abstract class RenderTail {
 
     public abstract void render(EntityPlayer player, TailInfo info);
+    
+    public abstract String[] getTextureNames();
 }

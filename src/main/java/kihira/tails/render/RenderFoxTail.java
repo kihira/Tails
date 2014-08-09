@@ -11,6 +11,8 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderFoxTail extends RenderTail {
 
+	private String[] skinNames = {"foxTail"};
+	
     private ModelFoxTail modelFoxTail = new ModelFoxTail();
     //private ResourceLocation tailTexture = new ResourceLocation("tails", "texture/foxTail.png");
 
@@ -24,4 +26,9 @@ public class RenderFoxTail extends RenderTail {
         this.modelFoxTail.render(player, 0, 0, 0, 0, 0, 0.0625F);
         GL11.glPopMatrix();
     }
+    
+    @Override
+	public String[] getTextureNames() {
+		return skinNames;
+	}
 }

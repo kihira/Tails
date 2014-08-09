@@ -16,8 +16,6 @@ package kihira.tails;
 
 import java.util.UUID;
 
-import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -26,20 +24,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.render.RenderDragonTail;
 import kihira.tails.render.RenderFoxTail;
 import kihira.tails.render.RenderRacoonTail;
+import kihira.tails.render.RenderTail;
 import kihira.tails.texture.TextureHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 public class EventHandler {
 
-    RenderDragonTail renderDragonTail = new RenderDragonTail();
-    RenderFoxTail renderFoxTail = new RenderFoxTail();
-    RenderRacoonTail renderRacoonTail = new RenderRacoonTail();
+	public static final RenderTail[] tailTypes = { new RenderFoxTail(), new RenderDragonTail(), new RenderRacoonTail() };
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
@@ -52,7 +43,10 @@ public class EventHandler {
         if (TextureHelper.TailMap.containsKey(id) && TextureHelper.TailMap.get(id).hastail && !e.entityPlayer.isInvisible()) {
         	TailInfo info = TextureHelper.TailMap.get(id);
         	
-            renderDragonTail.render(e.entityPlayer, info);
+        	int type = info.typeid;
+        	type = type > tailTypes.length ? 0 : type;
+        	
+            tailTypes[type].render(e.entityPlayer, info);
         }
     }
     
@@ -65,44 +59,9 @@ public class EventHandler {
     @SideOnly(Side.CLIENT)
     public void onPlayerTick(TickEvent.PlayerTickEvent e) {
 		if (e.side.isClient()) {
-			//System.out.println(e.player.getGameProfile().getName());
-			
 			if(TextureHelper.needsBuild(e.player)) {
 				TextureHelper.buildPlayerInfo(e.player);
 			}
 		}
     }
-    
-    /*private Gui g = new Gui();
-    
-    @SubscribeEvent
-    public void onRenderExperienceBar(RenderGameOverlayEvent e)
-    {
-    	if(e.isCancelable() || e.type != ElementType.EXPERIENCE)
-    	{      
-    		return;
-    	}
-    	
-    	Minecraft mc = Minecraft.getMinecraft();
-    	EntityPlayer p = mc.thePlayer;
-    	
-    	if (p != null) {
-    		UUID id = p.getGameProfile().getId();
-    		
-    		TailInfo info = TextureHelper.TailMap.get(id);
-    		if (info == null) {return;}
-    		
-    		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-    	    GL11.glDisable(GL11.GL_LIGHTING);      
-    	    mc.renderEngine.bindTexture(info.texture);
-    	    
-    	    Tessellator tessellator = Tessellator.instance;
-    	    tessellator.startDrawingQuads();    
-    	    tessellator.addVertexWithUV(5, 5 + 32, 0, 0.0, 1.0);
-    	    tessellator.addVertexWithUV(5 + 64, 5 + 32, 0, 1.0, 1.0);
-    	    tessellator.addVertexWithUV(5 + 64, 5, 0, 1.0, 0.0);
-    	    tessellator.addVertexWithUV(5, 5, 0, 0.0, 0.0);
-    	    tessellator.draw();
-    	}
-    }*/
 }

@@ -15,15 +15,18 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.LayeredTexture;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
+import kihira.tails.EventHandler;
 import kihira.tails.TailInfo;
+import kihira.tails.render.RenderTail;
 
 public class TextureHelper {
 
 	public static Hashtable<UUID, TailInfo> TailMap = new Hashtable<UUID, TailInfo>();
+	
+	private static RenderTail[] tailTypes = EventHandler.tailTypes;
 	
 	private static final Point switch1Pixel = new Point(56,16);
 	private static final Point switch2Pixel = new Point(57,16);
@@ -69,20 +72,28 @@ public class TextureHelper {
 	private static TailInfo buildTailInfo(UUID id, BufferedImage skin) {
 		int data = skin.getRGB(dataPixel.getX(), dataPixel.getY());
 		
-		int type = (data & 0x00FF0000) >> 16;
-		int subtype = (data & 0x0000FF00) >> 8;
-		int textureid = (data & 0x000000FF);
+		int typeid = (data >> 16) & 0xFF;
+		typeid = typeid >= tailTypes.length ? 0 : typeid;
+		
+		RenderTail type = tailTypes[typeid];
+		String[] textures = type.getTextureNames();
+		
+		int subtype = (data >> 8) & 0xFF;
+		int textureid = (data) & 0xFF;
+		textureid = textureid >= textures.length ? 0 : textureid;
 		
 		int tint1 = skin.getRGB(tint1Pixel.getX(), tint1Pixel.getY());
 		int tint2 = skin.getRGB(tint2Pixel.getX(), tint2Pixel.getY());
 		int tint3 = skin.getRGB(tint3Pixel.getX(), tint3Pixel.getY());
 		
-		String texturepath = "texture/dragonTail.png";
+		String texturepath = "texture/"+textures[textureid]+".png";
+		
+		//System.out.println("data: "+Integer.toHexString(data)+", type: "+typeid+", sub: "+subtype+", tid: "+textureid+", path: "+texturepath);
 		
 		ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+type+"_"+subtype+"_"+textureid);
 		Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturepath, tint1, tint2, tint3));
 		
-		return new TailInfo(id, true, type, subtype, tailtexture);
+		return new TailInfo(id, true, typeid, subtype, tailtexture);
 	}
 	
 	public static void clearTailInfo(EntityPlayer player) {

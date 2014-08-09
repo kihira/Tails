@@ -8,6 +8,8 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderRacoonTail extends RenderTail {
 
+	private String[] skinNames = {"racoonTail"};
+	
     private ModelRacoonTail modelRacoonTail = new ModelRacoonTail();
 	//private ResourceLocation tailTexture = new ResourceLocation("tails", "texture/racoonTail.png");
 
@@ -21,4 +23,9 @@ public class RenderRacoonTail extends RenderTail {
         this.modelRacoonTail.render(player, 0, 0, 0, 0, 0, 0.0625F);
         GL11.glPopMatrix();
     }
+    
+    @Override
+	public String[] getTextureNames() {
+		return skinNames;
+	}
 }
