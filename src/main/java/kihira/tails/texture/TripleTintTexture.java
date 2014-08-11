@@ -1,18 +1,19 @@
 package kihira.tails.texture;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-
-import org.apache.logging.log4j.LogManager;
-
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * A tinted texture that has 3 different tints, each tint defined in a different RGB channel
+ */
 public class TripleTintTexture extends AbstractTexture {
 
 	private String namespace;
@@ -74,6 +75,17 @@ public class TripleTintTexture extends AbstractTexture {
         TextureUtil.uploadTextureImage(this.getGlTextureId(), texture);
 	}
 
+    /**
+     * Colourises a pixel that has the color model TYPE_INT_ARGB
+     * @param tone
+     * @param c1
+     * @param weight1
+     * @param c2
+     * @param weight2
+     * @param c3
+     * @param a Alpha
+     * @return The colorised pixel
+     */
 	private int colourise(int tone, int c1, int weight1, int c2, int weight2, int c3, int a) {
 		double w2 = weight1/255.0;
 		double w3 = weight2/255.0;
@@ -102,7 +114,15 @@ public class TripleTintTexture extends AbstractTexture {
 		
 		return (int)compose(rfinal, gfinal, bfinal, a);
 	}
-	
+
+    /**
+     * Composes the provided values into an int that in the the TYPE_INT_ARGB colour model
+     * @param r The red value
+     * @param g The green value
+     * @param b The blue value
+     * @param a The alpha value
+     * @return The TYPE_INT_ARGB colour
+     */
 	private int compose(int r, int g, int b, int a) {
 		int rgb = a;
 		rgb = (rgb << 8) + r;
@@ -110,19 +130,39 @@ public class TripleTintTexture extends AbstractTexture {
 		rgb = (rgb << 8) + b;
 		return rgb;
 	}
-	
+
+    /**
+     * Gets the alpha value from a value that has the colour model TYPE_INT_ARGB
+     * @param c The colour value
+     * @return The alpha value
+     */
 	private int alpha(int c) {
 		return (c >> 24) & 0xFF;
 	}
-	
+
+    /**
+     * Gets the red value from a value that has the colour model TYPE_INT_ARGB
+     * @param c The colour value
+     * @return The red value
+     */
 	private int red(int c) {
 		return (c >> 16) & 0xFF;
 	}
-	
+
+    /**
+     * Gets the green value from a value that has the colour model TYPE_INT_ARGB
+     * @param c The colour value
+     * @return The green value
+     */
 	private int green(int c) {
 		return (c >> 8) & 0xFF;
 	}
-	
+
+    /**
+     * Gets the blue value from a value that has the colour model TYPE_INT_ARGB
+     * @param c The colour value
+     * @return The blue value
+     */
 	private int blue(int c) {
 		return (c) & 0xFF;
 	}
