@@ -20,7 +20,7 @@ public class RenderRacoonTail extends RenderTail {
         if (!player.isSneaking()) GL11.glTranslatef(0F, 0.65F, 0.1F);
         else GL11.glTranslatef(0F, 0.55F, 0.4F);
         GL11.glScalef(0.8F, 0.8F, 0.8F);
-        this.modelRacoonTail.render(player, 0, 0, 0, 0, 0, 0.0625F);
+        this.modelRacoonTail.render(player, info.subid);
         GL11.glPopMatrix();
     }
     

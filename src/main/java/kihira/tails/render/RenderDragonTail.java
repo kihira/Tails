@@ -20,7 +20,8 @@ public class RenderDragonTail extends RenderTail {
         if (!player.isSneaking()) GL11.glTranslatef(0F, 0.7F, 0.1F);
         else GL11.glTranslatef(0F, 0.6F, 0.35F);
         GL11.glScalef(0.8F, 0.8F, 0.8F);
-        this.modelDragonTail.render(player, 0, 0, 0, 0, 0, 0.0625F);
+        this.modelDragonTail = new ModelDragonTail();
+        this.modelDragonTail.render(player, info.subid);
         GL11.glPopMatrix();
     }
 

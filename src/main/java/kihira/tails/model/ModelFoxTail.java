@@ -19,8 +19,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
-import java.util.List;
-
 public class ModelFoxTail extends ModelTailBase {
     private ModelRenderer tailBase;
     private ModelRenderer tail1;
@@ -80,12 +78,7 @@ public class ModelFoxTail extends ModelTailBase {
     }
 
     @Override
-    public List<String> getToggleableParts() {
-        return null;
-    }
-
-    @Override
-    public void renderWithParts(EntityPlayer thePlayer, List<String> partsEnabled) {
+    public void render(EntityPlayer thePlayer, int subtype) {
         this.setRotationAngles(0, 0, 0, 0, 0, 0, thePlayer);
 
         this.tailBase.render(0.0625F);

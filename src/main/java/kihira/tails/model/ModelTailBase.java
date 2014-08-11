@@ -5,25 +5,17 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
-import java.util.List;
-
 /**
  * A base class that all tails extend
  */
 public abstract class ModelTailBase extends ModelBase {
 
     /**
-     * Returns a list of parts that can be enabled or disabled by the owner of the tail
-     * @return List of parts
-     */
-    public abstract List<String> getToggleableParts();
-
-    /**
      * Renders the tail with the optional parts list provided
      * @param thePlayer The owner of the tail
-     * @param partsEnabled The parts enabled
+     * @param subtype The subtype
      */
-    public abstract void renderWithParts(EntityPlayer thePlayer, List<String> partsEnabled);
+    public abstract void render(EntityPlayer thePlayer, int subtype);
 
     /**
      * Sets the rotation on a model where the provided params are in radians
@@ -50,6 +42,6 @@ public abstract class ModelTailBase extends ModelBase {
     }
 
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        if (entity instanceof EntityPlayer) this.renderWithParts((EntityPlayer) entity, null);
+        if (entity instanceof EntityPlayer) this.render((EntityPlayer) entity, 0);
     }
 }

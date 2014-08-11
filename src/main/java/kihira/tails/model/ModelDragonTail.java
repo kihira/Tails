@@ -5,14 +5,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
-import java.util.List;
-
 public class ModelDragonTail extends ModelTailBase {
 
     private ModelRenderer tailBase;
     private ModelRenderer tail1;
     private ModelRenderer tail2;
     private ModelRenderer tail3;
+
+    private ModelRenderer tailSubBase;
+    private ModelRenderer tailSub1;
+    private ModelRenderer tailSub2;
+    private ModelRenderer tailSub3;
 
     public ModelDragonTail() {
         this.tailBase = new ModelRenderer(this, 22, 0);
@@ -37,6 +40,30 @@ public class ModelDragonTail extends ModelTailBase {
         this.tail2.addChild(this.tail3);
         this.tail1.addChild(this.tail2);
         this.tailBase.addChild(this.tail1);
+
+
+        this.tailSubBase = new ModelRenderer(this, 22, 5);
+        this.tailSubBase.addBox(0F, -7.25F, -2F, 0, 5, 8);
+        this.setRotationDegrees(this.tailSubBase, -40F, 0F, 0F);
+
+        this.tailSub1 = new ModelRenderer(this, 22, 11);
+        this.tailSub1.addBox(0F, -6.75F, 1F, 0, 5, 7);
+        this.tailSub1.setRotationPoint(0F, 0.3F, 5F);
+        this.setRotationDegrees(this.tailSub1, -8F, 0F, 0F);
+
+        this.tailSub2 = new ModelRenderer(this, 22, 15);
+        this.tailSub2.addBox(0F, -6.25F, 1F, 0, 5, 8);
+        this.tailSub2.setRotationPoint(0F, 0.2F, 5.5F);
+        this.setRotationDegrees(this.tailSub2, 10F, 0F, 0F);
+
+        this.tailSub3 = new ModelRenderer(this, 29, 6);
+        this.tailSub3.addBox(0F, -5.75F, 1F, 0, 5, 7);
+        this.tailSub3.setRotationPoint(0F, 0.4F, 7.5F);
+        this.setRotationDegrees(this.tailSub3, 20F, 0F, 0F);
+
+        this.tailSub2.addChild(this.tailSub3);
+        this.tailSub1.addChild(this.tailSub2);
+        this.tailSubBase.addChild(this.tailSub1);
     }
 
     @Override
@@ -45,19 +72,24 @@ public class ModelDragonTail extends ModelTailBase {
 
         this.tailBase.rotateAngleY = MathHelper.cos(seed - 1) / 5F;
         this.tail1.rotateAngleY = MathHelper.cos(seed - 2) / 5F;
-        this.tail2.rotateAngleY = (MathHelper.cos(seed - 3) / 5F);
-        this.tail3.rotateAngleY = (MathHelper.cos(seed - 4) / 5F);
+        this.tail2.rotateAngleY = MathHelper.cos(seed - 3) / 5F;
+        this.tail3.rotateAngleY = MathHelper.cos(seed - 4) / 5F;
+
+        this.tailSubBase.rotateAngleY = MathHelper.cos(seed - 1) / 5F;
+        this.tailSub1.rotateAngleY = MathHelper.cos(seed - 2) / 5F;
+        this.tailSub2.rotateAngleY = MathHelper.cos(seed - 3) / 5F;
+        this.tailSub3.rotateAngleY = MathHelper.cos(seed - 4) / 5F;
     }
 
-    @Override
-    public List<String> getToggleableParts() {
-        return null;
-    }
 
     @Override
-    public void renderWithParts(EntityPlayer thePlayer, List<String> partsEnabled) {
+    public void render(EntityPlayer thePlayer, int subtype) {
         this.setRotationAngles(0, 0, 0, 0, 0, 0, thePlayer);
 
         this.tailBase.render(0.0625F);
+
+        if (subtype == 1) {
+            this.tailSubBase.render(0.0625F);
+        }
     }
 }

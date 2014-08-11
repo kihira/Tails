@@ -14,15 +14,12 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.util.Point;
 
 import java.awt.image.BufferedImage;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
 
 public class TextureHelper {
 
-	public static Hashtable<UUID, TailInfo> TailMap = new Hashtable<UUID, TailInfo>();
-	
-	private static RenderTail[] tailTypes = EventHandler.tailTypes;
+    private static RenderTail[] tailTypes = EventHandler.tailTypes;
 	
 	private static final Point switch1Pixel = new Point(56,16);
 	private static final Point switch2Pixel = new Point(57,16);
@@ -56,10 +53,10 @@ public class TextureHelper {
             	int scol2 = image.getRGB(switch2Pixel.getX(), switch2Pixel.getY());
             	
             	if (scol1 == switch1Colour && scol2 == switch2Colour) {
-            		TailMap.put(id, buildTailInfo(id, image));
+            		EventHandler.TailMap.put(id, buildTailInfo(id, image));
             	}
             	else {
-            		TailMap.put(id, new TailInfo(id, false, 0,0, null));
+            		EventHandler.TailMap.put(id, new TailInfo(id, false, 0, 0, null));
             	}
             }
         }
@@ -95,13 +92,13 @@ public class TextureHelper {
 	public static void clearTailInfo(EntityPlayer player) {
 		UUID id = player.getGameProfile().getId();
 		
-		if (TailMap.containsKey(id)) {
-			TailMap.remove(id);
+		if (EventHandler.TailMap.containsKey(id)) {
+			EventHandler.TailMap.remove(id);
 		}
 	}
 	
 	public static boolean needsBuild(EntityPlayer player) {
-		return !TailMap.containsKey(player.getGameProfile().getId()) && 
+		return !EventHandler.TailMap.containsKey(player.getGameProfile().getId()) &&
 				player.getGameProfile().getProperties().containsKey("textures");
 	}
 }
