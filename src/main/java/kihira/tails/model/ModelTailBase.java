@@ -3,6 +3,7 @@ package kihira.tails.model;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -12,10 +13,10 @@ public abstract class ModelTailBase extends ModelBase {
 
     /**
      * Renders the tail with the optional parts list provided
-     * @param thePlayer The owner of the tail
+     * @param theEntity The owner of the tail
      * @param subtype The subtype
      */
-    public abstract void render(EntityPlayer thePlayer, int subtype);
+    public abstract void render(EntityLivingBase theEntity, int subtype);
 
     /**
      * Sets the rotation on a model where the provided params are in radians

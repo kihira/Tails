@@ -2,7 +2,7 @@ package kihira.tails.model;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 
 public class ModelDragonTail extends ModelTailBase {
@@ -83,8 +83,8 @@ public class ModelDragonTail extends ModelTailBase {
 
 
     @Override
-    public void render(EntityPlayer thePlayer, int subtype) {
-        this.setRotationAngles(0, 0, 0, 0, 0, 0, thePlayer);
+    public void render(EntityLivingBase theEntity, int subtype) {
+        this.setRotationAngles(0, 0, 0, 0, 0, 0, theEntity);
 
         this.tailBase.render(0.0625F);
 

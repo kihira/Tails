@@ -5,7 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.TailInfo;
 import kihira.tails.model.ModelFoxTail;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
@@ -17,7 +17,7 @@ public class RenderFoxTail extends RenderTail {
     //private ResourceLocation tailTexture = new ResourceLocation("tails", "texture/foxTail.png");
 
     @Override
-    public void render(EntityPlayer player, TailInfo info) {
+    public void render(EntityLivingBase player, TailInfo info) {
         GL11.glPushMatrix();
         Minecraft.getMinecraft().renderEngine.bindTexture(info.texture);
         if (!player.isSneaking()) GL11.glTranslatef(0F, 0.65F, 0.1F);

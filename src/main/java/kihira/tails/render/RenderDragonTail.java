@@ -3,7 +3,7 @@ package kihira.tails.render;
 import kihira.tails.TailInfo;
 import kihira.tails.model.ModelDragonTail;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 
 public class RenderDragonTail extends RenderTail {
@@ -14,7 +14,7 @@ public class RenderDragonTail extends RenderTail {
     //private ResourceLocation dragonTailTexture = new ResourceLocation("tails", "texture/dragonTail.png");
 
     @Override
-    public void render(EntityPlayer player, TailInfo info) {
+    public void render(EntityLivingBase player, TailInfo info) {
         GL11.glPushMatrix();
         Minecraft.getMinecraft().renderEngine.bindTexture(info.texture);
         if (!player.isSneaking()) GL11.glTranslatef(0F, 0.7F, 0.1F);
