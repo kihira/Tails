@@ -56,7 +56,7 @@ public class TextureHelper {
             		EventHandler.TailMap.put(id, buildTailInfo(id, image));
             	}
             	else {
-            		EventHandler.TailMap.put(id, new TailInfo(id, false, 0, 0, null));
+            		EventHandler.TailMap.put(id, new TailInfo(id, false, 0, 0, 0, 0, 0, null));
             	}
             }
         }
@@ -86,7 +86,7 @@ public class TextureHelper {
 		ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+type+"_"+subtype+"_"+textureid);
 		Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturepath, tint1, tint2, tint3));
 		
-		return new TailInfo(id, true, typeid, subtype, tailtexture);
+		return new TailInfo(id, true, typeid, subtype, tint1, tint2, tint3, tailtexture);
 	}
 	
 	public static void clearTailInfo(EntityPlayer player) {

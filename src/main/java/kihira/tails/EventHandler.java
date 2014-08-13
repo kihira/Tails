@@ -19,11 +19,13 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import kihira.tails.gui.GuiEditTail;
 import kihira.tails.render.RenderDragonTail;
 import kihira.tails.render.RenderFoxTail;
 import kihira.tails.render.RenderRacoonTail;
 import kihira.tails.render.RenderTail;
 import kihira.tails.texture.TextureHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import java.util.Hashtable;
@@ -57,6 +59,9 @@ public class EventHandler {
             TextureHelper.clearTailInfo(player);
             EventHandler.TailMap.put(id, new TailInfo(id, true, typeid, subtype, tailtexture));
         }*/
+        if (e.entityPlayer.isSneaking() && !(Minecraft.getMinecraft().currentScreen instanceof GuiEditTail)) {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiEditTail());
+        }
     	
     	UUID id = e.entityPlayer.getGameProfile().getId();
         if (TailMap.containsKey(id) && TailMap.get(id).hastail && !e.entityPlayer.isInvisible()) {
