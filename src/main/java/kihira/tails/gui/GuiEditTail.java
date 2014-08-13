@@ -133,7 +133,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         }
         //Save
         else if (button.id == 9) {
-            this.tailInfo.tints[this.currTintEdit -1] = 0xFF + this.currTintColour; //Add the alpha manually
+            this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
         }
     }
 
