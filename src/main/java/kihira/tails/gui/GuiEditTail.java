@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
-public class GuiEditTail extends GuiScreen {
+public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
     private float yaw = 0F;
     private float pitch = 0F;
@@ -25,6 +25,8 @@ public class GuiEditTail extends GuiScreen {
     private GuiSlider rSlider;
     private GuiSlider gSlider;
     private GuiSlider bSlider;
+
+    private GuiSlider rotYawSlider;
 
     private ScaledResolution scaledRes;
 
@@ -48,22 +50,25 @@ public class GuiEditTail extends GuiScreen {
         this.tailInfo = EventHandler.TailMap.get(this.mc.thePlayer.getGameProfile().getId());
 
         //Yaw Rotation
-        this.buttonList.add(0, new GuiButton(0, this.previewWindowRight - 20, this.height - 50, 20, 20, ">"));
-        this.buttonList.add(1, new GuiButton(1, this.previewWindowLeft, this.height - 50, 20, 20, "<"));
+        this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + 25, this.height - 30, this.width - (this.previewWindowEdgeOffset * 2) - 50, -180, 180, (int) this.yaw));
+/*
+        this.buttonList.add(new GuiButton(0, this.previewWindowRight - 20, this.height - 50, 20, 20, ">"));
+        this.buttonList.add(new GuiButton(1, this.previewWindowLeft, this.height - 50, 20, 20, "<"));
+*/
 
         //Edit tint buttons
         int topOffset = 20;
         for (int i = 2; i <= 4; i++) {
-            this.buttonList.add(i, new GuiButton(i, this.previewWindowRight + 30, topOffset, 40, 20, "Edit"));
+            this.buttonList.add(new GuiButton(i, this.previewWindowRight + 30, topOffset, 40, 20, "Edit"));
             topOffset += 35;
         }
 
         //Tint edit pane
         this.hexText = new GuiTextField(this.fontRendererObj, this.previewWindowRight + 5, this.editPaneTop + 20, 70, 10);
 
-        this.buttonList.add(5, this.rSlider = new GuiSlider(5, this.previewWindowRight + 5, this.editPaneTop + 60, 90, 0, 255, 50));
-        this.buttonList.add(6, this.gSlider = new GuiSlider(6, this.previewWindowRight + 5, this.editPaneTop + 80, 90, 0, 255, 50));
-        this.buttonList.add(7, this.bSlider = new GuiSlider(7, this.previewWindowRight + 5, this.editPaneTop + 100, 90, 0, 255, 100));
+        this.buttonList.add(this.rSlider = new GuiSlider(5, this.previewWindowRight + 5, this.editPaneTop + 40, 90, 0, 255, 0));
+        this.buttonList.add(this.gSlider = new GuiSlider(6, this.previewWindowRight + 5, this.editPaneTop + 60, 90, 0, 255, 0));
+        this.buttonList.add(this.bSlider = new GuiSlider(7, this.previewWindowRight + 5, this.editPaneTop + 80, 90, 0, 255, 0));
 
         this.hexText.setMaxStringLength(6);
     }
@@ -86,10 +91,9 @@ public class GuiEditTail extends GuiScreen {
         }
 
         //Editting tint pane
-        this.currTintEdit = 1;
         if (this.currTintEdit > 0) {
             this.drawHorizontalLine(this.previewWindowRight, this.width, editPaneTop, 0xFF000000);
-            this.fontRendererObj.drawString("Editting Tint " + this.currTintEdit, this.previewWindowRight + 5, editPaneTop + 5, 0xFFFFFF);
+            this.fontRendererObj.drawString("Editing Tint " + this.currTintEdit, this.previewWindowRight + 5, editPaneTop + 5, 0xFFFFFF);
 
             this.hexText.drawTextBox();
         }
@@ -103,11 +107,10 @@ public class GuiEditTail extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) {
         //Yaw Rotation
-        if (button.id == 0) MathHelper.clamp_float(this.yaw += 5F, -360F, 360F);
-        if (button.id == 1) MathHelper.clamp_float(this.yaw -= 5F, -360F, 360F);
+        if (button.id == 1) MathHelper.clamp_float(this.yaw = this.rotYawSlider.currentValue, -180F, 180F);
 
         //Edit buttons
-        if (button.id >= 2 && button.id <= 4) {
+        else if (button.id >= 2 && button.id <= 4) {
             this.currTintEdit = button.id - 1;
             this.currTintColour = this.tailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
@@ -143,8 +146,11 @@ public class GuiEditTail extends GuiScreen {
         this.hexText.setTextColor(this.currTintColour);
 
         this.rSlider.setCurrentValue(this.currTintColour >> 16 & 255);
+        this.rSlider.packedFGColour = (255 | this.rSlider.currentValue) << 16;
         this.gSlider.setCurrentValue(this.currTintColour >> 8 & 255);
+        this.gSlider.packedFGColour = (255 | this.gSlider.currentValue) << 8;
         this.bSlider.setCurrentValue(this.currTintColour & 255);
+        this.bSlider.packedFGColour = (255 | this.bSlider.currentValue);
     }
 
     public void drawPlayer(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
@@ -179,5 +185,13 @@ public class GuiEditTail extends GuiScreen {
         entity.setCurrentItemOrArmor(0, prevItemStack);
 
         GL11.glPopMatrix();
+    }
+
+    @Override
+    public boolean onValueChange(GuiSlider slider, int oldValue, int newValue) {
+        if (slider == this.rotYawSlider) {
+            this.yaw = newValue;
+        }
+        return true;
     }
 }

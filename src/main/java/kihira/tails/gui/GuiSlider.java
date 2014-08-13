@@ -14,6 +14,7 @@ public class GuiSlider extends GuiButton {
     private float maxValue;
     private float sliderValue;
     private boolean dragging = false;
+    private ISliderCallback parent;
 
     public GuiSlider(int id, int x, int y, int width, float minValue, float maxValue, int defaultValue) {
         super(id, x, y, width, 20, String.valueOf(defaultValue));
@@ -22,6 +23,12 @@ public class GuiSlider extends GuiButton {
         this.currentValue = defaultValue;
         this.sliderValue = MathHelper.clamp_float((this.currentValue - this.minValue) / (this.maxValue - this.minValue), 0.0F, 1.0F);
     }
+
+    public GuiSlider(ISliderCallback parent, int id, int x, int y, int width, float minValue, float maxValue, int defaultValue) {
+        this(id, x, y, width, minValue, maxValue, defaultValue);
+        this.parent = parent;
+    }
+
 
     @Override
     protected void mouseDragged(Minecraft minecraft, int xPos, int yPos) {
@@ -60,12 +67,18 @@ public class GuiSlider extends GuiButton {
     public void setCurrentValue(int currentValue) {
         this.currentValue = currentValue;
         this.sliderValue = MathHelper.clamp_float((this.currentValue - this.minValue) / (this.maxValue - this.minValue), 0.0F, 1.0F);
+        this.displayString = String.valueOf(this.currentValue);
     }
 
     private void updateValues(int xPos, int yPos) {
+        int prevValue = this.currentValue;
+
         this.sliderValue = MathHelper.clamp_float((xPos - (this.xPosition + 4F)) / (this.width - 8F), 0F, 1F);
         this.currentValue = (int) (this.sliderValue * (this.maxValue - this.minValue) + this.minValue);
 
-        this.displayString = String.valueOf(this.currentValue);
+        if (this.parent != null && !this.parent.onValueChange(this, prevValue, this.currentValue)) {
+            this.setCurrentValue(prevValue);
+        }
+        else this.displayString = String.valueOf(this.currentValue);
     }
 }
