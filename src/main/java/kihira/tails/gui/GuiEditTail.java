@@ -20,7 +20,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     private float pitch = 0F;
 
     private int currTintEdit = 0;
-    private int currTintColour;
+    private int currTintColour = 0xFFFFFF;
     private GuiTextField hexText;
     private GuiSlider rSlider;
     private GuiSlider gSlider;
@@ -43,7 +43,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
         this.scaledRes = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
         //this.previewWindowEdgeOffset = this.scaledRes.getScaledWidth() / 5;
-        this.previewWindowEdgeOffset = 100;
+        this.previewWindowEdgeOffset = 120;
         this.previewWindowLeft = this.previewWindowEdgeOffset;
         this.previewWindowRight = this.width - this.previewWindowEdgeOffset;
         this.editPaneTop = this.height - 125;
@@ -64,13 +64,16 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         }
 
         //Tint edit pane
-        this.hexText = new GuiTextField(this.fontRendererObj, this.previewWindowRight + 5, this.editPaneTop + 20, 70, 10);
+        this.hexText = new GuiTextField(this.fontRendererObj, this.previewWindowRight + 30, this.editPaneTop + 20, 70, 10);
 
-        this.buttonList.add(this.rSlider = new GuiSlider(5, this.previewWindowRight + 5, this.editPaneTop + 40, 90, 0, 255, 0));
-        this.buttonList.add(this.gSlider = new GuiSlider(6, this.previewWindowRight + 5, this.editPaneTop + 60, 90, 0, 255, 0));
-        this.buttonList.add(this.bSlider = new GuiSlider(7, this.previewWindowRight + 5, this.editPaneTop + 80, 90, 0, 255, 0));
+        this.buttonList.add(this.rSlider = new GuiSlider(this, 5, this.previewWindowRight + 5, this.editPaneTop + 35, 98, 0, 255, 0));
+        this.buttonList.add(this.gSlider = new GuiSlider(this, 6, this.previewWindowRight + 5, this.editPaneTop + 55, 98, 0, 255, 0));
+        this.buttonList.add(this.bSlider = new GuiSlider(this, 7, this.previewWindowRight + 5, this.editPaneTop + 75, 98, 0, 255, 0));
 
         this.hexText.setMaxStringLength(6);
+        this.hexText.setText(Integer.toHexString(this.currTintColour));
+
+        this.refreshTintPane();
     }
 
     @Override
@@ -92,14 +95,15 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
         //Editting tint pane
         if (this.currTintEdit > 0) {
-            this.drawHorizontalLine(this.previewWindowRight, this.width, editPaneTop, 0xFF000000);
-            this.fontRendererObj.drawString("Editing Tint " + this.currTintEdit, this.previewWindowRight + 5, editPaneTop + 5, 0xFFFFFF);
+            this.drawHorizontalLine(this.previewWindowRight, this.width, this.editPaneTop, 0xFF000000);
+            this.fontRendererObj.drawString("Editing Tint " + this.currTintEdit, this.previewWindowRight + 5, this.editPaneTop + 5, 0xFFFFFF);
 
+            this.fontRendererObj.drawString("Hex:", this.previewWindowRight + 5, this.editPaneTop + 21, 0xFFFFFF);
             this.hexText.drawTextBox();
         }
 
         //Player
-        drawPlayer(this.width / 2, (this.height / 2) + (this.scaledRes.getScaledHeight() / 5), (this.scaledRes.getScaledHeight() / 5), this.yaw, this.pitch, this.mc.thePlayer);
+        drawPlayer(this.width / 2, (this.height / 2) + (this.scaledRes.getScaledHeight() / 4), (this.scaledRes.getScaledHeight() / 4), this.yaw, this.pitch, this.mc.thePlayer);
 
         super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
     }
@@ -128,9 +132,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             if (!Strings.isNullOrEmpty(this.hexText.getText())) {
                 this.currTintColour = Integer.parseInt(this.hexText.getText(), 16);
             }
-        } catch (NumberFormatException ignored) {
-            ignored.printStackTrace();
-        }
+        } catch (NumberFormatException ignored) {}
 
         this.refreshTintPane();
     }
@@ -151,6 +153,13 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.gSlider.packedFGColour = (255 | this.gSlider.currentValue) << 8;
         this.bSlider.setCurrentValue(this.currTintColour & 255);
         this.bSlider.packedFGColour = (255 | this.bSlider.currentValue);
+
+        if (this.currTintEdit > 0) {
+            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = true;
+        }
+        else {
+            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = false;
+        }
     }
 
     public void drawPlayer(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
@@ -191,6 +200,16 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     public boolean onValueChange(GuiSlider slider, int oldValue, int newValue) {
         if (slider == this.rotYawSlider) {
             this.yaw = newValue;
+        }
+        //RGB sliders
+        if (slider == this.rSlider || slider == this.gSlider || slider == this.bSlider) {
+            int colour = 0;
+            colour = colour | this.rSlider.currentValue << 16;
+            colour = colour | this.gSlider.currentValue << 8;
+            colour = colour | this.bSlider.currentValue;
+            this.currTintColour = colour;
+            this.hexText.setText(Integer.toHexString(this.currTintColour));
+            this.refreshTintPane();
         }
         return true;
     }
