@@ -22,9 +22,9 @@ public class GuiEditTail extends GuiScreen {
     private int currTintEdit = 0;
     private int currTintColour;
     private GuiTextField hexText;
-    private GuiTextField rText;
-    private GuiTextField gText;
-    private GuiTextField bText;
+    private GuiSlider rSlider;
+    private GuiSlider gSlider;
+    private GuiSlider bSlider;
 
     private ScaledResolution scaledRes;
 
@@ -60,14 +60,12 @@ public class GuiEditTail extends GuiScreen {
 
         //Tint edit pane
         this.hexText = new GuiTextField(this.fontRendererObj, this.previewWindowRight + 5, this.editPaneTop + 20, 70, 10);
-        this.rText = new GuiTextField(this.fontRendererObj, this.previewWindowRight + 5, this.editPaneTop + 40, 26, 10);
-        this.gText = new GuiTextField(this.fontRendererObj, this.previewWindowRight + 36, this.editPaneTop + 40, 26, 10);
-        this.bText = new GuiTextField(this.fontRendererObj, this.previewWindowRight + 67, this.editPaneTop + 40, 26, 10);
+
+        this.buttonList.add(5, this.rSlider = new GuiSlider(5, this.previewWindowRight + 5, this.editPaneTop + 60, 90, 0, 255, 50));
+        this.buttonList.add(6, this.gSlider = new GuiSlider(6, this.previewWindowRight + 5, this.editPaneTop + 80, 90, 0, 255, 50));
+        this.buttonList.add(7, this.bSlider = new GuiSlider(7, this.previewWindowRight + 5, this.editPaneTop + 100, 90, 0, 255, 100));
 
         this.hexText.setMaxStringLength(6);
-        this.rText.setMaxStringLength(3);
-        this.gText.setMaxStringLength(3);
-        this.bText.setMaxStringLength(3);
     }
 
     @Override
@@ -94,9 +92,6 @@ public class GuiEditTail extends GuiScreen {
             this.fontRendererObj.drawString("Editting Tint " + this.currTintEdit, this.previewWindowRight + 5, editPaneTop + 5, 0xFFFFFF);
 
             this.hexText.drawTextBox();
-            this.rText.drawTextBox();
-            this.gText.drawTextBox();
-            this.bText.drawTextBox();
         }
 
         //Player
@@ -116,7 +111,7 @@ public class GuiEditTail extends GuiScreen {
             this.currTintEdit = button.id - 1;
             this.currTintColour = this.tailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
-            this.refreshTextBoxes();
+            this.refreshTintPane();
         }
     }
 
@@ -124,9 +119,6 @@ public class GuiEditTail extends GuiScreen {
     protected void keyTyped(char letter, int keyCode) {
         super.keyTyped(letter, keyCode);
         this.hexText.textboxKeyTyped(letter, keyCode);
-        this.rText.textboxKeyTyped(letter, keyCode);
-        this.gText.textboxKeyTyped(letter, keyCode);
-        this.bText.textboxKeyTyped(letter, keyCode);
 
         try {
             //Gets the current colour from the hex text
@@ -137,33 +129,22 @@ public class GuiEditTail extends GuiScreen {
             ignored.printStackTrace();
         }
 
-        this.refreshTextBoxes();
+        this.refreshTintPane();
     }
 
     @Override
     protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_) {
         super.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
         this.hexText.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
-        this.rText.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
-        this.gText.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
-        this.bText.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
     }
 
     //Refreshes the text and text colour to the current set tint colour
-    private void refreshTextBoxes() {
+    private void refreshTintPane() {
         this.hexText.setTextColor(this.currTintColour);
 
-        int colourValue = this.currTintColour >> 16 & 255;
-        this.rText.setText(String.valueOf(colourValue));
-        this.rText.setTextColor(colourValue << 16);
-
-        colourValue = this.currTintColour >> 8 & 255;
-        this.gText.setText(String.valueOf(colourValue));
-        this.gText.setTextColor(colourValue << 8);
-
-        colourValue = this.currTintColour & 255;
-        this.bText.setText(String.valueOf(colourValue));
-        this.bText.setTextColor(colourValue);
+        this.rSlider.setCurrentValue(this.currTintColour >> 16 & 255);
+        this.gSlider.setCurrentValue(this.currTintColour >> 8 & 255);
+        this.bSlider.setCurrentValue(this.currTintColour & 255);
     }
 
     public void drawPlayer(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
