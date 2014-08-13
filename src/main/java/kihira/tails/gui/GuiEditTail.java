@@ -64,14 +64,18 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         }
 
         //Tint edit pane
-        this.hexText = new GuiTextField(this.fontRendererObj, this.previewWindowRight + 30, this.editPaneTop + 20, 70, 10);
-
-        this.buttonList.add(this.rSlider = new GuiSlider(this, 5, this.previewWindowRight + 5, this.editPaneTop + 35, 98, 0, 255, 0));
-        this.buttonList.add(this.gSlider = new GuiSlider(this, 6, this.previewWindowRight + 5, this.editPaneTop + 55, 98, 0, 255, 0));
-        this.buttonList.add(this.bSlider = new GuiSlider(this, 7, this.previewWindowRight + 5, this.editPaneTop + 75, 98, 0, 255, 0));
-
+        this.hexText = new GuiTextField(this.fontRendererObj, this.previewWindowRight + 30, this.editPaneTop + 20, 73, 10);
         this.hexText.setMaxStringLength(6);
         this.hexText.setText(Integer.toHexString(this.currTintColour));
+
+        //RGB sliders
+        this.buttonList.add(this.rSlider = new GuiSlider(this, 5, this.previewWindowRight + 5, this.editPaneTop + 35, 100, 0, 255, 0));
+        this.buttonList.add(this.gSlider = new GuiSlider(this, 6, this.previewWindowRight + 5, this.editPaneTop + 55, 100, 0, 255, 0));
+        this.buttonList.add(this.bSlider = new GuiSlider(this, 7, this.previewWindowRight + 5, this.editPaneTop + 75, 100, 0, 255, 0));
+
+        //Reset/Save
+        this.buttonList.add(new GuiButton(8, this.previewWindowRight + 5, this.height - 25, 50, 20, "Reset"));
+        this.buttonList.add(new GuiButton(9, this.previewWindowRight + 55, this.height - 25, 50, 20, "Save"));
 
         this.refreshTintPane();
     }
@@ -119,6 +123,17 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             this.currTintColour = this.tailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
+        }
+
+        //Reset
+        else if (button.id == 8) {
+            this.currTintColour = this.tailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            this.hexText.setText(Integer.toHexString(this.currTintColour));
+            this.refreshTintPane();
+        }
+        //Save
+        else if (button.id == 9) {
+            this.tailInfo.tints[this.currTintEdit -1] = 0xFF + this.currTintColour; //Add the alpha manually
         }
     }
 
