@@ -38,12 +38,7 @@ public class ClientEventHandler {
 	public static final RenderTail[] tailTypes = { new RenderFoxTail(), new RenderDragonTail(), new RenderRacoonTail() };
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
-    	if(TextureHelper.needsBuild(e.entityPlayer)) {
-			TextureHelper.buildPlayerInfo(e.entityPlayer);
-		}
-
         //TESTING REMOVE
 /*        if (e.entityPlayer.isSneaking()) {
             EntityPlayer player = e.entityPlayer;
@@ -61,10 +56,10 @@ public class ClientEventHandler {
             EventHandler.tailMap.put(uuid, new TailInfo(uuid, true, typeid, subtype, tailtexture));
         }*/
         if (e.entityPlayer.isSneaking() && !(Minecraft.getMinecraft().currentScreen instanceof GuiEditTail)) {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiEditTail());
+            //Minecraft.getMinecraft().displayGuiScreen(new GuiEditTail());
         }
 
-    	UUID uuid = e.entityPlayer.getPersistentID();
+    	UUID uuid = e.entityPlayer.getGameProfile().getId();
         if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
         	TailInfo info = Tails.proxy.getTailInfo(uuid);
         	
@@ -74,26 +69,17 @@ public class ClientEventHandler {
             tailTypes[type].render(e.entityPlayer, info);
         }
     }
-    
-/*    @SubscribeEvent
-    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent e) {
-    	TextureHelper.clearTailInfo(e.player);
-    }*/
 
     @SubscribeEvent
     public void onPlayerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
-        //TODO this doesn't work as it's called from the client network thread which doesn't have the gl instance in
         Tails.hasRemote = false;
-        Tails.proxy.clearAllTailInfo();
+        Tails.proxy.clearAllTailInfo(); //TODO This won't delete the textures cause it's called from the wrong thread
     }
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
     public void onPlayerTick(TickEvent.PlayerTickEvent e) {
-		if (e.side.isClient()) {
-			if(TextureHelper.needsBuild(e.player)) {
-				TextureHelper.buildPlayerInfo(e.player);
-			}
-		}
+        if (TextureHelper.needsBuild(e.player)) {
+            TextureHelper.buildPlayerInfo(e.player);
+        }
     }
 }

@@ -2,6 +2,7 @@ package kihira.tails.common;
 
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class TailInfo {
@@ -22,4 +23,17 @@ public class TailInfo {
         this.tints = new int[] {tint1, tint2, tint3};
         this.texture = texture;
 	}
+
+    @Override
+    public String toString() {
+        return "TailInfo{" +
+                "id=" + id +
+                ", hastail=" + hastail +
+                ", typeid=" + typeid +
+                ", subid=" + subid +
+                ", tints=" + Arrays.toString(tints) +
+                ", textureID=" + textureID +
+                ", texture=" + texture +
+                '}';
+    }
 }

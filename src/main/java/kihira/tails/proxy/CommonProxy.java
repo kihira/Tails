@@ -6,8 +6,10 @@ import kihira.tails.common.EventHandler;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.TailInfoMessage;
+import kihira.tails.common.network.TailMapMessage;
 
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.UUID;
 
 public class CommonProxy {
@@ -16,14 +18,15 @@ public class CommonProxy {
 
     public void registerMessages() {
         Tails.networkWrapper.registerMessage(TailInfoMessage.TailInfoMessageHandler.class, TailInfoMessage.class, 0, Side.SERVER);
+        Tails.networkWrapper.registerMessage(TailMapMessage.TailMapMessageHandler.class, TailMapMessage.class, 1, Side.SERVER);
     }
 
     public void registerHandlers() {
-        //NetworkRegistry.INSTANCE.registerGuiHandler(Tails.instance, new GuiHandler());
         FMLCommonHandler.instance().bus().register(new EventHandler());
     }
 
     public void addTailInfo(UUID uuid, TailInfo tailInfo) {
+        Tails.logger.info("Registered TailInfo " + tailInfo);
         this.tailMap.put(uuid, tailInfo);
     }
 
@@ -45,5 +48,9 @@ public class CommonProxy {
 
     public TailInfo getTailInfo(UUID uuid) {
         return this.tailMap.get(uuid);
+    }
+
+    public Map<UUID, TailInfo> getTailMap() {
+        return this.tailMap;
     }
 }

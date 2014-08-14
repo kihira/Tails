@@ -3,6 +3,8 @@ package kihira.tails.client.texture;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.render.RenderTail;
 import kihira.tails.common.TailInfo;
@@ -20,6 +22,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
+@SideOnly(Side.CLIENT)
 public class TextureHelper {
 
     private static RenderTail[] tailTypes = ClientEventHandler.tailTypes;
@@ -33,6 +36,11 @@ public class TextureHelper {
 	
 	private static final int switch1Colour = 0xFFFF10F0;
 	private static final int switch2Colour = 0xFFB8E080;
+
+    /**
+     * This is the {@link kihira.tails.common.TailInfo} for the local player
+     */
+    public static TailInfo localPlayerTailInfo;
 	
 	@SuppressWarnings("rawtypes")
 	public static void buildPlayerInfo(EntityPlayer player) {
@@ -62,8 +70,12 @@ public class TextureHelper {
             	else {
             		tailInfo = new TailInfo(uuid, false, 0, 0, 0, 0, 0, null);
             	}
+                Tails.proxy.addTailInfo(uuid, tailInfo);
                 //If local player, send our skin info the server.
-                if (player == Minecraft.getMinecraft().thePlayer) Tails.networkWrapper.sendToServer(new TailInfoMessage(tailInfo, false));
+                if (player == Minecraft.getMinecraft().thePlayer) {
+                    localPlayerTailInfo = tailInfo;
+                    Tails.networkWrapper.sendToServer(new TailInfoMessage(tailInfo, false));
+                }
             }
         }
 	}
