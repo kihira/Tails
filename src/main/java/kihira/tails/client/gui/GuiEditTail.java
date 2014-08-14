@@ -1,6 +1,9 @@
 package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
+import kihira.tails.client.ClientEventHandler;
+import kihira.tails.client.FakeEntity;
+import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
 import net.minecraft.client.gui.GuiButton;
@@ -12,7 +15,11 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
+
+import java.util.UUID;
 
 public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
@@ -35,6 +42,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     private int previewWindowRight;
     private int editPaneTop;
     private TailInfo tailInfo;
+
+    private FakeEntity fakeEntity;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -77,6 +86,17 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.buttonList.add(new GuiButton(8, this.previewWindowRight + 5, this.height - 25, 50, 20, "Reset"));
         this.buttonList.add(new GuiButton(9, this.previewWindowRight + 55, this.height - 25, 50, 20, "Save"));
 
+        //FakeEntity
+        this.fakeEntity = new FakeEntity(this.mc.theWorld);
+
+        //Generate tail preview textures TODO Temp store tail info to release textures?
+        for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
+            for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
+                TailInfo tailInfo = new TailInfo(UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"), true, type, subType, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
+                TextureHelper.generateTexture(tailInfo);
+            }
+        }
+
         this.refreshTintPane();
     }
 
@@ -106,8 +126,22 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             this.hexText.drawTextBox();
         }
 
+        //Tails list
+        topOffset = 0;
+        GL11.glColor3f(1F, 1F, 1F); //Reset colour as something above seems to set it to something else
+        for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
+            for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
+                TailInfo tailInfo = new TailInfo(UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"), true, type, subType, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
+                tailInfo.setTexture(new ResourceLocation("tails_"+tailInfo.id.toString()+"_"+tailInfo.typeid+"_"+tailInfo.subid+"_"+tailInfo.textureID));
+                tailInfo.needsTextureCompile = false;
+                this.renderTail(this.previewWindowLeft - (this.scaledRes.getScaledHeight() / 16), topOffset - 15, (this.scaledRes.getScaledHeight() / 8), tailInfo);
+                this.fontRendererObj.drawString(StatCollector.translateToLocal(ClientEventHandler.tailTypes[type].getUnlocalisedName(subType)), 5, topOffset + (this.scaledRes.getScaledHeight() / 18), 0xFFFFFF);
+                topOffset += (this.scaledRes.getScaledHeight() / 8);
+            }
+        }
+
         //Player
-        drawPlayer(this.width / 2, (this.height / 2) + (this.scaledRes.getScaledHeight() / 4), (this.scaledRes.getScaledHeight() / 4), this.yaw, this.pitch, this.mc.thePlayer);
+        drawEntity(this.width / 2, (this.height / 2) + (this.scaledRes.getScaledHeight() / 4), this.scaledRes.getScaledHeight() / 4, this.yaw, this.pitch, this.mc.thePlayer);
 
         super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
     }
@@ -177,7 +211,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         }
     }
 
-    public void drawPlayer(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
+    private void drawEntity(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
         float prevHeadYaw = entity.rotationYawHead;
         float prevRotYaw = entity.rotationYaw;
         float prevRotPitch = entity.rotationPitch;
@@ -207,6 +241,19 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         entity.rotationYaw = prevRotYaw;
         entity.rotationPitch = prevRotPitch;
         entity.setCurrentItemOrArmor(0, prevItemStack);
+
+        GL11.glPopMatrix();
+    }
+
+    private void renderTail(int x, int y, int scale, TailInfo tailInfo) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x, y, 100.0F);
+        GL11.glScalef(-scale, scale, scale);
+
+        RenderHelper.enableStandardItemLighting();
+        RenderManager.instance.playerViewY = 180.0F;
+        ClientEventHandler.tailTypes[tailInfo.typeid].render(this.fakeEntity, tailInfo);
+        RenderHelper.disableStandardItemLighting();
 
         GL11.glPopMatrix();
     }

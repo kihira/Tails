@@ -11,7 +11,10 @@ public class RenderDragonTail extends RenderTail {
 	private String[] skinNames = {"dragonTail"};
 	
     private ModelDragonTail modelDragonTail = new ModelDragonTail();
-    //private ResourceLocation dragonTailTexture = new ResourceLocation("tails", "texture/dragonTail.png");
+
+    public RenderDragonTail() {
+        super("dragon");
+    }
 
     @Override
     public void render(EntityLivingBase player, TailInfo info) {
@@ -28,5 +31,10 @@ public class RenderDragonTail extends RenderTail {
 	public String[] getTextureNames() {
 		return skinNames;
 	}
-    
+
+    @Override
+    public int getAvailableSubTypes() {
+        return 1;
+    }
+
 }

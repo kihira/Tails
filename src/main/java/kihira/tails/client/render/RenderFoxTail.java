@@ -15,6 +15,10 @@ public class RenderFoxTail extends RenderTail {
 	
     private ModelFoxTail modelFoxTail = new ModelFoxTail();
 
+    public RenderFoxTail() {
+        super("fox");
+    }
+
     @Override
     public void render(EntityLivingBase player, TailInfo info) {
         GL11.glPushMatrix();
@@ -30,4 +34,9 @@ public class RenderFoxTail extends RenderTail {
 	public String[] getTextureNames() {
 		return skinNames;
 	}
+
+    @Override
+    public int getAvailableSubTypes() {
+        return 0;
+    }
 }

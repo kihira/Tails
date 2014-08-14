@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.gui.GuiEditTail;
 import kihira.tails.client.render.RenderDragonTail;
 import kihira.tails.client.render.RenderFoxTail;
-import kihira.tails.client.render.RenderRacoonTail;
+import kihira.tails.client.render.RenderRaccoonTail;
 import kihira.tails.client.render.RenderTail;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
@@ -35,7 +35,7 @@ import java.util.UUID;
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler {
 
-	public static final RenderTail[] tailTypes = { new RenderFoxTail(), new RenderDragonTail(), new RenderRacoonTail() };
+	public static final RenderTail[] tailTypes = { new RenderFoxTail(), new RenderDragonTail(), new RenderRaccoonTail() };
 
     @SubscribeEvent
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
@@ -56,7 +56,7 @@ public class ClientEventHandler {
             EventHandler.tailMap.put(uuid, new TailInfo(uuid, true, typeid, subtype, tailtexture));
         }*/
         if (e.entityPlayer.isSneaking() && !(Minecraft.getMinecraft().currentScreen instanceof GuiEditTail)) {
-            //Minecraft.getMinecraft().displayGuiScreen(new GuiEditTail());
+            Minecraft.getMinecraft().displayGuiScreen(new GuiEditTail());
         }
 
     	UUID uuid = e.entityPlayer.getGameProfile().getId();

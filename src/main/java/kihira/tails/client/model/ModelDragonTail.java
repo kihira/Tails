@@ -4,6 +4,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
+import org.lwjgl.opengl.GL11;
 
 public class ModelDragonTail extends ModelTailBase {
 
@@ -89,7 +90,9 @@ public class ModelDragonTail extends ModelTailBase {
         this.tailBase.render(0.0625F);
 
         if (subtype == 1) {
+            GL11.glDisable(GL11.GL_CULL_FACE);
             this.tailSubBase.render(0.0625F);
+            GL11.glEnable(GL11.GL_CULL_FACE);
         }
     }
 }

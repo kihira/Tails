@@ -5,14 +5,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 
-public class ModelRacoonTail extends ModelTailBase {
+public class ModelRaccoonTail extends ModelTailBase {
 
     private ModelRenderer tailBase;
     private ModelRenderer tail1;
     private ModelRenderer tail2;
     private ModelRenderer tailTip;
 
-    public ModelRacoonTail() {
+    public ModelRaccoonTail() {
         this.tailBase = new ModelRenderer(this, 12, 16);
         this.tailBase.addBox(-1F, -1F, 0F, 2, 2, 2);
         this.tailBase.setRotationPoint(0F, 0F, 0F);
