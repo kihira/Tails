@@ -12,7 +12,7 @@ public class TailInfo {
 	public final int subid;
     public final int[] tints;
     public final int textureID = 0;
-	public final ResourceLocation texture;
+	public ResourceLocation texture;
 	
 	public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int tint1, int tint2, int tint3, ResourceLocation texture) {
 		this.id = uuid;

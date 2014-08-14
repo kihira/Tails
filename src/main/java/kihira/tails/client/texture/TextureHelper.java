@@ -7,6 +7,7 @@ import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.render.RenderTail;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
+import kihira.tails.common.network.TailInfoMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -37,7 +38,7 @@ public class TextureHelper {
 	public static void buildPlayerInfo(EntityPlayer player) {
 		Minecraft mc = Minecraft.getMinecraft();
 		GameProfile profile = player.getGameProfile();
-		UUID id = profile.getId();
+		UUID uuid = profile.getId();
 		
 		Map map = mc.func_152342_ad().func_152788_a(profile);
 		
@@ -53,13 +54,16 @@ public class TextureHelper {
             	
             	int scol1 = image.getRGB(switch1Pixel.getX(), switch1Pixel.getY());
             	int scol2 = image.getRGB(switch2Pixel.getX(), switch2Pixel.getY());
-            	
+
+                TailInfo tailInfo;
             	if (scol1 == switch1Colour && scol2 == switch2Colour) {
-            		ClientEventHandler.TailMap.put(id, buildTailInfoFromSkin(id, image));
+                    tailInfo = buildTailInfoFromSkin(uuid, image);
             	}
             	else {
-            		ClientEventHandler.TailMap.put(id, new TailInfo(id, false, 0, 0, 0, 0, 0, null));
+            		tailInfo = new TailInfo(uuid, false, 0, 0, 0, 0, 0, null);
             	}
+                //If local player, send our skin info the server.
+                if (player == Minecraft.getMinecraft().thePlayer) Tails.networkWrapper.sendToServer(new TailInfoMessage(tailInfo, false));
             }
         }
 	}
@@ -100,30 +104,15 @@ public class TextureHelper {
         RenderTail tail = tailTypes[typeid];
         String texturePath = "texture/"+tail.getTextureNames()[textureID]+".png";
         Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturePath, tints[0], tints[1], tints[2]));
-        Tails.logger.debug(String.format("Generated texture UUID: %s Type: %s SubType: %s Texture: %s Tints: %s", id, typeid, subid, textureID, Arrays.toString(tints)));
+        Tails.logger.info(String.format("Generated texture UUID: %s Type: %s SubType: %s Texture: %s Tints: %s", id, typeid, subid, textureID, Arrays.toString(tints)));
         return tailtexture;
     }
 
     public static ResourceLocation generateTexture(TailInfo tailInfo) {
         return generateTexture(tailInfo.id, tailInfo.typeid, tailInfo.subid, tailInfo.textureID, tailInfo.tints);
     }
-
-    /**
-     * Removes the {@link kihira.tails.common.TailInfo} for the player as well as deleting the texture from memory
-     * @param player The player
-     */
-	public static void clearTailInfo(EntityPlayer player) {
-		UUID id = player.getGameProfile().getId();
-		
-		if (ClientEventHandler.TailMap.containsKey(id)) {
-            TailInfo tailInfo = ClientEventHandler.TailMap.get(id);
-            Minecraft.getMinecraft().renderEngine.deleteTexture(tailInfo.texture);
-			ClientEventHandler.TailMap.remove(id);
-		}
-	}
 	
 	public static boolean needsBuild(EntityPlayer player) {
-		return !ClientEventHandler.TailMap.containsKey(player.getGameProfile().getId()) &&
-				player.getGameProfile().getProperties().containsKey("textures");
+		return !Tails.proxy.hasTailInfo(player.getPersistentID()) && player.getGameProfile().getProperties().containsKey("textures");
 	}
 }
