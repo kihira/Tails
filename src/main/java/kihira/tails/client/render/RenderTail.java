@@ -2,6 +2,7 @@ package kihira.tails.client.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import net.minecraft.entity.EntityLivingBase;
 
@@ -14,7 +15,15 @@ public abstract class RenderTail {
         this.name = name;
     }
 
-    public abstract void render(EntityLivingBase player, TailInfo info);
+    public void render(EntityLivingBase entity, TailInfo info) {
+        if (info.needsTextureCompile || info.getTexture() == null) {
+            info.setTexture(TextureHelper.generateTexture(info));
+            info.needsTextureCompile = false;
+        }
+        this.doRender(entity, info);
+    }
+
+    protected abstract void doRender(EntityLivingBase player, TailInfo info);
 
     /**
      * Gets the available textures for this tail

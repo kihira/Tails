@@ -3,7 +3,6 @@ package kihira.tails.client.gui;
 import com.google.common.base.Strings;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.FakeEntity;
-import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
 import net.minecraft.client.gui.*;
@@ -31,6 +30,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     private GuiSlider rSlider;
     private GuiSlider gSlider;
     private GuiSlider bSlider;
+    private GuiButton tintReset;
+    private GuiButton tintSave;
 
     private GuiSlider rotYawSlider;
 
@@ -83,8 +84,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.buttonList.add(this.bSlider = new GuiSlider(this, 7, this.previewWindowRight + 5, this.editPaneTop + 75, 100, 0, 255, 0));
 
         //Reset/Save
-        this.buttonList.add(new GuiButton(8, this.previewWindowRight + 5, this.height - 25, 50, 20, "Reset"));
-        this.buttonList.add(new GuiButton(9, this.previewWindowRight + 55, this.height - 25, 50, 20, "Save"));
+        this.buttonList.add(this.tintReset = new GuiButton(8, this.previewWindowRight + 5, this.height - 25, 50, 20, "Reset"));
+        this.buttonList.add(this.tintSave = new GuiButton(9, this.previewWindowRight + 55, this.height - 25, 50, 20, "Save"));
 
         //Tail List
         List<TailEntry> tailList = new ArrayList<TailEntry>();
@@ -92,8 +93,6 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
             for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
                 TailInfo tailInfo = new TailInfo(UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"), true, type, subType, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
-                tailInfo.setTexture(TextureHelper.generateTexture(tailInfo));
-                tailInfo.needsTextureCompile = false;
                 tailList.add(new TailEntry(tailInfo));
             }
         }
@@ -206,10 +205,10 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.bSlider.packedFGColour = (255 | this.bSlider.currentValue);
 
         if (this.currTintEdit > 0) {
-            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = true;
+            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = this.tintReset.visible = this.tintSave.visible = true;
         }
         else {
-            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = false;
+            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = this.tintReset.visible = this.tintSave.visible = false;
         }
     }
 

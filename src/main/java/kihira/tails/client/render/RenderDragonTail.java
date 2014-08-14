@@ -17,13 +17,13 @@ public class RenderDragonTail extends RenderTail {
     }
 
     @Override
-    public void render(EntityLivingBase player, TailInfo info) {
+    public void doRender(EntityLivingBase entity, TailInfo info) {
         GL11.glPushMatrix();
         Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
-        if (!player.isSneaking()) GL11.glTranslatef(0F, 0.7F, 0.1F);
+        if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.7F, 0.1F);
         else GL11.glTranslatef(0F, 0.6F, 0.35F);
         GL11.glScalef(0.8F, 0.8F, 0.8F);
-        this.modelDragonTail.render(player, info.subid);
+        this.modelDragonTail.render(entity, info.subid);
         GL11.glPopMatrix();
     }
 
