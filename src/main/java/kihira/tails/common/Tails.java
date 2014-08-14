@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "$version", guiFactory = "kihira.tails.client.gui.TailsGuiFactory")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "$version", guiFactory = "kihira.tails.client.gui.TailsGuiFactory", dependencies = "required-after:foxlib@[0.2.0,)")
 public class Tails {
 
     public static final String MOD_ID = "Tails";

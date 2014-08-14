@@ -6,19 +6,18 @@ import kihira.tails.client.FakeEntity;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class GuiEditTail extends GuiScreen implements ISliderCallback {
@@ -43,6 +42,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     private int editPaneTop;
     private TailInfo tailInfo;
 
+    private GuiList tailList;
     private FakeEntity fakeEntity;
 
     @Override
@@ -86,16 +86,20 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.buttonList.add(new GuiButton(8, this.previewWindowRight + 5, this.height - 25, 50, 20, "Reset"));
         this.buttonList.add(new GuiButton(9, this.previewWindowRight + 55, this.height - 25, 50, 20, "Save"));
 
-        //FakeEntity
-        this.fakeEntity = new FakeEntity(this.mc.theWorld);
-
-        //Generate tail preview textures TODO Temp store tail info to release textures?
+        //Tail List
+        List<GuiListExtended.IGuiListEntry> tailList = new ArrayList<GuiListExtended.IGuiListEntry>();
+        //Generate tail preview textures and add to list TODO release textures
         for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
             for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
                 TailInfo tailInfo = new TailInfo(UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"), true, type, subType, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
-                TextureHelper.generateTexture(tailInfo);
+                tailInfo.setTexture(TextureHelper.generateTexture(tailInfo));
+                tailInfo.needsTextureCompile = false;
+                tailList.add(new TailEntry(tailInfo));
             }
         }
+
+        this.tailList = new GuiList(this.mc, this.previewWindowLeft, this.height, 0, this.height, 0, 55, tailList);
+        this.fakeEntity = new FakeEntity(this.mc.theWorld);
 
         this.refreshTintPane();
     }
@@ -125,9 +129,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             this.fontRendererObj.drawString("Hex:", this.previewWindowRight + 5, this.editPaneTop + 21, 0xFFFFFF);
             this.hexText.drawTextBox();
         }
-
-        //Tails list
-        topOffset = 0;
+/*        topOffset = 0;
         GL11.glColor3f(1F, 1F, 1F); //Reset colour as something above seems to set it to something else
         for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
             for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
@@ -138,10 +140,13 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
                 this.fontRendererObj.drawString(StatCollector.translateToLocal(ClientEventHandler.tailTypes[type].getUnlocalisedName(subType)), 5, topOffset + (this.scaledRes.getScaledHeight() / 18), 0xFFFFFF);
                 topOffset += (this.scaledRes.getScaledHeight() / 8);
             }
-        }
+        }*/
 
         //Player
         drawEntity(this.width / 2, (this.height / 2) + (this.scaledRes.getScaledHeight() / 4), this.scaledRes.getScaledHeight() / 4, this.yaw, this.pitch, this.mc.thePlayer);
+
+        //Tails list
+        this.tailList.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
 
         super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
     }
@@ -274,5 +279,30 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             this.refreshTintPane();
         }
         return true;
+    }
+
+    public class TailEntry implements GuiListExtended.IGuiListEntry {
+
+        private final TailInfo tailInfo;
+
+        public TailEntry(TailInfo tailInfo) {
+            this.tailInfo = tailInfo;
+        }
+
+        @Override
+        public void drawEntry(int p_148279_1_, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int p_148279_7_, int p_148279_8_, boolean p_148279_9_) {
+            renderTail(previewWindowLeft - 25, y - 25, 50, this.tailInfo);
+            fontRendererObj.drawString(StatCollector.translateToLocal(ClientEventHandler.tailTypes[tailInfo.typeid].getUnlocalisedName(tailInfo.subid)), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
+        }
+
+        @Override
+        public boolean mousePressed(int p_148278_1_, int p_148278_2_, int p_148278_3_, int p_148278_4_, int p_148278_5_, int p_148278_6_) {
+            return true;
+        }
+
+        @Override
+        public void mouseReleased(int p_148277_1_, int p_148277_2_, int p_148277_3_, int p_148277_4_, int p_148277_5_, int p_148277_6_) {
+
+        }
     }
 }
