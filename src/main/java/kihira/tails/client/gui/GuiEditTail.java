@@ -87,8 +87,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.buttonList.add(new GuiButton(9, this.previewWindowRight + 55, this.height - 25, 50, 20, "Save"));
 
         //Tail List
-        List<GuiListExtended.IGuiListEntry> tailList = new ArrayList<GuiListExtended.IGuiListEntry>();
-        //Generate tail preview textures and add to list TODO release textures
+        List<TailEntry> tailList = new ArrayList<TailEntry>();
+        //Generate tail preview textures and add to list
         for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
             for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
                 TailInfo tailInfo = new TailInfo(UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"), true, type, subType, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
@@ -98,7 +98,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             }
         }
 
-        this.tailList = new GuiList(this.mc, this.previewWindowLeft, this.height, 0, this.height, 0, 55, tailList);
+        this.tailList = new GuiList(this.mc, this.previewWindowLeft, this.height, 0, this.height, 55, tailList);
         this.fakeEntity = new FakeEntity(this.mc.theWorld);
 
         this.refreshTintPane();
@@ -129,18 +129,6 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             this.fontRendererObj.drawString("Hex:", this.previewWindowRight + 5, this.editPaneTop + 21, 0xFFFFFF);
             this.hexText.drawTextBox();
         }
-/*        topOffset = 0;
-        GL11.glColor3f(1F, 1F, 1F); //Reset colour as something above seems to set it to something else
-        for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
-            for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
-                TailInfo tailInfo = new TailInfo(UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"), true, type, subType, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
-                tailInfo.setTexture(new ResourceLocation("tails_"+tailInfo.id.toString()+"_"+tailInfo.typeid+"_"+tailInfo.subid+"_"+tailInfo.textureID));
-                tailInfo.needsTextureCompile = false;
-                this.renderTail(this.previewWindowLeft - (this.scaledRes.getScaledHeight() / 16), topOffset - 15, (this.scaledRes.getScaledHeight() / 8), tailInfo);
-                this.fontRendererObj.drawString(StatCollector.translateToLocal(ClientEventHandler.tailTypes[type].getUnlocalisedName(subType)), 5, topOffset + (this.scaledRes.getScaledHeight() / 18), 0xFFFFFF);
-                topOffset += (this.scaledRes.getScaledHeight() / 8);
-            }
-        }*/
 
         //Player
         drawEntity(this.width / 2, (this.height / 2) + (this.scaledRes.getScaledHeight() / 4), this.scaledRes.getScaledHeight() / 4, this.yaw, this.pitch, this.mc.thePlayer);
@@ -195,6 +183,15 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_) {
         super.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
         this.hexText.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        //Delete textures on close
+        for (GuiListExtended.IGuiListEntry entry : this.tailList.getEntries()) {
+            TailEntry tailEntry = (TailEntry) entry;
+            tailEntry.tailInfo.setTexture(null);
+        }
     }
 
     //Refreshes the text and text colour to the current set tint colour
@@ -283,7 +280,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
     public class TailEntry implements GuiListExtended.IGuiListEntry {
 
-        private final TailInfo tailInfo;
+        public final TailInfo tailInfo;
 
         public TailEntry(TailInfo tailInfo) {
             this.tailInfo = tailInfo;

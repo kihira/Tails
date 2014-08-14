@@ -9,14 +9,11 @@ import java.util.List;
 
 public class GuiList extends GuiListExtended {
 
-    private final int leftM;
-    private final List<IGuiListEntry> entries;
-    private int listWidth = 1000;
+    private final List<? extends IGuiListEntry> entries;
     private int currrentIndex;
 
-    public GuiList(Minecraft minecraft, int width, int height, int top, int bottom, int leftM, int slotHeight, List<IGuiListEntry> entries) {
+    public GuiList(Minecraft minecraft, int width, int height, int top, int bottom, int slotHeight, List<? extends IGuiListEntry> entries) {
         super(minecraft, width, height, top, bottom, slotHeight);
-        this.leftM = leftM;
         this.entries = entries;
     }
 
@@ -48,5 +45,13 @@ public class GuiList extends GuiListExtended {
     @Override
     protected int getSize() {
         return this.entries.size();
+    }
+
+    public int getCurrrentIndex() {
+        return this.currrentIndex;
+    }
+
+    public List<? extends IGuiListEntry> getEntries() {
+        return this.entries;
     }
 }
