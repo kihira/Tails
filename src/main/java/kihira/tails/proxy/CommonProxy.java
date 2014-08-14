@@ -2,7 +2,7 @@ package kihira.tails.proxy;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
-import kihira.tails.common.EventHandler;
+import kihira.tails.common.ServerEventHandler;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.TailInfoMessage;
@@ -22,7 +22,7 @@ public class CommonProxy {
     }
 
     public void registerHandlers() {
-        FMLCommonHandler.instance().bus().register(new EventHandler());
+        FMLCommonHandler.instance().bus().register(new ServerEventHandler());
     }
 
     public void addTailInfo(UUID uuid, TailInfo tailInfo) {

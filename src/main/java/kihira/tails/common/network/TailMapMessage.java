@@ -15,10 +15,11 @@ import java.util.UUID;
 
 public class TailMapMessage implements IMessage {
 
-    private Map<UUID, TailInfo> tailInfoMap;
+    private Map<Object, TailInfo> tailInfoMap;
 
     public TailMapMessage() {}
-    public TailMapMessage(Map<UUID, TailInfo> tailInfoMap) {
+    @SuppressWarnings("unchecked")
+    public TailMapMessage(Map tailInfoMap) {
         this.tailInfoMap = tailInfoMap;
     }
 
@@ -43,9 +44,12 @@ public class TailMapMessage implements IMessage {
 
         @Override
         public IMessage onMessage(TailMapMessage message, MessageContext ctx) {
-            Tails.proxy.clearAllTailInfo();
-            for (Map.Entry<UUID, TailInfo> entry : message.tailInfoMap.entrySet()) {
-                Tails.proxy.addTailInfo(entry.getKey(), entry.getValue());
+            for (Map.Entry<Object, TailInfo> entry : message.tailInfoMap.entrySet()) {
+                UUID uuid;
+                //UUID isn't entirely compatible with gson so it gets saved as a String instead of UUID at times
+                if (entry.getKey() instanceof String) uuid = UUID.fromString((String) entry.getKey());
+                else uuid = (UUID) entry.getKey();
+                Tails.proxy.addTailInfo(uuid, entry.getValue());
             }
             return null;
         }

@@ -62,11 +62,26 @@ public class ClientEventHandler {
     	UUID uuid = e.entityPlayer.getGameProfile().getId();
         if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
         	TailInfo info = Tails.proxy.getTailInfo(uuid);
+
+            //Check if texture needs compiling
+            if (info.needsTextureCompile || info.getTexture() == null) {
+                info.setTexture(TextureHelper.generateTexture(info));
+                info.needsTextureCompile = false;
+            }
         	
         	int type = info.typeid;
         	type = type > tailTypes.length ? 0 : type;
         	
             tailTypes[type].render(e.entityPlayer, info);
+        }
+    }
+
+    @SubscribeEvent
+    public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+        //Add local player texture to map
+        if (TextureHelper.localPlayerTailInfo != null) {
+            TailInfo tailInfo = TextureHelper.localPlayerTailInfo;
+            Tails.proxy.addTailInfo(tailInfo.id, tailInfo);
         }
     }
 

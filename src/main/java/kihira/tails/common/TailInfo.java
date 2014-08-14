@@ -1,5 +1,6 @@
 package kihira.tails.common;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Arrays;
@@ -13,7 +14,8 @@ public class TailInfo {
 	public final int subid;
     public final int[] tints;
     public final int textureID = 0;
-	public ResourceLocation texture;
+	private ResourceLocation texture;
+    public boolean needsTextureCompile;
 	
 	public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int tint1, int tint2, int tint3, ResourceLocation texture) {
 		this.id = uuid;
@@ -23,6 +25,21 @@ public class TailInfo {
         this.tints = new int[] {tint1, tint2, tint3};
         this.texture = texture;
 	}
+
+    public ResourceLocation getTexture() {
+        return this.texture;
+    }
+
+    public void setTexture(ResourceLocation texture) {
+        if (this.texture == null || !this.texture.equals(texture)) {
+            try {
+                Minecraft.getMinecraft().renderEngine.deleteTexture(this.texture); //TODO this won't work on servers
+            } catch (Exception ignored) {}
+
+            this.needsTextureCompile = true;
+        }
+        this.texture = texture;
+    }
 
     @Override
     public String toString() {
@@ -34,6 +51,7 @@ public class TailInfo {
                 ", tints=" + Arrays.toString(tints) +
                 ", textureID=" + textureID +
                 ", texture=" + texture +
+                ", needsTextureCompile=" + needsTextureCompile +
                 '}';
     }
 }
