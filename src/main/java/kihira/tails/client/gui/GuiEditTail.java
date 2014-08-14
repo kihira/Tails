@@ -5,17 +5,20 @@ import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.FakeEntity;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,9 +40,9 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
     private ScaledResolution scaledRes;
 
-    private int previewWindowEdgeOffset = 100;
     private int previewWindowLeft;
     private int previewWindowRight;
+    private int previewWindowBottom;
     private int editPaneTop;
     private TailInfo tailInfo;
 
@@ -52,19 +55,12 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.buttonList.clear();
 
         this.scaledRes = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-        //this.previewWindowEdgeOffset = this.scaledRes.getScaledWidth() / 5;
-        this.previewWindowEdgeOffset = 120;
-        this.previewWindowLeft = this.previewWindowEdgeOffset;
-        this.previewWindowRight = this.width - this.previewWindowEdgeOffset;
+        int previewWindowEdgeOffset = 120;
+        this.previewWindowLeft = previewWindowEdgeOffset;
+        this.previewWindowRight = this.width - previewWindowEdgeOffset;
+        this.previewWindowBottom = this.height - 55;
         this.editPaneTop = this.height - 125;
         this.tailInfo = Tails.proxy.getTailInfo(this.mc.thePlayer.getPersistentID());
-
-        //Yaw Rotation
-        this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + 25, this.height - 30, this.width - (this.previewWindowEdgeOffset * 2) - 50, -180, 180, (int) this.yaw));
-/*
-        this.buttonList.add(new GuiButton(0, this.previewWindowRight - 20, this.height - 50, 20, 20, ">"));
-        this.buttonList.add(new GuiButton(1, this.previewWindowLeft, this.height - 50, 20, 20, "<"));
-*/
 
         //Edit tint buttons
         int topOffset = 20;
@@ -100,16 +96,26 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.tailList = new GuiList(this.mc, this.previewWindowLeft, this.height, 0, this.height, 55, tailList);
         this.fakeEntity = new FakeEntity(this.mc.theWorld);
 
+        //General Editing Pane
+        //Yaw Rotation
+        this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + (this.scaledRes.getScaledWidth() / 80), this.previewWindowBottom + 5, this.width - (previewWindowEdgeOffset * 2) - (this.scaledRes.getScaledWidth() / 40), -180, 180, (int) this.yaw));
+
+        //Enable Live Preview
+        this.buttonList.add(new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, 120, 20, "Enable Live Preview",
+                EnumChatFormatting.BOLD + EnumChatFormatting.DARK_RED.toString() + StatCollector.translateToLocal("gui.button.livepreview.0.tooltip"),
+                StatCollector.translateToLocal("gui.button.livepreview.1.tooltip")));
+
         this.refreshTintPane();
     }
 
     @Override
-    public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_) {
+    public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
         //Background
         this.zLevel = -1000;
         this.drawGradientRect(0, 0, this.previewWindowLeft, this.height, 0xCC000000, 0xCC000000);
-        this.drawGradientRect(this.previewWindowLeft, 0, this.previewWindowRight, this.height, 0xEE000000, 0xEE000000); //Hex with alpha in the format ARGB
+        this.drawGradientRect(this.previewWindowLeft, 0, this.previewWindowRight, this.previewWindowBottom, 0xEE000000, 0xEE000000); //Hex with alpha in the format ARGB
         this.drawGradientRect(this.previewWindowRight, 0, this.width, this.height, 0xCC000000, 0xCC000000);
+        this.drawGradientRect(this.previewWindowLeft, this.previewWindowBottom, this.previewWindowRight, this.height, 0xDD000000, 0xDD000000);
 
         //Tints
         int topOffset = 10;
@@ -120,7 +126,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             topOffset += 35;
         }
 
-        //Editting tint pane
+        //Editing tint pane
         if (this.currTintEdit > 0) {
             this.drawHorizontalLine(this.previewWindowRight, this.width, this.editPaneTop, 0xFF000000);
             this.fontRendererObj.drawString("Editing Tint " + this.currTintEdit, this.previewWindowRight + 5, this.editPaneTop + 5, 0xFFFFFF);
@@ -130,12 +136,17 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         }
 
         //Player
-        drawEntity(this.width / 2, (this.height / 2) + (this.scaledRes.getScaledHeight() / 4), this.scaledRes.getScaledHeight() / 4, this.yaw, this.pitch, this.mc.thePlayer);
+        drawEntity(this.width / 2, (this.previewWindowBottom / 2) + (this.scaledRes.getScaledHeight() / 4), this.scaledRes.getScaledHeight() / 4, this.yaw, this.pitch, this.mc.thePlayer);
 
         //Tails list
-        this.tailList.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
+        this.tailList.drawScreen(mouseX, mouseY, p_73863_3_);
 
-        super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
+        super.drawScreen(mouseX, mouseY, p_73863_3_);
+
+        //Tooltips
+        for (Object obj : this.buttonList) {
+            if (obj instanceof GuiButtonToggle && ((GuiButtonToggle) obj).func_146115_a()) ((GuiButtonToggle) obj).func_146111_b(mouseX, mouseY);
+        }
     }
 
     @Override
@@ -299,6 +310,35 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         @Override
         public void mouseReleased(int p_148277_1_, int p_148277_2_, int p_148277_3_, int p_148277_4_, int p_148277_5_, int p_148277_6_) {
 
+        }
+    }
+
+    public class GuiButtonToggle extends GuiButton {
+
+        private final String[] tooltips;
+
+        public GuiButtonToggle(int id, int x, int y, int width, int height, String text, String ... tooltips) {
+            super(id, x, y, width, height, text);
+            this.tooltips = tooltips;
+        }
+
+        @Override
+        public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY) {
+            if (this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height) {
+                this.enabled = !this.enabled;
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void func_146111_b(int x, int y) {
+            if (this.tooltips != null && this.tooltips.length > 0) {
+                List<String> list = new ArrayList<String>();
+                Collections.addAll(list, this.tooltips);
+                list.add((!this.enabled ? EnumChatFormatting.GREEN + EnumChatFormatting.ITALIC.toString() + "Enabled" : EnumChatFormatting.RED + EnumChatFormatting.ITALIC.toString() + "Disabled"));
+                func_146283_a(list, x, y);
+            }
         }
     }
 }
