@@ -1,9 +1,9 @@
-package kihira.tails.render;
+package kihira.tails.client.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import kihira.tails.TailInfo;
-import kihira.tails.model.ModelFoxTail;
+import kihira.tails.client.model.ModelFoxTail;
+import kihira.tails.common.TailInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;

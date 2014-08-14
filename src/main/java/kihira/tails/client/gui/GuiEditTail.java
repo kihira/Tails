@@ -1,8 +1,8 @@
-package kihira.tails.gui;
+package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
-import kihira.tails.EventHandler;
-import kihira.tails.TailInfo;
+import kihira.tails.client.ClientEventHandler;
+import kihira.tails.common.TailInfo;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -47,7 +47,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.previewWindowLeft = this.previewWindowEdgeOffset;
         this.previewWindowRight = this.width - this.previewWindowEdgeOffset;
         this.editPaneTop = this.height - 125;
-        this.tailInfo = EventHandler.TailMap.get(this.mc.thePlayer.getGameProfile().getId());
+        this.tailInfo = ClientEventHandler.TailMap.get(this.mc.thePlayer.getGameProfile().getId());
 
         //Yaw Rotation
         this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + 25, this.height - 30, this.width - (this.previewWindowEdgeOffset * 2) - 50, -180, 180, (int) this.yaw));

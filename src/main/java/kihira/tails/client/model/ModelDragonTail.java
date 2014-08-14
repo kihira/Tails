@@ -1,4 +1,4 @@
-package kihira.tails.model;
+package kihira.tails.client.model;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;

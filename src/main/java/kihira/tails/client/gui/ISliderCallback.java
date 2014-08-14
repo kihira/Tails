@@ -1,4 +1,4 @@
-package kihira.tails.gui;
+package kihira.tails.client.gui;
 
 public interface ISliderCallback {
 

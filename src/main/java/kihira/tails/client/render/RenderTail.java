@@ -1,8 +1,8 @@
-package kihira.tails.render;
+package kihira.tails.client.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import kihira.tails.TailInfo;
+import kihira.tails.common.TailInfo;
 import net.minecraft.entity.EntityLivingBase;
 
 @SideOnly(Side.CLIENT)

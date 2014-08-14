@@ -1,4 +1,4 @@
-package kihira.tails.texture;
+package kihira.tails.client.texture;
 
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;

@@ -12,26 +12,27 @@
  * GNU General Public License for more details.
  */
 
-package kihira.tails;
+package kihira.tails.client;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import kihira.tails.gui.GuiEditTail;
-import kihira.tails.render.RenderDragonTail;
-import kihira.tails.render.RenderFoxTail;
-import kihira.tails.render.RenderRacoonTail;
-import kihira.tails.render.RenderTail;
-import kihira.tails.texture.TextureHelper;
+import kihira.tails.client.gui.GuiEditTail;
+import kihira.tails.client.render.RenderDragonTail;
+import kihira.tails.client.render.RenderFoxTail;
+import kihira.tails.client.render.RenderRacoonTail;
+import kihira.tails.client.render.RenderTail;
+import kihira.tails.client.texture.TextureHelper;
+import kihira.tails.common.TailInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import java.util.Hashtable;
 import java.util.UUID;
 
-public class EventHandler {
+public class ClientEventHandler {
 
 	public static final RenderTail[] tailTypes = { new RenderFoxTail(), new RenderDragonTail(), new RenderRacoonTail() };
     public static Hashtable<UUID, TailInfo> TailMap = new Hashtable<UUID, TailInfo>();

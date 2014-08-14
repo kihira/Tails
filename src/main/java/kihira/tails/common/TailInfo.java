@@ -1,4 +1,4 @@
-package kihira.tails;
+package kihira.tails.common;
 
 import net.minecraft.util.ResourceLocation;
 

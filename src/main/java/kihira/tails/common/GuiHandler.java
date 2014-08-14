@@ -1,7 +1,7 @@
-package kihira.tails;
+package kihira.tails.common;
 
 import cpw.mods.fml.common.network.IGuiHandler;
-import kihira.tails.gui.GuiEditTail;
+import kihira.tails.client.gui.GuiEditTail;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 

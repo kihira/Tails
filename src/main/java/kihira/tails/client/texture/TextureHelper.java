@@ -1,12 +1,12 @@
-package kihira.tails.texture;
+package kihira.tails.client.texture;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import kihira.tails.EventHandler;
-import kihira.tails.TailInfo;
-import kihira.tails.Tails;
-import kihira.tails.render.RenderTail;
+import kihira.tails.client.ClientEventHandler;
+import kihira.tails.client.render.RenderTail;
+import kihira.tails.common.TailInfo;
+import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public class TextureHelper {
 
-    private static RenderTail[] tailTypes = EventHandler.tailTypes;
+    private static RenderTail[] tailTypes = ClientEventHandler.tailTypes;
 	
 	private static final Point switch1Pixel = new Point(56,16);
 	private static final Point switch2Pixel = new Point(57,16);
@@ -55,10 +55,10 @@ public class TextureHelper {
             	int scol2 = image.getRGB(switch2Pixel.getX(), switch2Pixel.getY());
             	
             	if (scol1 == switch1Colour && scol2 == switch2Colour) {
-            		EventHandler.TailMap.put(id, buildTailInfoFromSkin(id, image));
+            		ClientEventHandler.TailMap.put(id, buildTailInfoFromSkin(id, image));
             	}
             	else {
-            		EventHandler.TailMap.put(id, new TailInfo(id, false, 0, 0, 0, 0, 0, null));
+            		ClientEventHandler.TailMap.put(id, new TailInfo(id, false, 0, 0, 0, 0, 0, null));
             	}
             }
         }
@@ -109,21 +109,21 @@ public class TextureHelper {
     }
 
     /**
-     * Removes the {@link kihira.tails.TailInfo} for the player as well as deleting the texture from memory
+     * Removes the {@link kihira.tails.common.TailInfo} for the player as well as deleting the texture from memory
      * @param player The player
      */
 	public static void clearTailInfo(EntityPlayer player) {
 		UUID id = player.getGameProfile().getId();
 		
-		if (EventHandler.TailMap.containsKey(id)) {
-            TailInfo tailInfo = EventHandler.TailMap.get(id);
+		if (ClientEventHandler.TailMap.containsKey(id)) {
+            TailInfo tailInfo = ClientEventHandler.TailMap.get(id);
             Minecraft.getMinecraft().renderEngine.deleteTexture(tailInfo.texture);
-			EventHandler.TailMap.remove(id);
+			ClientEventHandler.TailMap.remove(id);
 		}
 	}
 	
 	public static boolean needsBuild(EntityPlayer player) {
-		return !EventHandler.TailMap.containsKey(player.getGameProfile().getId()) &&
+		return !ClientEventHandler.TailMap.containsKey(player.getGameProfile().getId()) &&
 				player.getGameProfile().getProperties().containsKey("textures");
 	}
 }

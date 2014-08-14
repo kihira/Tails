@@ -1,4 +1,4 @@
-package kihira.tails.gui;
+package kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

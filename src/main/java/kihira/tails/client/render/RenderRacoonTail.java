@@ -1,7 +1,7 @@
-package kihira.tails.render;
+package kihira.tails.client.render;
 
-import kihira.tails.TailInfo;
-import kihira.tails.model.ModelRacoonTail;
+import kihira.tails.client.model.ModelRacoonTail;
+import kihira.tails.common.TailInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;

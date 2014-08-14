@@ -12,10 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package kihira.tails;
+package kihira.tails.client.gui;
 
 import cpw.mods.fml.client.IModGuiFactory;
 import cpw.mods.fml.client.config.GuiConfig;
+import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
