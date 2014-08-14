@@ -5,6 +5,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import kihira.tails.EventHandler;
 import kihira.tails.TailInfo;
+import kihira.tails.Tails;
 import kihira.tails.render.RenderTail;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
@@ -14,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.util.Point;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -53,7 +55,7 @@ public class TextureHelper {
             	int scol2 = image.getRGB(switch2Pixel.getX(), switch2Pixel.getY());
             	
             	if (scol1 == switch1Colour && scol2 == switch2Colour) {
-            		EventHandler.TailMap.put(id, buildTailInfo(id, image));
+            		EventHandler.TailMap.put(id, buildTailInfoFromSkin(id, image));
             	}
             	else {
             		EventHandler.TailMap.put(id, new TailInfo(id, false, 0, 0, 0, 0, 0, null));
@@ -62,7 +64,7 @@ public class TextureHelper {
         }
 	}
 
-	private static TailInfo buildTailInfo(UUID id, BufferedImage skin) {
+	private static TailInfo buildTailInfoFromSkin(UUID id, BufferedImage skin) {
 		int data = skin.getRGB(dataPixel.getX(), dataPixel.getY());
 		
 		int typeid = (data >> 16) & 0xFF;
@@ -79,20 +81,43 @@ public class TextureHelper {
 		int tint2 = skin.getRGB(tint2Pixel.getX(), tint2Pixel.getY());
 		int tint3 = skin.getRGB(tint3Pixel.getX(), tint3Pixel.getY());
 		
-		String texturepath = "texture/"+textures[textureid]+".png";
-		
-		//System.out.println("data: "+Integer.toHexString(data)+", type: "+typeid+", sub: "+subtype+", tid: "+textureid+", path: "+texturepath);
-		
-		ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+type+"_"+subtype+"_"+textureid);
-		Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturepath, tint1, tint2, tint3));
+		ResourceLocation tailtexture = generateTexture(id, typeid, subtype, textureid, new int[]{tint1, tint2, tint3});
 		
 		return new TailInfo(id, true, typeid, subtype, tint1, tint2, tint3, tailtexture);
 	}
-	
+
+    /**
+     * Creates and loads the tail texture into memory based upon the provided params
+     * @param id The UUID of the owner
+     * @param typeid The type ID
+     * @param subid The subtype ID
+     * @param textureID The texture ID
+     * @param tints An array of int[3]
+     * @return A resource location for the generated texture
+     */
+    public static ResourceLocation generateTexture(UUID id, int typeid, int subid, int textureID, int[] tints) {
+        ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+typeid+"_"+subid+"_"+textureID);
+        RenderTail tail = tailTypes[typeid];
+        String texturePath = "texture/"+tail.getTextureNames()[textureID]+".png";
+        Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturePath, tints[0], tints[1], tints[2]));
+        Tails.logger.debug(String.format("Generated texture UUID: %s Type: %s SubType: %s Texture: %s Tints: %s", id, typeid, subid, textureID, Arrays.toString(tints)));
+        return tailtexture;
+    }
+
+    public static ResourceLocation generateTexture(TailInfo tailInfo) {
+        return generateTexture(tailInfo.id, tailInfo.typeid, tailInfo.subid, tailInfo.textureID, tailInfo.tints);
+    }
+
+    /**
+     * Removes the {@link kihira.tails.TailInfo} for the player as well as deleting the texture from memory
+     * @param player The player
+     */
 	public static void clearTailInfo(EntityPlayer player) {
 		UUID id = player.getGameProfile().getId();
 		
 		if (EventHandler.TailMap.containsKey(id)) {
+            TailInfo tailInfo = EventHandler.TailMap.get(id);
+            Minecraft.getMinecraft().renderEngine.deleteTexture(tailInfo.texture);
 			EventHandler.TailMap.remove(id);
 		}
 	}

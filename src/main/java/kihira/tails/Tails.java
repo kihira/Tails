@@ -22,6 +22,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.List;
 public class Tails {
 
     public static final String MOD_ID = "Tails";
+    public static final Logger logger = LogManager.getLogger(MOD_ID);
 
     public static Configuration configuration;
     public static List<String> userList;
