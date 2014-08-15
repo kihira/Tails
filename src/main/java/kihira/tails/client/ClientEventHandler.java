@@ -43,7 +43,7 @@ public class ClientEventHandler {
             EntityPlayer player = e.entityPlayer;
             UUID uuid = player.getGameProfile().getId();
             int typeid = 0;
-            int subtype = 1;
+            int subtype = 2;
 
             TailInfo tailInfo = new TailInfo(uuid, true, typeid, subtype, -1803209, -1938144, -592395, null);
             tailInfo.setTexture(TextureHelper.generateTexture(tailInfo));

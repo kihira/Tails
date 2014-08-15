@@ -37,6 +37,6 @@ public class RenderFoxTail extends RenderTail {
 
     @Override
     public int getAvailableSubTypes() {
-        return 1;
+        return 2;
     }
 }

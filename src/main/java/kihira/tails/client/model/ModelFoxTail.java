@@ -93,5 +93,52 @@ public class ModelFoxTail extends ModelTailBase {
             GL11.glRotatef(-80F, 0F, 1F, 0F);
             this.tailBase.render(0.0625F);
         }
+        else if (subtype == 2) {
+            this.tailBase.render(0.0625F);
+
+            this.setRotationAngles(7256, 0, 0, 0, 0, 0, theEntity);
+            GL11.glRotatef(30F, 0F, 1F, 0F);
+            this.tailBase.render(0.0625F);
+
+            this.setRotationAngles(2735, 0, 0, 0, 0, 0, theEntity);
+            GL11.glRotatef(-60F, 0F, 1F, 0F);
+            this.tailBase.render(0.0625F);
+
+            this.setRotationAngles(7254, 0, 0, 0, 0, 0, theEntity);
+            GL11.glRotatef(-15F, 0F, 1F, 0F);
+            GL11.glRotatef(20F, 1F, 0F, 0F);
+            this.tailBase.render(0.0625F);
+            GL11.glRotatef(-20F, 1F, 0F, 0F);
+
+            this.setRotationAngles(75272, 0, 0, 0, 0, 0, theEntity);
+            GL11.glRotatef(30F, 0F, 1F, 0F);
+            GL11.glRotatef(20F, 1F, 0F, 0F);
+            this.tailBase.render(0.0625F);
+            GL11.glRotatef(-20F, 1F, 0F, 0F);
+
+            this.setRotationAngles(5435, 0, 0, 0, 0, 0, theEntity);
+            GL11.glRotatef(30F, 0F, 1F, 0F);
+            GL11.glRotatef(20F, 1F, 0F, 0F);
+            this.tailBase.render(0.0625F);
+            GL11.glRotatef(-20F, 1F, 0F, 0F);
+
+            this.setRotationAngles(846, 0, 0, 0, 0, 0, theEntity);
+            GL11.glRotatef(30F, 0F, 1F, 0F);
+            GL11.glRotatef(20F, 1F, 0F, 0F);
+            this.tailBase.render(0.0625F);
+            GL11.glRotatef(-20F, 1F, 0F, 0F);
+
+            this.setRotationAngles(378, 0, 0, 0, 0, 0, theEntity);
+            GL11.glRotatef(-30F, 0F, 1F, 0F);
+            GL11.glRotatef(40F, 1F, 0F, 0F);
+            this.tailBase.render(0.0625F);
+            GL11.glRotatef(-40F, 1F, 0F, 0F);
+
+            this.setRotationAngles(8638, 0, 0, 0, 0, 0, theEntity);
+            GL11.glRotatef(-30F, 0F, 1F, 0F);
+            GL11.glRotatef(40F, 1F, 0F, 0F);
+            this.tailBase.render(0.0625F);
+            GL11.glRotatef(-40F, 1F, 0F, 0F);
+        }
     }
 }
