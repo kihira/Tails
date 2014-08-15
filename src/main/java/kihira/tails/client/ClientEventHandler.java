@@ -19,7 +19,6 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import kihira.tails.client.gui.GuiEditTail;
 import kihira.tails.client.render.RenderDragonTail;
 import kihira.tails.client.render.RenderFoxTail;
 import kihira.tails.client.render.RenderRaccoonTail;
@@ -27,7 +26,7 @@ import kihira.tails.client.render.RenderTail;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
-import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import java.util.UUID;
@@ -40,24 +39,22 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
         //TESTING REMOVE
-/*        if (e.entityPlayer.isSneaking()) {
+        if (e.entityPlayer.isSneaking()) {
             EntityPlayer player = e.entityPlayer;
             UUID uuid = player.getGameProfile().getId();
-            int typeid = 1;
+            int typeid = 0;
             int subtype = 1;
-            RenderTail type = EventHandler.tailTypes[typeid];
-            String[] textures = type.getTextureNames();
-            String texturepath = "texture/"+textures[0]+".png";
 
-            ResourceLocation tailtexture = new ResourceLocation("tails_"+uuid.toString()+"_"+type+"_"+subtype+"_"+0);
-            Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturepath, 0x0c0810, 0x140d16, 0x170d1c));
+            TailInfo tailInfo = new TailInfo(uuid, true, typeid, subtype, -1803209, -1938144, -592395, null);
+            tailInfo.setTexture(TextureHelper.generateTexture(tailInfo));
+            tailInfo.needsTextureCompile = false;
 
-            TextureHelper.clearTailInfo(player);
-            EventHandler.tailMap.put(uuid, new TailInfo(uuid, true, typeid, subtype, tailtexture));
-        }*/
-        if (e.entityPlayer.isSneaking() && !(Minecraft.getMinecraft().currentScreen instanceof GuiEditTail)) {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiEditTail());
+            Tails.proxy.removeTailInfo(uuid);
+            Tails.proxy.addTailInfo(uuid, tailInfo);
         }
+/*        if (e.entityPlayer.isSneaking() && !(Minecraft.getMinecraft().currentScreen instanceof GuiEditTail)) {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiEditTail());
+        }*/
 
     	UUID uuid = e.entityPlayer.getGameProfile().getId();
         if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {

@@ -18,6 +18,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
+import org.lwjgl.opengl.GL11;
 
 public class ModelFoxTail extends ModelTailBase {
     private ModelRenderer tailBase;
@@ -67,7 +68,7 @@ public class ModelFoxTail extends ModelTailBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity entity) {
-        float seed = (entity.hashCode() + System.nanoTime() / 100000000F) / 5F;
+        float seed = (par1 + entity.hashCode() + System.nanoTime() / 100000000F) / 5F;
 
         this.tailBase.rotateAngleY = MathHelper.cos(seed) / 8F;
         this.tail1.rotateAngleY = MathHelper.cos(seed - 1) / 8F;
@@ -81,6 +82,16 @@ public class ModelFoxTail extends ModelTailBase {
     public void render(EntityLivingBase theEntity, int subtype) {
         this.setRotationAngles(0, 0, 0, 0, 0, 0, theEntity);
 
-        this.tailBase.render(0.0625F);
+        if (subtype == 0) {
+            this.tailBase.render(0.0625F);
+        }
+        else if (subtype == 1) {
+            GL11.glRotatef(40F, 0F, 1F, 0F);
+            this.tailBase.render(0.0625F);
+
+            this.setRotationAngles(34, 0, 0, 0, 0, 0, theEntity);
+            GL11.glRotatef(-80F, 0F, 1F, 0F);
+            this.tailBase.render(0.0625F);
+        }
     }
 }
