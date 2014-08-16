@@ -27,7 +27,9 @@ import kihira.tails.client.render.RenderTail;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import java.util.UUID;
@@ -53,9 +55,6 @@ public class ClientEventHandler {
             Tails.proxy.removeTailInfo(uuid);
             Tails.proxy.addTailInfo(uuid, tailInfo);
         }*/
-        if (e.entityPlayer.isSneaking() && !(Minecraft.getMinecraft().currentScreen instanceof GuiEditTail)) {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiEditTail());
-        }
 
     	UUID uuid = e.entityPlayer.getGameProfile().getId();
         if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
@@ -65,6 +64,24 @@ public class ClientEventHandler {
         	type = type > tailTypes.length ? 0 : type;
         	
             tailTypes[type].render(e.entityPlayer, info);
+        }
+    }
+
+    @SubscribeEvent
+    @SuppressWarnings("unchecked")
+    public void onScreenInitPost(GuiScreenEvent.InitGuiEvent.Post event) {
+        if (event.gui instanceof GuiInventory) {
+            event.buttonList.add(new GuiButton(1234, event.gui.width - 25, event.gui.height - 25, 20, 20, "T"));
+        }
+    }
+
+    @SubscribeEvent
+    public void onButtonClickPre(GuiScreenEvent.ActionPerformedEvent.Pre event) {
+        if (event.gui instanceof GuiInventory) {
+            if (event.button.id == 1234) {
+                event.gui.mc.displayGuiScreen(new GuiEditTail());
+                event.setCanceled(true);
+            }
         }
     }
 
