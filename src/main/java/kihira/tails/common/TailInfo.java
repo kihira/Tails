@@ -17,14 +17,18 @@ public class TailInfo {
 	private ResourceLocation texture;
     public boolean needsTextureCompile;
 	
-	public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int tint1, int tint2, int tint3, ResourceLocation texture) {
+	public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int[] tints, ResourceLocation texture) {
 		this.uuid = uuid;
 		this.hastail = hastail;
 		this.typeid = type;
 		this.subid = subtype;
-        this.tints = new int[] {tint1, tint2, tint3};
+        this.tints = tints;
         this.texture = texture;
 	}
+
+    public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int tint1, int tint2, int tint3, ResourceLocation texture) {
+        this(uuid, hastail, type, subtype, new int[] {tint1, tint2, tint3}, texture);
+    }
 
     public ResourceLocation getTexture() {
         return this.texture;

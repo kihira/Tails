@@ -26,7 +26,7 @@ public class CommonProxy {
     }
 
     public void addTailInfo(UUID uuid, TailInfo tailInfo) {
-        Tails.logger.info("Registered TailInfo " + tailInfo);
+        //Tails.logger.info("Registered TailInfo " + tailInfo);
         this.tailMap.put(uuid, tailInfo);
     }
 

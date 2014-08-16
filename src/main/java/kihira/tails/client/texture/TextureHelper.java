@@ -18,7 +18,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.util.Point;
 
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -116,7 +115,7 @@ public class TextureHelper {
         RenderTail tail = tailTypes[typeid];
         String texturePath = "texture/"+tail.getTextureNames()[textureID]+".png";
         Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturePath, tints[0], tints[1], tints[2]));
-        Tails.logger.info(String.format("Generated texture UUID: %s Type: %s SubType: %s Texture: %s Tints: %s", id, typeid, subid, textureID, Arrays.toString(tints)));
+        //Tails.logger.info(String.format("Generated texture UUID: %s Type: %s SubType: %s Texture: %s Tints: %s", id, typeid, subid, textureID, Arrays.toString(tints)));
         return tailtexture;
     }
 

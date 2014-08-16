@@ -46,9 +46,26 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     private int previewWindowBottom;
     private int editPaneTop;
     private TailInfo tailInfo;
+    private TailInfo originalTailInfo;
 
     private GuiList tailList;
     private FakeEntity fakeEntity;
+
+    private GuiButtonToggle livePreviewButton;
+
+    public GuiEditTail() {
+        //Backup original TailInfo or create default one
+        TailInfo tailInfo;
+        if (TextureHelper.localPlayerTailInfo == null) {
+            tailInfo = new TailInfo(this.mc.thePlayer.getPersistentID(), false, 0 ,0, 0, 0, 0, null);
+        }
+        else {
+            tailInfo = TextureHelper.localPlayerTailInfo;
+        }
+        this.originalTailInfo = tailInfo;
+
+        this.tailInfo = this.originalTailInfo;
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -61,7 +78,6 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.previewWindowRight = this.width - previewWindowEdgeOffset;
         this.previewWindowBottom = this.height - 55;
         this.editPaneTop = this.height - 125;
-        this.tailInfo = Tails.proxy.getTailInfo(this.mc.thePlayer.getPersistentID());
 
         //Edit tint buttons
         int topOffset = 20;
@@ -113,9 +129,9 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         //Yaw Rotation
         this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + (this.scaledRes.getScaledWidth() / 80), this.previewWindowBottom + 5, this.width - (previewWindowEdgeOffset * 2) - (this.scaledRes.getScaledWidth() / 40), -180, 180, (int) this.yaw));
 
-        //Enable Live Preview
+        //Live Preview
         String s = StatCollector.translateToLocal("gui.button.livepreview");
-        this.buttonList.add(new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, this.fontRendererObj.getStringWidth(s) + 7, 20, s,
+        this.buttonList.add(this.livePreviewButton = new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, this.fontRendererObj.getStringWidth(s) + 7, 20, s,
                 EnumChatFormatting.BOLD + EnumChatFormatting.DARK_RED.toString() + StatCollector.translateToLocal("gui.button.livepreview.0.tooltip"),
                 StatCollector.translateToLocal("gui.button.livepreview.1.tooltip")));
 
@@ -178,7 +194,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
         //Reset
         else if (button.id == 8) {
-            this.currTintColour = this.tailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            this.currTintColour = this.originalTailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
         }
@@ -234,6 +250,10 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         }
         else {
             this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = this.tintReset.visible = this.tintSave.visible = false;
+        }
+
+        if (!this.livePreviewButton.enabled) {
+            this.updateTailInfoLive();
         }
     }
 
@@ -300,6 +320,19 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             this.refreshTintPane();
         }
         return true;
+    }
+
+    private void updateTailInfoLive() {
+        boolean hasTail = this.tailList.getCurrrentIndex() != 0;
+        UUID uuid = this.mc.thePlayer.getPersistentID();
+        TailEntry tailEntry = (TailEntry) this.tailList.getListEntry(this.tailList.getCurrrentIndex());
+
+        this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
+        this.tailInfo = new TailInfo(uuid, hasTail, tailEntry.tailInfo.typeid, tailEntry.tailInfo.subid, this.tailInfo.tints, null);
+        this.tailInfo.setTexture(TextureHelper.generateTexture(this.tailInfo));
+        this.tailInfo.needsTextureCompile = false;
+
+        Tails.proxy.addTailInfo(uuid, this.tailInfo);
     }
 
     public class TailEntry implements GuiListExtended.IGuiListEntry {
