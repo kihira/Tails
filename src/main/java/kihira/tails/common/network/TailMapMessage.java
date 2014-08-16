@@ -1,5 +1,6 @@
 package kihira.tails.common.network;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 public class TailMapMessage implements IMessage {
 
-    private Map<Object, TailInfo> tailInfoMap;
+    private Map<UUID, TailInfo> tailInfoMap;
 
     public TailMapMessage() {}
     @SuppressWarnings("unchecked")
@@ -28,7 +29,7 @@ public class TailMapMessage implements IMessage {
     public void fromBytes(ByteBuf buf) {
         String tailInfoJson = ByteBufUtils.readUTF8String(buf);
         try {
-            this.tailInfoMap = new Gson().fromJson(tailInfoJson, Map.class);
+            this.tailInfoMap = new Gson().fromJson(tailInfoJson, new TypeToken<Map<UUID, TailInfo>>() {}.getType());
         } catch (JsonSyntaxException e) {
             Tails.logger.warn(e);
         }
@@ -44,12 +45,8 @@ public class TailMapMessage implements IMessage {
 
         @Override
         public IMessage onMessage(TailMapMessage message, MessageContext ctx) {
-            for (Map.Entry<Object, TailInfo> entry : message.tailInfoMap.entrySet()) {
-                UUID uuid;
-                //UUID isn't entirely compatible with gson so it gets saved as a String instead of UUID at times
-                if (entry.getKey() instanceof String) uuid = UUID.fromString((String) entry.getKey());
-                else uuid = (UUID) entry.getKey();
-                Tails.proxy.addTailInfo(uuid, entry.getValue());
+            for (Map.Entry<UUID, TailInfo> entry : message.tailInfoMap.entrySet()) {
+                Tails.proxy.addTailInfo(entry.getKey(), entry.getValue());
             }
             return null;
         }

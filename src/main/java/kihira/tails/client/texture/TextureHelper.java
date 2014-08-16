@@ -121,7 +121,7 @@ public class TextureHelper {
     }
 
     public static ResourceLocation generateTexture(TailInfo tailInfo) {
-        return generateTexture(tailInfo.id, tailInfo.typeid, tailInfo.subid, tailInfo.textureID, tailInfo.tints);
+        return generateTexture(tailInfo.uuid, tailInfo.typeid, tailInfo.subid, tailInfo.textureID, tailInfo.tints);
     }
 	
 	public static boolean needsBuild(EntityPlayer player) {

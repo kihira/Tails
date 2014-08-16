@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class TailInfo {
 
-	public final UUID id;
+	public final UUID uuid;
 	public final boolean hastail;
 	public final int typeid;
 	public final int subid;
@@ -18,7 +18,7 @@ public class TailInfo {
     public boolean needsTextureCompile;
 	
 	public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int tint1, int tint2, int tint3, ResourceLocation texture) {
-		this.id = uuid;
+		this.uuid = uuid;
 		this.hastail = hastail;
 		this.typeid = type;
 		this.subid = subtype;
@@ -44,7 +44,7 @@ public class TailInfo {
     @Override
     public String toString() {
         return "TailInfo{" +
-                "id=" + id +
+                "uuid=" + uuid +
                 ", hastail=" + hastail +
                 ", typeid=" + typeid +
                 ", subid=" + subid +

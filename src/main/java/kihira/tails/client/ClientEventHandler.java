@@ -90,7 +90,7 @@ public class ClientEventHandler {
         //Add local player texture to map
         if (TextureHelper.localPlayerTailInfo != null) {
             TailInfo tailInfo = TextureHelper.localPlayerTailInfo;
-            Tails.proxy.addTailInfo(tailInfo.id, tailInfo);
+            Tails.proxy.addTailInfo(tailInfo.uuid, tailInfo);
         }
     }
 
