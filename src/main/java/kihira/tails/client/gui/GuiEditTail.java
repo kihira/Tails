@@ -110,8 +110,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
+        this.zLevel = 0;
         //Background
-        this.zLevel = -1000;
         this.drawGradientRect(0, 0, this.previewWindowLeft, this.height, 0xCC000000, 0xCC000000);
         this.drawGradientRect(this.previewWindowLeft, 0, this.previewWindowRight, this.previewWindowBottom, 0xEE000000, 0xEE000000); //Hex with alpha in the format ARGB
         this.drawGradientRect(this.previewWindowRight, 0, this.width, this.height, 0xCC000000, 0xCC000000);

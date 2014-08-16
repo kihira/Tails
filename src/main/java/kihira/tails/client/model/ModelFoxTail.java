@@ -89,7 +89,7 @@ public class ModelFoxTail extends ModelTailBase {
             GL11.glRotatef(40F, 0F, 1F, 0F);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(34, 0, 0, 0, 0, 0, theEntity);
+            this.setRotationAngles(34, 0, 1F, 0, 0, 0, theEntity);
             GL11.glRotatef(-80F, 0F, 1F, 0F);
             this.tailBase.render(0.0625F);
         }

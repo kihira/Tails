@@ -33,6 +33,11 @@ public class GuiList extends GuiListExtended {
     }
 
     @Override
+    protected int getScrollBarX() {
+        return this.right - 6;
+    }
+
+    @Override
     protected boolean isSelected(int index) {
         return this.currrentIndex == index;
     }
