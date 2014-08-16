@@ -67,20 +67,20 @@ public class ModelFoxTail extends ModelTailBase {
     }
 
     @Override
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity entity) {
-        float seed = (par1 + entity.hashCode() + System.nanoTime() / 100000000F) / 5F;
+    public void setRotationAngles(float seedVar, float seedModifierX, float par3, float par4, float par5, float par6, Entity entity) {
+        float seed = (seedVar + entity.hashCode() + System.nanoTime() / 100000000F) / 5F;
 
-        this.tailBase.rotateAngleY = MathHelper.cos(seed) / 8F;
-        this.tail1.rotateAngleY = MathHelper.cos(seed - 1) / 8F;
-        this.tail2.rotateAngleY = MathHelper.cos(seed - 1.5F) / 8F;
-        this.tail3.rotateAngleY = MathHelper.cos(seed - 2F) / 20F;
-        this.tail4.rotateAngleY = MathHelper.cos(seed - 3) / 8F;
-        this.tail5.rotateAngleY = MathHelper.cos(seed - 4) / 8F;
+        this.setRotationRadians(this.tailBase, MathHelper.cos((seed * seedModifierX) / 10F) / 15F, MathHelper.cos(seed) / (8F * par3), 0F);
+        this.setRotationRadians(this.tail1, (float) Math.toRadians(-15F), MathHelper.cos(seed - 1) / (8F * par3), 0F);
+        this.setRotationRadians(this.tail2, (float) Math.toRadians(-15F), MathHelper.cos(seed - 1.5F) / (8F * par3), 0F);
+        this.setRotationRadians(this.tail3, (float) Math.toRadians(-25F), MathHelper.cos(seed - 2F) / (20F * par3), 0F);
+        this.setRotationRadians(this.tail4, (float) Math.toRadians(15F), MathHelper.cos(seed - 3) / (8F * par3), 0F);
+        this.setRotationRadians(this.tail5, (float) Math.toRadians(15F), MathHelper.cos(seed - 4) / (8F * par3), 0F);
     }
 
     @Override
     public void render(EntityLivingBase theEntity, int subtype) {
-        this.setRotationAngles(0, 0, 0, 0, 0, 0, theEntity);
+        this.setRotationAngles(0, 0, 1F, 0, 0, 0, theEntity);
 
         if (subtype == 0) {
             this.tailBase.render(0.0625F);
@@ -94,51 +94,52 @@ public class ModelFoxTail extends ModelTailBase {
             this.tailBase.render(0.0625F);
         }
         else if (subtype == 2) {
+            //TODO adjust rotateAngleX/Z on the tail
+            this.setRotationAngles(0, 4, 2F, 0, 0, 0, theEntity);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(7256, 0, 0, 0, 0, 0, theEntity);
+            this.setRotationAngles(7256, 2, 2F, 0, 0, 0, theEntity);
             GL11.glRotatef(30F, 0F, 1F, 0F);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(2735, 0, 0, 0, 0, 0, theEntity);
+            this.setRotationAngles(2735, 5, 2F, 0, 0, 0, theEntity);
             GL11.glRotatef(-60F, 0F, 1F, 0F);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(7254, 0, 0, 0, 0, 0, theEntity);
+            this.setRotationAngles(7254, 3, 2F, 0, 0, 0, theEntity);
             GL11.glRotatef(-15F, 0F, 1F, 0F);
             GL11.glRotatef(20F, 1F, 0F, 0F);
             this.tailBase.render(0.0625F);
             GL11.glRotatef(-20F, 1F, 0F, 0F);
 
-            this.setRotationAngles(75272, 0, 0, 0, 0, 0, theEntity);
+            this.setRotationAngles(75272, 6, 2F, 0, 0, 0, theEntity);
             GL11.glRotatef(30F, 0F, 1F, 0F);
             GL11.glRotatef(20F, 1F, 0F, 0F);
             this.tailBase.render(0.0625F);
             GL11.glRotatef(-20F, 1F, 0F, 0F);
 
-            this.setRotationAngles(5435, 0, 0, 0, 0, 0, theEntity);
+            this.setRotationAngles(5435, 4, 2F, 0, 0, 0, theEntity);
             GL11.glRotatef(30F, 0F, 1F, 0F);
             GL11.glRotatef(20F, 1F, 0F, 0F);
             this.tailBase.render(0.0625F);
             GL11.glRotatef(-20F, 1F, 0F, 0F);
 
-            this.setRotationAngles(846, 0, 0, 0, 0, 0, theEntity);
+            this.setRotationAngles(846, 6, 2F, 0, 0, 0, theEntity);
             GL11.glRotatef(30F, 0F, 1F, 0F);
             GL11.glRotatef(20F, 1F, 0F, 0F);
             this.tailBase.render(0.0625F);
             GL11.glRotatef(-20F, 1F, 0F, 0F);
 
-            this.setRotationAngles(378, 0, 0, 0, 0, 0, theEntity);
+            this.setRotationAngles(378, 3, 2F, 0, 0, 0, theEntity);
             GL11.glRotatef(-30F, 0F, 1F, 0F);
-            GL11.glRotatef(40F, 1F, 0F, 0F);
+            GL11.glRotatef(46F, 1F, 0F, 0F);
             this.tailBase.render(0.0625F);
-            GL11.glRotatef(-40F, 1F, 0F, 0F);
+            GL11.glRotatef(-46F, 1F, 0F, 0F);
 
-            this.setRotationAngles(8638, 0, 0, 0, 0, 0, theEntity);
+            this.setRotationAngles(8638, 2, 2F, 0, 0, 0, theEntity);
             GL11.glRotatef(-30F, 0F, 1F, 0F);
-            GL11.glRotatef(40F, 1F, 0F, 0F);
+            GL11.glRotatef(45F, 1F, 0F, 0F);
             this.tailBase.render(0.0625F);
-            GL11.glRotatef(-40F, 1F, 0F, 0F);
         }
     }
 }
