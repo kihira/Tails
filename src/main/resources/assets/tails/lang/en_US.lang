@@ -4,5 +4,6 @@ tail.dragon.1.name=Dragon Tail
 tail.fox.0.name=Fox Tail
 tail.fox.1.name=Twin Tails
 tail.raccoon.0.name=Raccoon Tail
+gui.button.livepreview=Live Preview
 gui.button.livepreview.0.tooltip=WARNING
 gui.button.livepreview.1.tooltip=This can be laggy on older computers, be warned!

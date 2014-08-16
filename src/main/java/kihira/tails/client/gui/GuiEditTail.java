@@ -114,7 +114,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + (this.scaledRes.getScaledWidth() / 80), this.previewWindowBottom + 5, this.width - (previewWindowEdgeOffset * 2) - (this.scaledRes.getScaledWidth() / 40), -180, 180, (int) this.yaw));
 
         //Enable Live Preview
-        this.buttonList.add(new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, 120, 20, "Enable Live Preview",
+        String s = StatCollector.translateToLocal("gui.button.livepreview");
+        this.buttonList.add(new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, this.fontRendererObj.getStringWidth(s) + 7, 20, s,
                 EnumChatFormatting.BOLD + EnumChatFormatting.DARK_RED.toString() + StatCollector.translateToLocal("gui.button.livepreview.0.tooltip"),
                 StatCollector.translateToLocal("gui.button.livepreview.1.tooltip")));
 
