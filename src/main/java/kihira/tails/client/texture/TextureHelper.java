@@ -111,7 +111,7 @@ public class TextureHelper {
      * @return A resource location for the generated texture
      */
     public static ResourceLocation generateTexture(UUID id, int typeid, int subid, int textureID, int[] tints) {
-        ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+typeid+"_"+subid+"_"+textureID);
+        ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+typeid+"_"+subid+"_"+textureID+"_"+tints[0]+"_"+tints[1]+"_"+tints[2]);
         RenderTail tail = tailTypes[typeid];
         String texturePath = "texture/"+tail.getTextureNames()[textureID]+".png";
         Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturePath, tints[0], tints[1], tints[2]));

@@ -46,7 +46,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     private int previewWindowBottom;
     private int editPaneTop;
     private TailInfo tailInfo;
-    private TailInfo originalTailInfo;
+    private final TailInfo originalTailInfo;
 
     private GuiList tailList;
     private FakeEntity fakeEntity;
@@ -54,17 +54,19 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     private GuiButtonToggle livePreviewButton;
 
     public GuiEditTail() {
+        super();
         //Backup original TailInfo or create default one
         TailInfo tailInfo;
         if (TextureHelper.localPlayerTailInfo == null) {
-            tailInfo = new TailInfo(this.mc.thePlayer.getPersistentID(), false, 0 ,0, 0, 0, 0, null);
+            tailInfo = new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 ,0, 0, 0, 0, null);
         }
         else {
             tailInfo = TextureHelper.localPlayerTailInfo;
         }
         this.originalTailInfo = tailInfo;
+        this.tailInfo = new TailInfo(this.originalTailInfo);
 
-        this.tailInfo = this.originalTailInfo;
+        this.fakeEntity = new FakeEntity(Minecraft.getMinecraft().theWorld);
     }
 
     @Override
@@ -73,7 +75,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.buttonList.clear();
 
         this.scaledRes = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-        int previewWindowEdgeOffset = 120;
+        int previewWindowEdgeOffset = 110;
         this.previewWindowLeft = previewWindowEdgeOffset;
         this.previewWindowRight = this.width - previewWindowEdgeOffset;
         this.previewWindowBottom = this.height - 55;
@@ -112,18 +114,14 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         }
 
         this.tailList = new GuiList(this.mc, this.previewWindowLeft, this.height, 0, this.height, 55, tailList);
-        this.fakeEntity = new FakeEntity(this.mc.theWorld);
 
         //Default selection
-        if (TextureHelper.localPlayerTailInfo != null) {
-            for (GuiListExtended.IGuiListEntry entry : this.tailList.getEntries()) {
-                TailEntry tailEntry = (TailEntry) entry;
-                if (tailEntry.tailInfo.typeid == TextureHelper.localPlayerTailInfo.typeid && tailEntry.tailInfo.subid == TextureHelper.localPlayerTailInfo.subid) {
-                    this.tailList.setCurrrentIndex(tailList.indexOf(tailEntry));
-                }
+        for (GuiListExtended.IGuiListEntry entry : this.tailList.getEntries()) {
+            TailEntry tailEntry = (TailEntry) entry;
+            if (tailEntry.tailInfo.typeid == this.originalTailInfo.typeid && tailEntry.tailInfo.subid == this.originalTailInfo.subid) {
+                this.tailList.setCurrrentIndex(tailList.indexOf(tailEntry));
             }
         }
-        else this.tailList.setCurrrentIndex(0);
 
         //General Editing Pane
         //Yaw Rotation
@@ -134,6 +132,10 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.buttonList.add(this.livePreviewButton = new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, this.fontRendererObj.getStringWidth(s) + 7, 20, s,
                 EnumChatFormatting.BOLD + EnumChatFormatting.DARK_RED.toString() + StatCollector.translateToLocal("gui.button.livepreview.0.tooltip"),
                 StatCollector.translateToLocal("gui.button.livepreview.1.tooltip")));
+
+        //Reset/Save
+        this.buttonList.add(new GuiButton(12, this.previewWindowRight - 85, this.height - 25, 40, 20, "Reset"));
+        this.buttonList.add(new GuiButton(13, this.previewWindowRight - 45, this.height - 25, 40, 20, "Done"));
 
         this.refreshTintPane();
     }
@@ -183,7 +185,6 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     protected void actionPerformed(GuiButton button) {
         //Yaw Rotation
         if (button.id == 1) MathHelper.clamp_float(this.yaw = this.rotYawSlider.currentValue, -180F, 180F);
-
         //Edit buttons
         else if (button.id >= 2 && button.id <= 4) {
             this.currTintEdit = button.id - 1;
@@ -191,16 +192,26 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
         }
-
-        //Reset
+        //Reset Tint
         else if (button.id == 8) {
             this.currTintColour = this.originalTailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
         }
-        //Save
+        //Save Tint
         else if (button.id == 9) {
             this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
+        }
+        //Reset All
+        else if (button.id == 12) {
+            this.tailInfo = new TailInfo(this.originalTailInfo);
+            this.currTintEdit = 0;
+            this.refreshTintPane();
+            this.updateTailInfoLive();
+        }
+        //Save All
+        else if (button.id == 13) {
+            TextureHelper.localPlayerTailInfo = this.tailInfo; //TODO Actually save TailInfo somewhere as well
         }
     }
 
@@ -327,7 +338,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         UUID uuid = this.mc.thePlayer.getPersistentID();
         TailEntry tailEntry = (TailEntry) this.tailList.getListEntry(this.tailList.getCurrrentIndex());
 
-        this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
+        if (this.currTintEdit > 0) this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
         this.tailInfo = new TailInfo(uuid, hasTail, tailEntry.tailInfo.typeid, tailEntry.tailInfo.subid, this.tailInfo.tints, null);
         this.tailInfo.setTexture(TextureHelper.generateTexture(this.tailInfo));
         this.tailInfo.needsTextureCompile = false;

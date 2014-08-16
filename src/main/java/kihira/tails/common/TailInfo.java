@@ -15,7 +15,7 @@ public class TailInfo {
     public final int[] tints;
     public final int textureID = 0;
 	private ResourceLocation texture;
-    public boolean needsTextureCompile;
+    public boolean needsTextureCompile = true;
 	
 	public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int[] tints, ResourceLocation texture) {
 		this.uuid = uuid;
@@ -28,6 +28,10 @@ public class TailInfo {
 
     public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int tint1, int tint2, int tint3, ResourceLocation texture) {
         this(uuid, hastail, type, subtype, new int[] {tint1, tint2, tint3}, texture);
+    }
+
+    public TailInfo(TailInfo tailInfo) {
+        this(tailInfo.uuid, tailInfo.hastail, tailInfo.typeid, tailInfo.subid, Arrays.copyOf(tailInfo.tints, tailInfo.tints.length), tailInfo.getTexture());
     }
 
     public ResourceLocation getTexture() {
