@@ -1,7 +1,6 @@
 package kihira.tails.client.gui;
 
 import kihira.foxlib.client.RenderHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.Tessellator;
 
@@ -9,11 +8,13 @@ import java.util.List;
 
 public class GuiList extends GuiListExtended {
 
+    private final GuiEditTail parent;
     private final List<? extends IGuiListEntry> entries;
     private int currrentIndex;
 
-    public GuiList(Minecraft minecraft, int width, int height, int top, int bottom, int slotHeight, List<? extends IGuiListEntry> entries) {
-        super(minecraft, width, height, top, bottom, slotHeight);
+    public GuiList(GuiEditTail parent, int width, int height, int top, int bottom, int slotHeight, List<? extends IGuiListEntry> entries) {
+        super(parent.mc, width, height, top, bottom, slotHeight);
+        this.parent = parent;
         this.entries = entries;
     }
 
@@ -30,6 +31,9 @@ public class GuiList extends GuiListExtended {
     @Override
     protected void elementClicked(int index, boolean doubleClick, int mouseX, int mouseY) {
         this.currrentIndex = index;
+        if (!this.parent.livePreviewButton.enabled) {
+            this.parent.updateTailInfoLive();
+        }
     }
 
     @Override

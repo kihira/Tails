@@ -51,7 +51,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     private GuiList tailList;
     private FakeEntity fakeEntity;
 
-    private GuiButtonToggle livePreviewButton;
+    GuiButtonToggle livePreviewButton;
 
     public GuiEditTail() {
         super();
@@ -64,7 +64,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             tailInfo = TextureHelper.localPlayerTailInfo;
         }
         this.originalTailInfo = tailInfo;
-        this.tailInfo = new TailInfo(this.originalTailInfo);
+        this.tailInfo = this.originalTailInfo.deepCopy();
 
         this.fakeEntity = new FakeEntity(Minecraft.getMinecraft().theWorld);
     }
@@ -113,15 +113,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             }
         }
 
-        this.tailList = new GuiList(this.mc, this.previewWindowLeft, this.height, 0, this.height, 55, tailList);
-
-        //Default selection
-        for (GuiListExtended.IGuiListEntry entry : this.tailList.getEntries()) {
-            TailEntry tailEntry = (TailEntry) entry;
-            if (tailEntry.tailInfo.typeid == this.originalTailInfo.typeid && tailEntry.tailInfo.subid == this.originalTailInfo.subid) {
-                this.tailList.setCurrrentIndex(tailList.indexOf(tailEntry));
-            }
-        }
+        this.tailList = new GuiList(this, this.previewWindowLeft, this.height, 0, this.height, 55, tailList);
+        this.selectDefaultListEntry();
 
         //General Editing Pane
         //Yaw Rotation
@@ -204,7 +197,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         }
         //Reset All
         else if (button.id == 12) {
-            this.tailInfo = new TailInfo(this.originalTailInfo);
+            this.tailInfo = this.originalTailInfo.deepCopy();
+            this.selectDefaultListEntry();
             this.currTintEdit = 0;
             this.refreshTintPane();
             this.updateTailInfoLive();
@@ -333,7 +327,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         return true;
     }
 
-    private void updateTailInfoLive() {
+    void updateTailInfoLive() {
         boolean hasTail = this.tailList.getCurrrentIndex() != 0;
         UUID uuid = this.mc.thePlayer.getPersistentID();
         TailEntry tailEntry = (TailEntry) this.tailList.getListEntry(this.tailList.getCurrrentIndex());
@@ -344,6 +338,16 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.tailInfo.needsTextureCompile = false;
 
         Tails.proxy.addTailInfo(uuid, this.tailInfo);
+    }
+
+    private void selectDefaultListEntry() {
+        //Default selection
+        for (GuiListExtended.IGuiListEntry entry : this.tailList.getEntries()) {
+            TailEntry tailEntry = (TailEntry) entry;
+            if (tailEntry.tailInfo.typeid == this.originalTailInfo.typeid && tailEntry.tailInfo.subid == this.originalTailInfo.subid) {
+                this.tailList.setCurrrentIndex(this.tailList.getEntries().indexOf(tailEntry));
+            }
+        }
     }
 
     public class TailEntry implements GuiListExtended.IGuiListEntry {

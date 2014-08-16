@@ -1,12 +1,13 @@
 package kihira.tails.common;
 
+import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.UUID;
 
-public class TailInfo {
+public class TailInfo implements Cloneable {
 
 	public final UUID uuid;
 	public final boolean hastail;
@@ -28,10 +29,6 @@ public class TailInfo {
 
     public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int tint1, int tint2, int tint3, ResourceLocation texture) {
         this(uuid, hastail, type, subtype, new int[] {tint1, tint2, tint3}, texture);
-    }
-
-    public TailInfo(TailInfo tailInfo) {
-        this(tailInfo.uuid, tailInfo.hastail, tailInfo.typeid, tailInfo.subid, Arrays.copyOf(tailInfo.tints, tailInfo.tints.length), tailInfo.getTexture());
     }
 
     public ResourceLocation getTexture() {
@@ -61,5 +58,10 @@ public class TailInfo {
                 ", texture=" + texture +
                 ", needsTextureCompile=" + needsTextureCompile +
                 '}';
+    }
+
+    public TailInfo deepCopy() {
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(this), TailInfo.class);
     }
 }
