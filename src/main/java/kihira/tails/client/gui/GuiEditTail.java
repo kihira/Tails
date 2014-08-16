@@ -3,6 +3,7 @@ package kihira.tails.client.gui;
 import com.google.common.base.Strings;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.FakeEntity;
+import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
@@ -85,6 +86,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
         //Tail List
         List<TailEntry> tailList = new ArrayList<TailEntry>();
+        tailList.add(new TailEntry(new TailInfo(UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"), false, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null))); //No tail
         //Generate tail preview textures and add to list
         for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
             for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
@@ -95,6 +97,17 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
         this.tailList = new GuiList(this.mc, this.previewWindowLeft, this.height, 0, this.height, 55, tailList);
         this.fakeEntity = new FakeEntity(this.mc.theWorld);
+
+        //Default selection
+        if (TextureHelper.localPlayerTailInfo != null) {
+            for (GuiListExtended.IGuiListEntry entry : this.tailList.getEntries()) {
+                TailEntry tailEntry = (TailEntry) entry;
+                if (tailEntry.tailInfo.typeid == TextureHelper.localPlayerTailInfo.typeid && tailEntry.tailInfo.subid == TextureHelper.localPlayerTailInfo.subid) {
+                    this.tailList.setCurrrentIndex(tailList.indexOf(tailEntry));
+                }
+            }
+        }
+        else this.tailList.setCurrrentIndex(0);
 
         //General Editing Pane
         //Yaw Rotation
@@ -298,8 +311,14 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
         @Override
         public void drawEntry(int p_148279_1_, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int p_148279_7_, int p_148279_8_, boolean p_148279_9_) {
-            renderTail(previewWindowLeft - 25, y - 25, 50, this.tailInfo);
-            fontRendererObj.drawString(StatCollector.translateToLocal(ClientEventHandler.tailTypes[tailInfo.typeid].getUnlocalisedName(tailInfo.subid)), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
+            if (this.tailInfo.hastail) {
+                renderTail(previewWindowLeft - 25, y - 25, 50, this.tailInfo);
+                fontRendererObj.drawString(StatCollector.translateToLocal(ClientEventHandler.tailTypes[tailInfo.typeid].getUnlocalisedName(tailInfo.subid)), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
+
+            }
+            else {
+                fontRendererObj.drawString(StatCollector.translateToLocal("tail.none.name"), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
+            }
         }
 
         @Override

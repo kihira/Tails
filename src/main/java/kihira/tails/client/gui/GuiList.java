@@ -56,6 +56,10 @@ public class GuiList extends GuiListExtended {
         return this.currrentIndex;
     }
 
+    public void setCurrrentIndex(int currrentIndex) {
+        this.currrentIndex = currrentIndex;
+    }
+
     public List<? extends IGuiListEntry> getEntries() {
         return this.entries;
     }

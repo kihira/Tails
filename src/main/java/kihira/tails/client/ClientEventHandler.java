@@ -19,6 +19,7 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import kihira.tails.client.gui.GuiEditTail;
 import kihira.tails.client.render.RenderDragonTail;
 import kihira.tails.client.render.RenderFoxTail;
 import kihira.tails.client.render.RenderRaccoonTail;
@@ -26,7 +27,7 @@ import kihira.tails.client.render.RenderTail;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
         //TESTING REMOVE
-        if (e.entityPlayer.isSneaking()) {
+/*        if (e.entityPlayer.isSneaking()) {
             EntityPlayer player = e.entityPlayer;
             UUID uuid = player.getGameProfile().getId();
             int typeid = 0;
@@ -51,10 +52,10 @@ public class ClientEventHandler {
 
             Tails.proxy.removeTailInfo(uuid);
             Tails.proxy.addTailInfo(uuid, tailInfo);
-        }
-/*        if (e.entityPlayer.isSneaking() && !(Minecraft.getMinecraft().currentScreen instanceof GuiEditTail)) {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiEditTail());
         }*/
+        if (e.entityPlayer.isSneaking() && !(Minecraft.getMinecraft().currentScreen instanceof GuiEditTail)) {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiEditTail());
+        }
 
     	UUID uuid = e.entityPlayer.getGameProfile().getId();
         if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
