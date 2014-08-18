@@ -1,6 +1,7 @@
 package kihira.tails.common;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
@@ -9,12 +10,12 @@ import java.util.UUID;
 
 public class TailInfo implements Cloneable {
 
-	public final UUID uuid;
-	public final boolean hastail;
-	public final int typeid;
-	public final int subid;
-    public final int[] tints;
-    public final int textureID = 0;
+	@Expose public final UUID uuid;
+    @Expose public final boolean hastail;
+    @Expose public final int typeid;
+    @Expose public final int subid;
+    @Expose public final int[] tints;
+    @Expose public final int textureID = 0;
 	private ResourceLocation texture;
     public boolean needsTextureCompile = true;
 	
