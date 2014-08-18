@@ -41,9 +41,12 @@ public class TailInfoMessage implements IMessage {
 
         @Override
         public IMessage onMessage(TailInfoMessage message, MessageContext ctx) {
-            //TODO test receiving message client side
             if (message.shouldRemove) Tails.proxy.removeTailInfo(message.tailInfo.uuid);
-            else Tails.proxy.addTailInfo(message.tailInfo.uuid, message.tailInfo);
+            else {
+                Tails.proxy.addTailInfo(message.tailInfo.uuid, message.tailInfo);
+                //Tell other clients about the change
+                if (ctx.side.isServer()) Tails.networkWrapper.sendToAll(new TailInfoMessage(message.tailInfo, false));
+            }
             return null;
         }
     }
