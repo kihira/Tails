@@ -9,6 +9,7 @@ import kihira.tails.common.Tails;
 import kihira.tails.common.network.TailInfoMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -298,6 +299,9 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         RenderManager.instance.playerViewY = 180.0F;
         RenderManager.instance.renderEntityWithPosYaw(entity, 0D, 0D, 0D, 0F, 1F);
         RenderHelper.disableStandardItemLighting();
+        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
         entity.rotationYawHead = prevHeadYaw;
         entity.rotationYaw = prevRotYaw;
@@ -316,6 +320,9 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         RenderManager.instance.playerViewY = 180.0F;
         ClientEventHandler.tailTypes[tailInfo.typeid].render(this.fakeEntity, tailInfo);
         RenderHelper.disableStandardItemLighting();
+        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
         GL11.glPopMatrix();
     }

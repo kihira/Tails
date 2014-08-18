@@ -45,7 +45,9 @@ public class TailInfoMessage implements IMessage {
             else {
                 Tails.proxy.addTailInfo(message.tailInfo.uuid, message.tailInfo);
                 //Tell other clients about the change
-                if (ctx.side.isServer()) Tails.networkWrapper.sendToAll(new TailInfoMessage(message.tailInfo, false));
+                if (ctx.side.isServer()) {
+                    Tails.networkWrapper.sendToAll(new TailInfoMessage(message.tailInfo, false));
+                }
             }
             return null;
         }

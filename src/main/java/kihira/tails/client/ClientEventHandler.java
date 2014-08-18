@@ -27,6 +27,8 @@ import kihira.tails.client.render.RenderTail;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
+import kihira.tails.common.network.TailInfoMessage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -38,6 +40,8 @@ import java.util.UUID;
 public class ClientEventHandler {
 
 	public static final RenderTail[] tailTypes = { new RenderFoxTail(), new RenderDragonTail(), new RenderRaccoonTail() };
+
+    private boolean hasSentTailInfoToServer = false;
 
     @SubscribeEvent
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
@@ -74,8 +78,7 @@ public class ClientEventHandler {
     public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         //Add local player texture to map
         if (Tails.localPlayerTailInfo != null) {
-            TailInfo tailInfo = Tails.localPlayerTailInfo;
-            Tails.proxy.addTailInfo(tailInfo.uuid, tailInfo);
+            Tails.proxy.addTailInfo(Tails.localPlayerTailInfo.uuid, Tails.localPlayerTailInfo);
         }
     }
 
@@ -87,8 +90,15 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent e) {
-        if (TextureHelper.needsBuild(e.player)) {
-            TextureHelper.buildPlayerInfo(e.player);
+        if (e.player.worldObj.getTotalWorldTime() % 20 == 0) {
+            if (TextureHelper.needsBuild(e.player)) {
+                TextureHelper.buildPlayerInfo(e.player);
+            }
+            //World can't be null if we want to send a packet it seems
+            else if (!this.hasSentTailInfoToServer && Minecraft.getMinecraft().theWorld != null) {
+                Tails.networkWrapper.sendToServer(new TailInfoMessage(Tails.localPlayerTailInfo, false));
+                this.hasSentTailInfoToServer = true;
+            }
         }
     }
 }
