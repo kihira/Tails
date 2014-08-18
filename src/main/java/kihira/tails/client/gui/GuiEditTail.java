@@ -6,6 +6,7 @@ import kihira.tails.client.FakeEntity;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
+import kihira.tails.common.network.TailInfoMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.RenderHelper;
@@ -57,13 +58,13 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         super();
         //Backup original TailInfo or create default one
         TailInfo tailInfo;
-        if (TextureHelper.localPlayerTailInfo == null) {
+        if (Tails.localPlayerTailInfo == null) {
             tailInfo = new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 ,0, 0, 0, 0, null);
         }
         else {
-            tailInfo = TextureHelper.localPlayerTailInfo;
+            tailInfo = Tails.localPlayerTailInfo;
         }
-        this.originalTailInfo = tailInfo;
+        this.originalTailInfo = tailInfo.deepCopy();
         this.tailInfo = this.originalTailInfo.deepCopy();
 
         this.fakeEntity = new FakeEntity(Minecraft.getMinecraft().theWorld);
@@ -202,17 +203,22 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             this.selectDefaultListEntry();
             this.currTintEdit = 0;
             this.refreshTintPane();
-            this.updateTailInfoLive();
+            this.updateTailInfo();
         }
         //Save All
         else if (button.id == 13) {
-            TextureHelper.localPlayerTailInfo = this.tailInfo; //TODO Actually save TailInfo somewhere as well
+            //Update tail info, set local and send it to the server
+            this.updateTailInfo();
+            Tails.setLocalPlayerTailInfo(this.tailInfo);
+            Tails.proxy.addTailInfo(this.tailInfo.uuid, this.tailInfo);
+            Tails.networkWrapper.sendToServer(new TailInfoMessage(tailInfo, false));
+
+            this.mc.displayGuiScreen(null);
         }
     }
 
     @Override
     protected void keyTyped(char letter, int keyCode) {
-        super.keyTyped(letter, keyCode);
         this.hexText.textboxKeyTyped(letter, keyCode);
 
         try {
@@ -223,6 +229,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         } catch (NumberFormatException ignored) {}
 
         this.refreshTintPane();
+
+        super.keyTyped(letter, keyCode);
     }
 
     @Override
@@ -238,6 +246,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             TailEntry tailEntry = (TailEntry) entry;
             tailEntry.tailInfo.setTexture(null);
         }
+
+        Tails.proxy.addTailInfo(this.mc.thePlayer.getPersistentID(), Tails.localPlayerTailInfo);
     }
 
     //Refreshes the text and text colour to the current set tint colour
@@ -259,7 +269,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         }
 
         if (!this.livePreviewButton.enabled) {
-            this.updateTailInfoLive();
+            this.updateTailInfo();
         }
     }
 
@@ -328,7 +338,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         return true;
     }
 
-    void updateTailInfoLive() {
+    void updateTailInfo() {
         boolean hasTail = this.tailList.getCurrrentIndex() != 0;
         UUID uuid = this.mc.thePlayer.getPersistentID();
         TailEntry tailEntry = (TailEntry) this.tailList.getListEntry(this.tailList.getCurrrentIndex());

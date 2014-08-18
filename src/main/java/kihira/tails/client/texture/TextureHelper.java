@@ -36,12 +36,7 @@ public class TextureHelper {
 	private static final int switch1Colour = 0xFFFF10F0;
 	private static final int switch2Colour = 0xFFB8E080;
 
-    /**
-     * This is the {@link kihira.tails.common.TailInfo} for the local player
-     */
-    public static TailInfo localPlayerTailInfo;
-	
-	@SuppressWarnings("rawtypes")
+    @SuppressWarnings("rawtypes")
 	public static void buildPlayerInfo(EntityPlayer player) {
 		Minecraft mc = Minecraft.getMinecraft();
 		GameProfile profile = player.getGameProfile();
@@ -72,7 +67,7 @@ public class TextureHelper {
                 Tails.proxy.addTailInfo(uuid, tailInfo);
                 //If local player, send our skin info the server.
                 if (player == Minecraft.getMinecraft().thePlayer) {
-                    localPlayerTailInfo = tailInfo;
+                    Tails.setLocalPlayerTailInfo(tailInfo);
                     Tails.networkWrapper.sendToServer(new TailInfoMessage(tailInfo, false));
                 }
             }

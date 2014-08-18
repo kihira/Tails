@@ -41,21 +41,6 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
-        //TESTING REMOVE
-/*        if (e.entityPlayer.isSneaking()) {
-            EntityPlayer player = e.entityPlayer;
-            UUID uuid = player.getGameProfile().getId();
-            int typeid = 0;
-            int subtype = 2;
-
-            TailInfo tailInfo = new TailInfo(uuid, true, typeid, subtype, -1803209, -1938144, -592395, null);
-            tailInfo.setTexture(TextureHelper.generateTexture(tailInfo));
-            tailInfo.needsTextureCompile = false;
-
-            Tails.proxy.removeTailInfo(uuid);
-            Tails.proxy.addTailInfo(uuid, tailInfo);
-        }*/
-
     	UUID uuid = e.entityPlayer.getGameProfile().getId();
         if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
         	TailInfo info = Tails.proxy.getTailInfo(uuid);
@@ -88,8 +73,8 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         //Add local player texture to map
-        if (TextureHelper.localPlayerTailInfo != null) {
-            TailInfo tailInfo = TextureHelper.localPlayerTailInfo;
+        if (Tails.localPlayerTailInfo != null) {
+            TailInfo tailInfo = Tails.localPlayerTailInfo;
             Tails.proxy.addTailInfo(tailInfo.uuid, tailInfo);
         }
     }

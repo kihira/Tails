@@ -14,6 +14,8 @@
 
 package kihira.tails.common;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -25,14 +27,13 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import kihira.tails.proxy.CommonProxy;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "$version", guiFactory = "kihira.tails.client.gui.TailsGuiFactory", dependencies = "required-after:foxlib@[0.2.0,)")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "$version", dependencies = "required-after:foxlib@[0.2.0,)")
 public class Tails {
 
     public static final String MOD_ID = "Tails";
@@ -40,14 +41,17 @@ public class Tails {
     public static final SimpleNetworkWrapper networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
 
     public static Configuration configuration;
-    public static List<String> userList;
     public static boolean hasRemote;
 
     @SidedProxy(clientSide = "kihira.tails.proxy.ClientProxy", serverSide = "kihira.tails.proxy.CommonProxy")
     public static CommonProxy proxy;
-
     @Mod.Instance
     public static Tails instance;
+
+    /**
+     * This is the {@link TailInfo} for the local player
+     */
+    public static TailInfo localPlayerTailInfo;
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
@@ -76,10 +80,26 @@ public class Tails {
     }
 
     public void loadConfig() {
-        Tails.userList = Arrays.asList(Tails.configuration.getStringList("usernames", Configuration.CATEGORY_GENERAL, new String[] {"Kihira"} , "List of players that have tails"));
+        //Load local player info
+        try {
+            localPlayerTailInfo = new Gson().fromJson(Tails.configuration.getString("Local Tail Info",
+                    Configuration.CATEGORY_GENERAL, "Local Players tail info. Delete to remove tail. Do not try to edit manually", ""), TailInfo.class);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
 
         if (Tails.configuration.hasChanged()) {
             Tails.configuration.save();
         }
+    }
+
+    public static void setLocalPlayerTailInfo(TailInfo tailInfo) {
+        localPlayerTailInfo = tailInfo;
+
+        Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Tail Info", "");
+        prop.comment = "Local Players tail info. Delete to remove tail. Do not try to edit manually";
+        prop.set(new Gson().toJson(localPlayerTailInfo));
+
+        Tails.configuration.save();
     }
 }
