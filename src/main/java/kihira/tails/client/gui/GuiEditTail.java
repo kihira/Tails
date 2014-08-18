@@ -135,7 +135,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
-        this.zLevel = 0;
+        this.zLevel = -1000;
         //Background
         this.drawGradientRect(0, 0, this.previewWindowLeft, this.height, 0xCC000000, 0xCC000000);
         this.drawGradientRect(this.previewWindowLeft, 0, this.previewWindowRight, this.previewWindowBottom, 0xEE000000, 0xEE000000); //Hex with alpha in the format ARGB
@@ -163,6 +163,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         //Player
         drawEntity(this.width / 2, (this.previewWindowBottom / 2) + (this.scaledRes.getScaledHeight() / 4), this.scaledRes.getScaledHeight() / 4, this.yaw, this.pitch, this.mc.thePlayer);
 
+        this.zLevel = 0;
         //Tails list
         this.tailList.drawScreen(mouseX, mouseY, p_73863_3_);
 
@@ -269,7 +270,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         ItemStack prevItemStack = entity.getHeldItem();
 
         GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 100.0F);
+        GL11.glTranslatef(x, y, -10F);
         GL11.glScalef(-scale, scale, scale);
         GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(0.0F, entity.yOffset, 0.0F);
@@ -298,8 +299,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
     private void renderTail(int x, int y, int scale, TailInfo tailInfo) {
         GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 100.0F);
-        GL11.glScalef(-scale, scale, scale);
+        GL11.glTranslatef(x, y, 10F);
+        GL11.glScalef(-scale, scale, 1F);
 
         RenderHelper.enableStandardItemLighting();
         RenderManager.instance.playerViewY = 180.0F;
