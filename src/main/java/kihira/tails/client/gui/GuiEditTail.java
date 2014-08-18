@@ -339,12 +339,11 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     }
 
     void updateTailInfo() {
-        boolean hasTail = this.tailList.getCurrrentIndex() != 0;
         UUID uuid = this.mc.thePlayer.getPersistentID();
         TailEntry tailEntry = (TailEntry) this.tailList.getListEntry(this.tailList.getCurrrentIndex());
 
         if (this.currTintEdit > 0) this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
-        this.tailInfo = new TailInfo(uuid, hasTail, tailEntry.tailInfo.typeid, tailEntry.tailInfo.subid, this.tailInfo.tints, null);
+        this.tailInfo = new TailInfo(uuid, tailEntry.tailInfo.hastail, tailEntry.tailInfo.typeid, tailEntry.tailInfo.subid, this.tailInfo.tints, null);
         this.tailInfo.setTexture(TextureHelper.generateTexture(this.tailInfo));
         this.tailInfo.needsTextureCompile = false;
 
