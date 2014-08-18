@@ -85,20 +85,19 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onPlayerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
         Tails.hasRemote = false;
+        this.hasSentTailInfoToServer = false;
         Tails.proxy.clearAllTailInfo(); //TODO This won't delete the textures cause it's called from the wrong thread
     }
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent e) {
-        if (e.player.worldObj.getTotalWorldTime() % 20 == 0) {
-            if (TextureHelper.needsBuild(e.player)) {
-                TextureHelper.buildPlayerInfo(e.player);
-            }
-            //World can't be null if we want to send a packet it seems
-            else if (!this.hasSentTailInfoToServer && Minecraft.getMinecraft().theWorld != null) {
-                Tails.networkWrapper.sendToServer(new TailInfoMessage(Tails.localPlayerTailInfo, false));
-                this.hasSentTailInfoToServer = true;
-            }
+        if (TextureHelper.needsBuild(e.player)) {
+            TextureHelper.buildPlayerInfo(e.player);
+        }
+        //World can't be null if we want to send a packet it seems
+        else if (!this.hasSentTailInfoToServer && Minecraft.getMinecraft().theWorld != null) {
+            Tails.networkWrapper.sendToServer(new TailInfoMessage(Tails.localPlayerTailInfo, false));
+            this.hasSentTailInfoToServer = true;
         }
     }
 }

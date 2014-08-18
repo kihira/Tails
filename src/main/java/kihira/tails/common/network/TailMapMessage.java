@@ -10,6 +10,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
+import net.minecraft.client.Minecraft;
 
 import java.util.Map;
 import java.util.UUID;
@@ -46,7 +47,8 @@ public class TailMapMessage implements IMessage {
         @Override
         public IMessage onMessage(TailMapMessage message, MessageContext ctx) {
             for (Map.Entry<UUID, TailInfo> entry : message.tailInfoMap.entrySet()) {
-                Tails.proxy.addTailInfo(entry.getKey(), entry.getValue());
+                //Ignore local player
+                if (Minecraft.getMinecraft().thePlayer.getPersistentID() != entry.getKey()) Tails.proxy.addTailInfo(entry.getKey(), entry.getValue());
             }
             return null;
         }
