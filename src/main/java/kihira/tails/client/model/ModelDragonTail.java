@@ -68,7 +68,7 @@ public class ModelDragonTail extends ModelTailBase {
     }
 
     @Override
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity entity) {
+    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float subtype, Entity entity) {
         float seed = (entity.hashCode() + System.nanoTime() / 100000000F) / 5F;
 
         this.tailBase.rotateAngleY = MathHelper.cos(seed - 1) / 5F;
@@ -76,16 +76,18 @@ public class ModelDragonTail extends ModelTailBase {
         this.tail2.rotateAngleY = MathHelper.cos(seed - 3) / 5F;
         this.tail3.rotateAngleY = MathHelper.cos(seed - 4) / 5F;
 
-        this.tailSubBase.rotateAngleY = MathHelper.cos(seed - 1) / 5F;
-        this.tailSub1.rotateAngleY = MathHelper.cos(seed - 2) / 5F;
-        this.tailSub2.rotateAngleY = MathHelper.cos(seed - 3) / 5F;
-        this.tailSub3.rotateAngleY = MathHelper.cos(seed - 4) / 5F;
+        if (subtype == 1) {
+            this.tailSubBase.rotateAngleY = MathHelper.cos(seed - 1) / 5F;
+            this.tailSub1.rotateAngleY = MathHelper.cos(seed - 2) / 5F;
+            this.tailSub2.rotateAngleY = MathHelper.cos(seed - 3) / 5F;
+            this.tailSub3.rotateAngleY = MathHelper.cos(seed - 4) / 5F;
+        }
     }
 
 
     @Override
     public void render(EntityLivingBase theEntity, int subtype) {
-        this.setRotationAngles(0, 0, 0, 0, 0, 0, theEntity);
+        this.setRotationAngles(0, 0, 0, 0, 0, subtype, theEntity);
 
         this.tailBase.render(0.0625F);
 
