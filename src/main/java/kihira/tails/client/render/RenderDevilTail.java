@@ -17,13 +17,13 @@ public class RenderDevilTail extends RenderTail {
     }
 
     @Override
-    public void doRender(EntityLivingBase entity, TailInfo info) {
+    public void doRender(EntityLivingBase entity, TailInfo info, float partialTicks) {
         GL11.glPushMatrix();
         Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
         if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.65F, 0.1F);
         else GL11.glTranslatef(0F, 0.55F, 0.4F);
         GL11.glScalef(0.9F, 0.9F, 0.9F);
-        this.modelDevilTail.render(entity, info.subid);
+        this.modelDevilTail.render(entity, info.subid, partialTicks);
         GL11.glPopMatrix();
     }
 

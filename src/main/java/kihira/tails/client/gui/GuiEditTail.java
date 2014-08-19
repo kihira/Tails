@@ -319,7 +319,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
         RenderHelper.enableStandardItemLighting();
         RenderManager.instance.playerViewY = 180.0F;
-        ClientEventHandler.tailTypes[tailInfo.typeid].render(this.fakeEntity, tailInfo);
+        ClientEventHandler.tailTypes[tailInfo.typeid].render(this.fakeEntity, tailInfo, 0);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         GL11.glDisable(GL11.GL_TEXTURE_2D);

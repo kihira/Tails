@@ -3,7 +3,6 @@ package kihira.tails.client.model;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 public class ModelDragonTail extends ModelTailBase {
@@ -68,26 +67,27 @@ public class ModelDragonTail extends ModelTailBase {
     }
 
     @Override
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float subtype, Entity entity) {
-        float seed = (entity.hashCode() + System.nanoTime() / 100000000F) / 5F;
+    public void setRotationAngles(float par1, float par2, float par3, float par4, float subtype, float partialTicks, Entity entity) {
+        double period = 4000D; //Time per cycle (ie 0-1)
+        double seed = (((entity.hashCode() + System.currentTimeMillis()) % period) / period) * 2F * Math.PI;
 
-        this.tailBase.rotateAngleY = MathHelper.cos(seed - 1) / 5F;
-        this.tail1.rotateAngleY = MathHelper.cos(seed - 2) / 5F;
-        this.tail2.rotateAngleY = MathHelper.cos(seed - 3) / 5F;
-        this.tail3.rotateAngleY = MathHelper.cos(seed - 4) / 5F;
+        this.tailBase.rotateAngleY = ((float) Math.cos(seed - 1) / 5F);
+        this.tail1.rotateAngleY = (float) Math.cos(seed - 2) / 5F;
+        this.tail2.rotateAngleY = (float) Math.cos(seed - 3) / 5F;
+        this.tail3.rotateAngleY = (float) Math.cos(seed - 4) / 5F;
 
         if (subtype == 1) {
-            this.tailSubBase.rotateAngleY = MathHelper.cos(seed - 1) / 5F;
-            this.tailSub1.rotateAngleY = MathHelper.cos(seed - 2) / 5F;
-            this.tailSub2.rotateAngleY = MathHelper.cos(seed - 3) / 5F;
-            this.tailSub3.rotateAngleY = MathHelper.cos(seed - 4) / 5F;
+            this.tailSubBase.rotateAngleY = (float) Math.cos(seed - 1) / 5F;
+            this.tailSub1.rotateAngleY = (float) Math.cos(seed - 2) / 5F;
+            this.tailSub2.rotateAngleY = (float) Math.cos(seed - 3) / 5F;
+            this.tailSub3.rotateAngleY = (float) Math.cos(seed - 4) / 5F;
         }
     }
 
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype) {
-        this.setRotationAngles(0, 0, 0, 0, 0, subtype, theEntity);
+    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+        this.setRotationAngles(0, 0, 0, 0, subtype, partialTicks, theEntity);
 
         this.tailBase.render(0.0625F);
 

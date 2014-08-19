@@ -15,15 +15,15 @@ public abstract class RenderTail {
         this.name = name;
     }
 
-    public void render(EntityLivingBase entity, TailInfo info) {
+    public void render(EntityLivingBase entity, TailInfo info, float partialTicks) {
         if (info.needsTextureCompile || info.getTexture() == null) {
             info.setTexture(TextureHelper.generateTexture(info));
             info.needsTextureCompile = false;
         }
-        this.doRender(entity, info);
+        this.doRender(entity, info, partialTicks);
     }
 
-    protected abstract void doRender(EntityLivingBase player, TailInfo info);
+    protected abstract void doRender(EntityLivingBase player, TailInfo info, float partialTicks);
 
     /**
      * Gets the available textures for this tail

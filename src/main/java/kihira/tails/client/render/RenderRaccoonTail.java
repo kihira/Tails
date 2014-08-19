@@ -17,13 +17,13 @@ public class RenderRaccoonTail extends RenderTail {
     }
 
     @Override
-    public void doRender(EntityLivingBase entity, TailInfo info) {
+    public void doRender(EntityLivingBase entity, TailInfo info, float partialTicks) {
         GL11.glPushMatrix();
         Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
         if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.65F, 0.1F);
         else GL11.glTranslatef(0F, 0.55F, 0.4F);
         GL11.glScalef(0.8F, 0.8F, 0.8F);
-        this.modelRaccoonTail.render(entity, info.subid);
+        this.modelRaccoonTail.render(entity, info.subid, partialTicks);
         GL11.glPopMatrix();
     }
     

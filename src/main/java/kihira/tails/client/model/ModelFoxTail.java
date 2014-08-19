@@ -17,7 +17,6 @@ package kihira.tails.client.model;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 public class ModelFoxTail extends ModelTailBase {
@@ -67,20 +66,21 @@ public class ModelFoxTail extends ModelTailBase {
     }
 
     @Override
-    public void setRotationAngles(float seedVar, float seedModifierX, float par3, float par4, float par5, float par6, Entity entity) {
-        float seed = (seedVar + entity.hashCode() + System.nanoTime() / 100000000F) / 5F;
+    public void setRotationAngles(float seedVar, float seedModifierX, float par3, float par4, float par5, float partialTicks, Entity entity) {
+        double period = 4000D; //Time per cycle (ie 0-1)
+        double seed = (((entity.hashCode() + System.currentTimeMillis()) % period) / period) * 2F * Math.PI;
 
-        this.setRotationRadians(this.tailBase, MathHelper.cos((seed * seedModifierX) / 10F) / 15F, MathHelper.cos(seed) / (8F * par3), 0F);
-        this.setRotationRadians(this.tail1, (float) Math.toRadians(-15F), MathHelper.cos(seed - 1) / (8F * par3), 0F);
-        this.setRotationRadians(this.tail2, (float) Math.toRadians(-15F), MathHelper.cos(seed - 1.5F) / (8F * par3), 0F);
-        this.setRotationRadians(this.tail3, (float) Math.toRadians(-25F), MathHelper.cos(seed - 2F) / (20F * par3), 0F);
-        this.setRotationRadians(this.tail4, (float) Math.toRadians(15F), MathHelper.cos(seed - 3) / (8F * par3), 0F);
-        this.setRotationRadians(this.tail5, (float) Math.toRadians(15F), MathHelper.cos(seed - 4) / (8F * par3), 0F);
+        this.setRotationRadians(this.tailBase, Math.cos((seed * seedModifierX) / 10F) / 15F, Math.cos(seed) / (8F * par3), 0F);
+        this.setRotationRadians(this.tail1, Math.toRadians(-15F), Math.cos(seed - 1) / (8F * par3), 0F);
+        this.setRotationRadians(this.tail2, Math.toRadians(-15F), Math.cos(seed - 1.5F) / (8F * par3), 0F);
+        this.setRotationRadians(this.tail3, Math.toRadians(-25F), Math.cos(seed - 2F) / (20F * par3), 0F);
+        this.setRotationRadians(this.tail4, Math.toRadians(15F), Math.cos(seed - 3) / (8F * par3), 0F);
+        this.setRotationRadians(this.tail5, Math.toRadians(15F), Math.cos(seed - 4) / (8F * par3), 0F);
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype) {
-        this.setRotationAngles(0, 0, 1F, 0, 0, 0, theEntity);
+    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+        this.setRotationAngles(0, 0, 1F, 0, 0, partialTicks, theEntity);
 
         if (subtype == 0) {
             GL11.glRotatef(-20F, 1F, 0F, 0F);
@@ -96,7 +96,7 @@ public class ModelFoxTail extends ModelTailBase {
             this.tailBase.render(0.0625F);
         }
         else if (subtype == 2) {
-            //TODO adjust rotateAngleX/Z on the tail
+            //TODO fix rotations
             this.setRotationAngles(0, 4, 2F, 0, 0, 0, theEntity);
             this.tailBase.render(0.0625F);
 

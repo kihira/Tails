@@ -50,7 +50,7 @@ public class ClientEventHandler {
         	int type = info.typeid;
         	type = type > tailTypes.length ? 0 : type;
         	
-            tailTypes[type].render(e.entityPlayer, info);
+            tailTypes[type].render(e.entityPlayer, info, e.partialRenderTick);
         }
     }
 

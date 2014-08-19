@@ -3,7 +3,6 @@ package kihira.tails.client.model;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.MathHelper;
 
 public class ModelDevilTail extends ModelTailBase {
 
@@ -61,28 +60,27 @@ public class ModelDevilTail extends ModelTailBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float subtype, Entity entity) {
-        float seed = (entity.hashCode() + System.nanoTime() / 100000000F) / 8F;
+        double period = 6000D; //Time per cycle (ie 0-1)
+        double seed = (((entity.hashCode() + System.currentTimeMillis()) % period) / period) * 2F * Math.PI;
 
-        this.tailBase.rotateAngleY = MathHelper.cos(seed - 1) / 10F;
-        this.tail1.rotateAngleY = MathHelper.cos(seed - 2) / 10F;
-        this.tail2.rotateAngleY = MathHelper.cos(seed - 3) / 10F;
-        this.tail3.rotateAngleY = MathHelper.cos(seed - 4) / 10F;
-        this.tail4.rotateAngleY = MathHelper.cos(seed - 5) / 10F;
-        this.tail5.rotateAngleY = MathHelper.cos(seed - 6) / 10F;
+        this.tailBase.rotateAngleY = (float) Math.cos(seed - 1) / 8F;
+        this.tail1.rotateAngleY = (float) Math.cos(seed - 2) / 8F;
+        this.tail2.rotateAngleY = (float) Math.cos(seed - 3) / 8F;
+        this.tail3.rotateAngleY = (float) Math.cos(seed - 4) / 8F;
+        this.tail4.rotateAngleY =(float) Math.cos(seed - 5) / 8F;
+        this.tail5.rotateAngleY = (float) Math.cos(seed - 6) / 8F;
 
-        this.tail3.rotateAngleZ = MathHelper.cos(seed - 4) / 8F;
-        this.tail4.rotateAngleZ = MathHelper.cos(seed - 5) / 8F;
-        this.tail5.rotateAngleZ = MathHelper.cos(seed - 6) / 8F;
+        this.tail3.rotateAngleZ = (float) Math.cos(seed - 4) / 8F;
+        this.tail4.rotateAngleZ = (float) Math.cos(seed - 5) / 8F;
+        this.tail5.rotateAngleZ = (float) Math.cos(seed - 6) / 8F;
 
-        seed = (entity.hashCode() + System.nanoTime() / 100000000F) / 10F;
-
-        this.tail3.rotateAngleX = (float) (Math.toRadians(20F) + (MathHelper.cos(seed - 4) / 6F));
-        this.tail4.rotateAngleX = (float) (Math.toRadians(50F) + (MathHelper.cos(seed - 5) / 8F));
-        this.tail5.rotateAngleX = (float) (Math.toRadians(50F) + (MathHelper.cos(seed - 6) / 4F));
+        this.tail3.rotateAngleX = (float) (Math.toRadians(20F) + (float) Math.cos(seed - 4) / 6F);
+        this.tail4.rotateAngleX = (float) (Math.toRadians(50F) + (float) Math.cos(seed - 5) / 8F);
+        this.tail5.rotateAngleX = (float) (Math.toRadians(50F) + (float) Math.cos(seed - 6) / 4F);
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype) {
+    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
         this.setRotationAngles(0, 0, 0, 0, 0, 0, theEntity);
 
         if (subtype == 1) {
