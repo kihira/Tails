@@ -31,9 +31,7 @@ public class GuiList extends GuiListExtended {
     @Override
     protected void elementClicked(int index, boolean doubleClick, int mouseX, int mouseY) {
         this.currrentIndex = index;
-        if (!this.parent.livePreviewButton.enabled) {
-            this.parent.updateTailInfo();
-        }
+        this.parent.updateTailInfo();
     }
 
     @Override

@@ -56,11 +56,10 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     GuiButtonToggle livePreviewButton;
 
     public GuiEditTail() {
-        super();
         //Backup original TailInfo or create default one
         TailInfo tailInfo;
         if (Tails.localPlayerTailInfo == null) {
-            tailInfo = new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 ,0, 0, 0, 0, null);
+            tailInfo = new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 , 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
         }
         else {
             tailInfo = Tails.localPlayerTailInfo;
@@ -127,6 +126,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         this.buttonList.add(this.livePreviewButton = new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, this.fontRendererObj.getStringWidth(s) + 7, 20, s,
                 EnumChatFormatting.BOLD + EnumChatFormatting.DARK_RED.toString() + StatCollector.translateToLocal("gui.button.livepreview.0.tooltip"),
                 StatCollector.translateToLocal("gui.button.livepreview.1.tooltip")));
+        this.livePreviewButton.enabled = false;
 
         //Reset/Save
         this.buttonList.add(new GuiButton(12, this.previewWindowRight - 85, this.height - 25, 40, 20, "Reset"));
@@ -197,6 +197,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         //Save Tint
         else if (button.id == 9) {
             this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
+            this.updateTailInfo();
         }
         //Reset All
         else if (button.id == 12) {
