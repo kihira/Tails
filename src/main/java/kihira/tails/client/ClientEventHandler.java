@@ -20,10 +20,7 @@ import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.gui.GuiEditTail;
-import kihira.tails.client.render.RenderDragonTail;
-import kihira.tails.client.render.RenderFoxTail;
-import kihira.tails.client.render.RenderRaccoonTail;
-import kihira.tails.client.render.RenderTail;
+import kihira.tails.client.render.*;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
@@ -39,7 +36,8 @@ import java.util.UUID;
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler {
 
-	public static final RenderTail[] tailTypes = { new RenderFoxTail(), new RenderDragonTail(), new RenderRaccoonTail() };
+    //TODO this is not the best way to keep track of tails, enums?
+	public static final RenderTail[] tailTypes = { new RenderFoxTail(), new RenderDragonTail(), new RenderRaccoonTail(), new RenderDevilTail()};
 
     private boolean hasSentTailInfoToServer = false;
 
