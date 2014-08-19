@@ -1,7 +1,6 @@
 package kihira.tails.client.model;
 
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
 public class ModelDevilTail extends ModelTailBase {
@@ -58,12 +57,13 @@ public class ModelDevilTail extends ModelTailBase {
         this.tailBase.addChild(this.tail1);
     }
 
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        this.tailBase.render(f5);
-    }
-
     @Override
     public void render(EntityLivingBase theEntity, int subtype) {
+        if (subtype == 1) {
+            this.tailTip.isHidden = true;
+        }
+
         this.tailBase.render(0.0625F);
+        this.tailTip.isHidden = false;
     }
 }

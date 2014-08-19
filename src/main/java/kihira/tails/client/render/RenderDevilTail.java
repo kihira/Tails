@@ -22,8 +22,7 @@ public class RenderDevilTail extends RenderTail {
         Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
         if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.65F, 0.1F);
         else GL11.glTranslatef(0F, 0.55F, 0.4F);
-        GL11.glScalef(0.8F, 0.8F, 0.8F);
-        this.modelDevilTail = new ModelDevilTail();
+        GL11.glScalef(0.9F, 0.9F, 0.9F);
         this.modelDevilTail.render(entity, info.subid);
         GL11.glPopMatrix();
     }
@@ -35,6 +34,6 @@ public class RenderDevilTail extends RenderTail {
 
     @Override
     public int getAvailableSubTypes() {
-        return 0;
+        return 1;
     }
 }
