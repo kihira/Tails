@@ -119,18 +119,22 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
         //General Editing Pane
         //Yaw Rotation
-        this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + (this.scaledRes.getScaledWidth() / 80), this.previewWindowBottom + 5, this.width - (previewWindowEdgeOffset * 2) - (this.scaledRes.getScaledWidth() / 40), -180, 180, (int) this.yaw));
+        this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + (this.scaledRes.getScaledWidth() / 60),
+                this.previewWindowBottom + 5, this.width - (previewWindowEdgeOffset * 2) - (this.scaledRes.getScaledWidth() / 30), -180, 180, (int) this.yaw));
 
         //Live Preview
         String s = StatCollector.translateToLocal("gui.button.livepreview");
         this.buttonList.add(this.livePreviewButton = new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, this.fontRendererObj.getStringWidth(s) + 7, 20, s,
-                EnumChatFormatting.BOLD + EnumChatFormatting.DARK_RED.toString() + StatCollector.translateToLocal("gui.button.livepreview.0.tooltip"),
-                StatCollector.translateToLocal("gui.button.livepreview.1.tooltip")));
+                StatCollector.translateToLocal("gui.button.livepreview.0.tooltip")));
         this.livePreviewButton.enabled = false;
 
         //Reset/Save
-        this.buttonList.add(new GuiButton(12, this.previewWindowRight - 85, this.height - 25, 40, 20, "Reset"));
-        this.buttonList.add(new GuiButton(13, this.previewWindowRight - 45, this.height - 25, 40, 20, "Done"));
+        this.buttonList.add(new GuiButton(12, this.previewWindowRight - 83, this.height - 25, 40, 20, "Reset"));
+        this.buttonList.add(new GuiButton(13, this.previewWindowRight - 43, this.height - 25, 40, 20, "Done"));
+
+        //Export
+        this.buttonList.add(new GuiButtonTooltip(14, (this.width / 2) - 20, this.height - 25, 40, 20, StatCollector.translateToLocal("gui.button.export"),
+                StatCollector.translateToLocal("gui.button.export.0.tooltip")));
 
         this.refreshTintPane();
     }
@@ -173,7 +177,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
         //Tooltips
         for (Object obj : this.buttonList) {
-            if (obj instanceof GuiButtonToggle && ((GuiButtonToggle) obj).func_146115_a()) ((GuiButtonToggle) obj).func_146111_b(mouseX, mouseY);
+            if (obj instanceof GuiButtonTooltip && ((GuiButtonTooltip) obj).func_146115_a()) ((GuiButtonTooltip) obj).func_146111_b(mouseX, mouseY);
         }
     }
 
@@ -216,6 +220,11 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
             Tails.networkWrapper.sendToServer(new TailInfoMessage(tailInfo, false));
 
             this.mc.displayGuiScreen(null);
+        }
+        //Export
+        else if (button.id == 14) {
+            this.updateTailInfo();
+            TextureHelper.writeTailInfoToSkin(this.tailInfo, this.mc.thePlayer);
         }
     }
 
@@ -399,13 +408,31 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         }
     }
 
-    public class GuiButtonToggle extends GuiButton {
+    public class GuiButtonTooltip extends GuiButton {
+        protected final String[] tooltips;
 
-        private final String[] tooltips;
-
-        public GuiButtonToggle(int id, int x, int y, int width, int height, String text, String ... tooltips) {
+        public GuiButtonTooltip(int id, int x, int y, int width, int height, String text, String ... tooltips) {
             super(id, x, y, width, height, text);
             this.tooltips = tooltips;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public void func_146111_b(int x, int y) {
+            if (this.tooltips != null && this.tooltips.length > 0) {
+                List<String> list = new ArrayList<String>();
+                for (String s : this.tooltips) {
+                    list.addAll(fontRendererObj.listFormattedStringToWidth(s, scaledRes.getScaledWidth() / 3));
+                }
+                func_146283_a(list, x, y);
+            }
+        }
+    }
+
+    public class GuiButtonToggle extends GuiButtonTooltip {
+
+        public GuiButtonToggle(int id, int x, int y, int width, int height, String text, String ... tooltips) {
+            super(id, x, y, width, height, text, tooltips);
         }
 
         @Override

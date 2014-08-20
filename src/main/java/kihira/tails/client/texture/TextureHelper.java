@@ -11,6 +11,7 @@ import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.TailInfoMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.entity.player.EntityPlayer;
@@ -73,6 +74,41 @@ public class TextureHelper {
             }
         }
 	}
+
+    public static BufferedImage writeTailInfoToSkin(TailInfo tailInfo, AbstractClientPlayer player) {
+        Minecraft mc = Minecraft.getMinecraft();
+        GameProfile profile = player.getGameProfile();
+        Map map = mc.func_152342_ad().func_152788_a(profile);
+        BufferedImage image = null;
+
+        //Check we have the players skin
+        if (map.containsKey(MinecraftProfileTexture.Type.SKIN)) {
+            ResourceLocation skinloc = mc.func_152342_ad().func_152792_a((MinecraftProfileTexture)map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN);
+            ITextureObject skintex = mc.getTextureManager().getTexture(skinloc);
+
+            if (skintex instanceof ThreadDownloadImageData) {
+                ThreadDownloadImageData imagedata = (ThreadDownloadImageData)skintex;
+                image = ObfuscationReflectionHelper.getPrivateValue(ThreadDownloadImageData.class, imagedata, "bufferedImage", "field_110560_d", "bpj.g");
+                if (image == null) return null;
+
+                //Switch colours
+                image.setRGB(switch1Pixel.getX(), switch1Pixel.getY(), switch1Colour);
+                image.setRGB(switch2Pixel.getX(), switch2Pixel.getY(), switch2Colour);
+                //Type, subtype and texture
+                int dataColour = 0xFF;
+                dataColour = dataColour | tailInfo.typeid << 16;
+                dataColour = dataColour | tailInfo.subid << 8;
+                dataColour = dataColour | tailInfo.textureID;
+                image.setRGB(dataPixel.getX(), dataPixel.getY(), dataColour);
+                //Tints
+                image.setRGB(tint1Pixel.getX(), tint1Pixel.getY(), tailInfo.tints[0]);
+                image.setRGB(tint2Pixel.getX(), tint2Pixel.getY(), tailInfo.tints[1]);
+                image.setRGB(tint3Pixel.getX(), tint3Pixel.getY(), tailInfo.tints[2]);
+            }
+        }
+
+        return image;
+    }
 
 	private static TailInfo buildTailInfoFromSkin(UUID id, BufferedImage skin) {
 		int data = skin.getRGB(dataPixel.getX(), dataPixel.getY());

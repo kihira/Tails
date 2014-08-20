@@ -7,6 +7,8 @@ tail.fox.2.name=Nine Tails
 tail.raccoon.0.name=Raccoon Tail
 tail.devil.0.name=Devil Tail
 tail.devil.1.name=Devil Tail (No Tip)
+
 gui.button.livepreview=Live Preview
-gui.button.livepreview.0.tooltip=WARNING
-gui.button.livepreview.1.tooltip=This can be laggy on older computers, be warned!
+gui.button.livepreview.0.tooltip=Shows a live preview of your tail as you edit the values
+gui.button.export=Export
+gui.button.export.0.tooltip=Exports a modified version of your skin that has certain, unused pixels changed so others can see your tail without Tails being installed server side.

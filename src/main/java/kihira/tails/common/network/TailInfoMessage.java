@@ -41,12 +41,14 @@ public class TailInfoMessage implements IMessage {
 
         @Override
         public IMessage onMessage(TailInfoMessage message, MessageContext ctx) {
-            if (message.shouldRemove) Tails.proxy.removeTailInfo(message.tailInfo.uuid);
-            else {
-                Tails.proxy.addTailInfo(message.tailInfo.uuid, message.tailInfo);
-                //Tell other clients about the change
-                if (ctx.side.isServer()) {
-                    Tails.networkWrapper.sendToAll(new TailInfoMessage(message.tailInfo, false));
+            if (message.tailInfo != null) {
+                if (message.shouldRemove) Tails.proxy.removeTailInfo(message.tailInfo.uuid);
+                else {
+                    Tails.proxy.addTailInfo(message.tailInfo.uuid, message.tailInfo);
+                    //Tell other clients about the change
+                    if (ctx.side.isServer()) {
+                        Tails.networkWrapper.sendToAll(new TailInfoMessage(message.tailInfo, false));
+                    }
                 }
             }
             return null;
