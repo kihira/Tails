@@ -1,6 +1,7 @@
 package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
+import kihira.foxlib.client.gui.*;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.FakeEntity;
 import kihira.tails.client.texture.TextureHelper;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class GuiEditTail extends GuiBaseScreen implements ISliderCallback {
+public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IListCallback {
 
     private float yaw = 0F;
     private float pitch = 0F;
@@ -266,11 +267,11 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback {
         this.hexText.setTextColor(this.currTintColour);
 
         this.rSlider.setCurrentValue(this.currTintColour >> 16 & 255);
-        this.rSlider.packedFGColour = (255 | this.rSlider.currentValue) << 16;
+        this.rSlider.packedFGColour = (255 | (int) this.rSlider.currentValue) << 16;
         this.gSlider.setCurrentValue(this.currTintColour >> 8 & 255);
-        this.gSlider.packedFGColour = (255 | this.gSlider.currentValue) << 8;
+        this.gSlider.packedFGColour = (255 | (int) this.gSlider.currentValue) << 8;
         this.bSlider.setCurrentValue(this.currTintColour & 255);
-        this.bSlider.packedFGColour = (255 | this.bSlider.currentValue);
+        this.bSlider.packedFGColour = (255 | (int) this.bSlider.currentValue);
 
         if (this.currTintEdit > 0) {
             this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = this.tintReset.visible = this.tintSave.visible = true;
@@ -338,16 +339,16 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback {
     }
 
     @Override
-    public boolean onValueChange(GuiSlider slider, int oldValue, int newValue) {
+    public boolean onValueChange(GuiSlider slider, float oldValue, float newValue) {
         if (slider == this.rotYawSlider) {
             this.yaw = newValue;
         }
         //RGB sliders
         if (slider == this.rSlider || slider == this.gSlider || slider == this.bSlider) {
             int colour = 0;
-            colour = colour | this.rSlider.currentValue << 16;
-            colour = colour | this.gSlider.currentValue << 8;
-            colour = colour | this.bSlider.currentValue;
+            colour = colour | (int) this.rSlider.currentValue << 16;
+            colour = colour | (int) this.gSlider.currentValue << 8;
+            colour = colour | (int) this.bSlider.currentValue;
             this.currTintColour = colour;
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
@@ -375,6 +376,12 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback {
                 this.tailList.setCurrrentIndex(this.tailList.getEntries().indexOf(tailEntry));
             }
         }
+    }
+
+    @Override
+    public boolean onEntrySelected(GuiList guiList, int index, GuiListExtended.IGuiListEntry entry) {
+        this.updateTailInfo();
+        return true;
     }
 
     public class TailEntry implements GuiListExtended.IGuiListEntry {

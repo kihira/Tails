@@ -1,6 +1,7 @@
 package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
+import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import net.minecraft.client.entity.AbstractClientPlayer;
