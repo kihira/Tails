@@ -1,0 +1,29 @@
+tail.none.name=Nenhuma Cauda
+tail.dragon.0.name=Cauda de Lagarto
+tail.dragon.1.name=Cauda de Dragão
+tail.fox.0.name=Cauda de Raposa
+tail.fox.1.name=Caudas Gêmeas
+tail.fox.2.name=Nove Caudas
+tail.raccoon.0.name=Cauda de guaxinim
+tail.devil.0.name=Cauda de Demônio
+tail.devil.1.name=Cauda de Demônio (Sem Ponta)
+
+gui.export.title=Exportar Opções
+gui.export.information=Um recurso de Tail é a habilidade de permitir outros jogadores verem sua caud mesmo se o server não possui o mod instalado (O outro jogador precisa possuir tails instalado). Para isso, alguns dos pixels não utilizados de sua skin são usados por Tails para salvar informações da sua cauda. Você pode usar as opções abaixo para escolher onde exportar ou fazer o upload direto para o servidor de skins do Minecraft. Passe o mouse sobre os botões para ver a localização dos arquivos.
+
+gui.button.livepreview=Visualizar
+gui.button.livepreview.0.tooltip=Mostra uma as mudanças da sua cauda enquanto você edita os valores
+gui.button.export=Exportar
+gui.button.export.0.tooltip=Exporta uma versão modificada da sua skin que tem certos pixels não utilizados alterados para outros verem sua cauda sem Tails instalado no servidor.
+gui.button.export.tooltip=Exporta uma versão modificada da sua skin para %s
+gui.button.export.userdir=Exporta para a home do usuário
+gui.button.export.minecraftdir=Exporta para o diretório do Minecraft
+gui.button.upload=Upload para Mojang
+gui.button.upload.tooltip=Faz o Upload de sua skin. AVISO: Abrirá seu navegador!
+gui.button.export.custom=Exportar para...
+gui.button.export.custom.tooltip=Exportar para uma pasta uma pasta personalizada
+gui.button.openfolder.tooltip=Abre a pasta onde sua skin foi exportada
+gui.button.openfolder=Abrir local de exportação
+
+tails.export.success=Skin salva com sucesso em %s
+tails.upload.unavailable=Essa função ainda não é funcional!
