@@ -35,8 +35,10 @@ public class GuiExport extends GuiBaseScreen {
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.export.tooltip", System.getProperty("user.home"))));
         this.buttonList.add(new GuiButtonTooltip(1, (this.width / 2) - 65, this.height - 50, 130, 20, I18n.format("gui.button.export.minecraftdir"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.export.tooltip", System.getProperty("user.dir"))));
-        this.buttonList.add(new GuiButtonTooltip(2, (this.width / 2) + 70, this.height - 50, 130, 20, I18n.format("gui.button.upload"),
-                this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.upload.tooltip")));
+        GuiButton button;
+        this.buttonList.add(button = new GuiButtonTooltip(2, (this.width / 2) + 70, this.height - 50, 130, 20, I18n.format("gui.button.upload"),
+                this.scaledRes.getScaledWidth() / 2, I18n.format("tails.upload.unavailable")));
+        button.enabled = false;
     }
 
     @Override
@@ -90,6 +92,21 @@ public class GuiExport extends GuiBaseScreen {
             }
 
             if (Strings.isNullOrEmpty(this.exportMessage)) this.exportMessage = I18n.format("tails.export.success", file);
+        }
+        //Upload
+        if (button.id == 2) {
+/*            try {
+                BufferedImage image = TextureHelper.writeTailInfoToSkin(this.tailInfo, this.mc.thePlayer);
+                String dataURI = TextureHelper.bufferedImageToBase64(image);
+                String skinURL = "https://minecraft.net/profile/skin/remote?url=";
+
+                Desktop.getDesktop().browse(URI.create(skinURL + dataURI));
+
+                //System.out.println(URI.create(skinURL + dataURI));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+            this.exportMessage = I18n.format("tail.upload.unavailable");
         }
     }
 }

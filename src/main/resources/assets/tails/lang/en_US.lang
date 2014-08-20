@@ -22,3 +22,4 @@ gui.button.upload=Upload to Mojang
 gui.button.upload.tooltip=Uploads your skin. CAUTION: Opens your browser!
 
 tails.export.success=Successfully saved skin to %s
+tails.upload.unavailable=This feature is not yet functional!
