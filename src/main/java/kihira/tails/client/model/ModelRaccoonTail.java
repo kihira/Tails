@@ -37,8 +37,7 @@ public class ModelRaccoonTail extends ModelTailBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity entity) {
-        double period = 8000D; //Time per cycle (ie 0-1)
-        double seed = (((entity.hashCode() + System.currentTimeMillis()) % period) / period) * 2F * Math.PI;
+        float seed = this.getAnimationTime(8000, entity);
 
         this.tailBase.rotateAngleY = (float) (Math.cos(seed - 1) / 15F);
         this.tail1.rotateAngleY = (float) (Math.cos(seed - 2) / 15F);

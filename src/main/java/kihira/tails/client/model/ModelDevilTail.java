@@ -60,8 +60,7 @@ public class ModelDevilTail extends ModelTailBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float subtype, Entity entity) {
-        double period = 6000D; //Time per cycle (ie 0-1)
-        double seed = (((entity.hashCode() + System.currentTimeMillis()) % period) / period) * 2F * Math.PI;
+        float seed = this.getAnimationTime(6000, entity);
 
         this.tailBase.rotateAngleY = (float) Math.cos(seed - 1) / 8F;
         this.tail1.rotateAngleY = (float) Math.cos(seed - 2) / 8F;

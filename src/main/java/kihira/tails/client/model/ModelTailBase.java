@@ -2,6 +2,7 @@ package kihira.tails.client.model;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
 /**
@@ -39,5 +40,9 @@ public abstract class ModelTailBase extends ModelBase {
      */
     protected void setRotationDegrees(ModelRenderer model, float x, float y, float z) {
         this.setRotationRadians(model, (float) Math.toRadians(x), (float) Math.toRadians(y), (float) Math.toRadians(z));
+    }
+
+    protected float getAnimationTime(double cycleTime, Entity entity) {
+        return (float) ((((entity.hashCode() + System.currentTimeMillis()) % cycleTime) / cycleTime) * 2F * Math.PI);
     }
 }

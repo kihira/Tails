@@ -68,8 +68,7 @@ public class ModelDragonTail extends ModelTailBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float subtype, float partialTicks, Entity entity) {
-        double period = 4000D; //Time per cycle (ie 0-1)
-        double seed = (((entity.hashCode() + System.currentTimeMillis()) % period) / period) * 2F * Math.PI;
+        float seed = this.getAnimationTime(4000, entity);
 
         this.tailBase.rotateAngleY = ((float) Math.cos(seed - 1) / 5F);
         this.tail1.rotateAngleY = (float) Math.cos(seed - 2) / 5F;
