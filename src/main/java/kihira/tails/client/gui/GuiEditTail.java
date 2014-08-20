@@ -8,24 +8,25 @@ import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.TailInfoMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiListExtended;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class GuiEditTail extends GuiScreen implements ISliderCallback {
+public class GuiEditTail extends GuiBaseScreen implements ISliderCallback {
 
     private float yaw = 0F;
     private float pitch = 0F;
@@ -73,8 +74,6 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        this.buttonList.clear();
-
         this.scaledRes = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
         int previewWindowEdgeOffset = 110;
         this.previewWindowLeft = previewWindowEdgeOffset;
@@ -125,7 +124,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         //Live Preview
         String s = StatCollector.translateToLocal("gui.button.livepreview");
         this.buttonList.add(this.livePreviewButton = new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, this.fontRendererObj.getStringWidth(s) + 7, 20, s,
-                StatCollector.translateToLocal("gui.button.livepreview.0.tooltip")));
+                this.scaledRes.getScaledWidth() / 2, StatCollector.translateToLocal("gui.button.livepreview.0.tooltip")));
         this.livePreviewButton.enabled = false;
 
         //Reset/Save
@@ -134,7 +133,7 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
 
         //Export
         this.buttonList.add(new GuiButtonTooltip(14, (this.width / 2) - 20, this.height - 25, 40, 20, StatCollector.translateToLocal("gui.button.export"),
-                StatCollector.translateToLocal("gui.button.export.0.tooltip")));
+                this.scaledRes.getScaledWidth() / 3, StatCollector.translateToLocal("gui.button.export.0.tooltip")));
 
         this.refreshTintPane();
     }
@@ -224,7 +223,8 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         //Export
         else if (button.id == 14) {
             this.updateTailInfo();
-            TextureHelper.writeTailInfoToSkin(this.tailInfo, this.mc.thePlayer);
+            this.mc.displayGuiScreen(new GuiExport(this, this.tailInfo));
+            //TextureHelper.writeTailInfoToSkin(this.tailInfo, this.mc.thePlayer);
         }
     }
 
@@ -405,53 +405,6 @@ public class GuiEditTail extends GuiScreen implements ISliderCallback {
         @Override
         public void mouseReleased(int p_148277_1_, int p_148277_2_, int p_148277_3_, int p_148277_4_, int p_148277_5_, int p_148277_6_) {
 
-        }
-    }
-
-    public class GuiButtonTooltip extends GuiButton {
-        protected final String[] tooltips;
-
-        public GuiButtonTooltip(int id, int x, int y, int width, int height, String text, String ... tooltips) {
-            super(id, x, y, width, height, text);
-            this.tooltips = tooltips;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public void func_146111_b(int x, int y) {
-            if (this.tooltips != null && this.tooltips.length > 0) {
-                List<String> list = new ArrayList<String>();
-                for (String s : this.tooltips) {
-                    list.addAll(fontRendererObj.listFormattedStringToWidth(s, scaledRes.getScaledWidth() / 3));
-                }
-                func_146283_a(list, x, y);
-            }
-        }
-    }
-
-    public class GuiButtonToggle extends GuiButtonTooltip {
-
-        public GuiButtonToggle(int id, int x, int y, int width, int height, String text, String ... tooltips) {
-            super(id, x, y, width, height, text, tooltips);
-        }
-
-        @Override
-        public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY) {
-            if (this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height) {
-                this.enabled = !this.enabled;
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public void func_146111_b(int x, int y) {
-            if (this.tooltips != null && this.tooltips.length > 0) {
-                List<String> list = new ArrayList<String>();
-                Collections.addAll(list, this.tooltips);
-                list.add((!this.enabled ? EnumChatFormatting.GREEN + EnumChatFormatting.ITALIC.toString() + "Enabled" : EnumChatFormatting.RED + EnumChatFormatting.ITALIC.toString() + "Disabled"));
-                func_146283_a(list, x, y);
-            }
         }
     }
 }
