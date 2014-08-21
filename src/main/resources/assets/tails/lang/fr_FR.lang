@@ -1,0 +1,29 @@
+tail.none.name=Pas de Queue
+tail.dragon.0.name=Queue de Lézard
+tail.dragon.1.name=Queue de Dragon
+tail.fox.0.name=Queue de Renard
+tail.fox.1.name=Double Queue
+tail.fox.2.name=Neuf Queues
+tail.raccoon.0.name=Queue de Raton-Laveur
+tail.devil.0.name=Queue de Démon
+tail.devil.1.name=Queue de Démon (Pas de Bout)
+
+gui.export.title=Options d'Exportation
+gui.export.information=Une des fonctions de Tails est de pouvoir montrer aux autres joueurs votre queue même quand le serveur ne l'a pas installé (les autres joueurs auront cependant besoin d'avoir Tails installé pour la voir). Pour cela, certains pixels inutilisés de votre skin sont utilisés par Tails pour stocker les informations à propos de votre queue. Vous pouvez utiliser cette opition ci-dessous pour choisir où exporter votre queue ou la mettre directement en ligne sur le serveur de skin de Mojang. Survolez les boutons pour voir les emplacements de fichiers.
+
+gui.button.livepreview=Prévisualisation en direct
+gui.button.livepreview.0.tooltip=Montre votre queue en direct en plus de vous permettre de customisé les données
+gui.button.export=Exportation
+gui.button.export.0.tooltip=Exporte une version modifiée de votre skin avec certains pixels inutilisés  pour que les autres joueurs puissent voir votre queue sans avoir Tails installé sur le serveur.
+gui.button.export.tooltip=Exporte une version modifiée du skin vers %s
+gui.button.export.userdir=Exporte vers la racine Minecraft
+gui.button.export.minecraftdir=Exporte vers le dossier Minecraft
+gui.button.upload=Mettre en ligne sur Mojang
+gui.button.upload.tooltip=Met en ligne votre Skin. ATTENTION: Ouvre le navigateur
+gui.button.export.custom=Envoyer vers ...
+gui.button.export.custom.tooltip=Envoie dans un dossier spécialisé
+gui.button.openfolder.tooltip=Ouvre le dossier dans lequel vous avez exporté le skin
+gui.button.openfolder=Ouvre l'emplacement de l'exportation
+
+tails.export.success=Skin correctement sauvegarder sous %s
+tails.upload.unavailable=Cette fonction n'est pas encore ajoutée!
