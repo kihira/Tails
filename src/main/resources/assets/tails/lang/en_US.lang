@@ -27,6 +27,7 @@ gui.button.openfolder=Open Export Location
 gui.button.editor=Tails Editor
 gui.button.reset=Reset
 gui.button.save=Save
+gui.button.edit=Edit
 
 gui.tint=Tint %s
 gui.tint.edit=Editing Tint %s
