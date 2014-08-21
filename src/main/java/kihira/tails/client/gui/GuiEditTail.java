@@ -17,10 +17,10 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Edit tint buttons
         int topOffset = 20;
         for (int i = 2; i <= 4; i++) {
-            this.buttonList.add(new GuiButton(i, this.previewWindowRight + 30, topOffset, 40, 20, "Edit"));
+            this.buttonList.add(new GuiButton(i, this.previewWindowRight + 30, topOffset, 40, 20, I18n.format("gui.button.edit")));
             topOffset += 35;
         }
 
@@ -100,16 +100,17 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         this.buttonList.add(this.bSlider = new GuiSlider(this, 7, this.previewWindowRight + 5, this.editPaneTop + 75, 100, 0, 255, 0));
 
         //Reset/Save
-        this.buttonList.add(this.tintReset = new GuiButton(8, this.previewWindowRight + 5, this.height - 25, 50, 20, "Reset"));
-        this.buttonList.add(this.tintSave = new GuiButton(9, this.previewWindowRight + 55, this.height - 25, 50, 20, "Save"));
+        this.buttonList.add(this.tintReset = new GuiButton(8, this.previewWindowRight + 5, this.height - 25, 50, 20, I18n.format("gui.button.reset")));
+        this.buttonList.add(this.tintSave = new GuiButton(9, this.previewWindowRight + 55, this.height - 25, 50, 20, I18n.format("gui.button.save")));
 
         //Tail List
         List<TailEntry> tailList = new ArrayList<TailEntry>();
-        tailList.add(new TailEntry(new TailInfo(UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"), false, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null))); //No tail
+        UUID uuid = UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"); //Just a random UUID
+        tailList.add(new TailEntry(new TailInfo(uuid, false, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null))); //No tail
         //Generate tail preview textures and add to list
         for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
             for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
-                TailInfo tailInfo = new TailInfo(UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"), true, type, subType, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
+                TailInfo tailInfo = new TailInfo(uuid, true, type, subType, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
                 tailList.add(new TailEntry(tailInfo));
             }
         }
@@ -123,18 +124,18 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
                 this.previewWindowBottom + 5, this.width - (previewWindowEdgeOffset * 2) - (this.scaledRes.getScaledWidth() / 30), -180, 180, (int) this.yaw));
 
         //Live Preview
-        String s = StatCollector.translateToLocal("gui.button.livepreview");
+        String s = I18n.format("gui.button.livepreview");
         this.buttonList.add(this.livePreviewButton = new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, this.fontRendererObj.getStringWidth(s) + 7, 20, s,
-                this.scaledRes.getScaledWidth() / 2, StatCollector.translateToLocal("gui.button.livepreview.0.tooltip")));
+                this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.livepreview.0.tooltip")));
         this.livePreviewButton.enabled = false;
 
         //Reset/Save
-        this.buttonList.add(new GuiButton(12, this.previewWindowRight - 83, this.height - 25, 40, 20, "Reset"));
-        this.buttonList.add(new GuiButton(13, this.previewWindowRight - 43, this.height - 25, 40, 20, "Done"));
+        this.buttonList.add(new GuiButton(12, this.previewWindowRight - 83, this.height - 25, 40, 20, I18n.format("gui.button.reset")));
+        this.buttonList.add(new GuiButton(13, this.previewWindowRight - 43, this.height - 25, 40, 20, I18n.format("gui.done")));
 
         //Export
-        this.buttonList.add(new GuiButtonTooltip(14, (this.width / 2) - 20, this.height - 25, 40, 20, StatCollector.translateToLocal("gui.button.export"),
-                this.scaledRes.getScaledWidth() / 3, StatCollector.translateToLocal("gui.button.export.0.tooltip")));
+        this.buttonList.add(new GuiButtonTooltip(14, (this.width / 2) - 20, this.height - 25, 40, 20, I18n.format("gui.button.export"),
+                this.scaledRes.getScaledWidth() / 3, I18n.format("gui.button.export.0.tooltip")));
 
         this.refreshTintPane();
     }
@@ -151,7 +152,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Tints
         int topOffset = 10;
         for (int tint = 1; tint <= 3; tint++) {
-            String s = "Tint " + tint;
+            String s = I18n.format("gui.tint", tint);
             this.fontRendererObj.drawString(s, this.previewWindowRight+ 5, topOffset, 0xFFFFFF);
             this.drawGradientRect(this.previewWindowRight + 5, topOffset + 10, this.previewWindowRight + 25, topOffset + 30, tailInfo.tints[tint - 1], tailInfo.tints[tint - 1]);
             topOffset += 35;
@@ -160,9 +161,9 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Editing tint pane
         if (this.currTintEdit > 0) {
             this.drawHorizontalLine(this.previewWindowRight, this.width, this.editPaneTop, 0xFF000000);
-            this.fontRendererObj.drawString("Editing Tint " + this.currTintEdit, this.previewWindowRight + 5, this.editPaneTop + 5, 0xFFFFFF);
+            this.fontRendererObj.drawString(I18n.format("gui.tint.edit", this.currTintEdit), this.previewWindowRight + 5, this.editPaneTop + 5, 0xFFFFFF);
 
-            this.fontRendererObj.drawString("Hex:", this.previewWindowRight + 5, this.editPaneTop + 21, 0xFFFFFF);
+            this.fontRendererObj.drawString(I18n.format("gui.hex") + ":", this.previewWindowRight + 5, this.editPaneTop + 21, 0xFFFFFF);
             this.hexText.drawTextBox();
         }
 
@@ -396,11 +397,11 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         public void drawEntry(int p_148279_1_, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int p_148279_7_, int p_148279_8_, boolean p_148279_9_) {
             if (this.tailInfo.hastail) {
                 renderTail(previewWindowLeft - 25, y - 25, 50, this.tailInfo);
-                fontRendererObj.drawString(StatCollector.translateToLocal(ClientEventHandler.tailTypes[tailInfo.typeid].getUnlocalisedName(tailInfo.subid)), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
+                fontRendererObj.drawString(I18n.format(ClientEventHandler.tailTypes[tailInfo.typeid].getUnlocalisedName(tailInfo.subid)), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
 
             }
             else {
-                fontRendererObj.drawString(StatCollector.translateToLocal("tail.none.name"), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
+                fontRendererObj.drawString(I18n.format("tail.none.name"), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
             }
         }
 

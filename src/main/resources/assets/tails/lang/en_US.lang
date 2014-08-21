@@ -25,6 +25,12 @@ gui.button.export.custom.tooltip=Export to a custom folder
 gui.button.openfolder.tooltip=Open the folder where you exported your skin to
 gui.button.openfolder=Open Export Location
 gui.button.editor=Tails Editor
+gui.button.reset=Reset
+gui.button.save=Save
+
+gui.tint=Tint %s
+gui.tint.edit=Editing Tint %s
+gui.hex=Hex
 
 tails.export.success=Successfully saved skin to %s
 tails.upload.unavailable=This feature is not yet functional!

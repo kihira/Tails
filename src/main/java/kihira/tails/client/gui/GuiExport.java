@@ -37,12 +37,15 @@ public class GuiExport extends GuiBaseScreen {
     public void initGui() {
         this.scaledRes = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
 
+        //Left
         this.buttonList.add(new GuiButtonTooltip(0, 20, this.height - 90, 130, 20, I18n.format("gui.button.export.userdir"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.export.tooltip", System.getProperty("user.home"))));
         this.buttonList.add(new GuiButtonTooltip(1, 20, this.height - 65, 130, 20, I18n.format("gui.button.export.minecraftdir"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.export.tooltip", System.getProperty("user.dir"))));
         this.buttonList.add(new GuiButtonTooltip(2, 20, this.height - 40, 130, 20, I18n.format("gui.button.export.custom"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.export.custom.tooltip")));
+
+        //Right
         this.buttonList.add(this.openFolderButton = new GuiButtonTooltip(3, this.width - 150, this.height - 65, 130, 20, I18n.format("gui.button.openfolder"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.openfolder.tooltip")));
         this.openFolderButton.visible = !Strings.isNullOrEmpty(this.exportMessage);
