@@ -14,6 +14,7 @@
 
 package kihira.tails.client;
 
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
@@ -43,7 +44,7 @@ public class ClientEventHandler {
 
     private boolean hasSentTailInfoToServer = false;
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
     	UUID uuid = e.entityPlayer.getGameProfile().getId();
         if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
