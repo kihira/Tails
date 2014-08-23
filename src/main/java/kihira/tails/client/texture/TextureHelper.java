@@ -105,7 +105,10 @@ public class TextureHelper {
                 image.setRGB(tint2Pixel.getX(), tint2Pixel.getY(), tailInfo.tints[1]);
                 image.setRGB(tint3Pixel.getX(), tint3Pixel.getY(), tailInfo.tints[2]);
             }
+            Tails.logger.warn("Attempted to write TailInfo to skin but player doesn't have a skin!");
         }
+        //Fallback to steve skin
+        Tails.logger.warn("Attempted to write TailInfo to skin but player doesn't have a skin!");
 
         return image;
     }
