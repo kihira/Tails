@@ -66,7 +66,7 @@ public class TextureHelper {
             image.setRGB(switch1Pixel.getX(), switch1Pixel.getY(), switch1Colour);
             image.setRGB(switch2Pixel.getX(), switch2Pixel.getY(), switch2Colour);
             //Type, subtype and texture
-            int dataColour = 0xFF;
+            int dataColour = 0xFF000000;
             dataColour = dataColour | tailInfo.typeid << 16;
             dataColour = dataColour | tailInfo.subid << 8;
             dataColour = dataColour | tailInfo.textureID;
