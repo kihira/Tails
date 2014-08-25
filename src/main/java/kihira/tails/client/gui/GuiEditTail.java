@@ -61,11 +61,9 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Backup original TailInfo or create default one
         TailInfo tailInfo;
         if (Tails.localPlayerTailInfo == null) {
-            tailInfo = new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 , 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
+            Tails.setLocalPlayerTailInfo(new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 , 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null));
         }
-        else {
-            tailInfo = Tails.localPlayerTailInfo;
-        }
+        tailInfo = Tails.localPlayerTailInfo;
         this.originalTailInfo = tailInfo.deepCopy();
         this.tailInfo = this.originalTailInfo.deepCopy();
 
