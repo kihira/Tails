@@ -24,6 +24,14 @@ gui.button.export.custom=Envoyer vers ...
 gui.button.export.custom.tooltip=Envoie dans un dossier spécialisé
 gui.button.openfolder.tooltip=Ouvre le dossier dans lequel vous avez exporté le skin
 gui.button.openfolder=Ouvre l'emplacement de l'exportation
+gui.button.editor=Editeur de Queue
+gui.button.reset=Reactualiser
+gui.button.save=Sauvegarder
+gui.button.edit=Editer
+
+gui.tint=Teinte %s
+gui.tint.edit=Editée la Teinte %s
+gui.hex=Hex
 
 tails.export.success=Skin correctement sauvegarder sous %s
 tails.upload.unavailable=Cette fonction n'est pas encore ajoutée!
