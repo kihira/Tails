@@ -1,0 +1,37 @@
+tail.none.name=Geen Staart
+tail.dragon.0.name=Hagedis Staart
+tail.dragon.1.name=Draken Staart
+tail.fox.0.name=Vossen Start
+tail.fox.1.name=Tweeling Staart
+tail.fox.2.name=Negenling Staart
+tail.raccoon.0.name=Wasbeer Staart
+tail.devil.0.name=Duivel Staart
+tail.devil.1.name=Duivel Staart (Geen eindpuntje)
+
+gui.export.title=Exporteer Instellingen
+gui.export.information=Deze optie is voor het opstaan van de data van je staart in je skin. Je zult er niks van zien, omdat minecraft deze pixels niet gebruikt.
+
+gui.button.livepreview=Live Voorbeeld
+gui.button.livepreview.0.tooltip=Laat je staart zien met de kleuren die jij selecteert
+gui.button.export=Exporteren
+gui.button.export.0.tooltip=Exporteert jouw skin met extra pixels voor de mod, zodat mensen op servers je staart kunnen zien zonder de mod.
+gui.button.export.tooltip=Exporteer een speciale versie van jouw skin naar %s
+gui.button.export.userdir=Exporteer naar de User Home
+gui.button.export.minecraftdir=Exporteer naar de minecraft folder
+gui.button.upload=Upload naar Mojang
+gui.button.upload.tooltip=Upload jouw skin. WAARSCHUWING: Je browser word geopend!
+gui.button.export.custom=Exporteren naar...
+gui.button.export.custom.tooltip=Exporteer naar een folder
+gui.button.openfolder.tooltip=Open de folder met je opgeslagen skin
+gui.button.openfolder=Open Exporteer Locatie
+gui.button.editor=Tails Editor
+gui.button.reset=Opnieuw Beginnen
+gui.button.save=Opslaan
+gui.button.edit=Bewerken
+
+gui.tint=Tint %s
+gui.tint.edit=Tint %s aan het bewerken
+gui.hex=Hex
+
+tails.export.success=Seccesvol de skin opgeslagen naar %s
+tails.upload.unavailable=Deze optie werkt nog niet! :(
