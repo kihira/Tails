@@ -30,7 +30,7 @@ gui.button.save=Sauvegarder
 gui.button.edit=Editer
 
 gui.tint=Teinte %s
-gui.tint.edit=Editée la Teinte %s
+gui.tint.edit=Editer la Teinte %s
 gui.hex=Hex
 
 tails.export.success=Skin correctement sauvegarder sous %s
