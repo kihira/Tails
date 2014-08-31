@@ -49,6 +49,7 @@ public class Tails {
 
     public static Configuration configuration;
     public static boolean hasRemote;
+    public static final String minFoxlibVersion = "0.4.1.24";
 
     @SidedProxy(clientSide = "kihira.tails.proxy.ClientProxy", serverSide = "kihira.tails.proxy.CommonProxy")
     public static CommonProxy proxy;
@@ -64,6 +65,7 @@ public class Tails {
     public void onPreInit(FMLPreInitializationEvent e) {
         if (!isFoxlibInstalled()) {
             if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+                removeOudatedFoxlib();
                 downloadFoxlib();
                 FMLCommonHandler.instance().bus().register(new EventGuiTick());
             } else {
@@ -122,15 +124,30 @@ public class Tails {
     }
 
     public static boolean isFoxlibInstalled() {
-        return Loader.isModLoaded("foxlib");
+        return Loader.isModLoaded("foxlib@[" + minFoxlibVersion + ",)");
+    }
+    
+    @SideOnly(Side.CLIENT)
+    public void removeOudatedFoxlib() {
+        try {
+            File modsDir =  new File(Minecraft.getMinecraft().mcDataDir + File.separator + "mods" + File.separator);
+            File installedMods[] = modsDir.listFiles();
+            for (int i = 0; i < installedMods.length; i++) {
+                String name = installedMods[i].getName();
+                if (name.contains("FoxLib")) {
+                    installedMods[i].deleteOnExit();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @SideOnly(Side.CLIENT)
     public void downloadFoxlib() {
         try {
-            FileUtils.copyURLToFile(new URL("http://www.curse.com/mc-mods/minecraft/223291-foxlib#"), new File(Minecraft.getMinecraft().mcDataDir + File.separator + "mods" + File.separator + "FoxLib-1.7.10-0.4.1.jar"));
-        }
-        catch (IOException e){
+            FileUtils.copyURLToFile(new URL("http://maven.kihirakreations.co.uk/kihira/foxlib/FoxLib/1.7.10-" + minFoxlibVersion + "/FoxLib-1.7.10-" + minFoxlibVersion ".jar"), new File(Minecraft.getMinecraft().mcDataDir + File.separator + "mods" + File.separator + "FoxLib-1.7.10-" + minFoxlibVersion + ".jar"));
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
