@@ -12,7 +12,7 @@ public class EventGuiTick {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent e) {
         if (mc.currentScreen instanceof GuiMainMenu) {
-            mc.displayGuiScreen(new GuiYesNo(null, "We just downloaded foxlib, because you need it for the mod!", "Do you want to restart the game now? (no will crash the game)", 0));
+            mc.displayGuiScreen(new GuiYesNo(null, I18n.format("tails.foxlib.0"), I18n.format("tails.foxlib.2"), 0));
         }
     }
 }
