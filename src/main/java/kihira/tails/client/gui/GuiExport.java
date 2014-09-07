@@ -109,6 +109,10 @@ public class GuiExport extends GuiBaseScreen {
                         e.printStackTrace();
                     }
                 }
+                else {
+                    this.exportMessage = String.format("Failed to export skin, image was null!");
+                    file.delete();
+                }
             }
 
             if (Strings.isNullOrEmpty(this.exportMessage)) {

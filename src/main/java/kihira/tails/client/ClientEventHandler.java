@@ -28,8 +28,7 @@ import kihira.tails.common.Tails;
 import kihira.tails.common.network.TailInfoMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
-import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -60,14 +59,14 @@ public class ClientEventHandler {
     @SubscribeEvent
     @SuppressWarnings("unchecked")
     public void onScreenInitPost(GuiScreenEvent.InitGuiEvent.Post event) {
-        if (event.gui instanceof GuiInventory || event.gui instanceof GuiContainerCreative) {
+        if (event.gui instanceof GuiIngameMenu) {
             event.buttonList.add(new GuiButton(1234, (event.gui.width / 2) - 35, event.gui.height - 25, 70, 20, I18n.format("gui.button.editor")));
         }
     }
 
     @SubscribeEvent
     public void onButtonClickPre(GuiScreenEvent.ActionPerformedEvent.Pre event) {
-        if (event.gui instanceof GuiInventory || event.gui instanceof GuiContainerCreative) {
+        if (event.gui instanceof GuiIngameMenu) {
             if (event.button.id == 1234) {
                 event.gui.mc.displayGuiScreen(new GuiEditTail());
                 event.setCanceled(true);

@@ -1,8 +1,6 @@
 package kihira.tails.client.texture;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.ClientEventHandler;
@@ -12,14 +10,11 @@ import kihira.tails.common.Tails;
 import kihira.tails.common.network.TailInfoMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.ThreadDownloadImageData;
-import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.util.Point;
 
 import java.awt.image.BufferedImage;
-import java.util.Map;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
@@ -39,73 +34,49 @@ public class TextureHelper {
 
     @SuppressWarnings("rawtypes")
 	public static void buildPlayerInfo(EntityPlayer player) {
-		Minecraft mc = Minecraft.getMinecraft();
 		GameProfile profile = player.getGameProfile();
 		UUID uuid = profile.getId();
-		
-		Map map = mc.func_152342_ad().func_152788_a(profile);
-		
-		if (map.containsKey(MinecraftProfileTexture.Type.SKIN)) {
-            ResourceLocation skinloc = mc.func_152342_ad().func_152792_a((MinecraftProfileTexture)map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN);
-            ITextureObject skintex = mc.getTextureManager().getTexture(skinloc);
-            
-            if (skintex instanceof ThreadDownloadImageData) {
-            	ThreadDownloadImageData imagedata = (ThreadDownloadImageData)skintex;
-            	BufferedImage image = ObfuscationReflectionHelper.getPrivateValue(ThreadDownloadImageData.class, imagedata, "bufferedImage", "field_110560_d", "bpj.g");
-            	
-            	if (image == null) { return; }
-            	
-            	int scol1 = image.getRGB(switch1Pixel.getX(), switch1Pixel.getY());
-            	int scol2 = image.getRGB(switch2Pixel.getX(), switch2Pixel.getY());
+        BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage((AbstractClientPlayer) player);
+        if (image != null) {
+            int scol1 = image.getRGB(switch1Pixel.getX(), switch1Pixel.getY());
+            int scol2 = image.getRGB(switch2Pixel.getX(), switch2Pixel.getY());
 
-                TailInfo tailInfo;
-            	if (scol1 == switch1Colour && scol2 == switch2Colour) {
-                    tailInfo = buildTailInfoFromSkin(uuid, image);
-            	}
-            	else {
-            		tailInfo = new TailInfo(uuid, false, 0, 0, 0, 0, 0, null);
-            	}
-                Tails.proxy.addTailInfo(uuid, tailInfo);
-                //If local player, send our skin info the server.
-                if (player == Minecraft.getMinecraft().thePlayer) {
-                    Tails.setLocalPlayerTailInfo(tailInfo);
-                    Tails.networkWrapper.sendToServer(new TailInfoMessage(tailInfo, false));
-                }
+            TailInfo tailInfo;
+            if (scol1 == switch1Colour && scol2 == switch2Colour) {
+                tailInfo = buildTailInfoFromSkin(uuid, image);
+            }
+            else {
+                tailInfo = new TailInfo(uuid, false, 0, 0, 0, 0, 0, null);
+            }
+            Tails.proxy.addTailInfo(uuid, tailInfo);
+            //If local player, send our skin info the server.
+            if (player == Minecraft.getMinecraft().thePlayer) {
+                Tails.setLocalPlayerTailInfo(tailInfo);
+                Tails.networkWrapper.sendToServer(new TailInfoMessage(tailInfo, false));
             }
         }
 	}
 
     public static BufferedImage writeTailInfoToSkin(TailInfo tailInfo, AbstractClientPlayer player) {
-        Minecraft mc = Minecraft.getMinecraft();
-        GameProfile profile = player.getGameProfile();
-        Map map = mc.func_152342_ad().func_152788_a(profile);
-        BufferedImage image = null;
+        BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
 
         //Check we have the players skin
-        if (map.containsKey(MinecraftProfileTexture.Type.SKIN)) {
-            ResourceLocation skinloc = mc.func_152342_ad().func_152792_a((MinecraftProfileTexture)map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN);
-            ITextureObject skintex = mc.getTextureManager().getTexture(skinloc);
-
-            if (skintex instanceof ThreadDownloadImageData) {
-                ThreadDownloadImageData imagedata = (ThreadDownloadImageData)skintex;
-                image = ObfuscationReflectionHelper.getPrivateValue(ThreadDownloadImageData.class, imagedata, "bufferedImage", "field_110560_d", "bpj.g");
-                if (image == null) return null;
-
-                //Switch colours
-                image.setRGB(switch1Pixel.getX(), switch1Pixel.getY(), switch1Colour);
-                image.setRGB(switch2Pixel.getX(), switch2Pixel.getY(), switch2Colour);
-                //Type, subtype and texture
-                int dataColour = 0xFF;
-                dataColour = dataColour | tailInfo.typeid << 16;
-                dataColour = dataColour | tailInfo.subid << 8;
-                dataColour = dataColour | tailInfo.textureID;
-                image.setRGB(dataPixel.getX(), dataPixel.getY(), dataColour);
-                //Tints
-                image.setRGB(tint1Pixel.getX(), tint1Pixel.getY(), tailInfo.tints[0]);
-                image.setRGB(tint2Pixel.getX(), tint2Pixel.getY(), tailInfo.tints[1]);
-                image.setRGB(tint3Pixel.getX(), tint3Pixel.getY(), tailInfo.tints[2]);
-            }
+        if (image != null) {
+            //Switch colours
+            image.setRGB(switch1Pixel.getX(), switch1Pixel.getY(), switch1Colour);
+            image.setRGB(switch2Pixel.getX(), switch2Pixel.getY(), switch2Colour);
+            //Type, subtype and texture
+            int dataColour = 0xFF000000;
+            dataColour = dataColour | tailInfo.typeid << 16;
+            dataColour = dataColour | tailInfo.subid << 8;
+            dataColour = dataColour | tailInfo.textureID;
+            image.setRGB(dataPixel.getX(), dataPixel.getY(), dataColour);
+            //Tints
+            image.setRGB(tint1Pixel.getX(), tint1Pixel.getY(), tailInfo.tints[0]);
+            image.setRGB(tint2Pixel.getX(), tint2Pixel.getY(), tailInfo.tints[1]);
+            image.setRGB(tint3Pixel.getX(), tint3Pixel.getY(), tailInfo.tints[2]);
         }
+        else Tails.logger.warn("Attempted to write TailInfo to skin but player doesn't have a skin!");
 
         return image;
     }
