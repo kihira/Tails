@@ -1,9 +1,13 @@
 package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
+
 import kihira.foxlib.client.gui.*;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.FakeEntity;
+import kihira.tails.client.gui.controls.GuiHSBSlider;
+import kihira.tails.client.gui.controls.GuiHSBSlider.HSBSliderType;
+import kihira.tails.client.gui.controls.GuiHSBSlider.IHSBSliderCallback;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
@@ -21,13 +25,15 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+
 import org.lwjgl.opengl.GL11;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IListCallback {
+public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IListCallback, IHSBSliderCallback {
 
     private float yaw = 0F;
     private float pitch = 0F;
@@ -35,6 +41,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     private int currTintEdit = 0;
     private int currTintColour = 0xFFFFFF;
     private GuiTextField hexText;
+    private GuiHSBSlider[] hsbSliders;
     private GuiSlider rSlider;
     private GuiSlider gSlider;
     private GuiSlider bSlider;
@@ -78,7 +85,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         this.previewWindowLeft = previewWindowEdgeOffset;
         this.previewWindowRight = this.width - previewWindowEdgeOffset;
         this.previewWindowBottom = this.height - 55;
-        this.editPaneTop = this.height - 125;
+        this.editPaneTop = this.height - 190;
 
         //Edit tint buttons
         int topOffset = 20;
@@ -93,9 +100,18 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         this.hexText.setText(Integer.toHexString(this.currTintColour));
 
         //RGB sliders
-        this.buttonList.add(this.rSlider = new GuiSlider(this, 5, this.previewWindowRight + 5, this.editPaneTop + 35, 100, 0, 255, 0));
-        this.buttonList.add(this.gSlider = new GuiSlider(this, 6, this.previewWindowRight + 5, this.editPaneTop + 55, 100, 0, 255, 0));
-        this.buttonList.add(this.bSlider = new GuiSlider(this, 7, this.previewWindowRight + 5, this.editPaneTop + 75, 100, 0, 255, 0));
+        this.buttonList.add(this.rSlider = new GuiSlider(this, 5, this.previewWindowRight + 5, this.editPaneTop + 95, 100, 0, 255, 0));
+        this.buttonList.add(this.gSlider = new GuiSlider(this, 6, this.previewWindowRight + 5, this.editPaneTop + 115, 100, 0, 255, 0));
+        this.buttonList.add(this.bSlider = new GuiSlider(this, 7, this.previewWindowRight + 5, this.editPaneTop + 135, 100, 0, 255, 0));
+
+        //HBS sliders
+        hsbSliders = new GuiHSBSlider[3];
+        hsbSliders[0] = new GuiHSBSlider(15, this.previewWindowRight + 5, this.editPaneTop + 35, 100, 10, this, HSBSliderType.HUE);
+        hsbSliders[1] = new GuiHSBSlider(16, this.previewWindowRight + 5, this.editPaneTop + 55, 100, 10, this, HSBSliderType.SATURATION);
+        hsbSliders[2] = new GuiHSBSlider(17, this.previewWindowRight + 5, this.editPaneTop + 75, 100, 10, this, HSBSliderType.BRIGHTNESS);
+        this.buttonList.add(hsbSliders[0]);
+        this.buttonList.add(hsbSliders[1]);
+        this.buttonList.add(hsbSliders[2]);
 
         //Reset/Save
         this.buttonList.add(this.tintReset = new GuiButton(8, this.previewWindowRight + 5, this.height - 25, 50, 20, I18n.format("gui.button.reset")));
@@ -271,17 +287,34 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         this.gSlider.packedFGColour = (255 | (int) this.gSlider.currentValue) << 8;
         this.bSlider.setCurrentValue(this.currTintColour & 255);
         this.bSlider.packedFGColour = (255 | (int) this.bSlider.currentValue);
+        refreshHsbSliders();
 
         if (this.currTintEdit > 0) {
-            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = this.tintReset.visible = this.tintSave.visible = true;
+            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = true;
+            this.hsbSliders[0].visible = this.hsbSliders[1].visible = this.hsbSliders[2].visible = true;
+            this.tintReset.visible = this.tintSave.visible = true;
         }
+        
         else {
-            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = this.tintReset.visible = this.tintSave.visible = false;
+            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = false;
+            this.hsbSliders[0].visible = this.hsbSliders[1].visible = this.hsbSliders[2].visible = false;
+            this.tintReset.visible = this.tintSave.visible = false;
         }
 
         if (!this.livePreviewButton.enabled) {
             this.updateTailInfo();
         }
+    }
+    
+    private void refreshHsbSliders() {
+        Color c = new Color(this.currTintColour);
+        float[] hsbvals = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
+        hsbSliders[0].setValue(hsbvals[0]);
+        hsbSliders[1].setValue(hsbvals[1]);
+        hsbSliders[2].setValue(hsbvals[2]);
+        //The saturation slider needs to know the value of the other 2 sliders
+        hsbSliders[1].setHue((float) hsbSliders[0].getValue());
+        hsbSliders[1].setBrightness((float) hsbSliders[2].getValue());
     }
 
     private void drawEntity(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
@@ -353,6 +386,15 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
             this.refreshTintPane();
         }
         return true;
+    }
+
+    @Override
+    public void onValueChangeHSBSlider(GuiHSBSlider source, double sliderValue) {
+        float[] hsbvals = { (float)hsbSliders[0].getValue(), (float)hsbSliders[1].getValue(), (float)hsbSliders[2].getValue() };
+        hsbvals[source.getType().ordinal()] = (float)sliderValue;
+        this.currTintColour = Color.getHSBColor(hsbvals[0], hsbvals[1], hsbvals[2]).getRGB();
+        this.hexText.setText(Integer.toHexString(this.currTintColour));
+        this.refreshTintPane();
     }
 
     void updateTailInfo() {
