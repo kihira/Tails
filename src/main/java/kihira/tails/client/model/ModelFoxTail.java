@@ -74,7 +74,6 @@ public class ModelFoxTail extends ModelTailBase {
         double zAngleOffset = 0;
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
-            //yAngleOffset = MathHelper.clamp_double(-entity.motionY / 5, -0.08D, 0.5D);
             double x = player.field_71091_bM + (player.field_71094_bP - player.field_71091_bM) * (double) partialTicks - (player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks);
             double y = player.field_71096_bN + (player.field_71095_bQ - player.field_71096_bN) * (double) partialTicks - (player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks);
             double z = player.field_71097_bO + (player.field_71085_bR - player.field_71097_bO) * (double) partialTicks - (player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks);
@@ -90,15 +89,15 @@ public class ModelFoxTail extends ModelTailBase {
             float cameraYaw = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
             f5 += MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6F) * 32F * cameraYaw;
 
-            xAngleOffset = Math.toRadians(6F + f6 / 2.5F + f5);
+            xAngleOffset = Math.toRadians(f6 / 2.5F + f5);
             yAngleOffset = Math.toRadians(-f7 / 20F);
             zAngleOffset = Math.toRadians(f7 / 2F);
         }
 
-        this.setRotationRadians(this.tailBase, MathHelper.clamp_double(xAngle + (Math.cos(seed + xOffset) / 15F) + xAngleOffset, -1D, 0.1D), (-zAngleOffset / 2F) + yAngle + (Math.cos(seed + yOffset) / 8F) + yAngleOffset, zAngleOffset / 8F);
-        this.setRotationRadians(this.tail1, MathHelper.clamp_double(-0.2617993877991494 + xAngleOffset + Math.abs(zAngleOffset), -1D, 0.1D), Math.cos(seed - 1 + yOffset) / 8F, zAngleOffset / 8F);
-        this.setRotationRadians(this.tail2, MathHelper.clamp_double(-0.2617993877991494 + (xAngleOffset / 2F), -1D, 0D), Math.cos(seed - 1.5F + yOffset) / 8F, zAngleOffset / 8F);
-        this.setRotationRadians(this.tail3, MathHelper.clamp_double(-0.4363323129985824 + (xAngleOffset / 2F), -1D, 0D), Math.cos(seed - 2 + yOffset) / 20F, zAngleOffset / 8F);
+        this.setRotationRadians(this.tailBase, MathHelper.clamp_double(xAngle + (Math.cos(seed + xOffset) / 15F) + xAngleOffset, -1D, 0.1D), (-zAngleOffset / 2F) + yAngle + (Math.cos(seed + yOffset) / 8F) + yAngleOffset, -zAngleOffset / 8F);
+        this.setRotationRadians(this.tail1, MathHelper.clamp_double(-0.2617993877991494 + xAngleOffset + Math.abs(zAngleOffset), -1D, 0.1D), Math.cos(seed - 1 + yOffset) / 8F, -zAngleOffset / 8F);
+        this.setRotationRadians(this.tail2, MathHelper.clamp_double(-0.2617993877991494 + (xAngleOffset / 2F), -1D, 0D), Math.cos(seed - 1.5F + yOffset) / 8F, -zAngleOffset / 8F);
+        this.setRotationRadians(this.tail3, MathHelper.clamp_double(-0.4363323129985824 + (xAngleOffset / 2F), -1D, 0D), Math.cos(seed - 2 + yOffset) / 20F, -zAngleOffset / 20F);
         this.setRotationRadians(this.tail4, MathHelper.clamp_double(0.2617993877991494 - (xAngleOffset / 2F), 0D, 1D), Math.cos(seed - 3 + yOffset) / 8F, 0F);
         this.setRotationRadians(this.tail5, MathHelper.clamp_double(0.2617993877991494 - (xAngleOffset / 2.5F), 0D, 1D), Math.cos(seed - 4 + yOffset) / 8F, 0F);
     }
