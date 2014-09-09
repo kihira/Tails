@@ -17,29 +17,28 @@ buildscript {
 
 repositories {
     maven {
-        name = 'Kihira Repo'
-        url = 'http://maven.kihirakreations.co.uk'
-    }
+        name = 'Kihira Repo'
+        url = 'http://maven.kihirakreations.co.uk'
+    }
 }
 
 configurations {
-    deployerJars
+    deployerJars
 }
 
 dependencies {
-    deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
-
+    deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
     compile "kihira:foxlib:1.7.10-0.4.1.24:userDev"
 }
 
 apply plugin: 'forge'
 
 project.ext {
-    massive = "1"
-    major = "0"
-    minor = "1"
-    mcVersion = "1.7.10"
-    forgeVersion = "10.13.0.1180"
+    massive = "1"
+    major = "0"
+    minor = "1"
+    mcVersion = "1.7.10"
+    forgeVersion = "10.13.0.1180"
 }
 
 version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}.${System.getenv("BUILD_NUMBER") ?: 0}"
@@ -65,27 +64,27 @@ processResources {
 }
 
 task userDevJar(type: Jar) {
-    from(sourceSets.main.output)
-    from(sourceSets.main.allSource)
-    classifier = "userdev"
+    from(sourceSets.main.output)
+    from(sourceSets.main.allSource)
+    classifier = "userdev"
 }
 
 
 artifacts {
-    archives userDevJar
+    archives userDevJar
 }
 
 uploadArchives {
-    if (project.hasProperty("maven_url")) {
-        repositories.mavenDeployer {
-            configuration = configurations.deployerJars
-            repository(url: project.maven_url) {
-                authentication(userName: project.maven_username, password: project.maven_password)
-            }
-        }
-    }
+    if (project.hasProperty("maven_url")) {
+        repositories.mavenDeployer {
+            configuration = configurations.deployerJars
+            repository(url: project.maven_url) {
+                authentication(userName: project.maven_username, password: project.maven_password)
+            }
+        }
+    }
 }
 
 task('uploadJars', dependsOn: uploadArchives) {
-    description = "Uploads JARs"
+    description = "Uploads JARs"
 }
