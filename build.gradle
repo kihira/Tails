@@ -16,6 +16,7 @@ buildscript {
 }
 
 repositories {
+    mavenCentral()
     maven {
         name = 'Kihira Repo'
         url = 'http://maven.kihirakreations.co.uk'
@@ -24,29 +25,32 @@ repositories {
 
 apply plugin: 'forge'
 
+project.ext {
+    massive = "1"
+    major = "1"
+    minor = "0"
+    mcVersion = "1.7.10"
+    forgeVersion = "10.13.0.1180"
+    foxlibVersion = "1.7.10-0.4.1.28"
+}
+
 configurations {
     deployerJars
 }
 
 dependencies {
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
-    compile "kihira:FoxLib:1.7.10-0.4.1.28:dev"
-}
-
-project.ext {
-    massive = "1"
-    major = "0"
-    minor = "1"
-    mcVersion = "1.7.10"
-    forgeVersion = "10.13.0.1180"
+    compile "kihira:FoxLib:"+project.foxlibVersion+":dev"
 }
 
 version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}.${System.getenv("BUILD_NUMBER") ?: 0}"
-group= "kihira" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group= "kihira"
 archivesBaseName = "Tails"
 
 minecraft {
     version = "1.7.10-10.13.0.1180"
+    replace '@VERSION@', project.version
+    replace '@FOXLIBVERSION@', project.foxlibVersion
 }
 processResources {
     // replace stuff in mcmod.info, nothing else
@@ -128,8 +132,5 @@ uploadArchives {
                 }
             }
         }
-    }
-    else {
-        add project.repositories.mavenLocal()
     }
 }
