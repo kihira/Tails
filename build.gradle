@@ -30,7 +30,7 @@ configurations {
 
 dependencies {
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
-    compile "kihira:foxlib:1.7.10-0.4.1.24:userDev"
+    compile "kihira:FoxLib:1.7.10-0.4.1.28:dev"
 }
 
 project.ext {
@@ -42,7 +42,7 @@ project.ext {
 }
 
 version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}.${System.getenv("BUILD_NUMBER") ?: 0}"
-group= "kihira.tails" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group= "kihira" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Tails"
 
 minecraft {
@@ -63,28 +63,73 @@ processResources {
     }
 }
 
-task userDevJar(type: Jar) {
-    from(sourceSets.main.output)
-    from(sourceSets.main.allSource)
-    classifier = "userdev"
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    from sourceSets.api.allSource
+    classifier = 'src'
 }
 
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    from sourceSets.api.output
+    classifier = 'dev'
+}
 
 artifacts {
-    archives userDevJar
+    archives sourceJar
+    archives deobfJar
 }
 
 uploadArchives {
+    dependsOn 'reobf'
+
     if (project.hasProperty("maven_url")) {
         repositories.mavenDeployer {
             configuration = configurations.deployerJars
             repository(url: project.maven_url) {
                 authentication(userName: project.maven_username, password: project.maven_password)
             }
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = project.archivesBaseName
+                project {
+                    name project.archivesBaseName
+                    packaging 'jar'
+                    description 'Tails'
+                    url 'http://kihirakreations.co.uk'
+
+                    scm {
+                        url 'https://github.com/kihira/Tails'
+                        connection 'scm:git:git://github.com/kihira/Tails.git'
+                        developerConnection 'scm:git:git@github.com:kihira/Tails.git'
+                    }
+
+                    issueManagement {
+                        system 'github'
+                        url 'https://github.com/kihira/Tails/issues'
+                    }
+
+                    licenses {
+                        license {
+                            name 'MIT'
+                            url 'https://github.com/kihira/Tails/blob/master/LICENSE'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'Kihira'
+                            name 'Kihira'
+                            roles { role 'developer' }
+                        }
+                    }
+                }
+            }
         }
     }
-}
-
-task('uploadJars', dependsOn: uploadArchives) {
-    description = "Uploads JARs"
+    else {
+        add project.repositories.mavenLocal()
+    }
 }
