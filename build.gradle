@@ -26,12 +26,13 @@ configurations {
     deployerJars
 }
 
+apply plugin: 'forge'
+
 dependencies {
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
     compile "kihira:foxlib:1.7.10-0.4.1.24:userDev"
 }
 
-apply plugin: 'forge'
 
 project.ext {
     massive = "1"
