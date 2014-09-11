@@ -41,21 +41,12 @@ public class ClientEventHandler {
     //TODO this is not the best way to keep track of tails, enums?
 	public static final RenderTail[] tailTypes = { new RenderFoxTail(), new RenderDragonTail(), new RenderRaccoonTail(), new RenderDevilTail()};
 
-    private boolean hasSentTailInfoToServer = false;
+    private boolean sentTailInfoToServer = false;
+    private boolean clearAllTailInfo = false;
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
-    	UUID uuid = e.entityPlayer.getGameProfile().getId();
-        if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
-        	TailInfo info = Tails.proxy.getTailInfo(uuid);
-        	
-        	int type = info.typeid;
-        	type = type > tailTypes.length ? 0 : type;
-        	
-            tailTypes[type].render(e.entityPlayer, info, e.partialRenderTick);
-        }
-    }
-
+    /*
+        *** Tails Editor Button ***
+     */
     @SubscribeEvent
     @SuppressWarnings("unchecked")
     public void onScreenInitPost(GuiScreenEvent.InitGuiEvent.Post event) {
@@ -74,6 +65,9 @@ public class ClientEventHandler {
         }
     }
 
+    /*
+        *** Tails syncing ***
+     */
     @SubscribeEvent
     public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         //Add local player texture to map
@@ -85,19 +79,47 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onPlayerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
         Tails.hasRemote = false;
-        this.hasSentTailInfoToServer = false;
-        Tails.proxy.clearAllTailInfo(); //TODO This won't delete the textures cause it's called from the wrong thread
+        sentTailInfoToServer = false;
+        clearAllTailInfo = true;
+    }
+
+    /*
+        *** Rendering and building TailInfo ***
+     */
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
+        UUID uuid = e.entityPlayer.getGameProfile().getId();
+        if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
+            TailInfo info = Tails.proxy.getTailInfo(uuid);
+
+            int type = info.typeid;
+            type = type > tailTypes.length ? 0 : type;
+
+            tailTypes[type].render(e.entityPlayer, info, e.partialRenderTick);
+        }
     }
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent e) {
-        if (TextureHelper.needsBuild(e.player)) {
-            TextureHelper.buildPlayerInfo(e.player);
+        if (e.phase == TickEvent.Phase.START) {
+            if (TextureHelper.needsBuild(e.player)) {
+                TextureHelper.buildPlayerInfo(e.player);
+            }
         }
-        //World can't be null if we want to send a packet it seems
-        else if (!this.hasSentTailInfoToServer && Minecraft.getMinecraft().theWorld != null) {
-            Tails.networkWrapper.sendToServer(new TailInfoMessage(Tails.localPlayerTailInfo, false));
-            this.hasSentTailInfoToServer = true;
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent e) {
+        if (e.phase == TickEvent.Phase.START) {
+            if (clearAllTailInfo) {
+                Tails.proxy.clearAllTailInfo();
+                clearAllTailInfo = false;
+            }
+            //World can't be null if we want to send a packet it seems
+            else if (!sentTailInfoToServer && Minecraft.getMinecraft().theWorld != null) {
+                Tails.networkWrapper.sendToServer(new TailInfoMessage(Tails.localPlayerTailInfo, false));
+                sentTailInfoToServer = true;
+            }
         }
     }
 }
