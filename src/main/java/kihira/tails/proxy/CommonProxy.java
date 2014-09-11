@@ -43,7 +43,7 @@ public class CommonProxy {
     }
 
     public boolean hasTailInfo(UUID uuid) {
-        return this.tailMap.containsKey(uuid);
+        return uuid != null && this.tailMap.containsKey(uuid);
     }
 
     public TailInfo getTailInfo(UUID uuid) {
