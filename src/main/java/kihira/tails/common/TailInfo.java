@@ -39,7 +39,7 @@ public class TailInfo implements Cloneable {
     public void setTexture(ResourceLocation texture) {
         if (this.texture == null || !this.texture.equals(texture)) {
             try {
-                Minecraft.getMinecraft().renderEngine.deleteTexture(this.texture); //TODO this won't work on servers
+                Minecraft.getMinecraft().renderEngine.deleteTexture(this.texture);
             } catch (Exception ignored) {}
 
             this.needsTextureCompile = true;
