@@ -1,7 +1,14 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
-
 import kihira.foxlib.client.gui.*;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.FakeEntity;
@@ -25,10 +32,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
-
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

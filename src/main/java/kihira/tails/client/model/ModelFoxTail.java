@@ -1,15 +1,9 @@
 /*
- * Copyright (C) 2014  Kihira
+ * The MIT License (MIT)
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Copyright (c) 2014 Zoe Lee (Kihira)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * See LICENSE for full License
  */
 
 package kihira.tails.client.model;
@@ -73,25 +67,10 @@ public class ModelFoxTail extends ModelTailBase {
         double yAngleOffset = 0;
         double zAngleOffset = 0;
         if (entity instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) entity;
-            double x = player.field_71091_bM + (player.field_71094_bP - player.field_71091_bM) * (double) partialTicks - (player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks);
-            double y = player.field_71096_bN + (player.field_71095_bQ - player.field_71096_bN) * (double) partialTicks - (player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks);
-            double z = player.field_71097_bO + (player.field_71085_bR - player.field_71097_bO) * (double) partialTicks - (player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks);
-            float renderYawOffset = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * partialTicks;
-            double d1 = (double)MathHelper.sin(renderYawOffset * (float)Math.PI / 180F);
-            double d2 = (double)(-MathHelper.cos(renderYawOffset * (float)Math.PI / 180F));
-            float f5 = MathHelper.clamp_float((float) y * 10F, -6F, 32F);
-            float f6 = (float)(x * d1 + z * d2) * 100F;
-            float f7 = (float)(x * d2 - z * d1) * 100F;
-
-            if (f6 < 0F) f6 = 0F;
-
-            float cameraYaw = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
-            f5 += MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6F) * 32F * cameraYaw;
-
-            xAngleOffset = Math.toRadians(f6 / 2.5F + f5);
-            yAngleOffset = Math.toRadians(-f7 / 20F);
-            zAngleOffset = Math.toRadians(f7 / 2F);
+            double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
+            xAngleOffset = angles[0];
+            yAngleOffset = angles[1];
+            zAngleOffset = angles[2];
         }
 
         this.setRotationRadians(this.tailBase, MathHelper.clamp_double(xAngle + (Math.cos(seed + xOffset) / 15F) + xAngleOffset, -1D, 0.1D), (-zAngleOffset / 2F) + yAngle + (Math.cos(seed + yOffset) / 8F) + yAngleOffset, -zAngleOffset / 8F);

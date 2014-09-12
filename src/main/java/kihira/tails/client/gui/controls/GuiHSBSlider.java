@@ -1,17 +1,23 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.client.gui.controls;
 
-import java.awt.Color;
-
+import cpw.mods.fml.client.config.GuiSlider;
+import cpw.mods.fml.client.config.GuiUtils;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.client.config.GuiSlider;
-import cpw.mods.fml.client.config.GuiUtils;
+import java.awt.*;
 
 public class GuiHSBSlider extends GuiSlider {
 
