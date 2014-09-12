@@ -87,47 +87,45 @@ artifacts {
 uploadArchives {
     dependsOn 'reobf'
 
-    if (project.hasProperty(teamcity["maven_url"])) {
-        repositories.mavenDeployer {
-            configuration = configurations.deployerJars
-            repository(url: project.maven_url) {
-                authentication(userName: teamcity["maven_username"], password: teamcity["maven_password"])
-            }
-            pom {
-                groupId = project.group
-                version = project.version
-                artifactId = project.archivesBaseName
-                project {
-                    name project.archivesBaseName
-                    packaging 'jar'
-                    description 'Tails'
-                    url 'http://kihirakreations.co.uk'
+    repositories.mavenDeployer {
+        configuration = configurations.deployerJars
+        repository(url: teamcity["maven_url"]) {
+            authentication(userName: teamcity["maven_username"], password: teamcity["maven_password"])
+        }
+        pom {
+            groupId = project.group
+            version = project.version
+            artifactId = project.archivesBaseName
+            project {
+                name project.archivesBaseName
+                packaging 'jar'
+                description 'Tails'
+                url 'http://kihirakreations.co.uk'
 
-                    scm {
-                        url 'https://github.com/kihira/Tails'
-                        connection 'scm:git:git://github.com/kihira/Tails.git'
-                        developerConnection 'scm:git:git@github.com:kihira/Tails.git'
+                scm {
+                    url 'https://github.com/kihira/Tails'
+                    connection 'scm:git:git://github.com/kihira/Tails.git'
+                    developerConnection 'scm:git:git@github.com:kihira/Tails.git'
+                }
+
+                issueManagement {
+                    system 'github'
+                    url 'https://github.com/kihira/Tails/issues'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT'
+                        url 'https://github.com/kihira/Tails/blob/master/LICENSE'
+                        distribution 'repo'
                     }
+                }
 
-                    issueManagement {
-                        system 'github'
-                        url 'https://github.com/kihira/Tails/issues'
-                    }
-
-                    licenses {
-                        license {
-                            name 'MIT'
-                            url 'https://github.com/kihira/Tails/blob/master/LICENSE'
-                            distribution 'repo'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id 'Kihira'
-                            name 'Kihira'
-                            roles { role 'developer' }
-                        }
+                developers {
+                    developer {
+                        id 'Kihira'
+                        name 'Kihira'
+                        roles { role 'developer' }
                     }
                 }
             }
