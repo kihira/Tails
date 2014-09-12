@@ -1,0 +1,37 @@
+tail.none.name=无尾
+tail.dragon.0.name=蜥蜴尾巴
+tail.dragon.1.name=龙尾巴
+tail.fox.0.name=狐狸尾巴
+tail.fox.1.name=双尾
+tail.fox.2.name=九尾
+tail.raccoon.0.name=浣熊尾巴
+tail.devil.0.name=恶魔尾巴
+tail.devil.1.name=恶魔尾巴 (无尖角)
+
+gui.export.title=导出设定
+gui.export.information=使用本模组中导出的皮肤可以让其他玩家看到你带着尾巴的样子, 即便是服务端没有安装本模组 (当然其他玩家仍需在客户端安装本模组). 这个功能将会把你皮肤中的一些闲置像素替换成尾巴的图形. 你可以使用下方的按钮来选择要将皮肤导出到哪里, 或是直接上传至Minecraft的皮肤服务器. 将鼠标悬浮在下方按钮上来查看详细导出位置
+
+gui.button.livepreview=实时预览
+gui.button.livepreview.0.tooltip=当你在编辑时预览窗口将会实时更新尾巴的样子
+gui.button.export=导出
+gui.button.export.0.tooltip=将目前修改后的皮肤导出至电脑中, 直接使用导出后的皮肤可以让别的玩家看到你带着尾巴的皮肤, 即便是服务端没有安装本模组
+gui.button.export.tooltip=将目前的皮肤导出至 %s
+gui.button.export.userdir=导出到用户文件夹
+gui.button.export.minecraftdir=导出到Mincraft目录
+gui.button.upload=上传到Mojang
+gui.button.upload.tooltip=上传你的皮肤. 注意: 这将需要打开你的浏览器!
+gui.button.export.custom=导出至...
+gui.button.export.custom.tooltip=导出至你选择的文件夹
+gui.button.openfolder.tooltip=打开皮肤位置
+gui.button.openfolder=打开你将皮肤导入的文件夹
+gui.button.editor=尾巴编辑器
+gui.button.reset=重置
+gui.button.save=保存
+gui.button.edit=编辑
+
+gui.tint=尾巴颜色 %s
+gui.tint.edit=编辑尾巴颜色 %s
+gui.hex=施法
+
+tails.export.success=成功将皮肤导出至 %s
+tails.upload.unavailable=这项功能还在开发中!
