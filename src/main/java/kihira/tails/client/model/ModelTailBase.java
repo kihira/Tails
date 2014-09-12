@@ -69,9 +69,12 @@ public abstract class ModelTailBase extends ModelBase {
 
         if (f6 < 0F) f6 = 0F;
 
-        float cameraYaw = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * (float) partialTicks;
-        f5 += MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * (float) partialTicks) * 6F) * 32F * cameraYaw;
+        return new double[] {Math.toRadians(f6 / 2.5F + getTailBob(player, (float) partialTicks, f5)), Math.toRadians(-f7 / 20F), Math.toRadians(f7 / 2F)};
+    }
 
-        return new double[] {Math.toRadians(f6 / 2.5F + f5), Math.toRadians(-f7 / 20F), Math.toRadians(f7 / 2F)};
+    protected float getTailBob(EntityPlayer player, float partialTicks, float num) {
+        float cameraYaw = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
+        num += MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6F) * 24F * cameraYaw;
+        return num;
     }
 }

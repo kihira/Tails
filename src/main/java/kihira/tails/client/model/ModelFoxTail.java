@@ -61,8 +61,7 @@ public class ModelFoxTail extends ModelTailBase {
         this.tailBase.addChild(this.tail1);
     }
 
-    @Override
-    public void setRotationAngles(float seed, float yOffset, float xOffset, float xAngle, float yAngle, float partialTicks, Entity entity) {
+    public void setRotationAngles(int subtype, float seed, float yOffset, float xOffset, float xAngle, float yAngle, float partialTicks, Entity entity) {
         double xAngleOffset = 0;
         double yAngleOffset = 0;
         double zAngleOffset = 0;
@@ -71,21 +70,31 @@ public class ModelFoxTail extends ModelTailBase {
             xAngleOffset = angles[0];
             yAngleOffset = angles[1];
             zAngleOffset = angles[2];
+
+            switch (subtype) {
+                case 0:
+                case 1:
+                    xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.7D, -1D, 0.45D);
+                    break;
+                //Nine tails
+                case 2:
+                    xAngleOffset *= 0.25D;
+                    break;
+            }
         }
 
-        this.setRotationRadians(this.tailBase, MathHelper.clamp_double(xAngle + (Math.cos(seed + xOffset) / 15F) + xAngleOffset, -1D, 0.1D), (-zAngleOffset / 2F) + yAngle + (Math.cos(seed + yOffset) / 8F) + yAngleOffset, -zAngleOffset / 8F);
-        this.setRotationRadians(this.tail1, MathHelper.clamp_double(-0.2617993877991494 + xAngleOffset + Math.abs(zAngleOffset), -1D, 0.1D), Math.cos(seed - 1 + yOffset) / 8F, -zAngleOffset / 8F);
-        this.setRotationRadians(this.tail2, MathHelper.clamp_double(-0.2617993877991494 + (xAngleOffset / 2F), -1D, 0D), Math.cos(seed - 1.5F + yOffset) / 8F, -zAngleOffset / 8F);
-        this.setRotationRadians(this.tail3, MathHelper.clamp_double(-0.4363323129985824 + (xAngleOffset / 2F), -1D, 0D), Math.cos(seed - 2 + yOffset) / 20F, -zAngleOffset / 20F);
-        this.setRotationRadians(this.tail4, MathHelper.clamp_double(0.2617993877991494 - (xAngleOffset / 2F), 0D, 1D), Math.cos(seed - 3 + yOffset) / 8F, 0F);
-        this.setRotationRadians(this.tail5, MathHelper.clamp_double(0.2617993877991494 - (xAngleOffset / 2.5F), 0D, 1D), Math.cos(seed - 4 + yOffset) / 8F, 0F);
+        this.setRotationRadians(this.tailBase, xAngle + (Math.cos(seed + xOffset) / 15F) + xAngleOffset, (-zAngleOffset / 2F) + yAngle + (Math.cos(seed + yOffset) / 8F) + yAngleOffset, -zAngleOffset / 8F);
+        this.setRotationRadians(this.tail1, -0.2617993877991494 + xAngleOffset + Math.abs(zAngleOffset), Math.cos(seed - 1 + yOffset) / 8F, -zAngleOffset / 8F);
+        this.setRotationRadians(this.tail2, -0.2617993877991494 + (xAngleOffset / 2F), Math.cos(seed - 1.5F + yOffset) / 8F, -zAngleOffset / 8F);
+        this.setRotationRadians(this.tail3, -0.4363323129985824 + (xAngleOffset / 2F), Math.cos(seed - 2 + yOffset) / 20F, -zAngleOffset / 20F);
+        this.setRotationRadians(this.tail4, 0.2617993877991494 - (xAngleOffset / 2F), Math.cos(seed - 3 + yOffset) / 8F, 0F);
+        this.setRotationRadians(this.tail5, 0.2617993877991494 - (xAngleOffset / 2.5F), Math.cos(seed - 4 + yOffset) / 8F, 0F);
     }
 
     @Override
     public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
         float seed = getAnimationTime(4000F, theEntity);
-
-        this.setRotationAngles(seed, 0, 0, 0, 0, partialTicks, theEntity);
+        this.setRotationAngles(0, seed, 0, 0, 0, 0, partialTicks, theEntity);
 
         if (subtype == 0) {
             GL11.glRotatef(-20F, 1F, 0F, 0F);
@@ -96,38 +105,38 @@ public class ModelFoxTail extends ModelTailBase {
             GL11.glRotatef(40F, 0F, 1F, 0F);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(seed, 1F, 0, 0, 0, 0, theEntity);
+            this.setRotationAngles(seed, 1F, 0, 0, 0, partialTicks, theEntity);
             GL11.glRotatef(-80F, 0F, 1F, 0F);
             this.tailBase.render(0.0625F);
         }
         else if (subtype == 2) {
             seed = getAnimationTime(6500F, theEntity);
 
-            this.setRotationAngles(seed, -1.5F, 2.5F, 0F, 0, 0, theEntity);
+            this.setRotationAngles(2, seed, -1.5F, 2.5F, 0F, 0, partialTicks, theEntity);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(seed, -1.3F, 1.6F, 0, (float) Math.toRadians(30F), 0, theEntity);
+            this.setRotationAngles(2, seed, -1.3F, 1.6F, 0, (float) Math.toRadians(30F), partialTicks, theEntity);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(seed, -1.1F, 0.7F, 0, (float) Math.toRadians(-30F), 0, theEntity);
+            this.setRotationAngles(2, seed, -1.1F, 0.7F, 0, (float) Math.toRadians(-30F), partialTicks, theEntity);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(seed, -1.2F, 2.6F, (float) Math.toRadians(20F), (float) Math.toRadians(-15F), 0, theEntity);
+            this.setRotationAngles(2, seed, -1.2F, 2.6F, (float) Math.toRadians(20F), (float) Math.toRadians(-15F), partialTicks, theEntity);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(seed, -0.9F, 1.1F, (float) Math.toRadians(20F), (float) Math.toRadians(15F), 0, theEntity);
+            this.setRotationAngles(2, seed, -0.9F, 1.1F, (float) Math.toRadians(20F), (float) Math.toRadians(15F), partialTicks, theEntity);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(seed, -0.8F, 2F, (float) Math.toRadians(20F), (float) Math.toRadians(45F), 0, theEntity);
+            this.setRotationAngles(2, seed, -0.8F, 2F, (float) Math.toRadians(20F), (float) Math.toRadians(45F), partialTicks, theEntity);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(seed, -1.25F, 0.6F, (float) Math.toRadians(20F), (float) Math.toRadians(-45F), 0, theEntity);
+            this.setRotationAngles(2, seed, -1.25F, 0.6F, (float) Math.toRadians(20F), (float) Math.toRadians(-45F), partialTicks, theEntity);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(seed, -1.4F, 0.9F, (float) Math.toRadians(45F), (float) Math.toRadians(15F), 0, theEntity);
+            this.setRotationAngles(2, seed, -1.4F, 0.9F, (float) Math.toRadians(45F), (float) Math.toRadians(15F), partialTicks, theEntity);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(seed, -1.1F, 1.6F, (float) Math.toRadians(45F), (float) Math.toRadians(-15F), 0, theEntity);
+            this.setRotationAngles(2, seed, -1.1F, 1.6F, (float) Math.toRadians(45F), (float) Math.toRadians(-15F), partialTicks, theEntity);
             this.tailBase.render(0.0625F);
         }
     }
