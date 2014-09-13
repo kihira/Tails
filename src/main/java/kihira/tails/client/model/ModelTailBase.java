@@ -57,24 +57,25 @@ public abstract class ModelTailBase extends ModelBase {
     }
 
     protected double[] getMotionAngles(EntityPlayer player, double partialTicks) {
-        double x = player.field_71091_bM + (player.field_71094_bP - player.field_71091_bM) * partialTicks - (player.prevPosX + (player.posX - player.prevPosX) * partialTicks);
-        double y = player.field_71096_bN + (player.field_71095_bQ - player.field_71096_bN) * partialTicks - (player.prevPosY + (player.posY - player.prevPosY) * partialTicks);
-        double z = player.field_71097_bO + (player.field_71085_bR - player.field_71097_bO) * partialTicks - (player.prevPosZ + (player.posZ - player.prevPosZ) * partialTicks);
-        float renderYawOffset = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * (float) partialTicks;
-        double d1 = Math.sin(renderYawOffset * (float) Math.PI / 180F);
-        double d2 = -Math.cos(renderYawOffset * (float) Math.PI / 180F);
-        float f5 = MathHelper.clamp_float((float) y * 10F, -6F, 32F);
-        float f6 = (float)(x * d1 + z * d2) * 100F;
-        float f7 = (float)(x * d2 - z * d1) * 100F;
+        double xMotion = player.field_71091_bM + (player.field_71094_bP - player.field_71091_bM) * partialTicks - (player.prevPosX + (player.posX - player.prevPosX) * partialTicks);
+        double yMotion = player.field_71096_bN + (player.field_71095_bQ - player.field_71096_bN) * partialTicks - (player.prevPosY + (player.posY - player.prevPosY) * partialTicks); //Positive when falling, negative when climbing
+        double zMotion = player.field_71097_bO + (player.field_71085_bR - player.field_71097_bO) * partialTicks - (player.prevPosZ + (player.posZ - player.prevPosZ) * partialTicks);
+        float bodyYaw = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * (float) partialTicks;
+        //Pretty sure renderYawOffset is actually the way the body is "pointing"
+        //In degrees, not bound 0-360, be warned!
+        double bodyYawSin = Math.sin(bodyYaw * (float) Math.PI / 180F);
+        double bodyYawCos = -Math.cos(bodyYaw * (float) Math.PI / 180F);
+        float xOffset = MathHelper.clamp_float((float) yMotion * 10F, -6F, 32F);
+        float f1 = (float)(xMotion * bodyYawSin + zMotion * bodyYawCos) * 100F;
+        float f2 = (float)(xMotion * bodyYawCos - zMotion * bodyYawSin) * 100F;
 
-        if (f6 < 0F) f6 = 0F;
+        if (f1 < 0F) f1 = 0F;
 
-        return new double[] {Math.toRadians(f6 / 2.5F + getTailBob(player, (float) partialTicks, f5)), Math.toRadians(-f7 / 20F), Math.toRadians(f7 / 2F)};
+        return new double[] {Math.toRadians(f1 / 2.5F + (xOffset + getTailBob(player, (float) partialTicks))), Math.toRadians(-f2 / 20F), Math.toRadians(f2 / 2F)};
     }
 
-    protected float getTailBob(EntityPlayer player, float partialTicks, float num) {
+    protected float getTailBob(EntityPlayer player, float partialTicks) {
         float cameraYaw = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
-        num += MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6F) * 24F * cameraYaw;
-        return num;
+        return MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6F) * 12F * cameraYaw;
     }
 }
