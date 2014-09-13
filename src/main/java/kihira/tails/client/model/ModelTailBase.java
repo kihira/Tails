@@ -61,8 +61,8 @@ public abstract class ModelTailBase extends ModelBase {
         double y = player.field_71096_bN + (player.field_71095_bQ - player.field_71096_bN) * partialTicks - (player.prevPosY + (player.posY - player.prevPosY) * partialTicks);
         double z = player.field_71097_bO + (player.field_71085_bR - player.field_71097_bO) * partialTicks - (player.prevPosZ + (player.posZ - player.prevPosZ) * partialTicks);
         float renderYawOffset = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * (float) partialTicks;
-        double d1 = (double) MathHelper.sin(renderYawOffset * (float) Math.PI / 180F);
-        double d2 = (double)(-MathHelper.cos(renderYawOffset * (float)Math.PI / 180F));
+        double d1 = Math.sin(renderYawOffset * (float) Math.PI / 180F);
+        double d2 = -Math.cos(renderYawOffset * (float) Math.PI / 180F);
         float f5 = MathHelper.clamp_float((float) y * 10F, -6F, 32F);
         float f6 = (float)(x * d1 + z * d2) * 100F;
         float f7 = (float)(x * d2 - z * d1) * 100F;

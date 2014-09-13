@@ -72,7 +72,9 @@ public class ModelFoxTail extends ModelTailBase {
             zAngleOffset = angles[2];
 
             switch (subtype) {
+                //Fox Tail
                 case 0:
+                //Twin Tails
                 case 1:
                     xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.7D, -1D, 0.45D);
                     break;
@@ -82,13 +84,14 @@ public class ModelFoxTail extends ModelTailBase {
                     break;
             }
         }
+        double yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
 
-        this.setRotationRadians(this.tailBase, xAngle + (Math.cos(seed + xOffset) / 15F) + xAngleOffset, (-zAngleOffset / 2F) + yAngle + (Math.cos(seed + yOffset) / 8F) + yAngleOffset, -zAngleOffset / 8F);
-        this.setRotationRadians(this.tail1, -0.2617993877991494 + xAngleOffset + Math.abs(zAngleOffset), Math.cos(seed - 1 + yOffset) / 8F, -zAngleOffset / 8F);
-        this.setRotationRadians(this.tail2, -0.2617993877991494 + (xAngleOffset / 2F), Math.cos(seed - 1.5F + yOffset) / 8F, -zAngleOffset / 8F);
-        this.setRotationRadians(this.tail3, -0.4363323129985824 + (xAngleOffset / 2F), Math.cos(seed - 2 + yOffset) / 20F, -zAngleOffset / 20F);
-        this.setRotationRadians(this.tail4, 0.2617993877991494 - (xAngleOffset / 2F), Math.cos(seed - 3 + yOffset) / 8F, 0F);
-        this.setRotationRadians(this.tail5, 0.2617993877991494 - (xAngleOffset / 2.5F), Math.cos(seed - 4 + yOffset) / 8F, 0F);
+        this.setRotationRadians(this.tailBase, xAngle + (Math.cos(seed + xOffset) / 15F) + xAngleOffset, ((-zAngleOffset / 2F) + yAngle + (Math.cos(seed + yOffset) / 8F)) * yAngleMultiplier + yAngleOffset, -zAngleOffset / 8F);
+        this.setRotationRadians(this.tail1, -0.2617993877991494 + xAngleOffset + Math.abs(zAngleOffset), (Math.cos(seed - 1 + yOffset) / 8F) * yAngleMultiplier, -zAngleOffset / 8F);
+        this.setRotationRadians(this.tail2, -0.2617993877991494 + (xAngleOffset / 2F), (Math.cos(seed - 1.5F + yOffset) / 8F) * yAngleMultiplier, -zAngleOffset / 8F);
+        this.setRotationRadians(this.tail3, -0.4363323129985824 + (xAngleOffset / 2F), (Math.cos(seed - 2 + yOffset) / 20F) * yAngleMultiplier, -zAngleOffset / 20F);
+        this.setRotationRadians(this.tail4, 0.2617993877991494 - (xAngleOffset / 2F), (Math.cos(seed - 3 + yOffset) / 8F) * yAngleMultiplier, 0F);
+        this.setRotationRadians(this.tail5, 0.2617993877991494 - (xAngleOffset / 2.5F), (Math.cos(seed - 4 + yOffset) / 8F) * yAngleMultiplier, 0F);
     }
 
     @Override
