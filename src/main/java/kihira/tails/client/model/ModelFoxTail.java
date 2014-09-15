@@ -66,7 +66,7 @@ public class ModelFoxTail extends ModelTailBase {
         double yAngleOffset = 0;
         double zAngleOffset = 0;
         double yAngleMultiplier = 0; //Used to suppress sway when running
-        if (entity instanceof EntityPlayer) {
+        if (entity instanceof EntityPlayer && !entity.isRiding()) {
             double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
             xAngleOffset = angles[0];
             yAngleOffset = angles[1];
@@ -87,12 +87,33 @@ public class ModelFoxTail extends ModelTailBase {
                 case 2:
                     zAngleOffset *= 0.5D;
                     xAngleOffset *= 0.25D;
+                    xAngleOffset += (Math.cos(timestep + xOffset) / 15F);
+                    break;
+            }
+            yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
+        }
+        //Mounted
+        else {
+            switch (subtype) {
+                //Fox Tail
+                case 0:
+                    xAngleOffset = Math.toRadians(22F);
+                    yAngleMultiplier = 0.5F;
+                    break;
+                //Twin Tails
+                case 1:
+                    xAngleOffset = Math.toRadians(20F);
+                    yAngleMultiplier = 0.5F;
+                    break;
+                //Nine tails
+                case 2:
+                    xAngleOffset = Math.toRadians(15F);
+                    yAngleMultiplier = 0.75F;
                     break;
             }
         }
-        yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
 
-        this.setRotationRadians(this.tailBase, xAngle + (Math.cos(timestep + xOffset) / 15F) + xAngleOffset, (((-zAngleOffset / 2F) + yAngle + (Math.cos(timestep + yOffset) / 8F)) * yAngleMultiplier) + yAngleOffset, -zAngleOffset / 8F);
+        this.setRotationRadians(this.tailBase, xAngle + xAngleOffset, (((-zAngleOffset / 2F) + yAngle + (Math.cos(timestep + yOffset) / 8F)) * yAngleMultiplier) + yAngleOffset, -zAngleOffset / 8F);
         this.setRotationRadians(this.tail1, -0.2617993877991494 + xAngleOffset + Math.abs(zAngleOffset / 2F), ((-zAngleOffset / 2F) + Math.cos(timestep - 1 + yOffset) / 8F) * yAngleMultiplier, -zAngleOffset / 8F);
         this.setRotationRadians(this.tail2, -0.2617993877991494 + (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Math.cos(timestep - 1.5F + yOffset) / 8F) * yAngleMultiplier, -zAngleOffset / 8F);
         this.setRotationRadians(this.tail3, -0.4363323129985824 + (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Math.cos(timestep - 2 + yOffset) / 20F) * yAngleMultiplier, -zAngleOffset / 20F);
@@ -105,16 +126,16 @@ public class ModelFoxTail extends ModelTailBase {
         float timestep = getAnimationTime(4000F, theEntity);
 
         if (subtype == 0) {
-            this.setRotationAngles(0, timestep, 1F, 0, 0, 0, partialTicks, theEntity);
+            this.setRotationAngles(0, timestep, 1F, 1F, 0, 0, partialTicks, theEntity);
             GL11.glRotatef(-20F, 1F, 0F, 0F);
             this.tailBase.render(0.0625F);
         }
         else if (subtype == 1) {
-            this.setRotationAngles(1, timestep, 1F, 0F, 0F, (float) Math.toRadians(40F), partialTicks, theEntity);
+            this.setRotationAngles(1, timestep, 1F, 1F, 0F, (float) Math.toRadians(40F), partialTicks, theEntity);
             GL11.glRotatef(-20F, 1F, 0F, 0F);
             this.tailBase.render(0.0625F);
 
-            this.setRotationAngles(1, timestep, 1F, 0F, 0F, (float) Math.toRadians(-40F), partialTicks, theEntity);
+            this.setRotationAngles(1, timestep, 1.4F, 0F, 0F, (float) Math.toRadians(-40F), partialTicks, theEntity);
             this.tailBase.render(0.0625F);
         }
         else if (subtype == 2) {
