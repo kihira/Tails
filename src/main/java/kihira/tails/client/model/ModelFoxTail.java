@@ -66,51 +66,56 @@ public class ModelFoxTail extends ModelTailBase {
         double yAngleOffset = 0;
         double zAngleOffset = 0;
         double yAngleMultiplier = 0; //Used to suppress sway when running
-        if (entity instanceof EntityPlayer && !entity.isRiding()) {
-            double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
-            xAngleOffset = angles[0];
-            yAngleOffset = angles[1];
-            zAngleOffset = angles[2];
+        if (entity instanceof EntityPlayer) {
+            if (!entity.isRiding()) {
+                double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
+                xAngleOffset = angles[0];
+                yAngleOffset = angles[1];
+                zAngleOffset = angles[2];
 
-            switch (subtype) {
-                //Fox Tail
-                case 0:
-                    xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
-                    zAngleOffset = MathHelper.clamp_double(zAngleOffset, -0.5D, 0.5D);
-                    break;
-                //Twin Tails
-                case 1:
-                    xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
-                    zAngleOffset = MathHelper.clamp_double(zAngleOffset, -0.5D, 0.5D);
-                    break;
-                //Nine tails
-                case 2:
-                    zAngleOffset *= 0.5D;
-                    xAngleOffset *= 0.25D;
-                    xAngleOffset += (Math.cos(timestep + xOffset) / 15F);
-                    break;
+                switch (subtype) {
+                    //Fox Tail
+                    case 0:
+                        xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
+                        zAngleOffset = MathHelper.clamp_double(zAngleOffset, -0.5D, 0.5D);
+                        break;
+                    //Twin Tails
+                    case 1:
+                        xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
+                        zAngleOffset = MathHelper.clamp_double(zAngleOffset, -0.5D, 0.5D);
+                        break;
+                    //Nine tails
+                    case 2:
+                        zAngleOffset *= 0.5D;
+                        xAngleOffset *= 0.25D;
+                        xAngleOffset += (Math.cos(timestep + xOffset) / 15F);
+                        break;
+                }
+                yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
             }
-            yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
+            //Mounted
+            else {
+                switch (subtype) {
+                    //Fox Tail
+                    case 0:
+                        xAngleOffset = Math.toRadians(22F);
+                        yAngleMultiplier = 0.5F;
+                        break;
+                    //Twin Tails
+                    case 1:
+                        xAngleOffset = Math.toRadians(20F);
+                        yAngleMultiplier = 0.5F;
+                        break;
+                    //Nine tails
+                    case 2:
+                        xAngleOffset = Math.toRadians(15F);
+                        yAngleMultiplier = 0.75F;
+                        break;
+                }
+            }
         }
-        //Mounted
         else {
-            switch (subtype) {
-                //Fox Tail
-                case 0:
-                    xAngleOffset = Math.toRadians(22F);
-                    yAngleMultiplier = 0.5F;
-                    break;
-                //Twin Tails
-                case 1:
-                    xAngleOffset = Math.toRadians(20F);
-                    yAngleMultiplier = 0.5F;
-                    break;
-                //Nine tails
-                case 2:
-                    xAngleOffset = Math.toRadians(15F);
-                    yAngleMultiplier = 0.75F;
-                    break;
-            }
+            yAngleMultiplier = 1F; //Used to suppress sway when running
         }
 
         this.setRotationRadians(this.tailBase, xAngle + xAngleOffset, (((-zAngleOffset / 2F) + yAngle + (Math.cos(timestep + yOffset) / 8F)) * yAngleMultiplier) + yAngleOffset, -zAngleOffset / 8F);
