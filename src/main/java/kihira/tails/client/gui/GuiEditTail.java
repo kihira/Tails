@@ -104,9 +104,9 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
 
         //RGB sliders
         rgbSliders = new GuiHSBSlider[3];
-        rgbSliders[0] = new GuiHSBSlider(100, this.previewWindowRight + 5, this.editPaneTop + 70, 100, 10, this, HSBSliderType.SATURATION);
-        rgbSliders[1] = new GuiHSBSlider(100, this.previewWindowRight + 5, this.editPaneTop + 80, 100, 10, this, HSBSliderType.SATURATION);
-        rgbSliders[2] = new GuiHSBSlider(100, this.previewWindowRight + 5, this.editPaneTop + 90, 100, 10, this, HSBSliderType.SATURATION);
+        rgbSliders[0] = new GuiHSBSlider(5, this.previewWindowRight + 5, this.editPaneTop + 70, 100, 10, this, HSBSliderType.SATURATION);
+        rgbSliders[1] = new GuiHSBSlider(6, this.previewWindowRight + 5, this.editPaneTop + 80, 100, 10, this, HSBSliderType.SATURATION);
+        rgbSliders[2] = new GuiHSBSlider(7, this.previewWindowRight + 5, this.editPaneTop + 90, 100, 10, this, HSBSliderType.SATURATION);
         rgbSliders[0].setHue(0);
         rgbSliders[1].setHue(1F/3F);
         rgbSliders[2].setHue(2F/3F);
@@ -153,8 +153,9 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
                 this.scaledRes.getScaledWidth() / 3, I18n.format("gui.button.export.0.tooltip")));
 
         //Texture select
-        this.buttonList.add(new GuiButton(15, 5, this.height - 25, 15, 20, "<"));
-        this.buttonList.add(new GuiButton(15, this.previewWindowLeft - 20, this.height - 25, 15, 20, ">"));
+        this.buttonList.add(new GuiButton(18, 5, this.height - 25, 15, 20, "<"));
+        this.buttonList.add(new GuiButton(19, this.previewWindowLeft - 20, this.height - 25, 15, 20, ">"));
+        textureID = tailInfo.textureID;
 
         this.refreshTintPane();
     }
@@ -195,8 +196,7 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
 
         //Texture select
         fontRendererObj.drawString("Texture:", 7, this.height - 37, 0xFFFFFF);
-        fontRendererObj.drawString(ClientEventHandler.tailTypes[tailInfo.typeid].getTextureNames()[tailInfo.textureID], 25, this.height - 19, 0xFFFFFF);
-        textureID = tailInfo.textureID;
+        fontRendererObj.drawString(ClientEventHandler.tailTypes[tailInfo.typeid].getTextureNames()[textureID], 25, this.height - 19, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
@@ -243,7 +243,7 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
             this.mc.displayGuiScreen(new GuiExport(this, this.tailInfo));
         }
         //Texture select
-        else if (button.id == 150) {
+        else if (button.id == 18) {
             if (tail.getTextureNames().length > textureID + 1) {
                 textureID++;
             }
@@ -252,7 +252,7 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
             }
             updateTailInfo();
         }
-        else if (button.id == 160) {
+        else if (button.id == 19) {
             if (textureID - 1 > 0) {
                 textureID--;
             }

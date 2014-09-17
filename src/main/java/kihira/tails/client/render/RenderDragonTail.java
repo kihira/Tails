@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderDragonTail extends RenderTail {
 
-	private String[] skinNames = {"dragonTail"};
+	private String[] skinNames = {"dragonTail", "dragonTailStriped"};
 	
     private ModelDragonTail modelDragonTail = new ModelDragonTail();
 
