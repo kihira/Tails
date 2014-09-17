@@ -9,7 +9,10 @@
 package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
-import kihira.foxlib.client.gui.*;
+import kihira.foxlib.client.gui.GuiBaseScreen;
+import kihira.foxlib.client.gui.GuiIconButton;
+import kihira.foxlib.client.gui.GuiList;
+import kihira.foxlib.client.gui.IListCallback;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.FakeEntity;
 import kihira.tails.client.gui.controls.GuiHSBSlider;
@@ -32,7 +35,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -40,10 +42,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IListCallback, IHSBSliderCallback {
+public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSliderCallback {
 
     private float yaw = 0F;
-    private float pitch = 0F;
+    private float pitch = 10F;
 
     private int currTintEdit = 0;
     private int currTintColour = 0xFFFFFF;
@@ -52,8 +54,6 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     private GuiHSBSlider[] rgbSliders;
     private GuiIconButton tintReset;
     private int textureID;
-
-    private GuiSlider rotYawSlider;
 
     private ScaledResolution scaledRes;
 
@@ -87,7 +87,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         int previewWindowEdgeOffset = 110;
         this.previewWindowLeft = previewWindowEdgeOffset;
         this.previewWindowRight = this.width - previewWindowEdgeOffset;
-        this.previewWindowBottom = this.height - 55;
+        this.previewWindowBottom = this.height - 30;
         this.editPaneTop = this.height - 107;
 
         //Edit tint buttons
@@ -144,10 +144,6 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         this.selectDefaultListEntry();
 
         //General Editing Pane
-        //Yaw Rotation
-        this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + (this.scaledRes.getScaledWidth() / 60),
-                this.previewWindowBottom + 5, this.width - (previewWindowEdgeOffset * 2) - (this.scaledRes.getScaledWidth() / 30), -180, 180, (int) this.yaw));
-
         //Reset/Save
         this.buttonList.add(new GuiButton(12, this.previewWindowRight - 83, this.height - 25, 40, 20, I18n.format("gui.button.reset")));
         this.buttonList.add(new GuiButton(13, this.previewWindowRight - 43, this.height - 25, 40, 20, I18n.format("gui.done")));
@@ -208,14 +204,13 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     @Override
     protected void actionPerformed(GuiButton button) {
         RenderTail tail = ClientEventHandler.tailTypes[tailInfo.typeid];
-        //Yaw Rotation
-        if (button.id == 1) MathHelper.clamp_float(this.yaw = this.rotYawSlider.currentValue, -180F, 180F);
         //Edit buttons
-        else if (button.id >= 2 && button.id <= 4) {
+        if (button.id >= 2 && button.id <= 4) {
             this.currTintEdit = button.id - 1;
             this.currTintColour = this.tailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
+            this.tintReset.enabled = false;
         }
         //Reset Tint
         else if (button.id == 8) {
@@ -291,6 +286,21 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         }*/
         super.mouseClicked(mouseX, mouseY, mouseEvent);
         this.hexText.mouseClicked(mouseX, mouseY, mouseEvent);
+    }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick) {
+        if (lastButtonClicked == 0) {
+            //Yaw
+            if (mouseX > previewWindowLeft && mouseX < previewWindowRight) {
+                float previewWindowWidth = previewWindowRight - previewWindowLeft;
+                yaw = (mouseX - (width / 2F) / (previewWindowWidth / 2F)) * 2F;
+            }
+            //Pitch
+/*            if (mouseY < previewWindowBottom) {
+                pitch = (mouseY - (previewWindowBottom / 2F) / (previewWindowBottom / 2F));
+            }*/
+        }
     }
 
 /*    @Override
@@ -397,14 +407,6 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
         GL11.glPopMatrix();
-    }
-
-    @Override
-    public boolean onValueChange(GuiSlider slider, float oldValue, float newValue) {
-        if (slider == this.rotYawSlider) {
-            this.yaw = newValue;
-        }
-        return true;
     }
 
     @Override
