@@ -105,13 +105,21 @@ public class GuiHSBSlider extends GuiSlider {
     public double getValue() {
         return sliderValue;
     }
-    
+
+    /**
+     * Sets the current slider value between 0-1F
+     * @param value New value
+     */
     @Override
     public void setValue(double value) {
         this.sliderValue = value;
         updateSlider();
     }
-    
+
+    /**
+     * Sets the current slider value between 0-1F and calls the callback
+     * @param value New value
+     */
     public void setValueWithCallback(double value) {
         this.sliderValue = value;
         updateSlider();
@@ -119,11 +127,19 @@ public class GuiHSBSlider extends GuiSlider {
             callback.onValueChangeHSBSlider(this, this.sliderValue);
         }
     }
-    
+
+    /**
+     * Sets the current hue value between 0-1F
+     * @param value New value
+     */
     public void setHue(float value) {
         this.hueValue = value;
     }
-    
+
+    /**
+     * Sets the current brightness value between 0-1F
+     * @param value New value
+     */
     public void setBrightness(float value) {
         this.briValue = value;
     }
@@ -141,7 +157,7 @@ public class GuiHSBSlider extends GuiSlider {
     }
     
     public enum HSBSliderType {
-        HUE, SATURATION, BRIGHTNESS;
+        HUE, SATURATION, BRIGHTNESS
     }
     
     public interface IHSBSliderCallback {
