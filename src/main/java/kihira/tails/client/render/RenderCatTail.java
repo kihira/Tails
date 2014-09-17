@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderCatTail extends RenderTail {
 
-    private String[] skinNames = {"tabbyTail"};
+    private String[] skinNames = {"tabbyTail", "tigerTail"};
 
     private ModelCatTail modelCatTail = new ModelCatTail();
 
