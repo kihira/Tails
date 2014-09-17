@@ -67,7 +67,6 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     private GuiList tailList;
     private FakeEntity fakeEntity;
 
-    GuiButtonToggle livePreviewButton;
     private GuiHSBSlider[] rgbSliders;
 
     public GuiEditTail() {
@@ -150,12 +149,6 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Yaw Rotation
         this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + (this.scaledRes.getScaledWidth() / 60),
                 this.previewWindowBottom + 5, this.width - (previewWindowEdgeOffset * 2) - (this.scaledRes.getScaledWidth() / 30), -180, 180, (int) this.yaw));
-
-        //Live Preview
-        String s = I18n.format("gui.button.livepreview");
-        this.buttonList.add(this.livePreviewButton = new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, this.fontRendererObj.getStringWidth(s) + 7, 20, s,
-                this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.livepreview.0.tooltip")));
-        this.livePreviewButton.enabled = false;
 
         //Reset/Save
         this.buttonList.add(new GuiButton(12, this.previewWindowRight - 83, this.height - 25, 40, 20, I18n.format("gui.button.reset")));
@@ -360,9 +353,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
             this.tintReset.visible = this.tintSave.visible = false;
         }
 
-        if (!this.livePreviewButton.enabled) {
-            this.updateTailInfo();
-        }
+        this.updateTailInfo();
     }
 
     private void drawEntity(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
