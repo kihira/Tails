@@ -31,7 +31,7 @@ project.ext {
     minor = "0"
     mcVersion = "1.7.10"
     forgeVersion = "10.13.0.1180"
-    foxlibVersion = "1.7.10-0.4.1.28"
+    foxlibVersion = "1.7.10-0.4.1.3"
 }
 
 configurations {
