@@ -54,7 +54,7 @@ public class TextureHelper {
                 tailInfo = buildTailInfoFromSkin(uuid, image);
             }
             else {
-                tailInfo = new TailInfo(uuid, false, 0, 0, 0, 0, 0, null);
+                tailInfo = new TailInfo(uuid, false, 0, 0, 0, 0, 0, 0, null);
             }
             Tails.proxy.addTailInfo(uuid, tailInfo);
             //If local player, send our skin info the server.
@@ -108,7 +108,7 @@ public class TextureHelper {
 		
 		ResourceLocation tailtexture = generateTexture(id, typeid, subtype, textureid, new int[]{tint1, tint2, tint3});
 		
-		return new TailInfo(id, true, typeid, subtype, tint1, tint2, tint3, tailtexture);
+		return new TailInfo(id, true, typeid, subtype, 0, tint1, tint2, tint3, tailtexture);
 	}
 
     /**

@@ -15,6 +15,7 @@ import kihira.tails.client.FakeEntity;
 import kihira.tails.client.gui.controls.GuiHSBSlider;
 import kihira.tails.client.gui.controls.GuiHSBSlider.HSBSliderType;
 import kihira.tails.client.gui.controls.GuiHSBSlider.IHSBSliderCallback;
+import kihira.tails.client.render.RenderTail;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
@@ -53,6 +54,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     private GuiSlider bSlider;
     private GuiButton tintReset;
     private GuiButton tintSave;
+    private int textureID;
 
     private GuiSlider rotYawSlider;
 
@@ -74,7 +76,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Backup original TailInfo or create default one
         TailInfo tailInfo;
         if (Tails.localPlayerTailInfo == null) {
-            Tails.setLocalPlayerTailInfo(new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 , 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null));
+            Tails.setLocalPlayerTailInfo(new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 , 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null));
         }
         tailInfo = Tails.localPlayerTailInfo;
         this.originalTailInfo = tailInfo.deepCopy();
@@ -126,16 +128,16 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Tail List
         List<TailEntry> tailList = new ArrayList<TailEntry>();
         UUID uuid = UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"); //Just a random UUID
-        tailList.add(new TailEntry(new TailInfo(uuid, false, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null))); //No tail
+        tailList.add(new TailEntry(new TailInfo(uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null))); //No tail
         //Generate tail preview textures and add to list
         for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
             for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
-                TailInfo tailInfo = new TailInfo(uuid, true, type, subType, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
+                TailInfo tailInfo = new TailInfo(uuid, true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
                 tailList.add(new TailEntry(tailInfo));
             }
         }
 
-        this.tailList = new GuiList(this, this.previewWindowLeft, this.height, 0, this.height, 55, tailList);
+        this.tailList = new GuiList(this, this.previewWindowLeft, this.height - 43, 0, this.height - 43, 55, tailList);
         this.selectDefaultListEntry();
 
         //General Editing Pane
@@ -156,6 +158,10 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Export
         this.buttonList.add(new GuiButtonTooltip(14, (this.width / 2) - 20, this.height - 25, 40, 20, I18n.format("gui.button.export"),
                 this.scaledRes.getScaledWidth() / 3, I18n.format("gui.button.export.0.tooltip")));
+
+        //Texture select
+        this.buttonList.add(new GuiButton(15, 5, this.height - 25, 15, 20, "<"));
+        this.buttonList.add(new GuiButton(15, this.previewWindowLeft - 20, this.height - 25, 15, 20, ">"));
 
         this.refreshTintPane();
     }
@@ -194,6 +200,11 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Tails list
         this.tailList.drawScreen(mouseX, mouseY, p_73863_3_);
 
+        //Texture select
+        fontRendererObj.drawString("Texture:", 7, this.height - 37, 0xFFFFFF);
+        fontRendererObj.drawString(ClientEventHandler.tailTypes[tailInfo.typeid].getTextureNames()[tailInfo.textureID], 25, this.height - 19, 0xFFFFFF);
+        textureID = tailInfo.textureID;
+
         super.drawScreen(mouseX, mouseY, p_73863_3_);
 
         //Tooltips
@@ -204,6 +215,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
 
     @Override
     protected void actionPerformed(GuiButton button) {
+        RenderTail tail = ClientEventHandler.tailTypes[tailInfo.typeid];
         //Yaw Rotation
         if (button.id == 1) MathHelper.clamp_float(this.yaw = this.rotYawSlider.currentValue, -180F, 180F);
         //Edit buttons
@@ -246,7 +258,25 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         else if (button.id == 14) {
             this.updateTailInfo();
             this.mc.displayGuiScreen(new GuiExport(this, this.tailInfo));
-            //TextureHelper.writeTailInfoToSkin(this.tailInfo, this.mc.thePlayer);
+        }
+        //Texture select
+        else if (button.id == 15) {
+            if (tail.getTextureNames().length > textureID + 1) {
+                textureID++;
+            }
+            else {
+                textureID = 0;
+            }
+            updateTailInfo();
+        }
+        else if (button.id == 16) {
+            if (textureID - 1 > 0) {
+                textureID--;
+            }
+            else {
+                textureID = tail.getTextureNames().length - 1;
+            }
+            updateTailInfo();
         }
     }
 
@@ -267,10 +297,20 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     }
 
     @Override
-    protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_) {
-        super.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
-        this.hexText.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
+    protected void mouseClicked(int mouseX, int mouseY, int mouseEvent) {
+/*        if (mouseEvent != 0 || !this.tailList.func_148179_a(mouseX, mouseY, mouseEvent)) {
+            super.mouseClicked(mouseX, mouseY, mouseEvent);
+        }*/
+        super.mouseClicked(mouseX, mouseY, mouseEvent);
+        this.hexText.mouseClicked(mouseX, mouseY, mouseEvent);
     }
+
+/*    @Override
+    protected void mouseMovedOrUp(int mouseX, int mouseY, int mouseEvent) {
+        if (mouseEvent != 0 || !this.tailList.func_148181_b(mouseX, mouseY, mouseEvent)) {
+            super.mouseMovedOrUp(mouseX, mouseY, mouseEvent);
+        }
+    }*/
 
     @Override
     public void onGuiClosed() {
@@ -408,7 +448,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         TailEntry tailEntry = (TailEntry) this.tailList.getListEntry(this.tailList.getCurrrentIndex());
 
         if (this.currTintEdit > 0) this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
-        this.tailInfo = new TailInfo(uuid, tailEntry.tailInfo.hastail, tailEntry.tailInfo.typeid, tailEntry.tailInfo.subid, this.tailInfo.tints, null);
+        this.tailInfo = new TailInfo(uuid, tailEntry.tailInfo.hastail, tailEntry.tailInfo.typeid, tailEntry.tailInfo.subid, textureID, this.tailInfo.tints, null);
         this.tailInfo.setTexture(TextureHelper.generateTexture(this.tailInfo));
         this.tailInfo.needsTextureCompile = false;
 
@@ -440,11 +480,11 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         }
 
         @Override
-        public void drawEntry(int p_148279_1_, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int p_148279_7_, int p_148279_8_, boolean p_148279_9_) {
-            if (this.tailInfo.hastail) {
-                renderTail(previewWindowLeft - 25, y - 25, 50, this.tailInfo);
-                fontRendererObj.drawString(I18n.format(ClientEventHandler.tailTypes[tailInfo.typeid].getUnlocalisedName(tailInfo.subid)), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
-
+        public void drawEntry(int index, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int mouseX, int mouseY, boolean mouseOver) {
+            if (tailInfo.hastail) {
+                RenderTail tail = ClientEventHandler.tailTypes[tailInfo.typeid];
+                renderTail(previewWindowLeft - 25, y - 25, 50, tailInfo);
+                fontRendererObj.drawString(I18n.format(tail.getUnlocalisedName(tailInfo.subid)), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
             }
             else {
                 fontRendererObj.drawString(I18n.format("tail.none.name"), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
@@ -452,13 +492,12 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         }
 
         @Override
-        public boolean mousePressed(int p_148278_1_, int p_148278_2_, int p_148278_3_, int p_148278_4_, int p_148278_5_, int p_148278_6_) {
+        public boolean mousePressed(int index, int mouseX, int mouseY, int p_148278_4_, int mouseSlotX, int mouseSlotY) {
             return true;
         }
 
         @Override
-        public void mouseReleased(int p_148277_1_, int p_148277_2_, int p_148277_3_, int p_148277_4_, int p_148277_5_, int p_148277_6_) {
-
+        public void mouseReleased(int index, int mouseX, int mouseY, int p_148278_4_, int mouseSlotX, int mouseSlotY) {
         }
     }
 }
