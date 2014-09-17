@@ -46,7 +46,7 @@ public class ClientEventHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
     	UUID uuid = e.entityPlayer.getGameProfile().getId();
-        if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
+        if (uuid != null && Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
         	TailInfo info = Tails.proxy.getTailInfo(uuid);
         	
         	int type = info.typeid;
