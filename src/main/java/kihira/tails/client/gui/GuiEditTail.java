@@ -244,20 +244,20 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
         }
         //Texture select
         else if (button.id == 18) {
+            if (textureID - 1 >= 0) {
+                textureID--;
+            }
+            else {
+                textureID = tail.getTextureNames(tailInfo.subid).length - 1;
+            }
+            updateTailInfo();
+        }
+        else if (button.id == 19) {
             if (tail.getTextureNames(tailInfo.subid).length > textureID + 1) {
                 textureID++;
             }
             else {
                 textureID = 0;
-            }
-            updateTailInfo();
-        }
-        else if (button.id == 19) {
-            if (textureID - 1 > 0) {
-                textureID--;
-            }
-            else {
-                textureID = tail.getTextureNames(tailInfo.subid).length - 1;
             }
             updateTailInfo();
         }
@@ -290,12 +290,10 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick) {
-        if (lastButtonClicked == 0) {
+        if (lastButtonClicked == 0 && mouseY < previewWindowBottom && mouseX > previewWindowLeft && mouseX < previewWindowRight) {
             //Yaw
-            if (mouseX > previewWindowLeft && mouseX < previewWindowRight) {
-                float previewWindowWidth = previewWindowRight - previewWindowLeft;
-                yaw = (mouseX - (width / 2F) / (previewWindowWidth / 2F)) * 2F;
-            }
+            float previewWindowWidth = previewWindowRight - previewWindowLeft;
+            yaw = (mouseX - (width / 2F) / (previewWindowWidth / 2F)) * 2F;
             //Pitch
 /*            if (mouseY < previewWindowBottom) {
                 pitch = (mouseY - (previewWindowBottom / 2F) / (previewWindowBottom / 2F));
