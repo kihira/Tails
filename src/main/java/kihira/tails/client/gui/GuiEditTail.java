@@ -49,8 +49,8 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     private int currTintColour = 0xFFFFFF;
     private GuiTextField hexText;
     private GuiHSBSlider[] hsbSliders;
-    private GuiButton tintReset;
-    private GuiButton tintSave;
+    private GuiHSBSlider[] rgbSliders;
+    private GuiIconButton tintReset;
     private int textureID;
 
     private GuiSlider rotYawSlider;
@@ -66,8 +66,6 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
 
     private GuiList tailList;
     private FakeEntity fakeEntity;
-
-    private GuiHSBSlider[] rgbSliders;
 
     public GuiEditTail() {
         //Backup original TailInfo or create default one
@@ -90,7 +88,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         this.previewWindowLeft = previewWindowEdgeOffset;
         this.previewWindowRight = this.width - previewWindowEdgeOffset;
         this.previewWindowBottom = this.height - 55;
-        this.editPaneTop = this.height - 130;
+        this.editPaneTop = this.height - 107;
 
         //Edit tint buttons
         int topOffset = 20;
@@ -127,8 +125,8 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         this.buttonList.add(hsbSliders[2]);
 
         //Reset/Save
-        this.buttonList.add(this.tintReset = new GuiButton(8, this.previewWindowRight + 5, this.height - 25, 50, 20, I18n.format("gui.button.reset")));
-        this.buttonList.add(this.tintSave = new GuiButton(9, this.previewWindowRight + 55, this.height - 25, 50, 20, I18n.format("gui.button.save")));
+        this.buttonList.add(this.tintReset = new GuiIconButton(8, this.width - 20, this.editPaneTop + 2, GuiIconButton.Icons.UNDO, new ArrayList<String>() {{ add(I18n.format("gui.button.reset")); }}));
+        tintReset.enabled = false;
 
         //Tail List
         List<TailEntry> tailList = new ArrayList<TailEntry>();
@@ -205,11 +203,6 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         textureID = tailInfo.textureID;
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
-
-        //Tooltips
-        for (Object obj : this.buttonList) {
-            if (obj instanceof GuiButtonTooltip && ((GuiButtonTooltip) obj).func_146115_a()) ((GuiButtonTooltip) obj).func_146111_b(mouseX, mouseY);
-        }
     }
 
     @Override
@@ -229,11 +222,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
             this.currTintColour = this.originalTailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
-        }
-        //Save Tint
-        else if (button.id == 9) {
-            this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
-            this.updateTailInfo();
+            tintReset.enabled = false;
         }
         //Reset All
         else if (button.id == 12) {
@@ -344,15 +333,16 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         if (this.currTintEdit > 0) {
             this.rgbSliders[0].visible = this.rgbSliders[1].visible = this.rgbSliders[2].visible = true;
             this.hsbSliders[0].visible = this.hsbSliders[1].visible = this.hsbSliders[2].visible = true;
-            this.tintReset.visible = this.tintSave.visible = true;
+            this.tintReset.visible = true;
         }
         
         else {
             this.rgbSliders[0].visible = this.rgbSliders[1].visible = this.rgbSliders[2].visible = false;
             this.hsbSliders[0].visible = this.hsbSliders[1].visible = this.hsbSliders[2].visible = false;
-            this.tintReset.visible = this.tintSave.visible = false;
+            this.tintReset.visible = false;
         }
 
+        tintReset.enabled = true;
         this.updateTailInfo();
     }
 
