@@ -157,6 +157,12 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
         this.buttonList.add(new GuiButton(19, this.previewWindowLeft - 20, this.height - 25, 15, 20, ">"));
         textureID = tailInfo.textureID;
 
+        //Help
+        this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 20, 4, GuiIconButton.Icons.QUESTION, new ArrayList<String>() {{
+            add(I18n.format("gui.button.help.camera.0"));
+            add(I18n.format("gui.button.help.camera.1"));
+        }}));
+
         this.refreshTintPane();
     }
 
