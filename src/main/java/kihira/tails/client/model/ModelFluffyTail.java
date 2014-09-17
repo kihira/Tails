@@ -15,7 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
-public class ModelFoxTail extends ModelTailBase {
+public class ModelFluffyTail extends ModelTailBase {
     private ModelRenderer tailBase;
     private ModelRenderer tail1;
     private ModelRenderer tail2;
@@ -23,7 +23,7 @@ public class ModelFoxTail extends ModelTailBase {
     private ModelRenderer tail4;
     private ModelRenderer tail5;
 
-    public ModelFoxTail() {
+    public ModelFluffyTail() {
         this.tailBase = new ModelRenderer(this);
         this.tailBase.addBox(-1, -1, 0, 2, 2, 3);
         this.tailBase.setRotationPoint(0, 0, 0);
