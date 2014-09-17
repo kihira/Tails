@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderCatTail extends RenderTail {
 
-    private String[] skinNames = {"catTail"};
+    private String[] skinNames = {"tabbyTail"};
 
     private ModelCatTail modelCatTail = new ModelCatTail();
 
@@ -31,7 +31,6 @@ public class RenderCatTail extends RenderTail {
         if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.65F, 0.1F);
         else GL11.glTranslatef(0F, 0.55F, 0.4F);
         GL11.glScalef(0.9F, 0.9F, 0.9F);
-        modelCatTail = new ModelCatTail();
         this.modelCatTail.render(entity, info.subid, partialTicks);
         GL11.glPopMatrix();
     }
