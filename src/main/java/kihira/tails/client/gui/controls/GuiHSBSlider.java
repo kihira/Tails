@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014 Zoe Lee (Kihira)
- *
- * See LICENSE for full License
- */
-
 package kihira.tails.client.gui.controls;
 
 import cpw.mods.fml.client.config.GuiSlider;
@@ -40,7 +32,7 @@ public class GuiHSBSlider extends GuiSlider {
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
             this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int k = this.getHoverState(this.field_146123_n);
+            int hover = this.getHoverState(this.field_146123_n);
             GuiUtils.drawContinuousTexturedBox(buttonTextures, this.xPosition, this.yPosition, 0, 46, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
             mc.renderEngine.bindTexture(sliderTexture);
             
