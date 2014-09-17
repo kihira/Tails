@@ -195,8 +195,8 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
         this.tailList.drawScreen(mouseX, mouseY, p_73863_3_);
 
         //Texture select
-        fontRendererObj.drawString("Texture:", 7, this.height - 37, 0xFFFFFF);
-        fontRendererObj.drawString(ClientEventHandler.tailTypes[tailInfo.typeid].getTextureNames()[textureID], 25, this.height - 19, 0xFFFFFF);
+        fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, this.height - 37, 0xFFFFFF);
+        fontRendererObj.drawString(I18n.format("tail.texture." + ClientEventHandler.tailTypes[tailInfo.typeid].getTextureNames(tailInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
@@ -244,7 +244,7 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
         }
         //Texture select
         else if (button.id == 18) {
-            if (tail.getTextureNames().length > textureID + 1) {
+            if (tail.getTextureNames(tailInfo.subid).length > textureID + 1) {
                 textureID++;
             }
             else {
@@ -257,7 +257,7 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
                 textureID--;
             }
             else {
-                textureID = tail.getTextureNames().length - 1;
+                textureID = tail.getTextureNames(tailInfo.subid).length - 1;
             }
             updateTailInfo();
         }
@@ -447,6 +447,8 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
 
     @Override
     public boolean onEntrySelected(GuiList guiList, int index, GuiListExtended.IGuiListEntry entry) {
+        //Reset texture ID
+        textureID = 0;
         this.updateTailInfo();
         return true;
     }

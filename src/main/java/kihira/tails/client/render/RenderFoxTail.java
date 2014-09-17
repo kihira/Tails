@@ -39,7 +39,7 @@ public class RenderFoxTail extends RenderTail {
     }
     
     @Override
-	public String[] getTextureNames() {
+	public String[] getTextureNames(int subid) {
 		return skinNames;
 	}
 
