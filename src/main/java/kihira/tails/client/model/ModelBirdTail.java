@@ -41,6 +41,7 @@ public class ModelBirdTail extends ModelTailBase {
         setRotationDegrees(left2, 0, -6, 15);
 
         right0 = new ModelRenderer(this, 0, 10);
+        right0.mirror = true;
         right0.addBox(-1F, 0F, -0.5F, 2, 8, 1);
         right0.setRotationPoint(1F, .5F, 0F);
         right0.setTextureSize(64, 32);
