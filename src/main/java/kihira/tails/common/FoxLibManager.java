@@ -36,7 +36,7 @@ import java.net.URL;
 public class FoxLibManager {
 
     public static final String foxlibVersion = "@FOXLIBVERSION@";
-    public static final String foxlibReqVersion = "[0.4.0,)";
+    public static final String foxlibReqVersion = "[0.5.0,)";
     public static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
     public static final String foxlibDownloadLink = "http://maven.kihirakreations.co.uk/kihira/FoxLib/"+foxlibVersion+"/"+foxlibFileName;
     public static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-foxlib/files";

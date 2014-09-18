@@ -31,7 +31,8 @@ project.ext {
     minor = "0"
     mcVersion = "1.7.10"
     forgeVersion = "10.13.0.1180"
-    foxlibVersion = "1.7.10-0.4.1.+"
+    foxlibDevVersion = "1.7.10-0.5.0.+"
+    foxlibVersion = "1.7.10-0.5.0.6"
 }
 
 configurations {
@@ -43,7 +44,7 @@ configurations {
 
 dependencies {
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
-    compile "kihira:FoxLib:"+project.foxlibVersion+":dev"
+    compile "kihira:FoxLib:"+project.foxlibDevVersion+":dev"
 }
 
 version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}.${System.getenv("BUILD_NUMBER") ?: 0}"
