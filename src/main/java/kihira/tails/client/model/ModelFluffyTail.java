@@ -86,9 +86,9 @@ public class ModelFluffyTail extends ModelTailBase {
                         break;
                     //Nine tails
                     case 2:
-                        zAngleOffset *= 0.5D;
-                        xAngleOffset *= 0.25D;
-                        xAngleOffset += (Math.cos(timestep + xOffset) / 15F);
+                        zAngleOffset = MathHelper.clamp_double(zAngleOffset * 0.5D, -1D, 0.5D);
+                        xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.25D, -1D, 0.2D);
+                        xAngleOffset += (Math.cos(timestep + xOffset) / 30F);
                         break;
                 }
                 yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running

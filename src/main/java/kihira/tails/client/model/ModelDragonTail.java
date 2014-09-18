@@ -12,6 +12,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 public class ModelDragonTail extends ModelTailBase {
@@ -83,7 +84,7 @@ public class ModelDragonTail extends ModelTailBase {
             if (!entity.isRiding()) {
                 double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
 
-                xAngleOffset = angles[0] / 5F;
+                xAngleOffset = MathHelper.clamp_double(angles[0] / 5F, -1D, 0.45D);
                 yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
             }
             //Mounted
