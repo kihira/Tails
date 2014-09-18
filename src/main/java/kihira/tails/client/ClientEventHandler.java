@@ -33,7 +33,7 @@ import java.util.UUID;
 public class ClientEventHandler {
 
     //TODO this is not the best way to keep track of tails, enums?
-	public static final RenderTail[] tailTypes = { new RenderFluffyTail(), new RenderDragonTail(), new RenderRaccoonTail(), new RenderDevilTail(), new RenderCatTail()};
+	public static final RenderTail[] tailTypes = { new RenderFluffyTail(), new RenderDragonTail(), new RenderRaccoonTail(), new RenderDevilTail(), new RenderCatTail(), new RenderBirdTail()};
 
     private boolean sentTailInfoToServer = false;
     private boolean clearAllTailInfo = false;

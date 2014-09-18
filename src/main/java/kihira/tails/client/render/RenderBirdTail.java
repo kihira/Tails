@@ -1,11 +1,9 @@
 package kihira.tails.client.render;
 
 import kihira.tails.client.model.ModelBirdTail;
-import kihira.tails.client.model.ModelRaccoonTail;
 import kihira.tails.common.TailInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
-
 import org.lwjgl.opengl.GL11;
 
 public class RenderBirdTail extends RenderTail {
@@ -32,10 +30,10 @@ public class RenderBirdTail extends RenderTail {
 		GL11.glPopMatrix();
 	}
 
-	@Override
-	public String[] getTextureNames() {
-		return skinNames;
-	}
+    @Override
+    public String[] getTextureNames(int subid) {
+        return skinNames;
+    }
 
 	@Override
 	public int getAvailableSubTypes() {
