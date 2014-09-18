@@ -11,6 +11,8 @@ package kihira.tails.client.model;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 
 public class ModelCatTail extends ModelTailBase {
 
@@ -65,13 +67,32 @@ public class ModelCatTail extends ModelTailBase {
     @Override
     public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float partialTicks, Entity entity) {
         float seed = this.getAnimationTime(6000, entity);
+        float xseed = this.getAnimationTime(12000, entity);
+        double xAngleOffset = 0;
+        double yAngleMultiplier = 0; //Used to suppress sway when running
+        if (entity instanceof EntityPlayer) {
+            if (!entity.isRiding()) {
+                double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
 
-        setRotationRadians(tailBase, Math.toRadians(-30F), Math.cos(seed - 1) / 8F, 0F);
-        setRotationRadians(tail1, Math.toRadians(-30F), Math.cos(seed - 2) / 8F, 0F);
-        setRotationRadians(tail2, Math.toRadians(-30F), Math.cos(seed - 3) / 8F, 0F);
-        setRotationRadians(tail3, Math.toRadians(20F) + (float) Math.cos(seed - 4) / 6F, Math.cos(seed - 4) / 8F, Math.cos(seed - 4) / 8F);
-        setRotationRadians(tail4, Math.toRadians(50F) + (float) Math.cos(seed - 5) / 8F, Math.cos(seed - 5) / 8F, Math.cos(seed - 5) / 8F);
-        setRotationRadians(tail5, Math.toRadians(50F) + (float) Math.cos(seed - 6) / 6F, Math.cos(seed - 6) / 8F, Math.cos(seed - 6) / 8F);
+                xAngleOffset = MathHelper.clamp_double(angles[0] / 3.5F, -1F, 0.33D);
+                yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
+            }
+            //Mounted
+            else {
+                xAngleOffset = Math.toRadians(13F);
+                yAngleMultiplier = 0.25F;
+            }
+        }
+        else {
+            yAngleMultiplier = 1F; //Used to suppress sway when running
+        }
+
+        setRotationRadians(tailBase, Math.toRadians(-30F) + xAngleOffset * 2F, Math.cos(seed - 1) / 8F * yAngleMultiplier, 0F);
+        setRotationRadians(tail1, Math.toRadians(-30F) + xAngleOffset * 2F, Math.cos(seed - 2) / 8F * yAngleMultiplier, 0F);
+        setRotationRadians(tail2, Math.toRadians(-30F) + xAngleOffset * 2F, Math.cos(seed - 3) / 8F * yAngleMultiplier, Math.cos(xseed - 3) / 16F);
+        setRotationRadians(tail3, Math.toRadians(20F) - xAngleOffset * 2F + (float) Math.cos(xseed - 4) / 8F, Math.cos(seed - 4) / 8F * yAngleMultiplier, Math.cos(xseed - 4) / 8F);
+        setRotationRadians(tail4, Math.toRadians(50F) - xAngleOffset * 2.5F + (float) Math.cos(xseed - 5) / 10F, Math.cos(seed - 5) / 8F * yAngleMultiplier, Math.cos(xseed - 5) / 8F);
+        setRotationRadians(tail5, Math.toRadians(50F) - xAngleOffset * 3F + (float) Math.cos(xseed - 6) / 10F, Math.cos(seed - 6) / 8F * yAngleMultiplier, Math.cos(xseed - 6) / 8F);
     }
 
     @Override
