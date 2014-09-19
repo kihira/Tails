@@ -32,7 +32,8 @@ project.ext {
     mcVersion = "1.7.10"
     forgeVersion = "10.13.0.1180"
     foxlibDevVersion = "1.7.10-0.5.0.+"
-    foxlibVersion = "1.7.10-0.5.0.6"
+    foxlibVersion = "1.7.10-0.5.0"
+    buildVersion = System.getenv("BUILD_NUMBER")
 }
 
 configurations {
@@ -47,7 +48,11 @@ dependencies {
     compile "kihira:FoxLib:"+project.foxlibDevVersion+":dev"
 }
 
-version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}.${System.getenv("BUILD_NUMBER") ?: 0}"
+project.version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}"
+if (project.hasProperty("teamcity") && project.ext.buildVersion != null && teamcity["maven_release"] == null) {
+    version = version + ".${System.getenv("BUILD_NUMBER")}"
+}
+
 group= "kihira"
 archivesBaseName = "Tails"
 
