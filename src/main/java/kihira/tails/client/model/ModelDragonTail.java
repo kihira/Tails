@@ -1,8 +1,18 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.client.model;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 public class ModelDragonTail extends ModelTailBase {
@@ -68,18 +78,37 @@ public class ModelDragonTail extends ModelTailBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float subtype, float partialTicks, Entity entity) {
-        float seed = this.getAnimationTime(4000, entity);
+        double xAngleOffset = 0;
+        double yAngleMultiplier = 0; //Used to suppress sway when running
+        if (entity instanceof EntityPlayer) {
+            if (!entity.isRiding()) {
+                double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
 
-        this.tailBase.rotateAngleY = ((float) Math.cos(seed - 1) / 5F);
-        this.tail1.rotateAngleY = (float) Math.cos(seed - 2) / 5F;
-        this.tail2.rotateAngleY = (float) Math.cos(seed - 3) / 5F;
-        this.tail3.rotateAngleY = (float) Math.cos(seed - 4) / 5F;
+                xAngleOffset = MathHelper.clamp_double(angles[0] / 5F, -1D, 0.45D);
+                yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
+            }
+            //Mounted
+            else {
+                xAngleOffset = Math.toRadians(12F);
+                yAngleMultiplier = 0.25F;
+            }
+        }
+        else {
+            yAngleMultiplier = 1F; //Used to suppress sway when running
+        }
+
+        //TODO if we want to speed up the swing, we can't do so via this method
+        float timestep = this.getAnimationTime(4000D, entity);
+        setRotationRadians(tailBase, Math.toRadians(-40F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
+        setRotationRadians(tail1, Math.toRadians(-8F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 2) / 5F) * yAngleMultiplier, 0F);
+        setRotationRadians(tail2, Math.toRadians(10F) - xAngleOffset / 4F, ((float) Math.cos(timestep - 3) / 5F) * yAngleMultiplier, 0F);
+        setRotationRadians(tail3, Math.toRadians(20F) - xAngleOffset, ((float) Math.cos(timestep - 4) / 5F) * yAngleMultiplier, 0F);
 
         if (subtype == 1) {
-            this.tailSubBase.rotateAngleY = (float) Math.cos(seed - 1) / 5F;
-            this.tailSub1.rotateAngleY = (float) Math.cos(seed - 2) / 5F;
-            this.tailSub2.rotateAngleY = (float) Math.cos(seed - 3) / 5F;
-            this.tailSub3.rotateAngleY = (float) Math.cos(seed - 4) / 5F;
+            setRotationRadians(tailSubBase, Math.toRadians(-40F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
+            setRotationRadians(tailSub1, Math.toRadians(-8F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 2) / 5F) * yAngleMultiplier, 0F);
+            setRotationRadians(tailSub2, Math.toRadians(10F) - xAngleOffset / 4F, ((float) Math.cos(timestep - 3) / 5F) * yAngleMultiplier, 0F);
+            setRotationRadians(tailSub3, Math.toRadians(20F) - xAngleOffset, ((float) Math.cos(timestep - 4) / 5F) * yAngleMultiplier, 0F);
         }
     }
 

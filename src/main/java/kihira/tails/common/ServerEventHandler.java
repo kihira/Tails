@@ -1,3 +1,11 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.common;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -10,8 +18,6 @@ public class ServerEventHandler {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         //Send current known tails to client
-        //UUID uuid = UUID.fromString("7cdaf700590f421082047933f8af67f3");
-        //Tails.proxy.addTailInfo(uuid, new TailInfo(uuid, true, 0, 0, -1803209, -1938144, -592395, null));
         Tails.networkWrapper.sendTo(new TailMapMessage(Tails.proxy.getTailMap()), (EntityPlayerMP) event.player);
     }
 

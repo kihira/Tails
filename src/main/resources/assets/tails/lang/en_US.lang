@@ -1,12 +1,23 @@
 tail.none.name=No Tail
 tail.dragon.0.name=Lizard Tail
 tail.dragon.1.name=Dragon Tail
-tail.fox.0.name=Fox Tail
-tail.fox.1.name=Twin Tails
-tail.fox.2.name=Nine Tails
+tail.fluffy.0.name=Fluffy Tail
+tail.fluffy.1.name=Twin Tails
+tail.fluffy.2.name=Nine Tails
 tail.raccoon.0.name=Raccoon Tail
 tail.devil.0.name=Devil Tail
 tail.devil.1.name=Devil Tail (No Tip)
+tail.cat.0.name=Cat Tail
+tail.bird.0.name=Bird Tail
+
+tail.texture.foxTail.name=Fox
+tail.texture.devilTail.name=Devil
+tail.texture.racoonTail.name=Raccoon
+tail.texture.dragonTail.name=Standard
+tail.texture.dragonTailStriped.name=Striped
+tail.texture.tabbyTail.name=Cat
+tail.texture.tigerTail.name=Tiger
+tail.texture.birdTail.name=Bird
 
 gui.export.title=Export Options
 gui.export.information=A feature of Tails is the ability to allow other players to see your tail even if the server doesn't have the mod installed (The other player still needs Tails installed though). To do this, some unused pixels in your skin are used by Tails instead to store information about your tail. You can use the options below to choose where to export or whether to upload it straight to Minecraft skin servers. Hover over the buttons to see the file locations.
@@ -28,10 +39,23 @@ gui.button.editor=Tails Editor
 gui.button.reset=Reset
 gui.button.save=Save
 gui.button.edit=Edit
+gui.button.help.camera.0=Click and drag on the preview window
+gui.button.help.camera.1=to rotate your character
 
 gui.tint=Tint %s
 gui.tint.edit=Editing Tint %s
 gui.hex=Hex
+gui.texture=Texture
 
 tails.export.success=Successfully saved skin to %s
 tails.upload.unavailable=This feature is not yet functional!
+
+foxlib.downloader.missing=You need FoxLib to use %s! You can download it here: %s
+foxlib.downloader.0=FoxLib is missing and it is REQUIRED to use %s!
+foxlib.downloader.1=Do you want to automatically download FoxLib? (Will require a game restart)
+foxlib.downloader.downloading=Downloading FoxLib
+foxlib.downloader.success=FoxLib has been downloaded!
+foxlib.downloader.restart=Please restart your game to finish
+foxlib.downloader.failed.0=FoxLib has failed to download
+foxlib.downloader.failed.1=Please download FoxLib manually from CurseForge (%s)
+foxlib.downloader.outofdate=FoxLib is not the correct version, please update (%s)

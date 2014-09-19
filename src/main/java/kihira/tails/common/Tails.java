@@ -1,15 +1,9 @@
 /*
- * Copyright (C) 2014  Kihira
+ * The MIT License (MIT)
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Copyright (c) 2014 Zoe Lee (Kihira)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * See LICENSE for full License
  */
 
 package kihira.tails.common;
@@ -17,30 +11,23 @@ package kihira.tails.common;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import cpw.mods.fml.server.FMLServerHandler;
-import kihira.tails.client.event.EventGuiTick;
 import kihira.tails.proxy.CommonProxy;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "$version")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@")
 public class Tails {
 
     public static final String MOD_ID = "Tails";
@@ -49,9 +36,6 @@ public class Tails {
 
     public static Configuration configuration;
     public static boolean hasRemote;
-    
-    public static final String foxlibDownloadLink = "http://maven.kihirakreations.co.uk/kihira/foxlib/FoxLib/1.7.10-0.4.1.24/FoxLib-1.7.10-0.4.1.24.jar";
-    public static final String foxlibFileName = "FoxLib-1.7.10-0.4.1.24.jar";
 
     @SidedProxy(clientSide = "kihira.tails.proxy.ClientProxy", serverSide = "kihira.tails.proxy.CommonProxy")
     public static CommonProxy proxy;
@@ -65,23 +49,14 @@ public class Tails {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
-        if (!isFoxlibInstalled()) {
-            if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
-                downloadFoxlib();
-                FMLCommonHandler.instance().bus().register(new EventGuiTick());
-            } else {
-                FMLLog.bigWarning("You need FoxLib to use Tails! You can download it here: " + "http://minecraft.curseforge.com/mc-mods/223291-foxlib/files/latest");
-                FMLServerHandler.instance().getServer().initiateShutdown();
+        if (FoxLibManager.checkFoxlib()) {
+            Tails.proxy.registerHandlers();
+            Tails.proxy.registerMessages();
+
+            if (e.getSide().isClient()) {
+                Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
+                loadConfig();
             }
-            return;
-        }
-
-        Tails.proxy.registerHandlers();
-        Tails.proxy.registerMessages();
-
-        if (e.getSide().isClient()) {
-            Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
-            loadConfig();
         }
     }
 
@@ -122,18 +97,5 @@ public class Tails {
         prop.set(new Gson().toJson(localPlayerTailInfo));
 
         Tails.configuration.save();
-    }
-
-    public static boolean isFoxlibInstalled() {
-        return Loader.isModLoaded("foxlib");
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void downloadFoxlib() {
-        try {
-            FileUtils.copyURLToFile(new URL(foxlibDownloadLink), new File(Minecraft.getMinecraft().mcDataDir + File.separator + "mods" + File.separator + foxlibFileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

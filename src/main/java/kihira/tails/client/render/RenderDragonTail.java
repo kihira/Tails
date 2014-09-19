@@ -1,3 +1,11 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.client.render;
 
 import kihira.tails.client.model.ModelDragonTail;
@@ -8,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderDragonTail extends RenderTail {
 
-	private String[] skinNames = {"dragonTail"};
+	private String[] skinNames = {"dragonTail", "dragonTailStriped"};
 	
     private ModelDragonTail modelDragonTail = new ModelDragonTail();
 
@@ -20,7 +28,7 @@ public class RenderDragonTail extends RenderTail {
     public void doRender(EntityLivingBase entity, TailInfo info, float partialTicks) {
         GL11.glPushMatrix();
         Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
-        if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.7F, 0.1F);
+        if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.68F, 0.1F);
         else GL11.glTranslatef(0F, 0.6F, 0.35F);
         GL11.glScalef(0.8F, 0.8F, 0.8F);
         this.modelDragonTail.render(entity, info.subid, partialTicks);
@@ -28,7 +36,7 @@ public class RenderDragonTail extends RenderTail {
     }
 
 	@Override
-	public String[] getTextureNames() {
+	public String[] getTextureNames(int subid) {
 		return skinNames;
 	}
 

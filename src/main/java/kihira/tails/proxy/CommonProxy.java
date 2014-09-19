@@ -1,3 +1,11 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.proxy;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -31,7 +39,7 @@ public class CommonProxy {
     }
 
     public void removeTailInfo(UUID uuid) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer() && this.tailMap.containsKey(uuid)) {
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer() && uuid != null && this.tailMap.containsKey(uuid)) {
             //Tell client to remove textures
             Tails.networkWrapper.sendToAll(new TailInfoMessage(this.tailMap.get(uuid), true));
         }
@@ -43,7 +51,7 @@ public class CommonProxy {
     }
 
     public boolean hasTailInfo(UUID uuid) {
-        return this.tailMap.containsKey(uuid);
+        return uuid != null && this.tailMap.containsKey(uuid);
     }
 
     public TailInfo getTailInfo(UUID uuid) {

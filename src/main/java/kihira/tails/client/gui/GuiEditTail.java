@@ -1,9 +1,24 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
-import kihira.foxlib.client.gui.*;
+import kihira.foxlib.client.gui.GuiBaseScreen;
+import kihira.foxlib.client.gui.GuiIconButton;
+import kihira.foxlib.client.gui.GuiList;
+import kihira.foxlib.client.gui.IListCallback;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.FakeEntity;
+import kihira.tails.client.gui.controls.GuiHSBSlider;
+import kihira.tails.client.gui.controls.GuiHSBSlider.HSBSliderType;
+import kihira.tails.client.gui.controls.GuiHSBSlider.IHSBSliderCallback;
+import kihira.tails.client.render.RenderTail;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
@@ -20,28 +35,25 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IListCallback {
+public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSliderCallback {
 
     private float yaw = 0F;
-    private float pitch = 0F;
+    private float pitch = 10F;
 
     private int currTintEdit = 0;
     private int currTintColour = 0xFFFFFF;
     private GuiTextField hexText;
-    private GuiSlider rSlider;
-    private GuiSlider gSlider;
-    private GuiSlider bSlider;
-    private GuiButton tintReset;
-    private GuiButton tintSave;
-
-    private GuiSlider rotYawSlider;
+    private GuiHSBSlider[] hsbSliders;
+    private GuiHSBSlider[] rgbSliders;
+    private GuiIconButton tintReset;
+    private int textureID;
 
     private ScaledResolution scaledRes;
 
@@ -55,13 +67,11 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     private GuiList tailList;
     private FakeEntity fakeEntity;
 
-    GuiButtonToggle livePreviewButton;
-
     public GuiEditTail() {
         //Backup original TailInfo or create default one
         TailInfo tailInfo;
         if (Tails.localPlayerTailInfo == null) {
-            Tails.setLocalPlayerTailInfo(new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 , 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null));
+            Tails.setLocalPlayerTailInfo(new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 , 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null));
         }
         tailInfo = Tails.localPlayerTailInfo;
         this.originalTailInfo = tailInfo.deepCopy();
@@ -77,8 +87,8 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         int previewWindowEdgeOffset = 110;
         this.previewWindowLeft = previewWindowEdgeOffset;
         this.previewWindowRight = this.width - previewWindowEdgeOffset;
-        this.previewWindowBottom = this.height - 55;
-        this.editPaneTop = this.height - 125;
+        this.previewWindowBottom = this.height - 30;
+        this.editPaneTop = this.height - 107;
 
         //Edit tint buttons
         int topOffset = 20;
@@ -93,40 +103,47 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         this.hexText.setText(Integer.toHexString(this.currTintColour));
 
         //RGB sliders
-        this.buttonList.add(this.rSlider = new GuiSlider(this, 5, this.previewWindowRight + 5, this.editPaneTop + 35, 100, 0, 255, 0));
-        this.buttonList.add(this.gSlider = new GuiSlider(this, 6, this.previewWindowRight + 5, this.editPaneTop + 55, 100, 0, 255, 0));
-        this.buttonList.add(this.bSlider = new GuiSlider(this, 7, this.previewWindowRight + 5, this.editPaneTop + 75, 100, 0, 255, 0));
+        rgbSliders = new GuiHSBSlider[3];
+        rgbSliders[0] = new GuiHSBSlider(5, this.previewWindowRight + 5, this.editPaneTop + 70, 100, 10, this, HSBSliderType.SATURATION);
+        rgbSliders[1] = new GuiHSBSlider(6, this.previewWindowRight + 5, this.editPaneTop + 80, 100, 10, this, HSBSliderType.SATURATION);
+        rgbSliders[2] = new GuiHSBSlider(7, this.previewWindowRight + 5, this.editPaneTop + 90, 100, 10, this, HSBSliderType.SATURATION);
+        rgbSliders[0].setHue(0);
+        rgbSliders[1].setHue(1F/3F);
+        rgbSliders[2].setHue(2F/3F);
+
+        this.buttonList.add(rgbSliders[0]);
+        this.buttonList.add(rgbSliders[1]);
+        this.buttonList.add(rgbSliders[2]);
+
+        //HBS sliders
+        hsbSliders = new GuiHSBSlider[3];
+        hsbSliders[0] = new GuiHSBSlider(15, this.previewWindowRight + 5, this.editPaneTop + 35, 100, 10, this, HSBSliderType.HUE);
+        hsbSliders[1] = new GuiHSBSlider(16, this.previewWindowRight + 5, this.editPaneTop + 45, 100, 10, this, HSBSliderType.SATURATION);
+        hsbSliders[2] = new GuiHSBSlider(17, this.previewWindowRight + 5, this.editPaneTop + 55, 100, 10, this, HSBSliderType.BRIGHTNESS);
+        this.buttonList.add(hsbSliders[0]);
+        this.buttonList.add(hsbSliders[1]);
+        this.buttonList.add(hsbSliders[2]);
 
         //Reset/Save
-        this.buttonList.add(this.tintReset = new GuiButton(8, this.previewWindowRight + 5, this.height - 25, 50, 20, I18n.format("gui.button.reset")));
-        this.buttonList.add(this.tintSave = new GuiButton(9, this.previewWindowRight + 55, this.height - 25, 50, 20, I18n.format("gui.button.save")));
+        this.buttonList.add(this.tintReset = new GuiIconButton(8, this.width - 20, this.editPaneTop + 2, GuiIconButton.Icons.UNDO, new ArrayList<String>() {{ add(I18n.format("gui.button.reset")); }}));
+        tintReset.enabled = false;
 
         //Tail List
         List<TailEntry> tailList = new ArrayList<TailEntry>();
         UUID uuid = UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"); //Just a random UUID
-        tailList.add(new TailEntry(new TailInfo(uuid, false, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null))); //No tail
+        tailList.add(new TailEntry(new TailInfo(uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null))); //No tail
         //Generate tail preview textures and add to list
         for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
             for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
-                TailInfo tailInfo = new TailInfo(uuid, true, type, subType, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
+                TailInfo tailInfo = new TailInfo(uuid, true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
                 tailList.add(new TailEntry(tailInfo));
             }
         }
 
-        this.tailList = new GuiList(this, this.previewWindowLeft, this.height, 0, this.height, 55, tailList);
+        this.tailList = new GuiList(this, this.previewWindowLeft, this.height - 43, 0, this.height - 43, 55, tailList);
         this.selectDefaultListEntry();
 
         //General Editing Pane
-        //Yaw Rotation
-        this.buttonList.add(this.rotYawSlider = new GuiSlider(this, 1, this.previewWindowLeft + (this.scaledRes.getScaledWidth() / 60),
-                this.previewWindowBottom + 5, this.width - (previewWindowEdgeOffset * 2) - (this.scaledRes.getScaledWidth() / 30), -180, 180, (int) this.yaw));
-
-        //Live Preview
-        String s = I18n.format("gui.button.livepreview");
-        this.buttonList.add(this.livePreviewButton = new GuiButtonToggle(11, this.previewWindowLeft + 5, this.height - 25, this.fontRendererObj.getStringWidth(s) + 7, 20, s,
-                this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.livepreview.0.tooltip")));
-        this.livePreviewButton.enabled = false;
-
         //Reset/Save
         this.buttonList.add(new GuiButton(12, this.previewWindowRight - 83, this.height - 25, 40, 20, I18n.format("gui.button.reset")));
         this.buttonList.add(new GuiButton(13, this.previewWindowRight - 43, this.height - 25, 40, 20, I18n.format("gui.done")));
@@ -134,6 +151,17 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Export
         this.buttonList.add(new GuiButtonTooltip(14, (this.width / 2) - 20, this.height - 25, 40, 20, I18n.format("gui.button.export"),
                 this.scaledRes.getScaledWidth() / 3, I18n.format("gui.button.export.0.tooltip")));
+
+        //Texture select
+        this.buttonList.add(new GuiButton(18, 5, this.height - 25, 15, 20, "<"));
+        this.buttonList.add(new GuiButton(19, this.previewWindowLeft - 20, this.height - 25, 15, 20, ">"));
+        textureID = tailInfo.textureID;
+
+        //Help
+        this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 20, 4, GuiIconButton.Icons.QUESTION, new ArrayList<String>() {{
+            add(I18n.format("gui.button.help.camera.0"));
+            add(I18n.format("gui.button.help.camera.1"));
+        }}));
 
         this.refreshTintPane();
     }
@@ -172,35 +200,30 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         //Tails list
         this.tailList.drawScreen(mouseX, mouseY, p_73863_3_);
 
-        super.drawScreen(mouseX, mouseY, p_73863_3_);
+        //Texture select
+        fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, this.height - 37, 0xFFFFFF);
+        fontRendererObj.drawString(I18n.format("tail.texture." + ClientEventHandler.tailTypes[tailInfo.typeid].getTextureNames(tailInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
 
-        //Tooltips
-        for (Object obj : this.buttonList) {
-            if (obj instanceof GuiButtonTooltip && ((GuiButtonTooltip) obj).func_146115_a()) ((GuiButtonTooltip) obj).func_146111_b(mouseX, mouseY);
-        }
+        super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        //Yaw Rotation
-        if (button.id == 1) MathHelper.clamp_float(this.yaw = this.rotYawSlider.currentValue, -180F, 180F);
+        RenderTail tail = ClientEventHandler.tailTypes[tailInfo.typeid];
         //Edit buttons
-        else if (button.id >= 2 && button.id <= 4) {
+        if (button.id >= 2 && button.id <= 4) {
             this.currTintEdit = button.id - 1;
             this.currTintColour = this.tailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
+            this.tintReset.enabled = false;
         }
         //Reset Tint
         else if (button.id == 8) {
             this.currTintColour = this.originalTailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
-        }
-        //Save Tint
-        else if (button.id == 9) {
-            this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
-            this.updateTailInfo();
+            tintReset.enabled = false;
         }
         //Reset All
         else if (button.id == 12) {
@@ -224,7 +247,25 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         else if (button.id == 14) {
             this.updateTailInfo();
             this.mc.displayGuiScreen(new GuiExport(this, this.tailInfo));
-            //TextureHelper.writeTailInfoToSkin(this.tailInfo, this.mc.thePlayer);
+        }
+        //Texture select
+        else if (button.id == 18) {
+            if (textureID - 1 >= 0) {
+                textureID--;
+            }
+            else {
+                textureID = tail.getTextureNames(tailInfo.subid).length - 1;
+            }
+            updateTailInfo();
+        }
+        else if (button.id == 19) {
+            if (tail.getTextureNames(tailInfo.subid).length > textureID + 1) {
+                textureID++;
+            }
+            else {
+                textureID = 0;
+            }
+            updateTailInfo();
         }
     }
 
@@ -245,10 +286,33 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     }
 
     @Override
-    protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_) {
-        super.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
-        this.hexText.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
+    protected void mouseClicked(int mouseX, int mouseY, int mouseEvent) {
+/*        if (mouseEvent != 0 || !this.tailList.func_148179_a(mouseX, mouseY, mouseEvent)) {
+            super.mouseClicked(mouseX, mouseY, mouseEvent);
+        }*/
+        super.mouseClicked(mouseX, mouseY, mouseEvent);
+        this.hexText.mouseClicked(mouseX, mouseY, mouseEvent);
     }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick) {
+        if (lastButtonClicked == 0 && mouseY < previewWindowBottom && mouseX > previewWindowLeft && mouseX < previewWindowRight) {
+            //Yaw
+            float previewWindowWidth = previewWindowRight - previewWindowLeft;
+            yaw = (mouseX - (width / 2F) / (previewWindowWidth / 2F)) * 2F;
+            //Pitch
+/*            if (mouseY < previewWindowBottom) {
+                pitch = (mouseY - (previewWindowBottom / 2F) / (previewWindowBottom / 2F));
+            }*/
+        }
+    }
+
+/*    @Override
+    protected void mouseMovedOrUp(int mouseX, int mouseY, int mouseEvent) {
+        if (mouseEvent != 0 || !this.tailList.func_148181_b(mouseX, mouseY, mouseEvent)) {
+            super.mouseMovedOrUp(mouseX, mouseY, mouseEvent);
+        }
+    }*/
 
     @Override
     public void onGuiClosed() {
@@ -265,23 +329,35 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     private void refreshTintPane() {
         this.hexText.setTextColor(this.currTintColour);
 
-        this.rSlider.setCurrentValue(this.currTintColour >> 16 & 255);
-        this.rSlider.packedFGColour = (255 | (int) this.rSlider.currentValue) << 16;
-        this.gSlider.setCurrentValue(this.currTintColour >> 8 & 255);
-        this.gSlider.packedFGColour = (255 | (int) this.gSlider.currentValue) << 8;
-        this.bSlider.setCurrentValue(this.currTintColour & 255);
-        this.bSlider.packedFGColour = (255 | (int) this.bSlider.currentValue);
+        //RGB Sliders
+        Color c = new Color(this.currTintColour);
+        rgbSliders[0].setValue(c.getRed() / 255F);
+        rgbSliders[1].setValue(c.getGreen() / 255F);
+        rgbSliders[2].setValue(c.getBlue() / 255F);
+
+        //HSB Sliders
+        float[] hsbvals = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
+        hsbSliders[0].setValue(hsbvals[0]);
+        hsbSliders[1].setValue(hsbvals[1]);
+        hsbSliders[2].setValue(hsbvals[2]);
+        //The saturation slider needs to know the value of the other 2 sliders
+        hsbSliders[1].setHue((float) hsbSliders[0].getValue());
+        hsbSliders[1].setBrightness((float) hsbSliders[2].getValue());
 
         if (this.currTintEdit > 0) {
-            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = this.tintReset.visible = this.tintSave.visible = true;
+            this.rgbSliders[0].visible = this.rgbSliders[1].visible = this.rgbSliders[2].visible = true;
+            this.hsbSliders[0].visible = this.hsbSliders[1].visible = this.hsbSliders[2].visible = true;
+            this.tintReset.visible = true;
         }
+        
         else {
-            this.rSlider.visible = this.gSlider.visible = this.bSlider.visible = this.tintReset.visible = this.tintSave.visible = false;
+            this.rgbSliders[0].visible = this.rgbSliders[1].visible = this.rgbSliders[2].visible = false;
+            this.hsbSliders[0].visible = this.hsbSliders[1].visible = this.hsbSliders[2].visible = false;
+            this.tintReset.visible = false;
         }
 
-        if (!this.livePreviewButton.enabled) {
-            this.updateTailInfo();
-        }
+        tintReset.enabled = true;
+        this.updateTailInfo();
     }
 
     private void drawEntity(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
@@ -338,21 +414,17 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
     }
 
     @Override
-    public boolean onValueChange(GuiSlider slider, float oldValue, float newValue) {
-        if (slider == this.rotYawSlider) {
-            this.yaw = newValue;
+    public void onValueChangeHSBSlider(GuiHSBSlider source, double sliderValue) {
+        if (source == rgbSliders[0] || source == rgbSliders[1] || source == rgbSliders[2]) {
+            this.currTintColour = new Color((int) (rgbSliders[0].getValue() * 255F), (int) (rgbSliders[1].getValue() * 255F), (int) (rgbSliders[2].getValue() * 255F)).getRGB();
         }
-        //RGB sliders
-        if (slider == this.rSlider || slider == this.gSlider || slider == this.bSlider) {
-            int colour = 0;
-            colour = colour | (int) this.rSlider.currentValue << 16;
-            colour = colour | (int) this.gSlider.currentValue << 8;
-            colour = colour | (int) this.bSlider.currentValue;
-            this.currTintColour = colour;
-            this.hexText.setText(Integer.toHexString(this.currTintColour));
-            this.refreshTintPane();
+        else {
+            float[] hsbvals = { (float)hsbSliders[0].getValue(), (float)hsbSliders[1].getValue(), (float)hsbSliders[2].getValue() };
+            hsbvals[source.getType().ordinal()] = (float)sliderValue;
+            this.currTintColour = Color.getHSBColor(hsbvals[0], hsbvals[1], hsbvals[2]).getRGB();
         }
-        return true;
+        this.hexText.setText(Integer.toHexString(this.currTintColour));
+        this.refreshTintPane();
     }
 
     void updateTailInfo() {
@@ -360,7 +432,7 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         TailEntry tailEntry = (TailEntry) this.tailList.getListEntry(this.tailList.getCurrrentIndex());
 
         if (this.currTintEdit > 0) this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
-        this.tailInfo = new TailInfo(uuid, tailEntry.tailInfo.hastail, tailEntry.tailInfo.typeid, tailEntry.tailInfo.subid, this.tailInfo.tints, null);
+        this.tailInfo = new TailInfo(uuid, tailEntry.tailInfo.hastail, tailEntry.tailInfo.typeid, tailEntry.tailInfo.subid, textureID, this.tailInfo.tints, null);
         this.tailInfo.setTexture(TextureHelper.generateTexture(this.tailInfo));
         this.tailInfo.needsTextureCompile = false;
 
@@ -379,6 +451,8 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
 
     @Override
     public boolean onEntrySelected(GuiList guiList, int index, GuiListExtended.IGuiListEntry entry) {
+        //Reset texture ID
+        textureID = 0;
         this.updateTailInfo();
         return true;
     }
@@ -392,11 +466,11 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         }
 
         @Override
-        public void drawEntry(int p_148279_1_, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int p_148279_7_, int p_148279_8_, boolean p_148279_9_) {
-            if (this.tailInfo.hastail) {
-                renderTail(previewWindowLeft - 25, y - 25, 50, this.tailInfo);
-                fontRendererObj.drawString(I18n.format(ClientEventHandler.tailTypes[tailInfo.typeid].getUnlocalisedName(tailInfo.subid)), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
-
+        public void drawEntry(int index, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int mouseX, int mouseY, boolean mouseOver) {
+            if (tailInfo.hastail) {
+                RenderTail tail = ClientEventHandler.tailTypes[tailInfo.typeid];
+                renderTail(previewWindowLeft - 25, y - 25, 50, tailInfo);
+                fontRendererObj.drawString(I18n.format(tail.getUnlocalisedName(tailInfo.subid)), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
             }
             else {
                 fontRendererObj.drawString(I18n.format("tail.none.name"), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
@@ -404,13 +478,12 @@ public class GuiEditTail extends GuiBaseScreen implements ISliderCallback, IList
         }
 
         @Override
-        public boolean mousePressed(int p_148278_1_, int p_148278_2_, int p_148278_3_, int p_148278_4_, int p_148278_5_, int p_148278_6_) {
+        public boolean mousePressed(int index, int mouseX, int mouseY, int p_148278_4_, int mouseSlotX, int mouseSlotY) {
             return true;
         }
 
         @Override
-        public void mouseReleased(int p_148277_1_, int p_148277_2_, int p_148277_3_, int p_148277_4_, int p_148277_5_, int p_148277_6_) {
-
+        public void mouseReleased(int index, int mouseX, int mouseY, int p_148278_4_, int mouseSlotX, int mouseSlotY) {
         }
     }
 }

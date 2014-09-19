@@ -1,3 +1,11 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.client.render;
 
 import cpw.mods.fml.relauncher.Side;
@@ -26,14 +34,15 @@ public abstract class RenderTail {
     protected abstract void doRender(EntityLivingBase player, TailInfo info, float partialTicks);
 
     /**
-     * Gets the available textures for this tail
-     * @return
+     * Gets the available textures for this tail subid
+     * @return Available textures
+     * @param subid The subid
      */
-    public abstract String[] getTextureNames();
+    public abstract String[] getTextureNames(int subid);
 
     /**
      * Gets the available subtypes for this tail
-     * @return
+     * @return subtypes
      */
     public abstract int getAvailableSubTypes();
 

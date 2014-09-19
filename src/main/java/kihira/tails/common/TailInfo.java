@@ -1,3 +1,11 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.common;
 
 import com.google.gson.Gson;
@@ -15,21 +23,22 @@ public class TailInfo implements Cloneable {
     @Expose public final int typeid;
     @Expose public final int subid;
     @Expose public final int[] tints;
-    @Expose public final int textureID = 0;
+    @Expose public final int textureID;
 	private ResourceLocation texture;
     public boolean needsTextureCompile = true;
 	
-	public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int[] tints, ResourceLocation texture) {
+	public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int textureID, int[] tints, ResourceLocation texture) {
 		this.uuid = uuid;
 		this.hastail = hastail;
 		this.typeid = type;
 		this.subid = subtype;
+        this.textureID = textureID;
         this.tints = tints;
         this.texture = texture;
 	}
 
-    public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int tint1, int tint2, int tint3, ResourceLocation texture) {
-        this(uuid, hastail, type, subtype, new int[] {tint1, tint2, tint3}, texture);
+    public TailInfo(UUID uuid, boolean hastail, int type, int subtype, int textureID, int tint1, int tint2, int tint3, ResourceLocation texture) {
+        this(uuid, hastail, type, subtype, textureID, new int[] {tint1, tint2, tint3}, texture);
     }
 
     public ResourceLocation getTexture() {
@@ -39,7 +48,7 @@ public class TailInfo implements Cloneable {
     public void setTexture(ResourceLocation texture) {
         if (this.texture == null || !this.texture.equals(texture)) {
             try {
-                Minecraft.getMinecraft().renderEngine.deleteTexture(this.texture); //TODO this won't work on servers
+                Minecraft.getMinecraft().renderEngine.deleteTexture(this.texture);
             } catch (Exception ignored) {}
 
             this.needsTextureCompile = true;

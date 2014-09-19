@@ -1,8 +1,18 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.client.model;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 
 public class ModelDevilTail extends ModelTailBase {
 
@@ -59,28 +69,40 @@ public class ModelDevilTail extends ModelTailBase {
     }
 
     @Override
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float subtype, Entity entity) {
+    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float partialTicks, Entity entity) {
         float seed = this.getAnimationTime(6000, entity);
+        float xseed = this.getAnimationTime(12000, entity);
+        double xAngleOffset = 0;
+        double yAngleMultiplier = 0; //Used to suppress sway when running
+        if (entity instanceof EntityPlayer) {
+            if (!entity.isRiding()) {
+                double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
 
-        this.tailBase.rotateAngleY = (float) Math.cos(seed - 1) / 8F;
-        this.tail1.rotateAngleY = (float) Math.cos(seed - 2) / 8F;
-        this.tail2.rotateAngleY = (float) Math.cos(seed - 3) / 8F;
-        this.tail3.rotateAngleY = (float) Math.cos(seed - 4) / 8F;
-        this.tail4.rotateAngleY =(float) Math.cos(seed - 5) / 8F;
-        this.tail5.rotateAngleY = (float) Math.cos(seed - 6) / 8F;
+                xAngleOffset = MathHelper.clamp_double(angles[0] / 3.5F, -1F, 0.275D);
+                yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
+            }
+            //Mounted
+            else {
+                xAngleOffset = Math.toRadians(13F);
+                yAngleMultiplier = 0.25F;
+            }
+        }
+        else {
+            yAngleMultiplier = 1F; //Used to suppress sway when running
+        }
 
-        this.tail3.rotateAngleZ = (float) Math.cos(seed - 4) / 8F;
-        this.tail4.rotateAngleZ = (float) Math.cos(seed - 5) / 8F;
-        this.tail5.rotateAngleZ = (float) Math.cos(seed - 6) / 8F;
-
-        this.tail3.rotateAngleX = (float) (Math.toRadians(20F) + (float) Math.cos(seed - 4) / 6F);
-        this.tail4.rotateAngleX = (float) (Math.toRadians(50F) + (float) Math.cos(seed - 5) / 8F);
-        this.tail5.rotateAngleX = (float) (Math.toRadians(50F) + (float) Math.cos(seed - 6) / 4F);
+        setRotationRadians(tailBase, Math.toRadians(-30F) + xAngleOffset * 2F, Math.cos(seed - 1) / 8F * yAngleMultiplier, 0F);
+        setRotationRadians(tail1, Math.toRadians(-30F) + xAngleOffset * 2F, Math.cos(seed - 2) / 8F * yAngleMultiplier, 0F);
+        setRotationRadians(tail2, Math.toRadians(-30F) + xAngleOffset * 2F, Math.cos(seed - 3) / 8F * yAngleMultiplier, 0F);
+        setRotationRadians(tail3, Math.toRadians(20F) - (xAngleOffset * 2F) + (Math.cos(xseed - 4) / 6F * yAngleMultiplier), Math.cos(seed - 4) / 8F * yAngleMultiplier, Math.cos(xseed - 4) / 8F * yAngleMultiplier);
+        setRotationRadians(tail4, Math.toRadians(50F) - (xAngleOffset * 3F) + (Math.cos(xseed - 5) / 8F * yAngleMultiplier), Math.cos(seed - 5) / 8F * yAngleMultiplier, Math.cos(xseed - 5) / 8F * yAngleMultiplier);
+        setRotationRadians(tail5, Math.toRadians(50F) - (xAngleOffset * 4F) + (Math.cos(xseed - 6) / 4F  * yAngleMultiplier), Math.cos(seed - 6) / 8F * yAngleMultiplier, Math.cos(xseed - 6) / 8F * yAngleMultiplier);
+        setRotationRadians(tailTip, Math.toRadians(120F) - xAngleOffset, 0F, 0F);
     }
 
     @Override
     public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
-        this.setRotationAngles(0, 0, 0, 0, 0, 0, theEntity);
+        this.setRotationAngles(0, 0, 0, 0, 0, partialTicks, theEntity);
 
         if (subtype == 1) {
             this.tailTip.isHidden = true;

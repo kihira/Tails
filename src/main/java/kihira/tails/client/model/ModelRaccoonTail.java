@@ -1,8 +1,18 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.client.model;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 
 public class ModelRaccoonTail extends ModelTailBase {
 
@@ -36,17 +46,43 @@ public class ModelRaccoonTail extends ModelTailBase {
     }
 
     @Override
-    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity entity) {
-        float seed = this.getAnimationTime(8000, entity);
+    public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float partialTicks, Entity entity) {
+        float timestep = this.getAnimationTime(8000, entity);
+        double xAngleOffset = 0;
+        double yAngleOffset = 0;
+        double zAngleOffset = 0;
+        double yAngleMultiplier = 0; //Used to suppress sway when running
 
-        this.tailBase.rotateAngleY = (float) (Math.cos(seed - 1) / 15F);
-        this.tail1.rotateAngleY = (float) (Math.cos(seed - 2) / 15F);
-        this.tail2.rotateAngleY = (float) (Math.cos(seed - 3) / 15F);
+        if (entity instanceof EntityPlayer) {
+            if (!entity.isRiding()) {
+                double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
+
+                xAngleOffset = angles[0];
+                yAngleOffset = angles[1];
+                zAngleOffset = angles[2];
+                yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
+
+                xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
+                zAngleOffset = MathHelper.clamp_double(zAngleOffset * 0.5D, -0.5D, 0.5D);
+            }
+            //Mounted
+            else {
+                xAngleOffset = Math.toRadians(20F);
+                yAngleMultiplier = 0.2F;
+            }
+        }
+        else {
+            yAngleMultiplier = 1F; //Used to suppress sway when running
+        }
+
+        setRotationRadians(tailBase, xAngleOffset, (-zAngleOffset + Math.cos(timestep - 1) / 15F + yAngleOffset) * yAngleMultiplier, -zAngleOffset / 4F);
+        setRotationRadians(tail1, Math.toRadians(-40F) + xAngleOffset, (-zAngleOffset + Math.cos(timestep - 1) / 15F + yAngleOffset) * yAngleMultiplier, -zAngleOffset / 4F);
+        setRotationRadians(tail2, Math.toRadians(-30F) + xAngleOffset, (-zAngleOffset + Math.cos(timestep - 1) / 15F + yAngleOffset) * yAngleMultiplier, -zAngleOffset / 4F);
     }
 
     @Override
     public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
-        this.setRotationAngles(0, 0, 0, 0, 0, 0, theEntity);
+        this.setRotationAngles(0, 0, 0, 0, 0, partialTicks, theEntity);
 
         this.tailBase.render(0.0625F);
     }

@@ -1,7 +1,16 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Zoe Lee (Kihira)
+ *
+ * See LICENSE for full License
+ */
+
 package kihira.tails.proxy;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
@@ -11,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.util.UUID;
 
+@SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
     @Override
