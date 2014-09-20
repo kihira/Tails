@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import net.minecraft.entity.EntityLivingBase;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public abstract class RenderTail {
@@ -28,6 +29,7 @@ public abstract class RenderTail {
             info.setTexture(TextureHelper.generateTexture(info));
             info.needsTextureCompile = false;
         }
+        GL11.glColor4f(1F, 1F, 1F, 1F);
         this.doRender(entity, info, partialTicks);
     }
 
