@@ -1,7 +1,7 @@
 tail.none.name=Geen Staart
 tail.dragon.0.name=Hagedis Staart
 tail.dragon.1.name=Draken Staart
-tail.fox.0.name=Vossen Start
+tail.fox.0.name=Vossen Staart
 tail.fox.1.name=Tweeling Staart
 tail.fox.2.name=Negenling Staart
 tail.raccoon.0.name=Wasbeer Staart
@@ -9,7 +9,7 @@ tail.devil.0.name=Duivel Staart
 tail.devil.1.name=Duivel Staart (Geen eindpuntje)
 
 gui.export.title=Exporteer Instellingen
-gui.export.information=Deze optie is voor het opstaan van de data van je staart in je skin. Je zult er niks van zien, omdat minecraft deze pixels niet gebruikt.
+gui.export.information=Deze optie is voor het opslaan van de data van je staart in je skin. Je zult er niks van zien, omdat minecraft deze pixels niet gebruikt.
 
 gui.button.livepreview=Live Voorbeeld
 gui.button.livepreview.0.tooltip=Laat je staart zien met de kleuren die jij selecteert
@@ -33,5 +33,5 @@ gui.tint=Tint %s
 gui.tint.edit=Tint %s aan het bewerken
 gui.hex=Hex
 
-tails.export.success=Seccesvol de skin opgeslagen naar %s
+tails.export.success=Succesvol de skin opgeslagen naar %s
 tails.upload.unavailable=Deze optie werkt nog niet! :(
