@@ -33,5 +33,5 @@ gui.tint=Tint %s
 gui.tint.edit=Tint %s aan het bewerken
 gui.hex=Hex
 
-tails.export.success=Seccesvol de skin opgeslagen naar %s
+tails.export.success=Succesvol de skin opgeslagen naar %s
 tails.upload.unavailable=Deze optie werkt nog niet! :(
