@@ -7,6 +7,17 @@ tail.fox.2.name=九尾
 tail.raccoon.0.name=浣熊尾巴
 tail.devil.0.name=恶魔尾巴
 tail.devil.1.name=恶魔尾巴 (无尖角)
+tail.cat.0.name=猫尾巴
+tail.bird.0.name=鸟尾巴
+
+tail.texture.foxTail.name=狐狸
+tail.texture.devilTail.name=恶魔
+tail.texture.racoonTail.name=浣熊
+tail.texture.dragonTail.name=普通龙尾
+tail.texture.dragonTailStriped.name=条纹龙尾
+tail.texture.tabbyTail.name=猫咪
+tail.texture.tigerTail.name=老虎
+tail.texture.birdTail.name=小鸟
 
 gui.export.title=导出设定
 gui.export.information=使用本模组中导出的皮肤可以让其他玩家看到你带着尾巴的样子, 即便是服务端没有安装本模组 (当然其他玩家仍需在客户端安装本模组). 这个功能将会把你皮肤中的一些闲置像素替换成尾巴的图形. 你可以使用下方的按钮来选择要将皮肤导出到哪里, 或是直接上传至Minecraft的皮肤服务器. 将鼠标悬浮在下方按钮上来查看详细导出位置
@@ -25,13 +36,26 @@ gui.button.export.custom.tooltip=导出至你选择的文件夹
 gui.button.openfolder.tooltip=打开皮肤位置
 gui.button.openfolder=打开你将皮肤导入的文件夹
 gui.button.editor=尾巴编辑器
-gui.button.reset=重置
+gui.button.reset=还原
 gui.button.save=保存
 gui.button.edit=编辑
+gui.button.help.camera.0=点击预览窗口并拖动
+gui.button.help.camera.1=来旋转你的形象
 
 gui.tint=尾巴颜色 %s
 gui.tint.edit=编辑尾巴颜色 %s
 gui.hex=施法
+gui.texture=材质
 
 tails.export.success=成功将皮肤导出至 %s
 tails.upload.unavailable=这项功能还在开发中!
+
+foxlib.downloader.missing=使用 %s 模组需要FoxLib作为前置模组! 你可以在这里下载它: %s
+foxlib.downloader.0=未检测到FoxLib, %s 模组需要它!
+foxlib.downloader.1=是否让游戏自动下载并安装FoxLib? (需要重启游戏)
+foxlib.downloader.downloading=正在下载FoxLib
+foxlib.downloader.success=FoxLib下载完成!
+foxlib.downloader.restart=完成安装需要重启游戏
+foxlib.downloader.failed.0=FoxLib下载失败
+foxlib.downloader.failed.1=请在CurseForge下载并手动安装 (%s)
+foxlib.downloader.outofdate=FoxLib版本过旧, 请更新 (%s)
