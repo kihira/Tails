@@ -1,12 +1,23 @@
 tail.none.name=Pas de Queue
 tail.dragon.0.name=Queue de Lézard
 tail.dragon.1.name=Queue de Dragon
-tail.fox.0.name=Queue de Renard
-tail.fox.1.name=Double Queue
-tail.fox.2.name=Neuf Queues
+tail.fluffy.0.name=Queue de Peluche
+tail.fluffy.1.name=Double Queue
+tail.fluffy.2.name=Neuf Queues
 tail.raccoon.0.name=Queue de Raton-Laveur
-tail.devil.0.name=Queue de Démon
-tail.devil.1.name=Queue de Démon (Pas de Bout)
+tail.devil.0.name=Queue de Diable
+tail.devil.1.name=Queue de Diable (Pas de Bout)
+tail.cat.0.name=Queue de Chat
+tail.bird.0.name=Queue d'Oiseau
+
+tail.texture.foxTail.name=Renard
+tail.texture.devilTail.name=Diable
+tail.texture.racoonTail.name=Raton-Laveur
+tail.texture.dragonTail.name=Standard
+tail.texture.dragonTailStriped.name=Rayé
+tail.texture.tabbyTail.name=Chat
+tail.texture.tigerTail.name=Tigre
+tail.texture.birdTail.name=Oiseau
 
 gui.export.title=Options d'Exportation
 gui.export.information=Une des fonctions de Tails est de pouvoir montrer aux autres joueurs votre queue même quand le serveur ne l'a pas installé (les autres joueurs auront cependant besoin d'avoir Tails installé pour la voir). Pour cela, certains pixels inutilisés de votre skin sont utilisés par Tails pour stocker les informations à propos de votre queue. Vous pouvez utiliser cette opition ci-dessous pour choisir où exporter votre queue ou la mettre directement en ligne sur le serveur de skin de Mojang. Survolez les boutons pour voir les emplacements de fichiers.
@@ -28,10 +39,23 @@ gui.button.editor=Editeur de Queue
 gui.button.reset=Reactualiser
 gui.button.save=Sauvegarder
 gui.button.edit=Editer
+gui.button.help.camera.0=Cliquez et tirez dans la fenêtre
+gui.button.help.camera.1=pour faire tourner votre personnage
 
 gui.tint=Teinte %s
-gui.tint.edit=Editer la Teinte %s
+gui.tint.edit=Editer la teinte %s
 gui.hex=Hex
 
 tails.export.success=Skin correctement sauvegarder sous %s
 tails.upload.unavailable=Cette fonction n'est pas encore ajoutée!
+
+
+foxlib.downloader.missing=Vous avez besoin de FoxLib pour utiliser %s! Vous pouvez le télécharger ici: %s
+foxlib.downloader.0=FoxLib est manquant et en A BESOIN pour fonctionner %s!
+foxlib.downloader.1=Voulez-vous téléchargez FoxLib automatiquement? (Aura besoin d'un redémarrage du jeu)
+foxlib.downloader.downloading=FoxLib en téléchargement
+foxlib.downloader.success=FoxLib à été téléchargé!
+foxlib.downloader.restart=S'il vous plait, redémarrez le jeu pour compléter l'installation
+foxlib.downloader.failed.0=FoxLib a échoué à se télécharger automatiquement
+foxlib.downloader.failed.1=S'il vous plait, téléchargez FoxLib depuis CurseForge (%s)
+foxlib.downloader.outofdate=FoxLib n'est pas à la version adéquate, merci de mettre à jour (%s)
