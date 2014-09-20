@@ -1,0 +1,61 @@
+tail.none.name=Kein Schweif
+tail.dragon.0.name=Echsenschweif
+tail.dragon.1.name=Drachenschweif
+tail.fluffy.0.name=Flauschiger Schweif
+tail.fluffy.1.name=Doppelschweif
+tail.fluffy.2.name=Neun Schweife
+tail.raccoon.0.name=Waschbärschweif
+tail.devil.0.name=Teufelsschweif
+tail.devil.1.name=Teufelsschweif (Ohne Spitze)
+tail.cat.0.name=Katzenschweif
+tail.bird.0.name=Vogelschweif
+
+tail.texture.foxTail.name=Fuchs
+tail.texture.devilTail.name=Teufel
+tail.texture.racoonTail.name=Waschbär
+tail.texture.dragonTail.name=Standard
+tail.texture.dragonTailStriped.name=Gestreift
+tail.texture.tabbyTail.name=Katze
+tail.texture.tigerTail.name=Tiger
+tail.texture.birdTail.name=Vogel
+
+gui.export.title=Export-Optionen
+gui.export.information=Ein Feature von Tails ist die Möglichkeit, andere Spieler deinen Schweif sehen zu lassen, ohne dass Tails auf dem Server installiert ist (Andere Spieler müssen die Mod jedoch installiet haben). Um das hinzukriegen, werden ein paar unbenutzte Pixel deines Skins von Tails benutzt, um Informationen über deinen Schweif zu speichern. Du kannst die Optionen unten benutzen, um festzulegen, wohin dein Skin exportiert werden soll, oder ob er direkt auf die Minecraft-Skin-Server hochgeladen werden soll. Zeige auf die Knöpfe unten, um die Speicherorte zu sehen.
+
+gui.button.livepreview=Live-Vorschau
+gui.button.livepreview.0.tooltip=Zeigt eine Live-Vorschau deines Schweifes während du die Werte veränderst
+gui.button.export=Exportieren
+gui.button.export.0.tooltip=Exportiert eine veränderte Version deines Skins, bei dem bestimmte unbenutzte Pixel geändert wurden, sodass Spieler deinen Schweif auch dann sehen können, wenn die Mod auf dem Server nicht installiert ist.
+gui.button.export.tooltip=Exportiert eine veränderte Version deines Skins nach %s
+gui.button.export.userdir=Exportiere zum Benutzerverzeichnis
+gui.button.export.minecraftdir=Exportiere zum Minecraft-Verzeichnis
+gui.button.upload=Lade zu Mojang hoch
+gui.button.upload.tooltip=Lädt deinen Skin hoch. ACHTUNG: Öffnet deinen Browser!
+gui.button.export.custom=Exportiere nach...
+gui.button.export.custom.tooltip=Exportiert in ein bestimmtes Verzichnis
+gui.button.openfolder.tooltip=Öffne den Ordner, in den du deinen Skin exportiert hast
+gui.button.openfolder=Öffne Exportverzeichnis
+gui.button.editor=Schweif-Editor
+gui.button.reset=Zurücksetzen
+gui.button.save=Speichern
+gui.button.edit=Editieren
+gui.button.help.camera.0=Klicke und ziehe im Vorschau-Fenster
+gui.button.help.camera.1=um deinen Charakter zu drehen.
+
+gui.tint=Farbton %s
+gui.tint.edit=Editiere Farbton %s
+gui.hex=Hex
+gui.texture=Textur
+
+tails.export.success=Skin erfolgreich nach %s exportiert!
+tails.upload.unavailable=Dieses Feature ist noch nicht verfügbar!
+
+foxlib.downloader.missing=Du brauchst FoxLib um %s zu benutzen! Du kannst es hier herunterladen: %s
+foxlib.downloader.0=FoxLib fehlt und es ist BENÖTIGT um %s zu nutzen!
+foxlib.downloader.1=Willst du FoxLib automatisch herunterladen? (Erfordert Spiel-Neustart)
+foxlib.downloader.downloading=FoxLib wird heruntergeladen...
+foxlib.downloader.success=FoxLib wurde heruntergeladen!
+foxlib.downloader.restart=Bitte starte dein Spiel neu, um die Installation fertigzustellen
+foxlib.downloader.failed.0=FoxLib konnte nicht heruntergeladen werden
+foxlib.downloader.failed.1=Bitte lade FoxLib manuell von CurseForge herunter (%s)
+foxlib.downloader.outofdate=Die Version von FoxLib ist nicht korrekt, bitte updaten (%s)
