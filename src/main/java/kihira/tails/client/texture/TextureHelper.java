@@ -89,7 +89,7 @@ public class TextureHelper {
         return image;
     }
 
-	private static TailInfo buildTailInfoFromSkin(UUID id, BufferedImage skin) {
+	public static TailInfo buildTailInfoFromSkin(UUID id, BufferedImage skin) {
 		int data = skin.getRGB(dataPixel.getX(), dataPixel.getY());
 		
 		int typeid = (data >> 16) & 0xFF;

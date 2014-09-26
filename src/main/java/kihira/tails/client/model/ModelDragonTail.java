@@ -79,22 +79,19 @@ public class ModelDragonTail extends ModelTailBase {
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float subtype, float partialTicks, Entity entity) {
         double xAngleOffset = 0;
-        double yAngleMultiplier = 0; //Used to suppress sway when running
-        if (entity instanceof EntityPlayer) {
-            if (!entity.isRiding()) {
+        double yAngleMultiplier = 1; //Used to suppress sway when running
+        if (!entity.isRiding()) {
+            if (entity instanceof EntityPlayer) {
                 double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
 
                 xAngleOffset = MathHelper.clamp_double(angles[0] / 5F, -1D, 0.45D);
                 yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
             }
-            //Mounted
-            else {
-                xAngleOffset = Math.toRadians(12F);
-                yAngleMultiplier = 0.25F;
-            }
         }
+        //Mounted
         else {
-            yAngleMultiplier = 1F; //Used to suppress sway when running
+            xAngleOffset = Math.toRadians(12F);
+            yAngleMultiplier = 0.25F;
         }
 
         //TODO if we want to speed up the swing, we can't do so via this method

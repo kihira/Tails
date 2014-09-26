@@ -24,7 +24,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import java.util.UUID;
@@ -89,7 +91,23 @@ public class ClientEventHandler {
             int type = info.typeid;
             type = type > tailTypes.length ? 0 : type;
 
-            tailTypes[type].render(e.entityPlayer, info, e.partialRenderTick);
+            tailTypes[type].render(e.entityPlayer, info, 0, 0, 0, e.partialRenderTick);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerRenderTick(RenderLivingEvent.Specials.Pre e) {
+        //Ignore players here, using the player render event is better
+        if (!(e.entity instanceof EntityPlayer)) {
+            UUID uuid = e.entity.getPersistentID();
+            if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entity.isInvisible()) {
+                TailInfo info = Tails.proxy.getTailInfo(uuid);
+
+                int type = info.typeid;
+                type = type > ClientEventHandler.tailTypes.length ? 0 : type;
+
+                tailTypes[type].render(e.entity, info, e.x, e.y, e.z, 1);
+            }
         }
     }
 

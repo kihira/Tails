@@ -73,8 +73,8 @@ public class ModelBirdTail extends ModelTailBase {
         double xAngleOffset = 0;
         double zAngleOffset = 0;
 
-        if (entity instanceof EntityPlayer) {
-            if (!entity.isRiding()) {
+        if (!entity.isRiding()) {
+            if (entity instanceof EntityPlayer) {
                 double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
                 xAngleOffset = angles[0];
                 zAngleOffset = angles[2];
@@ -84,10 +84,10 @@ public class ModelBirdTail extends ModelTailBase {
                 xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
                 zAngleOffset = MathHelper.clamp_double(zAngleOffset * 0.5D, -0.5D, 0.5D);
             }
-            // Mounted
-            else {
-                xAngleOffset = Math.toRadians(60F);
-            }
+        }
+        //Mounted
+        else {
+            xAngleOffset = Math.toRadians(60F);
         }
 
         setRotationRadians(center, Math.toRadians(50) + xAngleOffset, -zAngleOffset, 0);

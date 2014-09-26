@@ -51,10 +51,10 @@ public class ModelRaccoonTail extends ModelTailBase {
         double xAngleOffset = 0;
         double yAngleOffset = 0;
         double zAngleOffset = 0;
-        double yAngleMultiplier = 0; //Used to suppress sway when running
+        double yAngleMultiplier = 1; //Used to suppress sway when running
 
-        if (entity instanceof EntityPlayer) {
-            if (!entity.isRiding()) {
+        if (!entity.isRiding()) {
+            if (entity instanceof EntityPlayer) {
                 double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
 
                 xAngleOffset = angles[0];
@@ -65,14 +65,11 @@ public class ModelRaccoonTail extends ModelTailBase {
                 xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
                 zAngleOffset = MathHelper.clamp_double(zAngleOffset * 0.5D, -0.5D, 0.5D);
             }
-            //Mounted
-            else {
-                xAngleOffset = Math.toRadians(20F);
-                yAngleMultiplier = 0.2F;
-            }
         }
+        //Mounted
         else {
-            yAngleMultiplier = 1F; //Used to suppress sway when running
+            xAngleOffset = Math.toRadians(20F);
+            yAngleMultiplier = 0.2F;
         }
 
         setRotationRadians(tailBase, xAngleOffset, (-zAngleOffset + Math.cos(timestep - 1) / 15F + yAngleOffset) * yAngleMultiplier, -zAngleOffset / 4F);

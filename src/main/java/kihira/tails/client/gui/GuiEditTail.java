@@ -404,7 +404,7 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
 
         RenderHelper.enableStandardItemLighting();
         RenderManager.instance.playerViewY = 180.0F;
-        ClientEventHandler.tailTypes[tailInfo.typeid].render(this.fakeEntity, tailInfo, 0);
+        ClientEventHandler.tailTypes[tailInfo.typeid].render(this.fakeEntity, tailInfo, 0, 0, 0, 0);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         GL11.glDisable(GL11.GL_TEXTURE_2D);

@@ -10,13 +10,18 @@ package kihira.tails.client.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import kihira.tails.api.ITailRenderHelper;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 
+import java.util.HashMap;
+
 @SideOnly(Side.CLIENT)
 public abstract class RenderTail {
+
+    private static HashMap<Class<? extends EntityLivingBase>, ITailRenderHelper> tailHelpers = new HashMap<Class<? extends EntityLivingBase>, ITailRenderHelper>();
 
     protected String name;
 
@@ -24,13 +29,20 @@ public abstract class RenderTail {
         this.name = name;
     }
 
-    public void render(EntityLivingBase entity, TailInfo info, float partialTicks) {
+    public void render(EntityLivingBase entity, TailInfo info, double x, double y, double z, float partialTicks) {
         if (info.needsTextureCompile || info.getTexture() == null) {
             info.setTexture(TextureHelper.generateTexture(info));
             info.needsTextureCompile = false;
         }
+
+        GL11.glPushMatrix();
         GL11.glColor4f(1F, 1F, 1F, 1F);
+        ITailRenderHelper helper = getTailHelper(entity.getClass());
+        if (helper != null) {
+            helper.onPreRenderTail(entity, this, info, x, y, z);
+        }
         this.doRender(entity, info, partialTicks);
+        GL11.glPopMatrix();
     }
 
     protected abstract void doRender(EntityLivingBase player, TailInfo info, float partialTicks);
@@ -50,5 +62,21 @@ public abstract class RenderTail {
 
     public String getUnlocalisedName(int subType) {
         return "tail."+this.name+"."+subType+".name";
+    }
+
+    public static void registerTailHelper(Class<? extends EntityLivingBase> clazz, ITailRenderHelper helper) {
+        if (!tailHelpers.containsKey(clazz) && helper != null) {
+            tailHelpers.put(clazz, helper);
+        }
+        else {
+            throw new IllegalArgumentException("An invalid Tail Helper was registered!");
+        }
+    }
+
+    public static ITailRenderHelper getTailHelper(Class<? extends EntityLivingBase> clazz) {
+        if (tailHelpers.containsKey(clazz)) {
+            return tailHelpers.get(clazz);
+        }
+        else return null;
     }
 }
