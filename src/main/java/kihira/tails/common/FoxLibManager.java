@@ -21,6 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.StatCollector;
 import org.apache.commons.io.IOUtils;
@@ -46,6 +47,10 @@ public class FoxLibManager {
     public static CommonProxy proxy;
     long totalSize;
 
+    /**
+     * Checks if FoxLib is available and updated to the required version
+     * @return If FoxLib is available
+     */
     public static boolean checkFoxlib() {
         if (!isFoxlibInstalled()) {
             logger.error("FoxLib is not installed!");
@@ -59,7 +64,7 @@ public class FoxLibManager {
             }
         }
         else if (!isFoxlibCorrectVersion()) {
-            logger.error("FoxLib is not the correct version!");
+            logger.error("FoxLib is not the correct version! Expected " + foxlibVersion + " got " + Loader.instance().getIndexedModList().get("foxlib").getDisplayVersion());
             proxy.throwFoxlibError();
         }
         else {
@@ -73,6 +78,16 @@ public class FoxLibManager {
     }
 
     public static boolean isFoxlibCorrectVersion() {
+        try {
+            //If we are in dev, skip version check
+            byte[] bs = Launch.classLoader.getClassBytes("net.minecraft.world.World");
+            if (bs != null) {
+                logger.info("We are in a dev environment, skipping version check");
+                return true;
+            }
+        }
+        catch (IOException ignored) { }
+
         return VersionParser.parseRange(foxlibReqVersion).containsVersion(Loader.instance().getIndexedModList().get("foxlib").getProcessedVersion());
     }
 
