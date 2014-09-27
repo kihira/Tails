@@ -39,10 +39,10 @@ public class TextureHelper {
 	private static final int switch2Colour = 0xFFB8E080;
 
     @SuppressWarnings("rawtypes")
-	public static void buildPlayerInfo(EntityPlayer player) {
+	public static void buildPlayerInfo(AbstractClientPlayer player) {
 		GameProfile profile = player.getGameProfile();
 		UUID uuid = profile.getId();
-        BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage((AbstractClientPlayer) player);
+        BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
         if (image != null) {
             int scol1 = image.getRGB(switch1Pixel.getX(), switch1Pixel.getY());
             int scol2 = image.getRGB(switch2Pixel.getX(), switch2Pixel.getY());

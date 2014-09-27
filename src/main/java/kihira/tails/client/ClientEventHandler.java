@@ -21,6 +21,7 @@ import kihira.tails.common.TailInfo;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.TailInfoMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
@@ -113,8 +114,8 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent e) {
         if (e.phase == TickEvent.Phase.START) {
-            if (TextureHelper.needsBuild(e.player)) {
-                TextureHelper.buildPlayerInfo(e.player);
+            if (TextureHelper.needsBuild(e.player) && e.player instanceof AbstractClientPlayer) {
+                TextureHelper.buildPlayerInfo((AbstractClientPlayer) e.player);
             }
         }
     }
