@@ -27,8 +27,6 @@ import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class TextureHelper {
-
-    private static RenderTail[] tailTypes = ClientEventHandler.tailTypes;
 	
 	private static final Point switch1Pixel = new Point(56,16);
 	private static final Point switch2Pixel = new Point(57,16);
@@ -95,9 +93,9 @@ public class TextureHelper {
 		int typeid = (data >> 16) & 0xFF;
         int subtype = (data >> 8) & 0xFF;
         int textureid = (data) & 0xFF;
-		typeid = typeid >= tailTypes.length ? 0 : typeid;
+		typeid = typeid >= ClientEventHandler.tailTypes.length ? 0 : typeid;
 		
-		RenderTail type = tailTypes[typeid];
+		RenderTail type = ClientEventHandler.tailTypes[typeid];
 		String[] textures = type.getTextureNames(subtype);
 
 		textureid = textureid >= textures.length ? 0 : textureid;
@@ -121,11 +119,14 @@ public class TextureHelper {
      * @return A resource location for the generated texture
      */
     public static ResourceLocation generateTexture(UUID id, int typeid, int subid, int textureID, int[] tints) {
+        RenderTail tail = ClientEventHandler.tailTypes[typeid];
+        String[] textures = tail.getTextureNames(subid);
+        textureID = textureID >= textures.length ? 0 : textureID;
+        String texturePath = "texture/tail/"+textures[textureID]+".png";
+
         ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+typeid+"_"+subid+"_"+textureID+"_"+tints[0]+"_"+tints[1]+"_"+tints[2]);
-        RenderTail tail = tailTypes[typeid];
-        String texturePath = "texture/tail/"+tail.getTextureNames(subid)[textureID]+".png";
         Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturePath, tints[0], tints[1], tints[2]));
-        //Tails.logger.info(String.format("Generated texture UUID: %s Type: %s SubType: %s Texture: %s Tints: %s", id, typeid, subid, textureID, Arrays.toString(tints)));
+
         return tailtexture;
     }
 

@@ -34,7 +34,6 @@ import java.util.UUID;
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler {
 
-    //TODO this is not the best way to keep track of tails, enums?
 	public static final RenderTail[] tailTypes = { new RenderFluffyTail(), new RenderDragonTail(), new RenderRaccoonTail(), new RenderDevilTail(), new RenderCatTail(), new RenderBirdTail()};
 
     private boolean sentTailInfoToServer = false;
