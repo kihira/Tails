@@ -34,16 +34,19 @@ public class CommonProxy {
     }
 
     public void addTailInfo(UUID uuid, TailInfo tailInfo) {
-        //Tails.logger.info("Registered TailInfo " + tailInfo + " " + FMLCommonHandler.instance().getEffectiveSide());
-        this.tailMap.put(uuid, tailInfo);
+        if (uuid != null) {
+            this.tailMap.put(uuid, tailInfo);
+        }
     }
 
     public void removeTailInfo(UUID uuid) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer() && uuid != null && this.tailMap.containsKey(uuid)) {
-            //Tell client to remove textures
-            Tails.networkWrapper.sendToAll(new TailInfoMessage(this.tailMap.get(uuid), true));
+        if (hasTailInfo(uuid)) {
+            if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+                //Tell client to remove textures
+                Tails.networkWrapper.sendToAll(new TailInfoMessage(this.tailMap.get(uuid), true));
+            }
+            this.tailMap.remove(uuid);
         }
-        this.tailMap.remove(uuid);
     }
 
     public void clearAllTailInfo() {

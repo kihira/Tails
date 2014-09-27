@@ -25,7 +25,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void addTailInfo(UUID uuid, TailInfo tailInfo) {
-        if (this.tailMap.containsKey(uuid)) {
+        if (hasTailInfo(uuid)) {
             this.tailMap.get(uuid).setTexture(null);
         }
         //Mark to generate texture
@@ -36,7 +36,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void removeTailInfo(UUID uuid) {
-        if (this.tailMap.containsKey(uuid)) {
+        if (hasTailInfo(uuid)) {
             this.tailMap.get(uuid).setTexture(null);
         }
         super.removeTailInfo(uuid);
