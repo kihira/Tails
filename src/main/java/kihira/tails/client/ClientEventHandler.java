@@ -15,6 +15,7 @@ import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.gui.GuiEditTail;
+import kihira.tails.client.model.ModelRenderer2;
 import kihira.tails.client.render.*;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
@@ -26,6 +27,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -39,6 +41,11 @@ public class ClientEventHandler {
 
     private boolean sentTailInfoToServer = false;
     private boolean clearAllTailInfo = false;
+
+    public static RenderPlayerEvent.Pre currentEvent = null;
+    public static TailInfo currentTailInfo = null;
+    public static ResourceLocation currentPlayerTexture = null;
+    boolean flag = false;
 
     /*
         *** Tails Editor Button ***
@@ -83,21 +90,33 @@ public class ClientEventHandler {
         *** Rendering and building TailInfo ***
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
+    public void onPlayerRenderTick(RenderPlayerEvent.Pre e) {
         UUID uuid = e.entityPlayer.getGameProfile().getId();
         if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
             TailInfo info = Tails.proxy.getTailInfo(uuid);
 
-            int type = info.typeid;
-            type = type > tailTypes.length ? 0 : type;
+            if (!flag) {
+                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRenderer2(e.renderer.modelBipedMain));
+                flag = true;
+            }
 
-            tailTypes[type].render(e.entityPlayer, info, 0, 0, 0, e.partialRenderTick);
+            currentTailInfo = info;
+            currentPlayerTexture = ((AbstractClientPlayer) e.entityPlayer).getLocationSkin();
+            currentEvent = e;
         }
+    }
+
+    @SubscribeEvent()
+    public void onPlayerRenderTickPost(RenderPlayerEvent.Post e) {
+        //Reset to null after rendering the current tail
+        currentTailInfo = null;
+        currentPlayerTexture = null;
+        currentEvent = null;
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerRenderTick(RenderLivingEvent.Specials.Pre e) {
-        //Ignore players here, using the player render event is better
+        //Ignore players here, using the player render currentEvent is better
         if (!(e.entity instanceof EntityPlayer)) {
             UUID uuid = e.entity.getPersistentID();
             if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entity.isInvisible()) {

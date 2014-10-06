@@ -9,24 +9,13 @@
 package kihira.tails.client.render;
 
 import kihira.tails.client.model.ModelRaccoonTail;
-import kihira.tails.common.TailInfo;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
 
 public class RenderRaccoonTail extends RenderTail {
 
     private String[] skinNames = {"racoonTail"};
 
-    private ModelRaccoonTail modelRaccoonTail = new ModelRaccoonTail();
-
     public RenderRaccoonTail() {
-        super("raccoon");
-    }
-
-    @Override
-    public void doRender(EntityLivingBase entity, TailInfo info, float partialTicks) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
-        this.modelRaccoonTail.render(entity, info.subid, partialTicks);
+        super("raccoon", new ModelRaccoonTail());
     }
     
     @Override

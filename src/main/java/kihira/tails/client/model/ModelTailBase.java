@@ -52,7 +52,7 @@ public abstract class ModelTailBase extends ModelBase {
         this.setRotationRadians(model, (float) Math.toRadians(x), (float) Math.toRadians(y), (float) Math.toRadians(z));
     }
 
-    protected float getAnimationTime(double cycleTime, Entity entity) {
+    public static float getAnimationTime(double cycleTime, Entity entity) {
         return (float) ((((entity.hashCode() + System.currentTimeMillis()) % cycleTime) / cycleTime) * 2F * Math.PI);
     }
 

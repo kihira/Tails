@@ -9,24 +9,13 @@
 package kihira.tails.client.render;
 
 import kihira.tails.client.model.ModelCatTail;
-import kihira.tails.common.TailInfo;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
 
 public class RenderCatTail extends RenderTail {
 
     private String[] skinNames = {"tabbyTail", "tigerTail"};
 
-    private ModelCatTail modelCatTail = new ModelCatTail();
-
     public RenderCatTail() {
-        super("cat");
-    }
-
-    @Override
-    public void doRender(EntityLivingBase entity, TailInfo info, float partialTicks) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
-        this.modelCatTail.render(entity, info.subid, partialTicks);
+        super("cat", new ModelCatTail());
     }
 
     @Override

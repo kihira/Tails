@@ -11,8 +11,10 @@ package kihira.tails.client.render;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.api.ITailRenderHelper;
+import kihira.tails.client.model.ModelTailBase;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 
@@ -24,9 +26,11 @@ public abstract class RenderTail {
     private static HashMap<Class<? extends EntityLivingBase>, ITailRenderHelper> tailHelpers = new HashMap<Class<? extends EntityLivingBase>, ITailRenderHelper>();
 
     protected String name;
+    public final ModelTailBase modelTail;
 
-    public RenderTail(String name) {
+    public RenderTail(String name, ModelTailBase modelTail) {
         this.name = name;
+        this.modelTail = modelTail;
     }
 
     public void render(EntityLivingBase entity, TailInfo info, double x, double y, double z, float partialTicks) {
@@ -45,7 +49,10 @@ public abstract class RenderTail {
         GL11.glPopMatrix();
     }
 
-    protected abstract void doRender(EntityLivingBase player, TailInfo info, float partialTicks);
+    protected void doRender(EntityLivingBase entity, TailInfo info, float partialTicks) {
+        Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
+        this.modelTail.render(entity, info.subid, partialTicks);
+    }
 
     /**
      * Gets the available textures for this tail subid

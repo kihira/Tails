@@ -9,24 +9,13 @@
 package kihira.tails.client.render;
 
 import kihira.tails.client.model.ModelDragonTail;
-import kihira.tails.common.TailInfo;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
 
 public class RenderDragonTail extends RenderTail {
 
 	private String[] skinNames = {"dragonTail", "dragonTailStriped"};
-	
-    private ModelDragonTail modelDragonTail = new ModelDragonTail();
 
     public RenderDragonTail() {
-        super("dragon");
-    }
-
-    @Override
-    public void doRender(EntityLivingBase entity, TailInfo info, float partialTicks) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
-        this.modelDragonTail.render(entity, info.subid, partialTicks);
+        super("dragon", new ModelDragonTail());
     }
 
 	@Override
