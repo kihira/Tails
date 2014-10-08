@@ -9,6 +9,8 @@
 package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
@@ -16,14 +18,19 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
+import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.Display;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.xml.bind.DatatypeConverter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
 
 public class GuiExport extends GuiBaseScreen {
 
@@ -33,7 +40,7 @@ public class GuiExport extends GuiBaseScreen {
     private ScaledResolution scaledRes;
     private String exportMessage = "";
     private GuiButtonTooltip openFolderButton;
-    private File exportLoc;
+    private URI exportLoc;
 
     public GuiExport(GuiEditTail parent, TailInfo tailInfo) {
         this.parent = parent;
@@ -58,10 +65,8 @@ public class GuiExport extends GuiBaseScreen {
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.openfolder.tooltip")));
         this.openFolderButton.visible = !Strings.isNullOrEmpty(this.exportMessage);
 
-        GuiButton button;
-        this.buttonList.add(button = new GuiButtonTooltip(10, this.width - 150, this.height - 40, 130, 20, I18n.format("gui.button.upload"),
-                this.scaledRes.getScaledWidth() / 2, I18n.format("tails.upload.unavailable")));
-        button.enabled = false;
+        this.buttonList.add(new GuiButtonTooltip(10, this.width - 150, this.height - 40, 130, 20, I18n.format("gui.button.upload"),
+                this.scaledRes.getScaledWidth() / 2, I18n.format("tails.upload.tooltip")));
     }
 
     @Override
@@ -96,7 +101,7 @@ public class GuiExport extends GuiBaseScreen {
             }
 
             if (file.exists() && file.canWrite()) {
-                this.exportLoc = file;
+                this.exportLoc = file.toURI();
                 file = new File(file, File.separatorChar + player.getCommandSenderName() + ".png");
 
                 if (!file.exists()) {
@@ -130,7 +135,7 @@ public class GuiExport extends GuiBaseScreen {
         }
         if (button.id == 3 && this.exportLoc != null) {
             try {
-                Desktop.getDesktop().browse(this.exportLoc.toURI());
+                Desktop.getDesktop().browse(this.exportLoc);
             } catch (IOException e) {
                 this.exportMessage = String.format("Failed to open export location: %s", e);
                 e.printStackTrace();
@@ -139,18 +144,73 @@ public class GuiExport extends GuiBaseScreen {
 
         //Upload
         if (button.id == 10) {
-/*            try {
-                BufferedImage image = TextureHelper.writeTailInfoToSkin(this.tailInfo, this.mc.thePlayer);
-                String dataURI = TextureHelper.bufferedImageToBase64(image);
-                String skinURL = "https://minecraft.net/profile/skin/remote?url=";
-
-                Desktop.getDesktop().browse(URI.create(skinURL + dataURI));
-
-                //System.out.println(URI.create(skinURL + dataURI));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-            this.exportMessage = I18n.format("tail.upload.unavailable");
+            final BufferedImage image = TextureHelper.writeTailInfoToSkin(this.tailInfo, this.mc.thePlayer);
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    exportMessage = I18n.format("tails.uploading");
+                    new ImgurUpload().uploadImage(image);
+                }
+            };
+            runnable.run();
         }
     }
+
+    public class ImgurUpload {
+
+        public static final String CLIENT_ID = "ceb9fca19ef9a31";
+
+        public void uploadImage(BufferedImage image) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            BufferedReader in = null;
+
+            try {
+                URL url = new URL("https://api.imgur.com/3/upload.json");
+
+                ImageIO.write(image, "png", baos);
+                baos.flush();
+
+                String base64Image = DatatypeConverter.printBase64Binary(baos.toByteArray());
+                String data = URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(base64Image, "UTF-8");
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setDoOutput(true);
+
+                conn.setRequestProperty("Authorization", "Client-ID " + CLIENT_ID);
+
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(data);
+                wr.close();
+
+                //Successful uploading!
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    JsonObject jsonElement = new JsonParser().parse(in).getAsJsonObject();
+                    JsonObject dataJson = jsonElement.get("data").getAsJsonObject();
+                    String id = dataJson.get("id").getAsString();
+                    String deleteHash = dataJson.get("deletehash").getAsString();
+
+                    String imgurURL = "http://imgur.com/" + id + ".png";
+                    String skinURL = "https://minecraft.net/profile/skin/remote?url=";
+
+                    exportMessage = I18n.format("tails.upload.success");
+                    exportLoc = URI.create(skinURL + imgurURL);
+                    openFolderButton.visible = true;
+
+                    Desktop.getDesktop().browse(exportLoc);
+                }
+                else {
+                    exportMessage = I18n.format("tails.upload.failed");
+                    //TODO better error handling
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                IOUtils.closeQuietly(baos);
+                IOUtils.closeQuietly(in);
+            }
+        }
+    }
+
 }

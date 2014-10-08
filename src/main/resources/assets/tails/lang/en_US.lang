@@ -49,6 +49,10 @@ gui.texture=Texture
 
 tails.export.success=Successfully saved skin to %s
 tails.upload.unavailable=This feature is not yet functional!
+tails.upload.tooltip=Uploads your skin to Minecrafts skin servers (You'll need to login via Minecrafts website)
+tails.uploading=Uploading...
+tails.upload.success=Successfully uploaded! Check your browser
+tails.upload.failed=Upload failed! Is imgur or Minecrafts website down?
 
 foxlib.downloader.missing=You need FoxLib to use %s! You can download it here: %s
 foxlib.downloader.0=FoxLib is missing and it is REQUIRED to use %s!
