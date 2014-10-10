@@ -23,6 +23,7 @@ import kihira.tails.client.FakeEntity;
 import kihira.tails.client.PlayerTailRenderHelper;
 import kihira.tails.client.render.RenderTail;
 import kihira.tails.proxy.CommonProxy;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraftforge.common.config.Configuration;
@@ -48,9 +49,9 @@ public class Tails {
     public static Tails instance;
 
     /**
-     * This is the {@link TailInfo} for the local player
+     * This is the {@link PartInfo} for the local player
      */
-    public static TailInfo localPlayerTailInfo;
+    public static PartsData localPartsData;
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
@@ -88,8 +89,26 @@ public class Tails {
     public void loadConfig() {
         //Load local player info
         try {
-            localPlayerTailInfo = new Gson().fromJson(Tails.configuration.getString("Local Tail Info",
-                    Configuration.CATEGORY_GENERAL, "Local Players tail info. Delete to remove tail. Do not try to edit manually", ""), TailInfo.class);
+            //Backwards compat
+            PartInfo tailInfo = null;
+            if (Tails.configuration.hasKey(Configuration.CATEGORY_GENERAL, "Local Tail Info")) {
+                tailInfo = new Gson().fromJson(Tails.configuration.getString("Local Tail Info",
+                        Configuration.CATEGORY_GENERAL, "DEPRECIATED. CAN SAFELY REMOVE", ""), PartInfo.class);
+            }
+
+            //Load Player Data
+            localPartsData = new Gson().fromJson(Tails.configuration.getString("Local Player Data",
+                    Configuration.CATEGORY_GENERAL, "Local Players data. Delete to remove all customisation data. Do not try to edit manually", ""), PartsData.class);
+
+            //Load old tail info if exists
+            if (tailInfo != null) {
+                if (localPartsData == null) localPartsData = new PartsData(Minecraft.getMinecraft().thePlayer.getUniqueID());
+                localPartsData.setPartInfo(PartsData.PartType.TAIL, tailInfo);
+
+                //Delete old info
+                Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Tail Info", "");
+                prop.set("");
+            }
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
         }
@@ -99,12 +118,11 @@ public class Tails {
         }
     }
 
-    public static void setLocalPlayerTailInfo(TailInfo tailInfo) {
-        localPlayerTailInfo = tailInfo;
+    public static void setLocalPartsData(PartsData partsData) {
+        localPartsData = partsData;
 
-        Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Tail Info", "");
-        prop.comment = "Local Players tail info. Delete to remove tail. Do not try to edit manually";
-        prop.set(new Gson().toJson(localPlayerTailInfo));
+        Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Player Data", "");
+        prop.set(new Gson().toJson(localPartsData));
 
         Tails.configuration.save();
     }

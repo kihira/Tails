@@ -18,9 +18,10 @@ import kihira.tails.client.gui.GuiEditTail;
 import kihira.tails.client.model.ModelRenderer2;
 import kihira.tails.client.render.*;
 import kihira.tails.client.texture.TextureHelper;
-import kihira.tails.common.TailInfo;
+import kihira.tails.common.PartInfo;
+import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
-import kihira.tails.common.network.TailInfoMessage;
+import kihira.tails.common.network.PlayerDataMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
@@ -39,11 +40,11 @@ public class ClientEventHandler {
 
 	public static final RenderTail[] tailTypes = { new RenderFluffyTail(), new RenderDragonTail(), new RenderRaccoonTail(), new RenderDevilTail(), new RenderCatTail(), new RenderBirdTail()};
 
-    private boolean sentTailInfoToServer = false;
-    private boolean clearAllTailInfo = false;
+    private boolean sentPartInfoToServer = false;
+    private boolean clearAllPartInfo = false;
 
     public static RenderPlayerEvent.Pre currentEvent = null;
-    public static TailInfo currentTailInfo = null;
+    public static PartsData currentPartsData = null;
     public static ResourceLocation currentPlayerTexture = null;
     boolean flag = false;
 
@@ -74,16 +75,16 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         //Add local player texture to map
-        if (Tails.localPlayerTailInfo != null) {
-            Tails.proxy.addTailInfo(Tails.localPlayerTailInfo.uuid, Tails.localPlayerTailInfo);
+        if (Tails.localPartsData != null) {
+            Tails.proxy.addPartsData(Tails.localPartsData.uuid, Tails.localPartsData);
         }
     }
 
     @SubscribeEvent
     public void onPlayerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
         Tails.hasRemote = false;
-        sentTailInfoToServer = false;
-        clearAllTailInfo = true;
+        sentPartInfoToServer = false;
+        clearAllPartInfo = true;
     }
 
     /*
@@ -92,15 +93,16 @@ public class ClientEventHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerRenderTick(RenderPlayerEvent.Pre e) {
         UUID uuid = e.entityPlayer.getGameProfile().getId();
-        if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
-            TailInfo info = Tails.proxy.getTailInfo(uuid);
+        if (Tails.proxy.hasPartsData(uuid) && !e.entityPlayer.isInvisible()) {
+            PartsData data = Tails.proxy.getPartsData(uuid);
 
             if (!flag) {
-                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRenderer2(e.renderer.modelBipedMain));
+                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.TAIL));
+                e.renderer.modelBipedMain.bipedHead.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.EARS));
                 flag = true;
             }
 
-            currentTailInfo = info;
+            currentPartsData = data;
             currentPlayerTexture = ((AbstractClientPlayer) e.entityPlayer).getLocationSkin();
             currentEvent = e;
         }
@@ -109,18 +111,20 @@ public class ClientEventHandler {
     @SubscribeEvent()
     public void onPlayerRenderTickPost(RenderPlayerEvent.Post e) {
         //Reset to null after rendering the current tail
-        currentTailInfo = null;
+        currentPartsData = null;
         currentPlayerTexture = null;
         currentEvent = null;
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onPlayerRenderTick(RenderLivingEvent.Specials.Pre e) {
+    public void onRenderLivingSpecialsTick(RenderLivingEvent.Specials.Pre e) {
         //Ignore players here, using the player render currentEvent is better
         if (!(e.entity instanceof EntityPlayer)) {
             UUID uuid = e.entity.getPersistentID();
-            if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entity.isInvisible()) {
-                TailInfo info = Tails.proxy.getTailInfo(uuid);
+            //TODO add support for more then just tails?
+            //TODO Switch to IExtendedEntityProperties instead? Save the data on the player
+            if (Tails.proxy.hasPartsData(uuid) && Tails.proxy.getPartsData(uuid).hasPartInfo(PartsData.PartType.TAIL) && !e.entity.isInvisible()) {
+                PartInfo info = Tails.proxy.getPartsData(uuid).getPartInfo(PartsData.PartType.TAIL);
 
                 int type = info.typeid;
                 type = type > ClientEventHandler.tailTypes.length ? 0 : type;
@@ -142,15 +146,20 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent e) {
         if (e.phase == TickEvent.Phase.START) {
-            if (clearAllTailInfo) {
-                Tails.proxy.clearAllTailInfo();
-                clearAllTailInfo = false;
+            if (clearAllPartInfo) {
+                Tails.proxy.clearAllPartsData();
+                clearAllPartInfo = false;
             }
             //World can't be null if we want to send a packet it seems
-            else if (!sentTailInfoToServer && Minecraft.getMinecraft().theWorld != null) {
-                Tails.networkWrapper.sendToServer(new TailInfoMessage(Tails.localPlayerTailInfo, false));
-                sentTailInfoToServer = true;
+            else if (!sentPartInfoToServer && Minecraft.getMinecraft().theWorld != null) {
+                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Tails.localPartsData, false));
+                sentPartInfoToServer = true;
             }
         }
+    }
+
+    public enum RenderType {
+        BODY,
+        HEAD
     }
 }

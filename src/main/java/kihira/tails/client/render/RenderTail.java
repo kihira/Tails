@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.api.ITailRenderHelper;
 import kihira.tails.client.model.ModelTailBase;
 import kihira.tails.client.texture.TextureHelper;
-import kihira.tails.common.TailInfo;
+import kihira.tails.common.PartInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
@@ -33,7 +33,7 @@ public abstract class RenderTail {
         this.modelTail = modelTail;
     }
 
-    public void render(EntityLivingBase entity, TailInfo info, double x, double y, double z, float partialTicks) {
+    public void render(EntityLivingBase entity, PartInfo info, double x, double y, double z, float partialTicks) {
         if (info.needsTextureCompile || info.getTexture() == null) {
             info.setTexture(TextureHelper.generateTexture(info));
             info.needsTextureCompile = false;
@@ -49,7 +49,7 @@ public abstract class RenderTail {
         GL11.glPopMatrix();
     }
 
-    protected void doRender(EntityLivingBase entity, TailInfo info, float partialTicks) {
+    protected void doRender(EntityLivingBase entity, PartInfo info, float partialTicks) {
         Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
         this.modelTail.render(entity, info.subid, partialTicks);
     }

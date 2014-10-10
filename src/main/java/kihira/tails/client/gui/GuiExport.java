@@ -11,7 +11,7 @@ package kihira.tails.client.gui;
 import com.google.common.base.Strings;
 import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.tails.client.texture.TextureHelper;
-import kihira.tails.common.TailInfo;
+import kihira.tails.common.PartInfo;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
@@ -28,16 +28,16 @@ import java.io.IOException;
 public class GuiExport extends GuiBaseScreen {
 
     private final GuiEditTail parent;
-    private final TailInfo tailInfo;
+    private final PartInfo partInfo;
 
     private ScaledResolution scaledRes;
     private String exportMessage = "";
     private GuiButtonTooltip openFolderButton;
     private File exportLoc;
 
-    public GuiExport(GuiEditTail parent, TailInfo tailInfo) {
+    public GuiExport(GuiEditTail parent, PartInfo partInfo) {
         this.parent = parent;
-        this.tailInfo = tailInfo;
+        this.partInfo = partInfo;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class GuiExport extends GuiBaseScreen {
                     }
                 }
 
-                BufferedImage image = TextureHelper.writeTailInfoToSkin(this.tailInfo, player);
+                BufferedImage image = TextureHelper.writeTailInfoToSkin(this.partInfo, player);
                 if (image != null) {
                     try {
                         ImageIO.write(image, "png", file);
