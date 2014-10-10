@@ -14,7 +14,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.tails.client.texture.TextureHelper;
-import kihira.tails.common.TailInfo;
+import kihira.tails.common.PartInfo;
 import kihira.tails.common.Tails;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
@@ -37,14 +37,14 @@ import java.net.URLEncoder;
 public class GuiExport extends GuiBaseScreen {
 
     private final GuiEditTail parent;
-    private final TailInfo tailInfo;
+    private final PartInfo tailInfo;
 
     private ScaledResolution scaledRes;
     private String exportMessage = "";
     private GuiButtonTooltip openFolderButton;
     private URI exportLoc;
 
-    public GuiExport(GuiEditTail parent, TailInfo tailInfo) {
+    public GuiExport(GuiEditTail parent, PartInfo tailInfo) {
         this.parent = parent;
         this.tailInfo = tailInfo;
     }
