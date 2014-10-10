@@ -53,6 +53,7 @@ tails.upload.tooltip=Uploads your skin to Minecrafts skin servers (You'll need t
 tails.uploading=Uploading...
 tails.upload.success=Successfully uploaded! Check your browser
 tails.upload.failed=Upload failed! Is imgur or Minecrafts website down?
+tails.upload.ratelimit=Upload failed! Rate limit has been hit, are you uploading too often?
 
 foxlib.downloader.missing=You need FoxLib to use %s! You can download it here: %s
 foxlib.downloader.0=FoxLib is missing and it is REQUIRED to use %s!

@@ -10,10 +10,12 @@ package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.TailInfo;
+import kihira.tails.common.Tails;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
@@ -186,30 +188,51 @@ public class GuiExport extends GuiBaseScreen {
                 if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     JsonObject jsonElement = new JsonParser().parse(in).getAsJsonObject();
-                    JsonObject dataJson = jsonElement.get("data").getAsJsonObject();
-                    String id = dataJson.get("id").getAsString();
-                    String deleteHash = dataJson.get("deletehash").getAsString();
+                    if (jsonElement.get("status").getAsInt() == 200) {
+                        JsonObject dataJson = jsonElement.get("data").getAsJsonObject();
+                        String id = dataJson.get("id").getAsString();
+                        String deleteHash = dataJson.get("deletehash").getAsString();
 
-                    String imgurURL = "http://imgur.com/" + id + ".png";
-                    String skinURL = "https://minecraft.net/profile/skin/remote?url=";
+                        String imgurURL = "http://imgur.com/" + id + ".png";
+                        String skinURL = "https://minecraft.net/profile/skin/remote?url=";
 
-                    exportMessage = I18n.format("tails.upload.success");
-                    exportLoc = URI.create(skinURL + imgurURL);
-                    openFolderButton.visible = true;
+                        exportMessage = I18n.format("tails.upload.success");
+                        exportLoc = URI.create(skinURL + imgurURL);
+                        openFolderButton.visible = true;
 
-                    Desktop.getDesktop().browse(exportLoc);
+                        Desktop.getDesktop().browse(exportLoc);
+                    }
+                    else {
+                        handleError(jsonElement);
+                    }
                 }
                 else {
-                    exportMessage = I18n.format("tails.upload.failed");
-                    //TODO better error handling
+                    if (conn.getResponseCode() != 500) {
+                        in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        JsonObject jsonElement = new JsonParser().parse(in).getAsJsonObject();
+                        handleError(jsonElement);
+                    }
+                    else exportMessage = I18n.format("tails.upload.failed");
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Tails.logger.catching(e);
+            } catch (JsonParseException e) {
+                Tails.logger.catching(e);
             } finally {
                 IOUtils.closeQuietly(baos);
                 IOUtils.closeQuietly(in);
             }
+        }
+
+        private void handleError(JsonObject json) {
+            int status = json.get("status").getAsInt();
+
+            //Rate limiting
+            if (status == 429 || status == 403) {
+                exportMessage = I18n.format("tails.upload.ratelimit");
+            }
+            else exportMessage = I18n.format("tails.upload.failed");
         }
     }
 
