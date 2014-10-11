@@ -6,8 +6,9 @@
  * See LICENSE for full License
  */
 
-package kihira.tails.client.model;
+package kihira.tails.client.model.tail;
 
+import kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

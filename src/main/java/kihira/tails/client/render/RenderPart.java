@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Zoe Lee (Kihira)
+ * Copyright (c) 2014
  *
  * See LICENSE for full License
  */
@@ -21,16 +21,20 @@ import org.lwjgl.opengl.GL11;
 import java.util.HashMap;
 
 @SideOnly(Side.CLIENT)
-public abstract class RenderPart {
+public class RenderPart {
 
     private static HashMap<Class<? extends EntityLivingBase>, IRenderHelper> renderHelpers = new HashMap<Class<? extends EntityLivingBase>, IRenderHelper>();
 
-    protected String name;
+    protected final String name;
+    protected final String[] textureNames;
+    protected final int subTypes;
     public final ModelPartBase modelPart;
 
-    public RenderPart(String name, ModelPartBase modelPart) {
+    public RenderPart(String name, int subTypes, ModelPartBase modelPart, String ... textureNames) {
         this.name = name;
+        this.subTypes = subTypes;
         this.modelPart = modelPart;
+        this.textureNames = textureNames;
     }
 
     public void render(EntityLivingBase entity, PartInfo info, double x, double y, double z, float partialTicks) {
@@ -55,17 +59,22 @@ public abstract class RenderPart {
     }
 
     /**
-     * Gets the available textures for this tail subid
+     * Gets the available textures for this tail subid.
+     * By default, this provides {@link #textureNames} for all subid's but you can override for finer control
      * @return Available textures
      * @param subid The subid
      */
-    public abstract String[] getTextureNames(int subid);
+    public String[] getTextureNames(int subid) {
+        return textureNames;
+    }
 
     /**
      * Gets the available subtypes for this tail
      * @return subtypes
      */
-    public abstract int getAvailableSubTypes();
+    public int getAvailableSubTypes() {
+        return subTypes;
+    }
 
     public String getUnlocalisedName(int subType) {
         return "tail."+this.name+"."+subType+".name";

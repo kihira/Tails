@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Zoe Lee (Kihira)
+ * Copyright (c) 2014
  *
  * See LICENSE for full License
  */
@@ -16,7 +16,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.gui.GuiEditor;
 import kihira.tails.client.model.ModelRenderer2;
-import kihira.tails.client.render.*;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
@@ -37,9 +36,6 @@ import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler {
-
-	public static final RenderPart[] tailTypes = { new RenderFluffyTail(), new RenderDragonTail(), new RenderRaccoonTail(), new RenderDevilTail(), new RenderCatTail(), new RenderBirdTail()};
-
     private boolean sentPartInfoToServer = false;
     private boolean clearAllPartInfo = false;
 
