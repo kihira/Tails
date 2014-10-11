@@ -15,7 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
-public class ModelFluffyTail extends ModelTailBase {
+public class ModelFluffyTail extends ModelPartBase {
     private ModelRenderer tailBase;
     private ModelRenderer tail1;
     private ModelRenderer tail2;

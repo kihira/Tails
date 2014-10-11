@@ -10,7 +10,7 @@ package kihira.tails.client.render;
 
 import kihira.tails.client.model.ModelCatTail;
 
-public class RenderCatTail extends RenderTail {
+public class RenderCatTail extends RenderPart {
 
     private String[] skinNames = {"tabbyTail", "tigerTail"};
 

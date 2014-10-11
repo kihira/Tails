@@ -10,8 +10,8 @@ package kihira.tails.client.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import kihira.tails.api.ITailRenderHelper;
-import kihira.tails.client.model.ModelTailBase;
+import kihira.tails.api.IRenderHelper;
+import kihira.tails.client.model.ModelPartBase;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import net.minecraft.client.Minecraft;
@@ -21,16 +21,16 @@ import org.lwjgl.opengl.GL11;
 import java.util.HashMap;
 
 @SideOnly(Side.CLIENT)
-public abstract class RenderTail {
+public abstract class RenderPart {
 
-    private static HashMap<Class<? extends EntityLivingBase>, ITailRenderHelper> tailHelpers = new HashMap<Class<? extends EntityLivingBase>, ITailRenderHelper>();
+    private static HashMap<Class<? extends EntityLivingBase>, IRenderHelper> renderHelpers = new HashMap<Class<? extends EntityLivingBase>, IRenderHelper>();
 
     protected String name;
-    public final ModelTailBase modelTail;
+    public final ModelPartBase modelPart;
 
-    public RenderTail(String name, ModelTailBase modelTail) {
+    public RenderPart(String name, ModelPartBase modelPart) {
         this.name = name;
-        this.modelTail = modelTail;
+        this.modelPart = modelPart;
     }
 
     public void render(EntityLivingBase entity, PartInfo info, double x, double y, double z, float partialTicks) {
@@ -41,7 +41,7 @@ public abstract class RenderTail {
 
         GL11.glPushMatrix();
         GL11.glColor4f(1F, 1F, 1F, 1F);
-        ITailRenderHelper helper = getTailHelper(entity.getClass());
+        IRenderHelper helper = getRenderHelper(entity.getClass());
         if (helper != null) {
             helper.onPreRenderTail(entity, this, info, x, y, z);
         }
@@ -51,7 +51,7 @@ public abstract class RenderTail {
 
     protected void doRender(EntityLivingBase entity, PartInfo info, float partialTicks) {
         Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
-        this.modelTail.render(entity, info.subid, partialTicks);
+        this.modelPart.render(entity, info.subid, partialTicks);
     }
 
     /**
@@ -71,18 +71,18 @@ public abstract class RenderTail {
         return "tail."+this.name+"."+subType+".name";
     }
 
-    public static void registerTailHelper(Class<? extends EntityLivingBase> clazz, ITailRenderHelper helper) {
-        if (!tailHelpers.containsKey(clazz) && helper != null) {
-            tailHelpers.put(clazz, helper);
+    public static void registerRenderHelper(Class<? extends EntityLivingBase> clazz, IRenderHelper helper) {
+        if (!renderHelpers.containsKey(clazz) && helper != null) {
+            renderHelpers.put(clazz, helper);
         }
         else {
-            throw new IllegalArgumentException("An invalid Tail Helper was registered!");
+            throw new IllegalArgumentException("An invalid RenderHelper was registered!");
         }
     }
 
-    public static ITailRenderHelper getTailHelper(Class<? extends EntityLivingBase> clazz) {
-        if (tailHelpers.containsKey(clazz)) {
-            return tailHelpers.get(clazz);
+    public static IRenderHelper getRenderHelper(Class<? extends EntityLivingBase> clazz) {
+        if (renderHelpers.containsKey(clazz)) {
+            return renderHelpers.get(clazz);
         }
         else return null;
     }

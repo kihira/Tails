@@ -2,7 +2,7 @@ package kihira.tails.client.render;
 
 import kihira.tails.client.model.ModelBirdTail;
 
-public class RenderBirdTail extends RenderTail {
+public class RenderBirdTail extends RenderPart {
 
     private String[] skinNames = { "birdTail" };
 

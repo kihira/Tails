@@ -8,12 +8,12 @@
 
 package kihira.tails.api;
 
-import kihira.tails.client.render.RenderTail;
+import kihira.tails.client.render.RenderPart;
 import kihira.tails.common.PartInfo;
 import net.minecraft.entity.EntityLivingBase;
 
-public interface ITailRenderHelper {
+public interface IRenderHelper {
 
-    public void onPreRenderTail(EntityLivingBase entity, RenderTail tail, PartInfo info, double x, double y, double z);
+    public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z);
 
 }

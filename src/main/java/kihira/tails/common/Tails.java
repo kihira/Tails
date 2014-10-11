@@ -20,8 +20,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import kihira.tails.client.FakeEntity;
-import kihira.tails.client.PlayerTailRenderHelper;
-import kihira.tails.client.render.RenderTail;
+import kihira.tails.client.PlayerRenderHelper;
+import kihira.tails.client.render.RenderPart;
 import kihira.tails.proxy.CommonProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -59,10 +59,10 @@ public class Tails {
             Tails.proxy.registerHandlers();
             Tails.proxy.registerMessages();
 
-            PlayerTailRenderHelper helper = new PlayerTailRenderHelper();
-            RenderTail.registerTailHelper(EntityClientPlayerMP.class, helper);
-            RenderTail.registerTailHelper(EntityOtherPlayerMP.class, helper);
-            RenderTail.registerTailHelper(FakeEntity.class, helper);
+            PlayerRenderHelper helper = new PlayerRenderHelper();
+            RenderPart.registerRenderHelper(EntityClientPlayerMP.class, helper);
+            RenderPart.registerRenderHelper(EntityOtherPlayerMP.class, helper);
+            RenderPart.registerRenderHelper(FakeEntity.class, helper);
 
             if (e.getSide().isClient()) {
                 Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());

@@ -8,19 +8,19 @@
 
 package kihira.tails.client;
 
-import kihira.tails.api.ITailRenderHelper;
+import kihira.tails.api.IRenderHelper;
 import kihira.tails.client.render.RenderCatTail;
 import kihira.tails.client.render.RenderDevilTail;
 import kihira.tails.client.render.RenderDragonTail;
-import kihira.tails.client.render.RenderTail;
+import kihira.tails.client.render.RenderPart;
 import kihira.tails.common.PartInfo;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 
-public class PlayerTailRenderHelper implements ITailRenderHelper {
+public class PlayerRenderHelper implements IRenderHelper {
 
     @Override
-    public void onPreRenderTail(EntityLivingBase entity, RenderTail tail, PartInfo info, double x, double y, double z) {
+    public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z) {
         if (tail instanceof RenderDragonTail) {
             if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.68F, 0.1F);
             else GL11.glTranslatef(0F, 0.6F, 0.35F);

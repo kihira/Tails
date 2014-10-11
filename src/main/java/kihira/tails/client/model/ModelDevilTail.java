@@ -14,7 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
-public class ModelDevilTail extends ModelTailBase {
+public class ModelDevilTail extends ModelPartBase {
 
     ModelRenderer tailBase;
     ModelRenderer tail1;

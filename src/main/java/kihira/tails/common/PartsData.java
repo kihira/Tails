@@ -9,6 +9,7 @@
 package kihira.tails.common;
 
 import com.google.gson.Gson;
+import kihira.tails.client.render.*;
 
 import java.util.UUID;
 
@@ -75,8 +76,14 @@ public class PartsData {
     }
 
     public enum PartType {
-        EARS,
-        TAIL,
-        WINGS
+        EARS(),
+        TAIL(new RenderFluffyTail(), new RenderDragonTail(), new RenderRaccoonTail(), new RenderDevilTail(), new RenderCatTail(), new RenderBirdTail()),
+        WINGS();
+
+        public final RenderPart[] renderParts;
+
+        PartType(RenderPart ... renderParts) {
+            this.renderParts = renderParts;
+        }
     }
 }

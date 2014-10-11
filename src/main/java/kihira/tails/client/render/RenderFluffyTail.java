@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.model.ModelFluffyTail;
 
 @SideOnly(Side.CLIENT)
-public class RenderFluffyTail extends RenderTail {
+public class RenderFluffyTail extends RenderPart {
 
 	private String[] skinNames = {"foxTail"};
 

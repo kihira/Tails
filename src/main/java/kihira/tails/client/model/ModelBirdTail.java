@@ -6,7 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
-public class ModelBirdTail extends ModelTailBase {
+public class ModelBirdTail extends ModelPartBase {
     ModelRenderer center;
     ModelRenderer left0;
     ModelRenderer left1;

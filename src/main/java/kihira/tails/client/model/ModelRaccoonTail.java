@@ -14,7 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
-public class ModelRaccoonTail extends ModelTailBase {
+public class ModelRaccoonTail extends ModelPartBase {
 
     private ModelRenderer tailBase;
     private ModelRenderer tail1;

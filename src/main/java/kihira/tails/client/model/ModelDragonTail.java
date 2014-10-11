@@ -15,7 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
-public class ModelDragonTail extends ModelTailBase {
+public class ModelDragonTail extends ModelPartBase {
 
     private ModelRenderer tailBase;
     private ModelRenderer tail1;

@@ -36,7 +36,7 @@ import java.net.URLEncoder;
 
 public class GuiExport extends GuiBaseScreen {
 
-    private final GuiEditTail parent;
+    private final GuiEditor parent;
     private final PartInfo tailInfo;
 
     private ScaledResolution scaledRes;
@@ -44,7 +44,7 @@ public class GuiExport extends GuiBaseScreen {
     private GuiButtonTooltip openFolderButton;
     private URI exportLoc;
 
-    public GuiExport(GuiEditTail parent, PartInfo tailInfo) {
+    public GuiExport(GuiEditor parent, PartInfo tailInfo) {
         this.parent = parent;
         this.tailInfo = tailInfo;
     }
