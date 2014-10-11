@@ -64,7 +64,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
     private PartsData.PartType partType;
     private PartsData partsData;
     private PartInfo partInfo;
-    private final PartInfo originalPartInfo;
+    private PartInfo originalPartInfo;
 
     private GuiButton partTypeButton;
     private GuiList partList;
@@ -297,7 +297,8 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
             if (newPartInfo == null) {
                 newPartInfo = new PartInfo(partsData.uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
             }
-            partInfo = newPartInfo.deepCopy();
+            originalPartInfo = newPartInfo.deepCopy();
+            partInfo = originalPartInfo.deepCopy();
 
             partTypeButton.displayString = partType.name();
             initPartList();
@@ -470,7 +471,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         partInfo.setTexture(null);
         if (currTintEdit > 0) partInfo.tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
         partInfo = new PartInfo(uuid, tailEntry.partInfo.hasPart, tailEntry.partInfo.typeid, tailEntry.partInfo.subid, textureID, partInfo.tints, partType, null);
-        partInfo.setTexture(TextureHelper.generateTexture(partInfo));
+        if (partInfo.hasPart) partInfo.setTexture(TextureHelper.generateTexture(partInfo));
 
         partsData.setPartInfo(partType, partInfo);
 
@@ -481,8 +482,9 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         //Default selection
         for (GuiListExtended.IGuiListEntry entry : this.partList.getEntries()) {
             PartEntry partEntry = (PartEntry) entry;
-            if ((!partEntry.partInfo.hasPart && !originalPartInfo.hasPart) || (partEntry.partInfo.typeid == originalPartInfo.typeid && partEntry.partInfo.subid == originalPartInfo.subid)) {
+            if ((!partEntry.partInfo.hasPart && !partInfo.hasPart) || (partInfo.hasPart && partEntry.partInfo.hasPart && partEntry.partInfo.typeid == partInfo.typeid && partEntry.partInfo.subid == partInfo.subid)) {
                 this.partList.setCurrrentIndex(this.partList.getEntries().indexOf(partEntry));
+                break;
             }
         }
     }
