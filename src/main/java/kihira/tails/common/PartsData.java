@@ -78,7 +78,7 @@ public class PartsData {
     }
 
     public enum PartType {
-        EARS(new RenderPart("fox.ear", 0, new ModelFoxEars(), "foxear")),
+        EARS(new RenderPart("fox.ear", 0, new ModelFoxEars(), "foxEars")),
         TAIL(new RenderPart("fluffy", 2, new ModelFluffyTail(), "foxTail"),
              new RenderPart("dragon", 1, new ModelDragonTail(), "dragonTail", "dragonTailStriped"),
              new RenderPart("raccoon", 0, new ModelRaccoonTail(), "racoonTail"),

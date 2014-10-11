@@ -80,7 +80,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         //Default to Tail
         partType = PartsData.PartType.TAIL;
         if (!Tails.localPartsData.hasPartInfo(partType)) {
-            Tails.localPartsData.setPartInfo(partType, new PartInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null));
+            Tails.localPartsData.setPartInfo(partType, new PartInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType));
         }
         partInfo = Tails.localPartsData.getPartInfo(partType);
 
@@ -170,11 +170,11 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         //Part List
         java.util.List<PartEntry> partList = new ArrayList<PartEntry>();
         UUID uuid = UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"); //Just a random UUID
-        partList.add(new PartEntry(new PartInfo(uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null))); //No tail
+        partList.add(new PartEntry(new PartInfo(uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType))); //No tail
         //Generate tail preview textures and add to list
         for (int type = 0; type < partType.renderParts.length; type++) {
             for (int subType = 0; subType <= partType.renderParts[type].getAvailableSubTypes(); subType++) {
-                PartInfo partInfo = new PartInfo(uuid, true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
+                PartInfo partInfo = new PartInfo(uuid, true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
                 partList.add(new PartEntry(partInfo));
             }
         }
@@ -295,7 +295,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
             PartInfo newPartInfo = partsData.getPartInfo(partType);
             if (newPartInfo == null) {
-                newPartInfo = new PartInfo(partsData.uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
+                newPartInfo = new PartInfo(partsData.uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
             }
             partInfo = newPartInfo.deepCopy();
 
@@ -469,7 +469,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         partInfo.setTexture(null);
         if (currTintEdit > 0) partInfo.tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
-        partInfo = new PartInfo(uuid, tailEntry.partInfo.hasPart, tailEntry.partInfo.typeid, tailEntry.partInfo.subid, textureID, partInfo.tints, null);
+        partInfo = new PartInfo(uuid, tailEntry.partInfo.hasPart, tailEntry.partInfo.typeid, tailEntry.partInfo.subid, textureID, partInfo.tints, partType, null);
         partInfo.setTexture(TextureHelper.generateTexture(partInfo));
 
         partsData.setPartInfo(partType, partInfo);

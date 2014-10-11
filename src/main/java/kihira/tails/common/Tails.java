@@ -103,11 +103,15 @@ public class Tails {
             //Load old tail info if exists
             if (tailInfo != null) {
                 if (localPartsData == null) localPartsData = new PartsData(Minecraft.getMinecraft().thePlayer.getUniqueID());
+                tailInfo.partType = PartsData.PartType.TAIL;
                 localPartsData.setPartInfo(PartsData.PartType.TAIL, tailInfo);
 
                 //Delete old info
                 Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Tail Info", "");
                 prop.set("");
+
+                //Force save
+                setLocalPartsData(localPartsData);
             }
         } catch (JsonSyntaxException e) {
             e.printStackTrace();

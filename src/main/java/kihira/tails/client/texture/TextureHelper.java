@@ -52,7 +52,7 @@ public class TextureHelper {
                 tailInfo = buildTailInfoFromSkin(uuid, image);
             }
             else {
-                tailInfo = new PartInfo(uuid, false, 0, 0, 0, 0, 0, 0, null);
+                tailInfo = new PartInfo(uuid, false, 0, 0, 0, 0, 0, 0, null, PartsData.PartType.TAIL);
             }
 
             //Players part data
@@ -112,23 +112,22 @@ public class TextureHelper {
 		int tint2 = skin.getRGB(tint2Pixel.getX(), tint2Pixel.getY());
 		int tint3 = skin.getRGB(tint3Pixel.getX(), tint3Pixel.getY());
 		
-		ResourceLocation tailtexture = generateTexture(id, typeid, subtype, textureid, new int[]{tint1, tint2, tint3});
+		ResourceLocation tailtexture = generateTexture(id, PartsData.PartType.TAIL, typeid, subtype, textureid, new int[]{tint1, tint2, tint3});
 		
-		return new PartInfo(id, true, typeid, subtype, 0, tint1, tint2, tint3, tailtexture);
+		return new PartInfo(id, true, typeid, subtype, 0, tint1, tint2, tint3, tailtexture, partType);
 	}
 
     /**
      * Creates and loads the tail texture into memory based upon the provided params
      * @param id The UUID of the owner
+     * @param partType
      * @param typeid The type ID
      * @param subid The subtype ID
      * @param textureID The texture ID
-     * @param tints An array of int[3]
-     * @return A resource location for the generated texture
+     * @param tints An array of int[3]     @return A resource location for the generated texture
      */
     //TODO need to be able to put wings and ear data on skin
-    public static ResourceLocation generateTexture(UUID id, int typeid, int subid, int textureID, int[] tints) {
-        PartsData.PartType partType = PartsData.PartType.TAIL;
+    public static ResourceLocation generateTexture(UUID id, PartsData.PartType partType, int typeid, int subid, int textureID, int[] tints) {
         RenderPart tail = partType.renderParts[typeid];
         String[] textures = tail.getTextureNames(subid);
         textureID = textureID >= textures.length ? 0 : textureID;
@@ -141,7 +140,7 @@ public class TextureHelper {
     }
 
     public static ResourceLocation generateTexture(PartInfo partInfo) {
-        return generateTexture(partInfo.uuid, partInfo.typeid, partInfo.subid, partInfo.textureID, partInfo.tints);
+        return generateTexture(partInfo.uuid, partInfo.partType, partInfo.typeid, partInfo.subid, partInfo.textureID, partInfo.tints);
     }
 	
 	public static boolean needsBuild(EntityPlayer player) {

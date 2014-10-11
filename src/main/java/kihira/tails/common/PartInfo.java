@@ -24,21 +24,23 @@ public class PartInfo implements Cloneable {
     @Expose public final int subid;
     @Expose public final int[] tints;
     @Expose public final int textureID;
+    @Expose public PartsData.PartType partType; //Not final to preserve compat
 	private ResourceLocation texture;
     public boolean needsTextureCompile = true;
 	
-	public PartInfo(UUID uuid, boolean hasPart, int type, int subtype, int textureID, int[] tints, ResourceLocation texture) {
+	public PartInfo(UUID uuid, boolean hasPart, int type, int subtype, int textureID, int[] tints, PartsData.PartType partType, ResourceLocation texture) {
 		this.uuid = uuid;
 		this.hasPart = hasPart;
 		this.typeid = type;
 		this.subid = subtype;
         this.textureID = textureID;
         this.tints = tints;
+        this.partType = partType;
         this.texture = texture;
 	}
 
-    public PartInfo(UUID uuid, boolean hasPart, int type, int subtype, int textureID, int tint1, int tint2, int tint3, ResourceLocation texture) {
-        this(uuid, hasPart, type, subtype, textureID, new int[] {tint1, tint2, tint3}, texture);
+    public PartInfo(UUID uuid, boolean hasPart, int type, int subtype, int textureID, int tint1, int tint2, int tint3, ResourceLocation texture, PartsData.PartType partType) {
+        this(uuid, hasPart, type, subtype, textureID, new int[] {tint1, tint2, tint3}, partType, texture);
     }
 
     public ResourceLocation getTexture() {
