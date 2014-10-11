@@ -66,6 +66,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
     private PartInfo partInfo;
     private final PartInfo originalPartInfo;
 
+    private GuiButton partTypeButton;
     private GuiList partList;
     private FakeEntity fakeEntity;
 
@@ -153,7 +154,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         textureID = partInfo.textureID;
 
         //PartType Select
-        buttonList.add(new GuiButton(20, previewWindowLeft + 3, height - 25, 50, 20, partType.name()));
+        buttonList.add(partTypeButton = new GuiButton(20, previewWindowLeft + 3, height - 25, 40, 20, partType.name()));
 
         //Help
         this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 20, 4, GuiIconButton.Icons.QUESTION, new ArrayList<String>() {{
@@ -285,7 +286,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         }
         //PartType
         else if (button.id == 20) {
-            if (partType.ordinal() + 1 > PartsData.PartType.values().length) {
+            if (partType.ordinal() + 1 >= PartsData.PartType.values().length) {
                 partType = PartsData.PartType.values()[0];
             }
             else {
@@ -298,6 +299,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
             }
             partInfo = newPartInfo.deepCopy();
 
+            partTypeButton.displayString = partType.name();
             initPartList();
             refreshTintPane();
         }

@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.api.IRenderHelper;
 import kihira.tails.client.model.ModelPartBase;
+import kihira.tails.client.model.ears.ModelFoxEars;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import net.minecraft.client.Minecraft;
@@ -28,7 +29,7 @@ public class RenderPart {
     protected final String name;
     protected final String[] textureNames;
     protected final int subTypes;
-    public final ModelPartBase modelPart;
+    public ModelPartBase modelPart;
 
     public RenderPart(String name, int subTypes, ModelPartBase modelPart, String ... textureNames) {
         this.name = name;
@@ -41,6 +42,10 @@ public class RenderPart {
         if (info.needsTextureCompile || info.getTexture() == null) {
             info.setTexture(TextureHelper.generateTexture(info));
             info.needsTextureCompile = false;
+        }
+
+        if (name.equals("fox.ear")) {
+            modelPart = new ModelFoxEars();
         }
 
         GL11.glPushMatrix();
