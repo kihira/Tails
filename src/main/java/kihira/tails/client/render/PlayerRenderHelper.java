@@ -6,14 +6,13 @@
  * See LICENSE for full License
  */
 
-package kihira.tails.client;
+package kihira.tails.client.render;
 
 import kihira.tails.api.IRenderHelper;
 import kihira.tails.client.model.ears.ModelFoxEars;
 import kihira.tails.client.model.tail.ModelCatTail;
 import kihira.tails.client.model.tail.ModelDevilTail;
 import kihira.tails.client.model.tail.ModelDragonTail;
-import kihira.tails.client.render.RenderPart;
 import kihira.tails.common.PartInfo;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
