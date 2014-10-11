@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Zoe Lee (Kihira)
+ * Copyright (c) 2014
  *
  * See LICENSE for full License
  */
@@ -14,9 +14,8 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import kihira.tails.client.gui.GuiEditTail;
+import kihira.tails.client.gui.GuiEditor;
 import kihira.tails.client.model.ModelRenderer2;
-import kihira.tails.client.render.*;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
@@ -37,9 +36,6 @@ import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler {
-
-	public static final RenderTail[] tailTypes = { new RenderFluffyTail(), new RenderDragonTail(), new RenderRaccoonTail(), new RenderDevilTail(), new RenderCatTail(), new RenderBirdTail()};
-
     private boolean sentPartInfoToServer = false;
     private boolean clearAllPartInfo = false;
 
@@ -63,7 +59,7 @@ public class ClientEventHandler {
     public void onButtonClickPre(GuiScreenEvent.ActionPerformedEvent.Pre event) {
         if (event.gui instanceof GuiIngameMenu) {
             if (event.button.id == 1234) {
-                event.gui.mc.displayGuiScreen(new GuiEditTail());
+                event.gui.mc.displayGuiScreen(new GuiEditor());
                 event.setCanceled(true);
             }
         }
@@ -121,15 +117,15 @@ public class ClientEventHandler {
         //Ignore players here, using the player render currentEvent is better
         if (!(e.entity instanceof EntityPlayer)) {
             UUID uuid = e.entity.getPersistentID();
-            //TODO add support for more then just tails?
             //TODO Switch to IExtendedEntityProperties instead? Save the data on the player
             if (Tails.proxy.hasPartsData(uuid) && Tails.proxy.getPartsData(uuid).hasPartInfo(PartsData.PartType.TAIL) && !e.entity.isInvisible()) {
                 PartInfo info = Tails.proxy.getPartsData(uuid).getPartInfo(PartsData.PartType.TAIL);
+                PartsData.PartType partType = PartsData.PartType.TAIL;
 
                 int type = info.typeid;
-                type = type > ClientEventHandler.tailTypes.length ? 0 : type;
+                type = type > partType.renderParts.length ? 0 : type;
 
-                tailTypes[type].render(e.entity, info, e.x, e.y, e.z, 1);
+                partType.renderParts[type].render(e.entity, info, e.x, e.y, e.z, 1);
             }
         }
     }

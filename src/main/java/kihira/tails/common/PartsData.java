@@ -9,16 +9,18 @@
 package kihira.tails.common;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
+import kihira.tails.client.model.tail.*;
+import kihira.tails.client.render.RenderPart;
 
 import java.util.UUID;
 
 public class PartsData {
 
-    public final UUID uuid;
-
+    @Expose public final UUID uuid;
     //Keeping these as fields vs a map should prove better performance wise
-    private PartInfo tailInfo;
-    private PartInfo earsInfo;
+    @Expose private PartInfo tailInfo;
+    @Expose private PartInfo earsInfo;
 
     public PartsData(UUID uuid) {
         this.uuid = uuid;
@@ -75,8 +77,19 @@ public class PartsData {
     }
 
     public enum PartType {
-        EARS,
-        TAIL,
-        WINGS
+        EARS(),
+        TAIL(   new RenderPart("fluffy", 2, new ModelFluffyTail(), "foxTail"),
+                new RenderPart("dragon", 1, new ModelDragonTail(), "dragonTail", "dragonTailStriped"),
+                new RenderPart("raccoon", 0, new ModelRaccoonTail(), "racoonTail"),
+                new RenderPart("devil", 1, new ModelDevilTail(), "devilTail"),
+                new RenderPart("cat", 0, new ModelCatTail(), "tabbyTail", "tigerTail"),
+                new RenderPart("bird", 0, new ModelBirdTail(), "birdTail")),
+        WINGS();
+
+        public final RenderPart[] renderParts;
+
+        PartType(RenderPart ... renderParts) {
+            this.renderParts = renderParts;
+        }
     }
 }

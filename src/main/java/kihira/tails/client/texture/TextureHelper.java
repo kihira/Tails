@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Zoe Lee (Kihira)
+ * Copyright (c) 2014
  *
  * See LICENSE for full License
  */
@@ -11,8 +11,7 @@ package kihira.tails.client.texture;
 import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import kihira.tails.client.ClientEventHandler;
-import kihira.tails.client.render.RenderTail;
+import kihira.tails.client.render.RenderPart;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
@@ -97,14 +96,14 @@ public class TextureHelper {
     }
 
 	public static PartInfo buildTailInfoFromSkin(UUID id, BufferedImage skin) {
+        PartsData.PartType partType = PartsData.PartType.TAIL;
 		int data = skin.getRGB(dataPixel.getX(), dataPixel.getY());
-		
 		int typeid = (data >> 16) & 0xFF;
         int subtype = (data >> 8) & 0xFF;
         int textureid = (data) & 0xFF;
-		typeid = typeid >= ClientEventHandler.tailTypes.length ? 0 : typeid;
+		typeid = typeid >= partType.renderParts.length ? 0 : typeid;
 		
-		RenderTail type = ClientEventHandler.tailTypes[typeid];
+		RenderPart type = partType.renderParts[typeid];
 		String[] textures = type.getTextureNames(subtype);
 
 		textureid = textureid >= textures.length ? 0 : textureid;
@@ -127,8 +126,10 @@ public class TextureHelper {
      * @param tints An array of int[3]
      * @return A resource location for the generated texture
      */
+    //TODO need to be able to put wings and ear data on skin
     public static ResourceLocation generateTexture(UUID id, int typeid, int subid, int textureID, int[] tints) {
-        RenderTail tail = ClientEventHandler.tailTypes[typeid];
+        PartsData.PartType partType = PartsData.PartType.TAIL;
+        RenderPart tail = partType.renderParts[typeid];
         String[] textures = tail.getTextureNames(subid);
         textureID = textureID >= textures.length ? 0 : textureID;
         String texturePath = "texture/tail/"+textures[textureID]+".png";

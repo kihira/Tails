@@ -29,27 +29,12 @@ public class ModelRenderer2 extends ModelRenderer {
         if (ClientEventHandler.currentEvent != null && ClientEventHandler.currentPartsData != null && ClientEventHandler.currentPlayerTexture != null) {
             PartInfo info = ClientEventHandler.currentPartsData.getPartInfo(partType);
             if (info != null && info.hasPart) {
-                switch (partType) {
-                    case TAIL: {
-                        int type = info.typeid;
-                        type = type > ClientEventHandler.tailTypes.length ? 0 : type;
+                int type = info.typeid;
+                type = type > partType.renderParts.length ? 0 : type;
 
-                        ClientEventHandler.tailTypes[type].render(ClientEventHandler.currentEvent.entityPlayer, info, 0, 0, 0, ClientEventHandler.currentEvent.partialRenderTick);
+                partType.renderParts[type].render(ClientEventHandler.currentEvent.entityPlayer, info, 0, 0, 0, ClientEventHandler.currentEvent.partialRenderTick);
 
-                        Minecraft.getMinecraft().renderEngine.bindTexture(ClientEventHandler.currentPlayerTexture);
-                        break;
-                    }
-                    case EARS: {
-/*                        GL11.glPushMatrix();
-                        GL11.glColor4f(1F, 1F, 1F, 1F);
-                        GL11.glTranslatef(0F, -1.5F, 0F);
-                        Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("tails", "texture/ear/foxears.png"));
-                        foxEars.render(null, 0, 0, 0, 0, 0, 0.0625F);
-                        Minecraft.getMinecraft().renderEngine.bindTexture(ClientEventHandler.currentPlayerTexture);
-                        GL11.glPopMatrix();*/
-                        break;
-                    }
-                }
+                Minecraft.getMinecraft().renderEngine.bindTexture(ClientEventHandler.currentPlayerTexture);
             }
         }
     }

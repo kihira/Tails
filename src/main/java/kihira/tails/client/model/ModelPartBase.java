@@ -18,7 +18,7 @@ import net.minecraft.util.MathHelper;
 /**
  * A base class that all tails extend
  */
-public abstract class ModelTailBase extends ModelBase {
+public abstract class ModelPartBase extends ModelBase {
 
     /**
      * Renders the tail with the optional parts list provided
