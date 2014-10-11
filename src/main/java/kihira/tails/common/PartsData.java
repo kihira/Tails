@@ -78,13 +78,13 @@ public class PartsData {
     }
 
     public enum PartType {
-        EARS(new RenderPart("fox.ear", 0, new ModelFoxEars(), "foxEars")),
-        TAIL(new RenderPart("fluffy", 2, new ModelFluffyTail(), "foxTail"),
-             new RenderPart("dragon", 1, new ModelDragonTail(), "dragonTail", "dragonTailStriped"),
-             new RenderPart("raccoon", 0, new ModelRaccoonTail(), "racoonTail"),
-             new RenderPart("devil", 1, new ModelDevilTail(), "devilTail"),
-             new RenderPart("cat", 0, new ModelCatTail(), "tabbyTail", "tigerTail"),
-             new RenderPart("bird", 0, new ModelBirdTail(), "birdTail"));
+        EARS(new RenderPart("ears.fox", 0, new ModelFoxEars(), "foxEars")),
+        TAIL(new RenderPart("tail.fluffy", 2, new ModelFluffyTail(), "foxTail"),
+             new RenderPart("tail.dragon", 1, new ModelDragonTail(), "dragonTail", "dragonTailStriped"),
+             new RenderPart("tail.raccoon", 0, new ModelRaccoonTail(), "racoonTail"),
+             new RenderPart("tail.devil", 1, new ModelDevilTail(), "devilTail"),
+             new RenderPart("tail.cat", 0, new ModelCatTail(), "tabbyTail", "tigerTail"),
+             new RenderPart("tail.bird", 0, new ModelBirdTail(), "birdTail"));
         //WINGS();
 
         public final RenderPart[] renderParts;

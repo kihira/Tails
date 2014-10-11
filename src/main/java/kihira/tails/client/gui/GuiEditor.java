@@ -219,7 +219,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         //Texture select
         fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, this.height - 37, 0xFFFFFF);
-        fontRendererObj.drawString(I18n.format("tail.texture." + partType.renderParts[partInfo.typeid].getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
+        fontRendererObj.drawString(I18n.format(partType.name().toLowerCase() + ".texture." + partType.renderParts[partInfo.typeid].getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }

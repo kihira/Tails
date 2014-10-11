@@ -131,9 +131,9 @@ public class TextureHelper {
         RenderPart tail = partType.renderParts[typeid];
         String[] textures = tail.getTextureNames(subid);
         textureID = textureID >= textures.length ? 0 : textureID;
-        String texturePath = "texture/tail/"+textures[textureID]+".png";
+        String texturePath = "texture/" + partType.name().toLowerCase() + "/"+textures[textureID]+".png";
 
-        ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+typeid+"_"+subid+"_"+textureID+"_"+tints[0]+"_"+tints[1]+"_"+tints[2]);
+        ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+partType.name()+"_"+typeid+"_"+subid+"_"+textureID+"_"+tints[0]+"_"+tints[1]+"_"+tints[2]);
         Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturePath, tints[0], tints[1], tints[2]));
 
         return tailtexture;

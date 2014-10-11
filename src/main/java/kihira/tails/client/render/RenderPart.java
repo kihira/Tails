@@ -77,7 +77,7 @@ public class RenderPart {
     }
 
     public String getUnlocalisedName(int subType) {
-        return "tail."+this.name+"."+subType+".name";
+        return this.name+"."+subType+".name";
     }
 
     public static void registerRenderHelper(Class<? extends EntityLivingBase> clazz, IRenderHelper helper) {
