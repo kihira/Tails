@@ -9,6 +9,7 @@
 package kihira.tails.common;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 import kihira.tails.client.model.tail.*;
 import kihira.tails.client.render.RenderPart;
 
@@ -16,11 +17,10 @@ import java.util.UUID;
 
 public class PartsData {
 
-    public final UUID uuid;
-
+    @Expose public final UUID uuid;
     //Keeping these as fields vs a map should prove better performance wise
-    private PartInfo tailInfo;
-    private PartInfo earsInfo;
+    @Expose private PartInfo tailInfo;
+    @Expose private PartInfo earsInfo;
 
     public PartsData(UUID uuid) {
         this.uuid = uuid;

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Zoe Lee (Kihira)
+ * Copyright (c) 2014
  *
  * See LICENSE for full License
  */
@@ -16,13 +16,13 @@ import kihira.tails.common.Tails;
 import kihira.tails.common.network.PlayerDataMapMessage;
 import kihira.tails.common.network.PlayerDataMessage;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class CommonProxy {
 
-    protected Hashtable<UUID, PartsData> partsData = new Hashtable<UUID, PartsData>();
+    protected HashMap<UUID, PartsData> partsData = new HashMap<UUID, PartsData>();
 
     public void registerMessages() {
         Tails.networkWrapper.registerMessage(PlayerDataMessage.Handler.class, PlayerDataMessage.class, 0, Side.SERVER);
