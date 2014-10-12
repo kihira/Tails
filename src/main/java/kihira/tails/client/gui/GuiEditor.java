@@ -54,6 +54,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
     private float yaw = 0F;
     private float pitch = 10F;
+    private int prevMouseX = -1;
 
     private int currTintEdit = 0;
     private int currTintColour = 0xFFFFFF;
@@ -368,8 +369,12 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
     protected void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick) {
         if (lastButtonClicked == 0 && mouseY < previewWindowBottom && mouseX > previewWindowLeft && mouseX < previewWindowRight) {
             //Yaw
-            float previewWindowWidth = previewWindowRight - previewWindowLeft;
-            yaw = (mouseX - (width / 2F) / (previewWindowWidth / 2F)) * 2F;
+            if (prevMouseX == -1) prevMouseX = mouseX;
+            else {
+                yaw += (mouseX - prevMouseX) * 1.5F;
+                prevMouseX = mouseX;
+            }
+
             //Pitch
 /*            if (mouseY < previewWindowBottom) {
                 pitch = (mouseY - (previewWindowBottom / 2F) / (previewWindowBottom / 2F));
@@ -377,12 +382,10 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         }
     }
 
-/*    @Override
+    @Override
     protected void mouseMovedOrUp(int mouseX, int mouseY, int mouseEvent) {
-        if (mouseEvent != 0 || !this.partList.func_148181_b(mouseX, mouseY, mouseEvent)) {
-            super.mouseMovedOrUp(mouseX, mouseY, mouseEvent);
-        }
-    }*/
+        prevMouseX = -1;
+    }
 
     @Override
     public void onGuiClosed() {
