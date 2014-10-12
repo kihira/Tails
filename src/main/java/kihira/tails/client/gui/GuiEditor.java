@@ -36,12 +36,16 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -233,12 +237,6 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, this.height - 37, 0xFFFFFF);
         fontRendererObj.drawString(I18n.format(partType.name().toLowerCase() + ".texture." + partType.renderParts[partInfo.typeid].getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
 
-        //Eyedropper
-        if (selectingColour) {
-            mc.renderEngine.bindTexture(GuiIconButton.iconsTextures);
-            drawTexturedModalRect(mouseX, mouseY, GuiIconButton.Icons.EYEDROPPER.u, GuiIconButton.Icons.EYEDROPPER.v + 32, 16, 16);
-        }
-
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
 
@@ -325,7 +323,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         }
         //Colour Picker
         else if (button.id == 21) {
-            selectingColour = true;
+            setSelectingColour(true);
         }
     }
 
@@ -343,7 +341,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         this.refreshTintPane();
 
         if (keyCode == Keyboard.KEY_ESCAPE && selectingColour) {
-            selectingColour = false;
+            setSelectingColour(false);
         }
         else {
             super.keyTyped(letter, keyCode);
@@ -357,7 +355,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         }*/
         if (selectingColour && mouseEvent == 0) {
             currTintColour = getColourAtPoint(Mouse.getEventX(), mc.displayHeight - Mouse.getEventY()) & 0xFFFFFF; //Ignore alpha
-            selectingColour = false;
+            setSelectingColour(false);
             refreshTintPane();
         }
         else {
@@ -543,6 +541,35 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         pixelBuffer.get(pixelData);
         return pixelData[0];
+    }
+
+    private void setSelectingColour(boolean selectingColour) {
+        this.selectingColour = selectingColour;
+
+        if (selectingColour) {
+            try {
+                BufferedImage bufferedImage = ImageIO.read(mc.getResourceManager().getResource(GuiIconButton.iconsTextures).getInputStream());
+                int[] pixelData;
+                int pixels = 16 * 16;
+                pixelData = new int[pixels];
+                IntBuffer buffer = IntBuffer.wrap(bufferedImage.getRGB(GuiIconButton.Icons.EYEDROPPER.u, GuiIconButton.Icons.EYEDROPPER.v + 16, 16, 16, pixelData, 0, 16));
+                org.lwjgl.input.Cursor cursor = new org.lwjgl.input.Cursor(16, 16, 0, 15, 1, buffer, null);
+
+                Mouse.setNativeCursor(cursor);
+
+            } catch (LWJGLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                Mouse.setNativeCursor(null);
+            } catch (LWJGLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
