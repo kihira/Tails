@@ -44,6 +44,7 @@ gui.button.save=Save
 gui.button.edit=Edit
 gui.button.help.camera.0=Click and drag on the preview window
 gui.button.help.camera.1=to rotate your character
+gui.button.reset.camera=Reset camera
 
 gui.tint=Tint %s
 gui.tint.edit=Editing Tint %s

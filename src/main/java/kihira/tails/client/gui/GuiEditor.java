@@ -173,8 +173,11 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         buttonList.add(colourPicker = new GuiIconButton(21, this.width - 36, this.editPaneTop + 1, GuiIconButton.Icons.EYEDROPPER, new ArrayList<String>()));
         colourPicker.visible = false;
 
+        //Reset Camera
+        buttonList.add(new GuiIconButton(22, previewWindowRight - 18, 22, GuiIconButton.Icons.UNDO, new ArrayList<String>() {{ add(I18n.format("gui.button.reset.camera")); }}));
+
         //Help
-        this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 20, 4, GuiIconButton.Icons.QUESTION, new ArrayList<String>() {{
+        this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 18, 4, GuiIconButton.Icons.QUESTION, new ArrayList<String>() {{
             add(I18n.format("gui.button.help.camera.0"));
             add(I18n.format("gui.button.help.camera.1"));
         }}));
@@ -326,6 +329,11 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         else if (button.id == 21) {
             setSelectingColour(true);
         }
+        //Reset Camera
+        else if (button.id == 22) {
+            yaw = 0;
+            pitch = 10F;
+        }
     }
 
     @Override
@@ -374,11 +382,6 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
                 yaw += (mouseX - prevMouseX) * 1.5F;
                 prevMouseX = mouseX;
             }
-
-            //Pitch
-/*            if (mouseY < previewWindowBottom) {
-                pitch = (mouseY - (previewWindowBottom / 2F) / (previewWindowBottom / 2F));
-            }*/
         }
     }
 
