@@ -35,9 +35,14 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -52,7 +57,10 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
     private GuiHSBSlider[] hsbSliders;
     private GuiHSBSlider[] rgbSliders;
     private GuiIconButton tintReset;
+    private GuiIconButton colourPicker;
     private int textureID;
+    private IntBuffer pixelBuffer;
+    private boolean selectingColour = false;
 
     private ScaledResolution scaledRes;
 
@@ -156,6 +164,10 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         //PartType Select
         buttonList.add(partTypeButton = new GuiButton(20, previewWindowLeft + 3, height - 25, 40, 20, partType.name()));
 
+        //Colour Picker
+        buttonList.add(colourPicker = new GuiIconButton(21, this.width - 36, this.editPaneTop + 1, GuiIconButton.Icons.EYEDROPPER, new ArrayList<String>()));
+        colourPicker.visible = false;
+
         //Help
         this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 20, 4, GuiIconButton.Icons.QUESTION, new ArrayList<String>() {{
             add(I18n.format("gui.button.help.camera.0"));
@@ -221,6 +233,12 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, this.height - 37, 0xFFFFFF);
         fontRendererObj.drawString(I18n.format(partType.name().toLowerCase() + ".texture." + partType.renderParts[partInfo.typeid].getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
 
+        //Eyedropper
+        if (selectingColour) {
+            mc.renderEngine.bindTexture(GuiIconButton.iconsTextures);
+            drawTexturedModalRect(mouseX, mouseY, GuiIconButton.Icons.EYEDROPPER.u, GuiIconButton.Icons.EYEDROPPER.v + 32, 16, 16);
+        }
+
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
 
@@ -234,6 +252,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
             this.tintReset.enabled = false;
+            colourPicker.enabled = true;
         }
         //Reset Tint
         else if (button.id == 8) {
@@ -304,6 +323,10 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
             initPartList();
             refreshTintPane();
         }
+        //Colour Picker
+        else if (button.id == 21) {
+            selectingColour = true;
+        }
     }
 
     @Override
@@ -319,7 +342,12 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         this.refreshTintPane();
 
-        super.keyTyped(letter, keyCode);
+        if (keyCode == Keyboard.KEY_ESCAPE && selectingColour) {
+            selectingColour = false;
+        }
+        else {
+            super.keyTyped(letter, keyCode);
+        }
     }
 
     @Override
@@ -327,8 +355,15 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 /*        if (mouseEvent != 0 || !this.partList.func_148179_a(mouseX, mouseY, mouseEvent)) {
             super.mouseClicked(mouseX, mouseY, mouseEvent);
         }*/
-        super.mouseClicked(mouseX, mouseY, mouseEvent);
-        this.hexText.mouseClicked(mouseX, mouseY, mouseEvent);
+        if (selectingColour && mouseEvent == 0) {
+            currTintColour = getColourAtPoint(Mouse.getEventX(), mc.displayHeight - Mouse.getEventY()) & 0xFFFFFF; //Ignore alpha
+            selectingColour = false;
+            refreshTintPane();
+        }
+        else {
+            super.mouseClicked(mouseX, mouseY, mouseEvent);
+            this.hexText.mouseClicked(mouseX, mouseY, mouseEvent);
+        }
     }
 
     @Override
@@ -385,12 +420,14 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
             this.rgbSliders[0].visible = this.rgbSliders[1].visible = this.rgbSliders[2].visible = true;
             this.hsbSliders[0].visible = this.hsbSliders[1].visible = this.hsbSliders[2].visible = true;
             this.tintReset.visible = true;
+            colourPicker.visible = true;
         }
         
         else {
             this.rgbSliders[0].visible = this.rgbSliders[1].visible = this.rgbSliders[2].visible = false;
             this.hsbSliders[0].visible = this.hsbSliders[1].visible = this.hsbSliders[2].visible = false;
             this.tintReset.visible = false;
+            colourPicker.visible = false;
         }
 
         tintReset.enabled = true;
@@ -464,7 +501,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         this.refreshTintPane();
     }
 
-    void updatePartsData() {
+    private void updatePartsData() {
         UUID uuid = this.mc.thePlayer.getPersistentID();
         PartEntry tailEntry = (PartEntry) partList.getListEntry(partList.getCurrrentIndex());
 
@@ -487,6 +524,25 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
                 break;
             }
         }
+    }
+
+    private int getColourAtPoint(int x, int y) {
+        int[] pixelData;
+        int pixels = 1;
+
+        if (pixelBuffer == null) {
+            pixelBuffer = BufferUtils.createIntBuffer(pixels);
+        }
+        pixelData = new int[pixels];
+
+        GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        pixelBuffer.clear();
+
+        GL11.glReadPixels(x, mc.displayHeight - y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);
+
+        pixelBuffer.get(pixelData);
+        return pixelData[0];
     }
 
     @Override
