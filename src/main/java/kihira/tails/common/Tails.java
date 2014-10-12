@@ -90,18 +90,16 @@ public class Tails {
     public void loadConfig() {
         //Load local player info
         try {
-            //Backwards compat
-            PartInfo tailInfo = null;
-            if (Tails.configuration.hasKey(Configuration.CATEGORY_GENERAL, "Local Tail Info")) {
-                tailInfo = new Gson().fromJson(Tails.configuration.getString("Local Tail Info",
-                        Configuration.CATEGORY_GENERAL, "DEPRECIATED. CAN SAFELY REMOVE", ""), PartInfo.class);
-            }
-
             //Load Player Data
             localPartsData = new Gson().fromJson(Tails.configuration.getString("Local Player Data",
                     Configuration.CATEGORY_GENERAL, "Local Players data. Delete to remove all customisation data. Do not try to edit manually", ""), PartsData.class);
 
             //Load old tail info if exists
+            PartInfo tailInfo = null;
+            if (Tails.configuration.hasKey(Configuration.CATEGORY_GENERAL, "Local Tail Info")) {
+                tailInfo = new Gson().fromJson(Tails.configuration.getString("Local Tail Info",
+                        Configuration.CATEGORY_GENERAL, "DEPRECIATED. CAN SAFELY REMOVE", ""), PartInfo.class);
+            }
             if (tailInfo != null) {
                 if (localPartsData == null) localPartsData = new PartsData(Minecraft.getMinecraft().thePlayer.getUniqueID());
                 tailInfo.partType = PartsData.PartType.TAIL;
