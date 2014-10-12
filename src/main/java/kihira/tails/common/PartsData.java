@@ -10,6 +10,7 @@ package kihira.tails.common;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+import kihira.tails.client.model.ears.ModelFoxEars;
 import kihira.tails.client.model.tail.*;
 import kihira.tails.client.render.RenderPart;
 
@@ -77,14 +78,14 @@ public class PartsData {
     }
 
     public enum PartType {
-        EARS(),
-        TAIL(   new RenderPart("fluffy", 2, new ModelFluffyTail(), "foxTail"),
-                new RenderPart("dragon", 1, new ModelDragonTail(), "dragonTail", "dragonTailStriped"),
-                new RenderPart("raccoon", 0, new ModelRaccoonTail(), "racoonTail"),
-                new RenderPart("devil", 1, new ModelDevilTail(), "devilTail"),
-                new RenderPart("cat", 0, new ModelCatTail(), "tabbyTail", "tigerTail"),
-                new RenderPart("bird", 0, new ModelBirdTail(), "birdTail")),
-        WINGS();
+        EARS(new RenderPart("ears.fox", 0, new ModelFoxEars(), "foxEars")),
+        TAIL(new RenderPart("tail.fluffy", 2, new ModelFluffyTail(), "foxTail"),
+             new RenderPart("tail.dragon", 1, new ModelDragonTail(), "dragonTail", "dragonTailStriped"),
+             new RenderPart("tail.raccoon", 0, new ModelRaccoonTail(), "racoonTail"),
+             new RenderPart("tail.devil", 1, new ModelDevilTail(), "devilTail"),
+             new RenderPart("tail.cat", 0, new ModelCatTail(), "tabbyTail", "tigerTail"),
+             new RenderPart("tail.bird", 0, new ModelBirdTail(), "birdTail"));
+        //WINGS();
 
         public final RenderPart[] renderParts;
 

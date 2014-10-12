@@ -28,7 +28,7 @@ public class RenderPart {
     protected final String name;
     protected final String[] textureNames;
     protected final int subTypes;
-    public final ModelPartBase modelPart;
+    public ModelPartBase modelPart;
 
     public RenderPart(String name, int subTypes, ModelPartBase modelPart, String ... textureNames) {
         this.name = name;
@@ -77,7 +77,7 @@ public class RenderPart {
     }
 
     public String getUnlocalisedName(int subType) {
-        return "tail."+this.name+"."+subType+".name";
+        return this.name+"."+subType+".name";
     }
 
     public static void registerRenderHelper(Class<? extends EntityLivingBase> clazz, IRenderHelper helper) {

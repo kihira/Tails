@@ -64,8 +64,9 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
     private PartsData.PartType partType;
     private PartsData partsData;
     private PartInfo partInfo;
-    private final PartInfo originalPartInfo;
+    private PartInfo originalPartInfo;
 
+    private GuiButton partTypeButton;
     private GuiList partList;
     private FakeEntity fakeEntity;
 
@@ -79,7 +80,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         //Default to Tail
         partType = PartsData.PartType.TAIL;
         if (!Tails.localPartsData.hasPartInfo(partType)) {
-            Tails.localPartsData.setPartInfo(partType, new PartInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null));
+            Tails.localPartsData.setPartInfo(partType, new PartInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType));
         }
         partInfo = Tails.localPartsData.getPartInfo(partType);
 
@@ -153,7 +154,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         textureID = partInfo.textureID;
 
         //PartType Select
-        buttonList.add(new GuiButton(20, previewWindowLeft + 3, height - 25, 50, 20, partType.name()));
+        buttonList.add(partTypeButton = new GuiButton(20, previewWindowLeft + 3, height - 25, 40, 20, partType.name()));
 
         //Help
         this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 20, 4, GuiIconButton.Icons.QUESTION, new ArrayList<String>() {{
@@ -169,11 +170,11 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         //Part List
         java.util.List<PartEntry> partList = new ArrayList<PartEntry>();
         UUID uuid = UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"); //Just a random UUID
-        partList.add(new PartEntry(new PartInfo(uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null))); //No tail
+        partList.add(new PartEntry(new PartInfo(uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType))); //No tail
         //Generate tail preview textures and add to list
         for (int type = 0; type < partType.renderParts.length; type++) {
             for (int subType = 0; subType <= partType.renderParts[type].getAvailableSubTypes(); subType++) {
-                PartInfo partInfo = new PartInfo(uuid, true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
+                PartInfo partInfo = new PartInfo(uuid, true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
                 partList.add(new PartEntry(partInfo));
             }
         }
@@ -218,7 +219,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         //Texture select
         fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, this.height - 37, 0xFFFFFF);
-        fontRendererObj.drawString(I18n.format("tail.texture." + partType.renderParts[partInfo.typeid].getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
+        fontRendererObj.drawString(I18n.format(partType.name().toLowerCase() + ".texture." + partType.renderParts[partInfo.typeid].getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
@@ -285,7 +286,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         }
         //PartType
         else if (button.id == 20) {
-            if (partType.ordinal() + 1 > PartsData.PartType.values().length) {
+            if (partType.ordinal() + 1 >= PartsData.PartType.values().length) {
                 partType = PartsData.PartType.values()[0];
             }
             else {
@@ -294,10 +295,12 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
             PartInfo newPartInfo = partsData.getPartInfo(partType);
             if (newPartInfo == null) {
-                newPartInfo = new PartInfo(partsData.uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
+                newPartInfo = new PartInfo(partsData.uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
             }
-            partInfo = newPartInfo.deepCopy();
+            originalPartInfo = newPartInfo.deepCopy();
+            partInfo = originalPartInfo.deepCopy();
 
+            partTypeButton.displayString = partType.name();
             initPartList();
             refreshTintPane();
         }
@@ -467,8 +470,8 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         partInfo.setTexture(null);
         if (currTintEdit > 0) partInfo.tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
-        partInfo = new PartInfo(uuid, tailEntry.partInfo.hasPart, tailEntry.partInfo.typeid, tailEntry.partInfo.subid, textureID, partInfo.tints, null);
-        partInfo.setTexture(TextureHelper.generateTexture(partInfo));
+        partInfo = new PartInfo(uuid, tailEntry.partInfo.hasPart, tailEntry.partInfo.typeid, tailEntry.partInfo.subid, textureID, partInfo.tints, partType, null);
+        if (partInfo.hasPart) partInfo.setTexture(TextureHelper.generateTexture(partInfo));
 
         partsData.setPartInfo(partType, partInfo);
 
@@ -479,8 +482,9 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         //Default selection
         for (GuiListExtended.IGuiListEntry entry : this.partList.getEntries()) {
             PartEntry partEntry = (PartEntry) entry;
-            if ((!partEntry.partInfo.hasPart && !originalPartInfo.hasPart) || (partEntry.partInfo.typeid == originalPartInfo.typeid && partEntry.partInfo.subid == originalPartInfo.subid)) {
+            if ((!partEntry.partInfo.hasPart && !partInfo.hasPart) || (partInfo.hasPart && partEntry.partInfo.hasPart && partEntry.partInfo.typeid == partInfo.typeid && partEntry.partInfo.subid == partInfo.subid)) {
                 this.partList.setCurrrentIndex(this.partList.getEntries().indexOf(partEntry));
+                break;
             }
         }
     }
