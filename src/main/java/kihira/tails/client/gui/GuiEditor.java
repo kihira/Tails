@@ -388,6 +388,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
     @Override
     protected void mouseMovedOrUp(int mouseX, int mouseY, int mouseEvent) {
         prevMouseX = -1;
+        super.mouseMovedOrUp(mouseX, mouseY, mouseEvent);
     }
 
     @Override

@@ -10,6 +10,7 @@ package kihira.tails.common;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+import kihira.tails.client.model.ears.ModelCatEars;
 import kihira.tails.client.model.ears.ModelFoxEars;
 import kihira.tails.client.model.tail.*;
 import kihira.tails.client.render.RenderPart;
@@ -78,7 +79,8 @@ public class PartsData {
     }
 
     public enum PartType {
-        EARS(new RenderPart("ears.fox", 0, new ModelFoxEars(), "foxEars")),
+        EARS(new RenderPart("ears.fox", 0, new ModelFoxEars(), "foxEars"),
+             new RenderPart("ears.cat", 0, new ModelCatEars(), "catEars")),
         TAIL(new RenderPart("tail.fluffy", 2, new ModelFluffyTail(), "foxTail"),
              new RenderPart("tail.dragon", 1, new ModelDragonTail(), "dragonTail", "dragonTailStriped"),
              new RenderPart("tail.raccoon", 0, new ModelRaccoonTail(), "racoonTail"),
