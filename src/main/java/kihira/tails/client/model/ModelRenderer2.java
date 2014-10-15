@@ -8,13 +8,17 @@
 
 package kihira.tails.client.model;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.ClientEventHandler;
+import kihira.tails.client.PartRegistry;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
+@SideOnly(Side.CLIENT)
 public class ModelRenderer2 extends ModelRenderer {
 
     private PartsData.PartType partType;
@@ -29,10 +33,7 @@ public class ModelRenderer2 extends ModelRenderer {
         if (ClientEventHandler.currentEvent != null && ClientEventHandler.currentPartsData != null && ClientEventHandler.currentPlayerTexture != null) {
             PartInfo info = ClientEventHandler.currentPartsData.getPartInfo(partType);
             if (info != null && info.hasPart) {
-                int type = info.typeid;
-                type = type > partType.renderParts.length ? 0 : type;
-
-                partType.renderParts[type].render(ClientEventHandler.currentEvent.entityPlayer, info, 0, 0, 0, ClientEventHandler.currentEvent.partialRenderTick);
+                PartRegistry.getRenderPart(info.partType, info.typeid).render(ClientEventHandler.currentEvent.entityPlayer, info, 0, 0, 0, ClientEventHandler.currentEvent.partialRenderTick);
 
                 Minecraft.getMinecraft().renderEngine.bindTexture(ClientEventHandler.currentPlayerTexture);
             }

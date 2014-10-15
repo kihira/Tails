@@ -122,10 +122,7 @@ public class ClientEventHandler {
                 PartInfo info = Tails.proxy.getPartsData(uuid).getPartInfo(PartsData.PartType.TAIL);
                 PartsData.PartType partType = PartsData.PartType.TAIL;
 
-                int type = info.typeid;
-                type = type > partType.renderParts.length ? 0 : type;
-
-                partType.renderParts[type].render(e.entity, info, e.x, e.y, e.z, 1);
+                PartRegistry.getRenderPart(partType, info.typeid).render(e.entity, info, e.x, e.y, e.z, 1);
             }
         }
     }

@@ -14,6 +14,7 @@ import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.foxlib.client.gui.GuiList;
 import kihira.foxlib.client.gui.IListCallback;
 import kihira.tails.client.FakeEntity;
+import kihira.tails.client.PartRegistry;
 import kihira.tails.client.gui.controls.GuiHSBSlider;
 import kihira.tails.client.gui.controls.GuiHSBSlider.HSBSliderType;
 import kihira.tails.client.gui.controls.GuiHSBSlider.IHSBSliderCallback;
@@ -48,6 +49,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSliderCallback {
@@ -192,8 +194,9 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         UUID uuid = UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"); //Just a random UUID
         partList.add(new PartEntry(new PartInfo(uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType))); //No tail
         //Generate tail preview textures and add to list
-        for (int type = 0; type < partType.renderParts.length; type++) {
-            for (int subType = 0; subType <= partType.renderParts[type].getAvailableSubTypes(); subType++) {
+        List<RenderPart> parts = PartRegistry.getParts(partType);
+        for (int type = 0; type < parts.size(); type++) {
+            for (int subType = 0; subType <= parts.get(type).getAvailableSubTypes(); subType++) {
                 PartInfo partInfo = new PartInfo(uuid, true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
                 partList.add(new PartEntry(partInfo));
             }
@@ -239,14 +242,14 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         //Texture select
         fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, this.height - 37, 0xFFFFFF);
-        fontRendererObj.drawString(I18n.format(partType.name().toLowerCase() + ".texture." + partType.renderParts[partInfo.typeid].getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
+        fontRendererObj.drawString(I18n.format(partType.name().toLowerCase() + ".texture." + PartRegistry.getRenderPart(partType, partInfo.typeid).getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        RenderPart part = partType.renderParts[partInfo.typeid];
+        RenderPart part = PartRegistry.getRenderPart(partType, partInfo.typeid);
         //Edit buttons
         if (button.id >= 2 && button.id <= 4) {
             this.currTintEdit = button.id - 1;
@@ -483,7 +486,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         RenderHelper.enableStandardItemLighting();
         RenderManager.instance.playerViewY = 180.0F;
-        partType.renderParts[partInfo.typeid].render(this.fakeEntity, partInfo, 0, 0, 0, 0);
+        PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).render(this.fakeEntity, partInfo, 0, 0, 0, 0);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -598,9 +601,9 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         @Override
         public void drawEntry(int index, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int mouseX, int mouseY, boolean mouseOver) {
             if (partInfo.hasPart) {
-                RenderPart part = partType.renderParts[partInfo.typeid];
                 renderPart(previewWindowLeft - 25, y - 25, 50, partInfo);
-                fontRendererObj.drawString(I18n.format(part.getUnlocalisedName(partInfo.subid)), 5, y + (partList.slotHeight / 2) - 5, 0xFFFFFF);
+                fontRendererObj.drawString(I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid)
+                        .getUnlocalisedName(partInfo.subid)), 5, y + (partList.slotHeight / 2) - 5, 0xFFFFFF);
             }
             else {
                 fontRendererObj.drawString(I18n.format("tail.none.name"), 5, y + (partList.slotHeight / 2) - 5, 0xFFFFFF);

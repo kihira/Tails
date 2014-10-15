@@ -11,7 +11,7 @@ package kihira.tails.client.texture;
 import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import kihira.tails.client.render.RenderPart;
+import kihira.tails.client.PartRegistry;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
@@ -101,10 +101,7 @@ public class TextureHelper {
 		int typeid = (data >> 16) & 0xFF;
         int subtype = (data >> 8) & 0xFF;
         int textureid = (data) & 0xFF;
-		typeid = typeid >= partType.renderParts.length ? 0 : typeid;
-		
-		RenderPart type = partType.renderParts[typeid];
-		String[] textures = type.getTextureNames(subtype);
+		String[] textures = PartRegistry.getRenderPart(partType, typeid).getTextureNames(subtype);
 
 		textureid = textureid >= textures.length ? 0 : textureid;
 		
@@ -128,8 +125,7 @@ public class TextureHelper {
      */
     //TODO need to be able to put wings and ear data on skin
     public static ResourceLocation generateTexture(UUID id, PartsData.PartType partType, int typeid, int subid, int textureID, int[] tints) {
-        RenderPart tail = partType.renderParts[typeid];
-        String[] textures = tail.getTextureNames(subid);
+        String[] textures = PartRegistry.getRenderPart(partType, typeid).getTextureNames(subid);
         textureID = textureID >= textures.length ? 0 : textureID;
         String texturePath = "texture/" + partType.name().toLowerCase() + "/"+textures[textureID]+".png";
 

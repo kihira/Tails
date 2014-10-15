@@ -60,14 +60,14 @@ public class Tails {
             Tails.proxy.registerHandlers();
             Tails.proxy.registerMessages();
 
-            PlayerRenderHelper helper = new PlayerRenderHelper();
-            RenderPart.registerRenderHelper(EntityClientPlayerMP.class, helper);
-            RenderPart.registerRenderHelper(EntityOtherPlayerMP.class, helper);
-            RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
-
             if (e.getSide().isClient()) {
                 Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
                 loadConfig();
+
+                PlayerRenderHelper helper = new PlayerRenderHelper();
+                RenderPart.registerRenderHelper(EntityClientPlayerMP.class, helper);
+                RenderPart.registerRenderHelper(EntityOtherPlayerMP.class, helper);
+                RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
             }
         }
     }
