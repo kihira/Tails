@@ -21,8 +21,11 @@ tail.texture.birdTail.name=Bird
 
 ears.fox.0.name=Fox Ears
 ears.cat.0.name=Cat Ears
+ears.panda.0.name=Panda Ears
+
 ears.texture.foxEars.name=Fox
 ears.texture.catEars.name=Cat
+ears.texture.pandaEars.name=Panda
 
 gui.export.title=Export Options
 gui.export.information=A feature of Tails is the ability to allow other players to see your tail even if the server doesn't have the mod installed (The other player still needs Tails installed though). To do this, some unused pixels in your skin are used by Tails instead to store information about your tail. You can use the options below to choose where to export or whether to upload it straight to Minecraft skin servers. Hover over the buttons to see the file locations.
