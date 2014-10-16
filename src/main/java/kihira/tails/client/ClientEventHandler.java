@@ -94,6 +94,7 @@ public class ClientEventHandler {
 
             if (!flag) {
                 e.renderer.modelBipedMain.bipedBody.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.TAIL));
+                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.WINGS));
                 e.renderer.modelBipedMain.bipedHead.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.EARS));
                 flag = true;
             }

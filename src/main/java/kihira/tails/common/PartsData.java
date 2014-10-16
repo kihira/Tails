@@ -19,6 +19,7 @@ public class PartsData {
     //Keeping these as fields vs a map should prove better performance wise
     @Expose private PartInfo tailInfo;
     @Expose private PartInfo earsInfo;
+    @Expose private PartInfo wingsInfo;
 
     public PartsData(UUID uuid) {
         this.uuid = uuid;
@@ -34,6 +35,10 @@ public class PartsData {
                 tailInfo = partInfo;
                 break;
             }
+            case WINGS: {
+                wingsInfo = partInfo;
+                break;
+            }
         }
     }
 
@@ -44,6 +49,9 @@ public class PartsData {
             }
             case TAIL: {
                 return tailInfo;
+            }
+            case WINGS: {
+                return wingsInfo;
             }
         }
         return null;
@@ -60,6 +68,10 @@ public class PartsData {
                 partInfo = tailInfo;
                 break;
             }
+            case WINGS: {
+                partInfo = wingsInfo;
+                break;
+            }
         }
         return partInfo != null && partInfo.hasPart;
     }
@@ -67,6 +79,7 @@ public class PartsData {
     public void clearTextures() {
         if (earsInfo != null) earsInfo.setTexture(null);
         if (tailInfo != null) tailInfo.setTexture(null);
+        if (wingsInfo != null) wingsInfo.setTexture(null);
     }
 
     public PartsData deepCopy() {
@@ -76,6 +89,7 @@ public class PartsData {
 
     public enum PartType {
         EARS,
-        TAIL
+        TAIL,
+        WINGS
     }
 }
