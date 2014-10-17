@@ -27,7 +27,7 @@ public class ModelBigWings extends ModelPartBase {
         // rightWing = new ModelRenderer(this, 0, 31);
         rightWing.addBox(-6F, 2F, -1F, 17, 30, 1);
         rightWing.setRotationPoint(0F, 0F, 0F);
-        rightWing.setTextureSize(64, 32);
+        rightWing.setTextureSize(32, 32);
         rightWing.mirror = true;
         setRotation(rightWing, 1.047198F, 0F, 1.745329F);
         // setRotation(rightWing, 2.094395F, 0F, -1.396263F);
@@ -35,7 +35,7 @@ public class ModelBigWings extends ModelPartBase {
         leftWing = new ModelRenderer(this, 0, 0);
         leftWing.addBox(-6F, 2F, 0F, 17, 30, 1);
         leftWing.setRotationPoint(0F, 0F, 0F);
-        leftWing.setTextureSize(64, 32);
+        leftWing.setTextureSize(32, 32);
         leftWing.mirror = true;
         setRotation(leftWing, 2.094395F, 0F, 1.396263F);
     }

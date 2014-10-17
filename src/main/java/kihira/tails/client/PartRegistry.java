@@ -16,6 +16,7 @@ import kihira.tails.client.model.ears.ModelFoxEars;
 import kihira.tails.client.model.ears.ModelPandaEars;
 import kihira.tails.client.model.tail.*;
 import kihira.tails.client.model.wings.ModelBigWings;
+import kihira.tails.client.model.wings.ModelMetalWings;
 import kihira.tails.client.render.RenderPart;
 import kihira.tails.common.PartsData;
 
@@ -43,6 +44,7 @@ public class PartRegistry {
 
         //Wings
         registerPart(PartsData.PartType.WINGS, new RenderPart("wings.big", 0, new ModelBigWings(), "bigWings"));
+        registerPart(PartsData.PartType.WINGS, new RenderPart("wings.metal", 0, new ModelMetalWings(), "metalWings"));
     }
 
     public static void registerPart(PartsData.PartType partType, RenderPart renderPart) {

@@ -20,6 +20,8 @@ import net.minecraft.util.MathHelper;
  */
 public abstract class ModelPartBase extends ModelBase {
 
+    protected static final float SCALE = 0.0625F;
+
     /**
      * Renders the tail with the optional parts list provided
      * @param theEntity The owner of the tail
