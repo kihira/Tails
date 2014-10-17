@@ -11,6 +11,7 @@ package kihira.tails.client.model.wings;
 import kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 
 public class ModelMetalWings extends ModelPartBase {
@@ -34,52 +35,25 @@ public class ModelMetalWings extends ModelPartBase {
         GL11.glRotatef(90, 0, 1, 0);
         GL11.glRotatef(90, 0, 0, 1);
 
-        float angle = getWingAngle(false, 40, 4000, 250, theEntity);
+        boolean isFlying = theEntity instanceof EntityPlayer && ((EntityPlayer) theEntity).capabilities.isFlying && theEntity.isAirBorne || theEntity.fallDistance > 0F;
+        float timestep = getAnimationTime(isFlying ? 500 : 6000, theEntity);
+        float angle = (float) Math.sin(timestep) * (isFlying ? 20F : 6F);
 
         GL11.glTranslatef(0F, -0.5F * SCALE, 0F);
 
         GL11.glPushMatrix();
         GL11.glTranslatef(0F, 0F, 2F * SCALE);
-        GL11.glRotatef(40F - angle, 1F, 0F, 0F);
+        GL11.glRotatef(30F - angle, 1F, 0F, 0F);
         GL11.glTranslatef(0F, 0F, -1F * SCALE);
         wing.render(SCALE);
         GL11.glPopMatrix();
 
         GL11.glPushMatrix();
         GL11.glTranslatef(0F, 0F, -2F * SCALE);
-        GL11.glRotatef(-40F + angle, 1F, 0F, 0F);
+        GL11.glRotatef(-30F + angle, 1F, 0F, 0F);
         GL11.glTranslatef(0F, 0F, -1F * SCALE);
         wing.render(SCALE);
         GL11.glTranslatef(0F, 0F, 1F * SCALE);
         GL11.glPopMatrix();
-    }
-
-    protected float getWingAngle(boolean isFlying, float maxAngle, int totalTime, int flyingTime, EntityLivingBase theEntity) {
-        float angle;
-
-        int flapTime = totalTime;
-        if (isFlying) {
-            flapTime = flyingTime;
-        }
-
-        float deltaTime = getAnimationTime(flapTime, theEntity.hashCode());
-
-        if (deltaTime <= 0.5F) {
-            angle = sigmoid(-4 + ((deltaTime * 2) * 8));
-        } else {
-            angle = 1 - sigmoid(-4 + (((deltaTime * 2) - (1)) * 8));
-        }
-        angle *= maxAngle;
-
-        return angle;
-    }
-
-    private static float sigmoid(double value) {
-        return 1F / (1F + (float) Math.exp(-value));
-    }
-
-    private float getAnimationTime(int totalTime, int offset) {
-        float time = (System.currentTimeMillis() + offset) % totalTime;
-        return time / totalTime;
     }
 }

@@ -55,6 +55,7 @@ public abstract class ModelPartBase extends ModelBase {
     }
 
     public static float getAnimationTime(double cycleTime, Entity entity) {
+        //Returns between 0-360 in radians depending on far in the "cycle" we are.
         return (float) ((((entity.hashCode() + System.currentTimeMillis()) % cycleTime) / cycleTime) * 2F * Math.PI);
     }
 
