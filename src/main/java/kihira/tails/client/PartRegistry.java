@@ -42,8 +42,7 @@ public class PartRegistry {
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.panda", 0, new ModelPandaEars(), "pandaEars"));
 
         //Wings
-        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 0, null, "bigWings"));
-        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.metal", 0, null, "metalWings"));
+        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 1, null, "bigWings", "metalWings"));
     }
 
     public static void registerPart(PartsData.PartType partType, RenderPart renderPart) {
@@ -63,7 +62,7 @@ public class PartRegistry {
      */
     public static RenderPart getRenderPart(PartsData.PartType partType, int index) {
         List<RenderPart> parts = PartRegistry.getParts(partType);
-        index = index > parts.size() ? 0 : index;
+        index = index >= parts.size() ? 0 : index;
         return parts.get(index);
     }
 }

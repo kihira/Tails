@@ -32,6 +32,11 @@ public class FakeEntityRenderHelper implements IRenderHelper {
                 GL11.glTranslatef(0F, 1.4F, 0F);
                 break;
             }
+            case WINGS: {
+                GL11.glTranslatef(0F, 0.9F, 0F);
+                GL11.glScalef(0.6F, 0.6F, 0.6F);
+                break;
+            }
         }
     }
 }

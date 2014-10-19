@@ -28,11 +28,11 @@ public class RenderWings extends RenderPart {
         Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
         Tessellator tessellator = Tessellator.instance;
         boolean isFlying = entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isFlying && entity.isAirBorne || entity.fallDistance > 0F;
-        float timestep = ModelPartBase.getAnimationTime(isFlying ? 500 : 6000, entity);
-        float angle = (float) Math.sin(timestep) * (isFlying ? 26F : 4F);
-        float scale = 2F;
+        float timestep = ModelPartBase.getAnimationTime(isFlying ? 500 : 6500, entity);
+        float angle = (float) Math.sin(timestep) * (isFlying ? 24F : 4F);
+        float scale = info.subid == 1 ? 1F : 2F;
 
-        GL11.glTranslatef(0, -16F * ModelPartBase.SCALE, 0.1F);
+        GL11.glTranslatef(0, -(scale * 8F) * ModelPartBase.SCALE + (info.subid == 1 ? 0.1F : 0), 0.1F);
         GL11.glRotatef(90, 0, 1, 0);
         GL11.glRotatef(90, 0, 0, 1);
         GL11.glScalef(scale, scale, scale);
