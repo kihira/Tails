@@ -11,21 +11,13 @@ package kihira.tails.client;
 import com.google.common.collect.ArrayListMultimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import kihira.tails.client.model.ModelPartBase;
 import kihira.tails.client.model.ears.ModelCatEars;
 import kihira.tails.client.model.ears.ModelFoxEars;
 import kihira.tails.client.model.ears.ModelPandaEars;
 import kihira.tails.client.model.tail.*;
-import kihira.tails.client.model.wings.ModelMetalWings;
 import kihira.tails.client.render.RenderPart;
-import kihira.tails.common.PartInfo;
+import kihira.tails.client.render.RenderWings;
 import kihira.tails.common.PartsData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -50,36 +42,8 @@ public class PartRegistry {
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.panda", 0, new ModelPandaEars(), "pandaEars"));
 
         //Wings
-        registerPart(PartsData.PartType.WINGS, new RenderPart("wings.big", 0, null, "bigWings") {
-            @Override
-            protected void doRender(EntityLivingBase entity, PartInfo info, float partialTicks) {
-                Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
-                Tessellator tessellator = Tessellator.instance;
-                boolean isFlying = entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isFlying && entity.isAirBorne || entity.fallDistance > 0F;
-                float timestep = ModelPartBase.getAnimationTime(isFlying ? 500 : 6000, entity);
-                float angle = (float) Math.sin(timestep) * (isFlying ? 20F : 6F);
-                float scale = 2F;
-
-                GL11.glTranslatef(0, -16F * ModelPartBase.SCALE, 0.1F);
-                GL11.glRotatef(90, 0, 1, 0);
-                GL11.glRotatef(90, 0, 0, 1);
-                GL11.glScalef(scale, scale, scale);
-                GL11.glTranslatef(0.1F, -0.4F * ModelPartBase.SCALE, -0.025F);
-
-                GL11.glPushMatrix();
-                GL11.glTranslatef(0F, 0F, 1F * ModelPartBase.SCALE);
-                GL11.glRotatef(30F - angle, 1F, 0F, 0F);
-                ItemRenderer.renderItemIn2D(tessellator, 0, 0, 1, 1, 32, 32, ModelPartBase.SCALE / scale);
-                GL11.glPopMatrix();
-
-                GL11.glPushMatrix();
-                GL11.glTranslatef(0F, 0.5F * ModelPartBase.SCALE, 0F);
-                GL11.glRotatef(-30F + angle, 1F, 0F, 0F);
-                ItemRenderer.renderItemIn2D(tessellator, 0, 0, 1, 1, 32, 32, ModelPartBase.SCALE / scale);
-                GL11.glPopMatrix();
-            }
-        });
-        registerPart(PartsData.PartType.WINGS, new RenderPart("wings.metal", 0, new ModelMetalWings(), "metalWings"));
+        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 0, null, "bigWings"));
+        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.metal", 0, null, "metalWings"));
     }
 
     public static void registerPart(PartsData.PartType partType, RenderPart renderPart) {
