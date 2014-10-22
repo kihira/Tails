@@ -115,7 +115,7 @@ public class GuiExport extends GuiBaseScreen {
                     }
                 }
 
-                BufferedImage image = TextureHelper.writeTailInfoToSkin(this.tailInfo, player);
+                BufferedImage image = TextureHelper.writePartInfoToSkin(this.tailInfo, player);
                 if (image != null) {
                     try {
                         ImageIO.write(image, "png", file);
@@ -146,7 +146,7 @@ public class GuiExport extends GuiBaseScreen {
 
         //Upload
         if (button.id == 10) {
-            final BufferedImage image = TextureHelper.writeTailInfoToSkin(this.tailInfo, this.mc.thePlayer);
+            final BufferedImage image = TextureHelper.writePartInfoToSkin(this.tailInfo, this.mc.thePlayer);
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {

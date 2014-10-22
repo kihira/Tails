@@ -27,16 +27,21 @@ import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class TextureHelper {
-	
-	private static final Point switch1Pixel = new Point(56,16);
-	private static final Point switch2Pixel = new Point(57,16);
-	private static final Point dataPixel = new Point(58,16);
-	private static final Point tint1Pixel = new Point(59,16);
-	private static final Point tint2Pixel = new Point(60,16);
-	private static final Point tint3Pixel = new Point(61,16);
-	
-	private static final int switch1Colour = 0xFFFF10F0;
-	private static final int switch2Colour = 0xFFB8E080;
+
+    private static final int switch1Colour = 0xFFFF10F0;
+    private static final int switch2Colour = 0xFFB8E080;
+
+    private static final Point[] dataPoints = new Point[] {new Point(58,16), new Point(58,17), new Point(58,18)};
+    private static final Point[][] switchPoints = new Point[][]{
+            new Point[]{new Point(56,16), new Point(57,16)},
+            new Point[]{new Point(56,17), new Point(57,17)},
+            new Point[]{new Point(56,18), new Point(57,18)}
+    };
+    private static final Point[][] tintPoints = new Point[][] {
+            new Point[] {new Point(59,16), new Point(60,16), new Point(61,16)},
+            new Point[] {new Point(59,17), new Point(60,17), new Point(61,17)},
+            new Point[] {new Point(59,18), new Point(60,18), new Point(61,18)}
+    };
 
     @SuppressWarnings("rawtypes")
 	public static void buildPlayerInfo(AbstractClientPlayer player) {
@@ -44,23 +49,28 @@ public class TextureHelper {
 		UUID uuid = profile.getId();
         BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
         if (image != null) {
-            int scol1 = image.getRGB(switch1Pixel.getX(), switch1Pixel.getY());
-            int scol2 = image.getRGB(switch2Pixel.getX(), switch2Pixel.getY());
-
-            PartInfo tailInfo;
-            if (scol1 == switch1Colour && scol2 == switch2Colour) {
-                tailInfo = buildTailInfoFromSkin(uuid, image);
-            }
-            else {
-                tailInfo = new PartInfo(uuid, false, 0, 0, 0, 0, 0, 0, null, PartsData.PartType.TAIL);
-            }
-
             //Players part data
             PartsData partsData = Tails.proxy.getPartsData(uuid);
             if (partsData == null) {
                 partsData = new PartsData(uuid);
             }
-            partsData.setPartInfo(PartsData.PartType.TAIL, tailInfo);
+
+            //Load part data from skin
+            for (PartsData.PartType partType : PartsData.PartType.values()) {
+                int ordinal = partType.ordinal();
+                int scol1 = image.getRGB(switchPoints[ordinal][0].getX(), switchPoints[ordinal][0].getY());
+                int scol2 = image.getRGB(switchPoints[ordinal][1].getX(), switchPoints[ordinal][1].getY());
+
+                PartInfo tailInfo;
+                if (scol1 == switch1Colour && scol2 == switch2Colour) {
+                    tailInfo = buildPartInfoFromSkin(uuid, partType, image);
+                }
+                else {
+                    tailInfo = new PartInfo(uuid, false, 0, 0, 0, 0, 0, 0, null, partType);
+                }
+                partsData.setPartInfo(partType, tailInfo);
+            }
+
             Tails.proxy.addPartsData(uuid, partsData);
 
             //If local player, send our skin info the server.
@@ -71,33 +81,34 @@ public class TextureHelper {
         }
 	}
 
-    public static BufferedImage writeTailInfoToSkin(PartInfo partInfo, AbstractClientPlayer player) {
+    public static BufferedImage writePartInfoToSkin(PartInfo partInfo, AbstractClientPlayer player) {
         BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
+        int ordinal = partInfo.partType.ordinal();
 
         //Check we have the players skin
         if (image != null) {
             //Switch colours
-            image.setRGB(switch1Pixel.getX(), switch1Pixel.getY(), switch1Colour);
-            image.setRGB(switch2Pixel.getX(), switch2Pixel.getY(), switch2Colour);
+            image.setRGB(switchPoints[ordinal][0].getX(), switchPoints[ordinal][0].getY(), switch1Colour);
+            image.setRGB(switchPoints[ordinal][1].getX(), switchPoints[ordinal][1].getY(), switch2Colour);
             //Type, subtype and texture
             int dataColour = 0xFF000000;
             dataColour = dataColour | partInfo.typeid << 16;
             dataColour = dataColour | partInfo.subid << 8;
             dataColour = dataColour | partInfo.textureID;
-            image.setRGB(dataPixel.getX(), dataPixel.getY(), dataColour);
+            image.setRGB(dataPoints[ordinal].getX(), dataPoints[ordinal].getY(), dataColour);
             //Tints
-            image.setRGB(tint1Pixel.getX(), tint1Pixel.getY(), partInfo.tints[0]);
-            image.setRGB(tint2Pixel.getX(), tint2Pixel.getY(), partInfo.tints[1]);
-            image.setRGB(tint3Pixel.getX(), tint3Pixel.getY(), partInfo.tints[2]);
+            image.setRGB(tintPoints[ordinal][0].getX(), tintPoints[ordinal][0].getY(), partInfo.tints[0]);
+            image.setRGB(tintPoints[ordinal][1].getX(), tintPoints[ordinal][1].getY(), partInfo.tints[1]);
+            image.setRGB(tintPoints[ordinal][2].getX(), tintPoints[ordinal][2].getY(), partInfo.tints[2]);
         }
-        else Tails.logger.warn("Attempted to write TailInfo to skin but player doesn't have a skin!");
+        else Tails.logger.warn("Attempted to write PartInfo to skin but player doesn't have a skin!");
 
         return image;
     }
 
-	public static PartInfo buildTailInfoFromSkin(UUID id, BufferedImage skin) {
-        PartsData.PartType partType = PartsData.PartType.TAIL;
-		int data = skin.getRGB(dataPixel.getX(), dataPixel.getY());
+	public static PartInfo buildPartInfoFromSkin(UUID id, PartsData.PartType partType, BufferedImage skin) {
+        int ordinal = partType.ordinal();
+		int data = skin.getRGB(dataPoints[ordinal].getX(), dataPoints[ordinal].getY());
 		int typeid = (data >> 16) & 0xFF;
         int subtype = (data >> 8) & 0xFF;
         int textureid = (data) & 0xFF;
@@ -105,11 +116,11 @@ public class TextureHelper {
 
 		textureid = textureid >= textures.length ? 0 : textureid;
 		
-		int tint1 = skin.getRGB(tint1Pixel.getX(), tint1Pixel.getY());
-		int tint2 = skin.getRGB(tint2Pixel.getX(), tint2Pixel.getY());
-		int tint3 = skin.getRGB(tint3Pixel.getX(), tint3Pixel.getY());
+		int tint1 = skin.getRGB(tintPoints[ordinal][0].getX(), tintPoints[ordinal][0].getY());
+		int tint2 = skin.getRGB(tintPoints[ordinal][1].getX(), tintPoints[ordinal][1].getY());
+		int tint3 = skin.getRGB(tintPoints[ordinal][2].getX(), tintPoints[ordinal][2].getY());
 		
-		ResourceLocation tailtexture = generateTexture(id, PartsData.PartType.TAIL, typeid, subtype, textureid, new int[]{tint1, tint2, tint3});
+		ResourceLocation tailtexture = generateTexture(id, partType, typeid, subtype, textureid, new int[] {tint1, tint2, tint3});
 		
 		return new PartInfo(id, true, typeid, subtype, 0, tint1, tint2, tint3, tailtexture, partType);
 	}
@@ -123,7 +134,6 @@ public class TextureHelper {
      * @param textureID The texture ID
      * @param tints An array of int[3]     @return A resource location for the generated texture
      */
-    //TODO need to be able to put wings and ear data on skin
     public static ResourceLocation generateTexture(UUID id, PartsData.PartType partType, int typeid, int subid, int textureID, int[] tints) {
         String[] textures = PartRegistry.getRenderPart(partType, typeid).getTextureNames(subid);
         textureID = textureID >= textures.length ? 0 : textureID;
