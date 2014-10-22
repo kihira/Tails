@@ -16,6 +16,7 @@ import kihira.tails.client.model.ears.ModelFoxEars;
 import kihira.tails.client.model.ears.ModelPandaEars;
 import kihira.tails.client.model.tail.*;
 import kihira.tails.client.render.RenderPart;
+import kihira.tails.client.render.RenderWings;
 import kihira.tails.common.PartsData;
 
 import java.util.List;
@@ -39,6 +40,9 @@ public class PartRegistry {
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.fox", 0, new ModelFoxEars(), "foxEars"));
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.cat", 0, new ModelCatEars(), "catEars"));
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.panda", 0, new ModelPandaEars(), "pandaEars"));
+
+        //Wings
+        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 1, null, "bigWings", "metalWings"));
     }
 
     public static void registerPart(PartsData.PartType partType, RenderPart renderPart) {
@@ -58,7 +62,7 @@ public class PartRegistry {
      */
     public static RenderPart getRenderPart(PartsData.PartType partType, int index) {
         List<RenderPart> parts = PartRegistry.getParts(partType);
-        index = index > parts.size() ? 0 : index;
+        index = index >= parts.size() ? 0 : index;
         return parts.get(index);
     }
 }

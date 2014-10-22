@@ -22,6 +22,7 @@ public class PlayerRenderHelper implements IRenderHelper {
     @Override
     public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z) {
         if (info.partType == PartsData.PartType.EARS) return;
+        if (info.partType == PartsData.PartType.WINGS) return;
         if (tail.modelPart instanceof ModelDragonTail) {
             if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.68F, 0.1F);
             else GL11.glTranslatef(0F, 0.6F, 0.35F);

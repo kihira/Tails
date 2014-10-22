@@ -44,7 +44,7 @@ public class RenderPart {
         }
 
         GL11.glPushMatrix();
-        GL11.glColor4f(1F, 1F, 1F, 1F);
+        //GL11.glColor4f(1F, 1F, 1F, 0F);
         IRenderHelper helper = getRenderHelper(entity.getClass());
         if (helper != null) {
             helper.onPreRenderTail(entity, this, info, x, y, z);
