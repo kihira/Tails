@@ -13,6 +13,7 @@ import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.foxlib.client.gui.GuiList;
 import kihira.foxlib.client.gui.IListCallback;
+import kihira.foxlib.client.toast.ToastManager;
 import kihira.tails.client.FakeEntity;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.client.gui.controls.GuiHSBSlider;
@@ -36,6 +37,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -281,7 +283,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
             Tails.setLocalPartsData(partsData);
             Tails.proxy.addPartsData(partsData.uuid, partsData);
             Tails.networkWrapper.sendToServer(new PlayerDataMessage(partsData, false));
-
+            ToastManager.INSTANCE.createCenteredToast(width / 2, previewWindowBottom - 20, 100, EnumChatFormatting.GREEN + "Saved!");
             this.mc.displayGuiScreen(null);
         }
         //Export
