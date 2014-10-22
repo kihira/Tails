@@ -94,8 +94,10 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         //Default to Tail
         partType = PartsData.PartType.TAIL;
-        if (!Tails.localPartsData.hasPartInfo(partType)) {
-            Tails.localPartsData.setPartInfo(partType, new PartInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType));
+        for (PartsData.PartType partType : PartsData.PartType.values()) {
+            if (!Tails.localPartsData.hasPartInfo(partType)) {
+                Tails.localPartsData.setPartInfo(partType, new PartInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType));
+            }
         }
         partInfo = Tails.localPartsData.getPartInfo(partType);
 
@@ -103,7 +105,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         partsData = Tails.localPartsData.deepCopy();
         this.partInfo = originalPartInfo.deepCopy();
 
-        this.fakeEntity = new FakeEntity(Minecraft.getMinecraft().theWorld);
+        fakeEntity = new FakeEntity(Minecraft.getMinecraft().theWorld);
     }
 
     @Override
@@ -220,7 +222,8 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         for (int tint = 1; tint <= 3; tint++) {
             String s = I18n.format("gui.tint", tint);
             this.fontRendererObj.drawString(s, this.previewWindowRight+ 5, topOffset, 0xFFFFFF);
-            this.drawGradientRect(this.previewWindowRight + 5, topOffset + 10, this.previewWindowRight + 25, topOffset + 30, partInfo.tints[tint - 1], partInfo.tints[tint - 1]);
+            int colour = partInfo.tints[tint - 1] | 0xFF << 24;
+            this.drawGradientRect(this.previewWindowRight + 5, topOffset + 10, this.previewWindowRight + 25, topOffset + 30, colour, colour);
             topOffset += 35;
         }
 
