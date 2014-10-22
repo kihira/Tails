@@ -57,6 +57,13 @@ gui.button.help.camera.0=Click and drag on the preview window
 gui.button.help.camera.1=to rotate your character
 gui.button.reset.camera=Reset camera
 
+gui.slider.red.tooltip=Red
+gui.slider.green.tooltip=Green
+gui.slider.blue.tooltip=Blue
+gui.slider.hue.tooltip=Hue
+gui.slider.saturation.tooltip=Saturation
+gui.slider.brightness.tooltip=Brightness
+
 gui.tint=Tint %s
 gui.tint.edit=Editing Tint %s
 gui.hex=Hex

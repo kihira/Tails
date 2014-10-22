@@ -2,16 +2,19 @@ package kihira.tails.client.gui.controls;
 
 import cpw.mods.fml.client.config.GuiSlider;
 import cpw.mods.fml.client.config.GuiUtils;
+import kihira.foxlib.client.RenderHelper;
+import kihira.foxlib.client.gui.ITooltip;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.List;
 
-public class GuiHSBSlider extends GuiSlider {
+public class GuiHSBSlider extends GuiSlider implements ITooltip {
 
     private static final ResourceLocation sliderTexture = new ResourceLocation(Tails.MOD_ID.toLowerCase(), "texture/gui/controls/sliderHue.png");
     
@@ -19,6 +22,7 @@ public class GuiHSBSlider extends GuiSlider {
     private IHSBSliderCallback callback = null;
     private float hueValue;
     private float briValue;
+    private List<String> tooltips;
     
     public GuiHSBSlider(int id, int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type) {
         super(id, xPos, yPos, width, height, "", "", 0, 256 * 6 - 5, 0, false, false);
@@ -27,12 +31,17 @@ public class GuiHSBSlider extends GuiSlider {
         this.briValue = 0;
         this.callback = callback;
     }
+
+    public GuiHSBSlider(int id, int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type, String ... tooltips) {
+        this(id, xPos, yPos, width, height, callback, type);
+        this.tooltips = Arrays.asList(tooltips);
+    }
     
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
             this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int hover = this.getHoverState(this.field_146123_n);
+
             GuiUtils.drawContinuousTexturedBox(buttonTextures, this.xPosition, this.yPosition, 0, 46, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
             mc.renderEngine.bindTexture(sliderTexture);
             
@@ -53,7 +62,6 @@ public class GuiHSBSlider extends GuiSlider {
             if (type == HSBSliderType.SATURATION) {
                 srcY -= 40;
             }
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             if (type == HSBSliderType.SATURATION) {
                 Color hueColour = Color.getHSBColor(0F, 0F, briValue);
                 float red = (float) hueColour.getRed() / 255;
@@ -63,9 +71,10 @@ public class GuiHSBSlider extends GuiSlider {
                 drawTexturedModalRectScaled(xPosition + 1, yPosition + 1, 0, srcY, 231, 20, this.width - 2, this.height - 2);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             } else {
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 drawTexturedModalRectScaled(xPosition + 1, yPosition + 1, 0, srcY, 256, 20, this.width - 2, this.height - 2);
             }
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
             
             this.mouseDragged(mc, mouseX, mouseY);
         }
@@ -83,17 +92,11 @@ public class GuiHSBSlider extends GuiSlider {
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            
-            ScaledResolution screenRes = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-            double scaleWidth = (double)mc.displayWidth / screenRes.getScaledWidth_double();
-            double scaleHeight = (double)mc.displayHeight / screenRes.getScaledHeight_double();
-            
-            GL11.glEnable(GL11.GL_SCISSOR_TEST);
-            GL11.glScissor((int) ((this.xPosition + 1) * scaleWidth),  (mc.displayHeight) - (int)((this.yPosition + height - 1) * scaleHeight), (int) ((width - 2) * scaleWidth), (int) ((height - 2) * scaleHeight));
+            RenderHelper.startGlScissor(xPosition, yPosition, width, height);
             mc.renderEngine.bindTexture(sliderTexture);
             this.drawTexturedModalRect(this.xPosition + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.yPosition, 0, 0, 7, 4);
             this.drawTexturedModalRect(this.xPosition + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.yPosition + this.height - 4, 7, 0, 7, 4);
-            GL11.glDisable(GL11.GL_SCISSOR_TEST);
+            RenderHelper.endGlScissor();
         }
     }
     
@@ -155,7 +158,12 @@ public class GuiHSBSlider extends GuiSlider {
         tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)this.zLevel, (double)((float)(u + 0) * f), (double)((float)(v + 0) * f1));
         tessellator.draw();
     }
-    
+
+    @Override
+    public List<String> getTooltip(int mouseX, int mouseY) {
+        return tooltips;
+    }
+
     public enum HSBSliderType {
         HUE, SATURATION, BRIGHTNESS
     }

@@ -132,9 +132,9 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         //RGB sliders
         rgbSliders = new GuiHSBSlider[3];
-        rgbSliders[0] = new GuiHSBSlider(5, this.previewWindowRight + 5, this.editPaneTop + 70, 100, 10, this, HSBSliderType.SATURATION);
-        rgbSliders[1] = new GuiHSBSlider(6, this.previewWindowRight + 5, this.editPaneTop + 80, 100, 10, this, HSBSliderType.SATURATION);
-        rgbSliders[2] = new GuiHSBSlider(7, this.previewWindowRight + 5, this.editPaneTop + 90, 100, 10, this, HSBSliderType.SATURATION);
+        rgbSliders[0] = new GuiHSBSlider(5, this.previewWindowRight + 5, this.editPaneTop + 70, 100, 10, this, HSBSliderType.SATURATION, I18n.format("gui.slider.red.tooltip"));
+        rgbSliders[1] = new GuiHSBSlider(6, this.previewWindowRight + 5, this.editPaneTop + 80, 100, 10, this, HSBSliderType.SATURATION, I18n.format("gui.slider.green.tooltip"));
+        rgbSliders[2] = new GuiHSBSlider(7, this.previewWindowRight + 5, this.editPaneTop + 90, 100, 10, this, HSBSliderType.SATURATION, I18n.format("gui.slider.blue.tooltip"));
         rgbSliders[0].setHue(0);
         rgbSliders[1].setHue(1F/3F);
         rgbSliders[2].setHue(2F/3F);
@@ -145,9 +145,9 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         //HBS sliders
         hsbSliders = new GuiHSBSlider[3];
-        hsbSliders[0] = new GuiHSBSlider(15, this.previewWindowRight + 5, this.editPaneTop + 35, 100, 10, this, HSBSliderType.HUE);
-        hsbSliders[1] = new GuiHSBSlider(16, this.previewWindowRight + 5, this.editPaneTop + 45, 100, 10, this, HSBSliderType.SATURATION);
-        hsbSliders[2] = new GuiHSBSlider(17, this.previewWindowRight + 5, this.editPaneTop + 55, 100, 10, this, HSBSliderType.BRIGHTNESS);
+        hsbSliders[0] = new GuiHSBSlider(15, this.previewWindowRight + 5, this.editPaneTop + 35, 100, 10, this, HSBSliderType.HUE, I18n.format("gui.slider.hue.tooltip"));
+        hsbSliders[1] = new GuiHSBSlider(16, this.previewWindowRight + 5, this.editPaneTop + 45, 100, 10, this, HSBSliderType.SATURATION, I18n.format("gui.slider.saturation.tooltip"));
+        hsbSliders[2] = new GuiHSBSlider(17, this.previewWindowRight + 5, this.editPaneTop + 55, 100, 10, this, HSBSliderType.BRIGHTNESS, I18n.format("gui.slider.brightness.tooltip"));
         this.buttonList.add(hsbSliders[0]);
         this.buttonList.add(hsbSliders[1]);
         this.buttonList.add(hsbSliders[2]);
