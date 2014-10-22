@@ -56,6 +56,8 @@ gui.button.edit=Edit
 gui.button.help.camera.0=Click and drag on the preview window
 gui.button.help.camera.1=to rotate your character
 gui.button.reset.camera=Reset camera
+gui.button.picker.0=Color Picker
+gui.button.picker.1=Select a point on the screen to use that colour
 
 gui.slider.red.tooltip=Red
 gui.slider.green.tooltip=Green

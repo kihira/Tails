@@ -153,7 +153,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         this.buttonList.add(hsbSliders[2]);
 
         //Reset/Save
-        this.buttonList.add(this.tintReset = new GuiIconButton(8, this.width - 20, this.editPaneTop + 2, GuiIconButton.Icons.UNDO, new ArrayList<String>() {{ add(I18n.format("gui.button.reset")); }}));
+        this.buttonList.add(this.tintReset = new GuiIconButton(8, this.width - 20, this.editPaneTop + 2, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset")));
         tintReset.enabled = false;
 
         //General Editing Pane
@@ -174,17 +174,14 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         buttonList.add(partTypeButton = new GuiButton(20, previewWindowLeft + 3, height - 25, 40, 20, partType.name()));
 
         //Colour Picker
-        buttonList.add(colourPicker = new GuiIconButton(21, this.width - 36, this.editPaneTop + 1, GuiIconButton.Icons.EYEDROPPER, new ArrayList<String>()));
+        buttonList.add(colourPicker = new GuiIconButton(21, this.width - 36, this.editPaneTop + 1, GuiIconButton.Icons.EYEDROPPER, I18n.format("gui.button.picker.0"), I18n.format("gui.button.picker.1")));
         colourPicker.visible = false;
 
         //Reset Camera
-        buttonList.add(new GuiIconButton(22, previewWindowRight - 18, 22, GuiIconButton.Icons.UNDO, new ArrayList<String>() {{ add(I18n.format("gui.button.reset.camera")); }}));
+        buttonList.add(new GuiIconButton(22, previewWindowRight - 18, 22, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset.camera")));
 
         //Help
-        this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 18, 4, GuiIconButton.Icons.QUESTION, new ArrayList<String>() {{
-            add(I18n.format("gui.button.help.camera.0"));
-            add(I18n.format("gui.button.help.camera.1"));
-        }}));
+        this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 18, 4, GuiIconButton.Icons.QUESTION, I18n.format("gui.button.help.camera.0"), I18n.format("gui.button.help.camera.1")));
 
         initPartList();
         refreshTintPane();
