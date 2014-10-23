@@ -19,6 +19,20 @@ tail.texture.tabbyTail.name=Katze
 tail.texture.tigerTail.name=Tiger
 tail.texture.birdTail.name=Vogel
 
+ears.fox.0.name=Fuchsohren
+ears.cat.0.name=katzenohren
+ears.panda.0.name=Pandaohren
+
+ears.texture.foxEars.name=Fuchs
+ears.texture.catEars.name=Katze
+ears.texture.pandaEars.name=Panda
+
+wings.big.0.name=Große Flügel
+wings.big.1.name=Kleine Flügel
+
+wings.texture.metalWings.name=Metallflügel
+wings.texture.bigWings.name=Engelsflügel
+
 gui.export.title=Export-Optionen
 gui.export.information=Ein Feature von Tails ist die Möglichkeit, andere Spieler deinen Schweif sehen zu lassen, ohne dass Tails auf dem Server installiert ist (Andere Spieler müssen die Mod jedoch installiet haben). Um das hinzukriegen, werden ein paar unbenutzte Pixel deines Skins von Tails benutzt, um Informationen über deinen Schweif zu speichern. Du kannst die Optionen unten benutzen, um festzulegen, wohin dein Skin exportiert werden soll, oder ob er direkt auf die Minecraft-Skin-Server hochgeladen werden soll. Zeige auf die Knöpfe unten, um die Speicherorte zu sehen.
 
@@ -41,6 +55,16 @@ gui.button.save=Speichern
 gui.button.edit=Editieren
 gui.button.help.camera.0=Klicke und ziehe im Vorschau-Fenster
 gui.button.help.camera.1=um deinen Charakter zu drehen.
+gui.button.reset.camera=Kamera zurücksetzen
+gui.button.picker.0=Farbauswahl
+gui.button.picker.1=Wähle einen Punkt am Bildschirm, um diese Farbe zu verwenden
+
+gui.slider.red.tooltip=Rot
+gui.slider.green.tooltip=Grün
+gui.slider.blue.tooltip=Blau
+gui.slider.hue.tooltip=Farbton
+gui.slider.saturation.tooltip=Sättigung
+gui.slider.brightness.tooltip=Helligkeit
 
 gui.tint=Farbton %s
 gui.tint.edit=Editiere Farbton %s
@@ -49,6 +73,11 @@ gui.texture=Textur
 
 tails.export.success=Skin erfolgreich nach %s exportiert!
 tails.upload.unavailable=Dieses Feature ist noch nicht verfügbar!
+tails.upload.tooltip=Lädt deinen Skin zu den Mojang-Servern hoch (Du musst dich auf der Minecraft-Seite anmelden)
+tails.uploading=Lädt hoch...
+tails.upload.success=Erfolgreich hochgeladen! Schau in deinen Browser
+tails.upload.failed=Upload fehlgeschlagen! Ist imgur oder die Minecraft-Website nicht verfügbar?
+tails.upload.ratelimit=Upload fehlgeschlagen! Das Raten-Limit wurde erreicht, lädst du zu oft hoch?
 
 foxlib.downloader.missing=Du brauchst FoxLib um %s zu benutzen! Du kannst es hier herunterladen: %s
 foxlib.downloader.0=FoxLib fehlt und es ist BENÖTIGT um %s zu nutzen!

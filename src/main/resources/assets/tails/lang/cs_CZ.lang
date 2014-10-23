@@ -1,0 +1,90 @@
+tail.none.name=Bez ohonu
+tail.dragon.0.name=Ještěří ohon
+tail.dragon.1.name=Dračí ohon
+tail.fluffy.0.name=Načechraný ohon
+tail.fluffy.1.name=Dvojitý ohon
+tail.fluffy.2.name=Devět ohonů
+tail.raccoon.0.name=Mývalí ohon
+tail.devil.0.name=Ďábelský ohon
+tail.devil.1.name=Ďábelský ohon (bez konečku)
+tail.cat.0.name=Kočičí ohon
+tail.bird.0.name=Ptačí ohon
+
+tail.texture.foxTail.name=Liška
+tail.texture.devilTail.name=Ďábel
+tail.texture.racoonTail.name=Mýval
+tail.texture.dragonTail.name=Obyčejný
+tail.texture.dragonTailStriped.name=Pruhovaný
+tail.texture.tabbyTail.name=Kočka
+tail.texture.tigerTail.name=Tygr
+tail.texture.birdTail.name=Pták
+
+ears.fox.0.name=Liščí uši
+ears.cat.0.name=Kočičí uši
+ears.panda.0.name=Pandí uši
+
+ears.texture.foxEars.name=Liška
+ears.texture.catEars.name=Kočka
+ears.texture.pandaEars.name=Panda
+
+wings.big.0.name=Velké křídla
+wings.big.1.name=Malé křídla
+
+wings.texture.metalWings.name=Železné křídla
+wings.texture.bigWings.name=Andělské křídla
+
+gui.export.title=Exportovat nastavení
+gui.export.information=Tails umožňuje, že ostatní hráči uvidí Váš ocas i když tento mod není na serveru nainstalován. (Ostatní hráči jej musí mít samozřejmě nainstalovaný.) K této funkci jsou použita prázdná místa na Vašem skinu hráče. Můžete si vybrat zda-li chcete exportovat tento nový skin k vám na disk anebo přímo na Minecraft server.
+
+gui.button.livepreview=Živý náhled
+gui.button.livepreview.0.tooltip=Zobrazuje živý náhled během modifikací
+gui.button.export=Exportovat
+gui.button.export.0.tooltip=Exportuje upravenou verzi Vašeho skinu která používá volná místa pro uložení Vašeho ohonu, když server nemá nainstalovaný mod Tails.
+gui.button.export.tooltip=Exportovat upravený skin do %s
+gui.button.export.userdir=Exportovat do domovské složky
+gui.button.export.minecraftdir=Exportovat do složky s Minecraftem
+gui.button.upload=Nahrát na Mojang server
+gui.button.upload.tooltip=Nahraje Váš skin. VAROVÁNÍ: Otevře prohlížeč!
+gui.button.export.custom=Exportovat do...
+gui.button.export.custom.tooltip=Exportovat do složky ...
+gui.button.openfolder.tooltip=Otevřít složku, kam se exportoval skin
+gui.button.openfolder=Otevřít umístění složky
+gui.button.editor=Editor ohonů
+gui.button.reset=Resetovat
+gui.button.save=Uložit
+gui.button.edit=Upravit
+gui.button.help.camera.0=Klikni a táhni v okně náhledu
+gui.button.help.camera.1=pro otočení postavy
+gui.button.reset.camera=Obnovit kameru
+gui.button.picker.0=Výběr barvy
+gui.button.picker.1=Vyber bod na obrazovce, jehož barva se má použít
+
+gui.slider.red.tooltip=Červená
+gui.slider.green.tooltip=Zelená
+gui.slider.blue.tooltip=Modrá
+gui.slider.hue.tooltip=Odstín
+gui.slider.saturation.tooltip=Saturace
+gui.slider.brightness.tooltip=Jas
+
+gui.tint=Odstín %s
+gui.tint.edit=Úprava odstínu %s
+gui.hex=Hex
+gui.texture=Textura
+
+tails.export.success=Úspěšně uloženo do %s
+tails.upload.unavailable=Tato funkce není zatím dostupná!
+tails.upload.tooltip=Nahraje tvůj skin na Minecraft server (Musíte se přihlásit na Minecraft webu)
+tails.uploading=Nahrávám...
+tails.upload.success=Úspěšně nahráno! Zkontrolujte si to v prohlížeči
+tails.upload.failed=Nahrávání selhalo. Možná jsou Minecraft servery nebo imgur nefunkční?
+tails.upload.ratelimit=Nahrávání selhalo! Nezkoušíte nahrávat příliš často?
+
+foxlib.downloader.missing=Je vyžadována FoxLib ke spuštění %s! Můžete si jí stáhnout zde: %s
+foxlib.downloader.0=FoxLib chybí a je VYŽADOVÁNA ke spuštění %s!
+foxlib.downloader.1=Chcete automaticky stáhnout FoxLib? (Bude potřeba restartovat hru)
+foxlib.downloader.downloading=Stahuji FoxLib
+foxlib.downloader.success=FoxLib byla stažena!
+foxlib.downloader.restart=Restartujte hru, prosím.
+foxlib.downloader.failed.0=Došlo k chybě při stahování FoxLib.
+foxlib.downloader.failed.1=Stáhněte, prosím, FoxLib manuálně z CurseForge (%s)
+foxlib.downloader.outofdate=Máte špatnou verzi FoxLib, prosím aktualizujte! (%s)
