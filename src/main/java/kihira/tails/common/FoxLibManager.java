@@ -24,7 +24,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.StatCollector;
+import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +39,7 @@ import java.net.URL;
 public class FoxLibManager {
 
     public static final String foxlibVersion = "@FOXLIBVERSION@";
-    public static final String foxlibReqVersion = "[0.5.0,)";
+    public static final String foxlibReqVersion = "[1.7.10-0.6.0,)";
     public static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
     public static final String foxlibDownloadLink = "http://maven.kihirakreations.co.uk/kihira/FoxLib/"+foxlibVersion+"/"+foxlibFileName;
     public static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-foxlib/files";
@@ -45,6 +47,7 @@ public class FoxLibManager {
 
     @SidedProxy(serverSide = "kihira.tails.common.FoxLibManager$CommonProxy", clientSide = "kihira.tails.common.FoxLibManager$ClientProxy")
     public static CommonProxy proxy;
+    public static boolean outdated;
     long totalSize;
 
     /**
@@ -65,7 +68,15 @@ public class FoxLibManager {
         }
         else if (!isFoxlibCorrectVersion()) {
             logger.error("FoxLib is not the correct version! Expected " + foxlibVersion + " got " + Loader.instance().getIndexedModList().get("foxlib").getDisplayVersion());
-            proxy.throwFoxlibError();
+            if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+                outdated = true;
+                FMLCommonHandler.instance().bus().register(new FoxLibManager());
+            }
+            else {
+                String s = StatCollector.translateToLocalFormatted("foxlib.downloader.outofdate", foxlibDownloadFallback);
+                FMLLog.bigWarning(s);
+                FMLCommonHandler.instance().getSidedDelegate().haltGame(s, null);
+            }
         }
         else {
             return true;
@@ -82,11 +93,13 @@ public class FoxLibManager {
             //If we are in dev, skip version check
             byte[] bs = Launch.classLoader.getClassBytes("net.minecraft.world.World");
             if (bs != null) {
-                logger.info("We are in a dev environment, skipping version check");
+                logger.warn("We are in a dev environment, skipping version check");
                 return true;
             }
         }
         catch (IOException ignored) { }
+
+        System.out.println(Loader.instance().getIndexedModList().get("foxlib").getProcessedVersion().getVersionString());
 
         return VersionParser.parseRange(foxlibReqVersion).containsVersion(Loader.instance().getIndexedModList().get("foxlib").getProcessedVersion());
     }
@@ -99,14 +112,21 @@ public class FoxLibManager {
                 @Override
                 public void confirmClicked(boolean yesButton, int screenID) {
                     if (yesButton) {
+                        if (outdated) deleteOldVersions();
                         downloadFoxlib();
                     }
                     else {
-                        FMLLog.bigWarning("foxlib.downloader.missing", foxlibDownloadFallback);
+                        if (outdated) {
+                            proxy.throwFoxlibError();
+                        }
+                        else {
+                            FMLLog.bigWarning("foxlib.downloader.missing", foxlibDownloadFallback);
+                        }
                         Minecraft.getMinecraft().shutdown();
                     }
                 }
-            }, I18n.format("foxlib.downloader.0", Tails.MOD_ID), I18n.format("foxlib.downloader.1"), 0));
+            }, outdated ? I18n.format("foxlib.downloader.2", Tails.MOD_ID) : I18n.format("foxlib.downloader.0", Tails.MOD_ID),
+               outdated ? I18n.format("foxlib.downloader.3", Tails.MOD_ID) : I18n.format("foxlib.downloader.1"), 0));
         }
     }
 
@@ -150,6 +170,19 @@ public class FoxLibManager {
         }, "FoxLib Downloader");
         downloadThread.setDaemon(true);
         downloadThread.start();
+    }
+
+    private void deleteOldVersions() {
+        File modsFolder = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "mods");
+        File[] files = modsFolder.listFiles((FileFilter) new WildcardFileFilter("*FoxLib*.jar", IOCase.INSENSITIVE));
+        if (files != null) {
+            for (File file : files) {
+                if (file.exists()) {
+                    logger.info("Deleting file " + file.toString() + " on exit");
+                    file.deleteOnExit();
+                }
+            }
+        }
     }
 
     private class DownloadCountingOutputStream extends CountingOutputStream {
