@@ -1,0 +1,90 @@
+tail.none.name=None
+tail.dragon.0.name=Lizarrrrd Tail
+tail.dragon.1.name=SeaSerpent's Tail
+tail.fluffy.0.name=Fluffy Tail
+tail.fluffy.1.name=Twin Tails
+tail.fluffy.2.name=Nine Tails
+tail.raccoon.0.name=Raccoon Tail
+tail.devil.0.name=Klabautermann Tail
+tail.devil.1.name=Klabautermann Tail (No Tip)
+tail.cat.0.name=Cat Tail
+tail.bird.0.name=Gull Tail
+
+tail.texture.foxTail.name=Fox
+tail.texture.devilTail.name=Klabautermann
+tail.texture.racoonTail.name=Raccoon
+tail.texture.dragonTail.name=Standard
+tail.texture.dragonTailStriped.name=Striped
+tail.texture.tabbyTail.name=Cat
+tail.texture.tigerTail.name=Tiger
+tail.texture.birdTail.name=Gull
+
+ears.fox.0.name=Fox Ears
+ears.cat.0.name=Cat Ears
+ears.panda.0.name=Panda Ears
+
+ears.texture.foxEars.name=Fox
+ears.texture.catEars.name=Cat
+ears.texture.pandaEars.name=Panda
+
+wings.big.0.name=Large Wings
+wings.big.1.name=Small Wings
+
+wings.texture.metalWings.name=Irrron Wings
+wings.texture.bigWings.name=Angel Wings
+
+gui.export.title=Export Options
+gui.export.information=A feature o' Tails be t' ability t' allow other players t' see yer tail even if t' haven doesn't have t' mod installed (Ye other shipmates still needs Tails installed though). For this, some unused pixels in ye skin be used instead t' store information about yer tail. Ye can use t' options below t' choose where t' export or whether t' upload it straight t' Minecraft skin haven. Hover over t' buttons t' see t' file locations.
+
+gui.button.livepreview=Live Preview
+gui.button.livepreview.0.tooltip=Shows a live drawin' o' yer tail as ye edit the values
+gui.button.export=Ship
+gui.button.export.0.tooltip=Ships a modified version o' yer skin with unused flags recoloured so yer shipmates can see yer tail without Tails being installed haven side.
+gui.button.export.tooltip=Ships a modified version o' yer skin to %s
+gui.button.export.userdir=Ship to yer personal bay
+gui.button.export.minecraftdir=Ship to yer Minecraft pier
+gui.button.upload=Ship to Mojang-Haven
+gui.button.upload.tooltip=Ships yer skin. CAUTION: Boards yer browser!
+gui.button.export.custom=Ship to...
+gui.button.export.custom.tooltip=Ship to a custom haven
+gui.button.openfolder.tooltip=Enter the bay where ye exported yer skin to
+gui.button.openfolder=Enter export bay
+gui.button.editor=Tails drydock
+gui.button.reset=Rrrreset
+gui.button.save=Bunker
+gui.button.edit=Edit
+gui.button.help.camera.0=Click and drag on ye preview
+gui.button.help.camera.1=to rotate yer pirate
+gui.button.reset.camera=Reset view
+gui.button.picker.0=Colourrr Picker
+gui.button.picker.1=Mark a spot on yer viewport to use that colourrr
+
+gui.slider.red.tooltip=Rrred
+gui.slider.green.tooltip=Grrreen
+gui.slider.blue.tooltip=Blue
+gui.slider.hue.tooltip=Hue
+gui.slider.saturation.tooltip=Saturation
+gui.slider.brightness.tooltip=Brrrightness
+
+gui.tint=Stain %s
+gui.tint.edit=Editing Stain %s
+gui.hex=Hex
+gui.texture=Texture
+
+tails.export.success=Successfully bunkered skin to %s
+tails.upload.unavailable=This cannon is not yet loaded!
+tails.upload.tooltip=Ships yer skin to Minecrafts skin-havens (Ye'll need to bribe Minecraft's harbourmaster)
+tails.uploading=Shippin'...
+tails.upload.success=Shipment succsful! Check yer browser
+tails.upload.failed=Shipment failed! Were imgur or Minecraft attacked by them Redcoats?
+tails.upload.ratelimit=Shipment failed! No ships left in the harbour, did ye send them all?
+
+foxlib.downloader.missing=Ye need FoxLib to sail %s! Ye can loot it here: %s
+foxlib.downloader.0=FoxLib is missing and it is REQUIRED to sail %s!
+foxlib.downloader.1=Do ye want to automatically loot FoxLib? (Will require reefing yer sail)
+foxlib.downloader.downloading=Looting FoxLib
+foxlib.downloader.success=FoxLib has been looted!
+foxlib.downloader.restart=Please restart yer game to finish
+foxlib.downloader.failed.0=Looting FoxLib has failed
+foxlib.downloader.failed.1=Please loot FoxLib by boarding CurseForge (%s)
+foxlib.downloader.outofdate=FoxLib is not worth any treasure, please loot (%s)
