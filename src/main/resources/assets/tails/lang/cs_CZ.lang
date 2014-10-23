@@ -19,6 +19,20 @@ tail.texture.tabbyTail.name=Kočka
 tail.texture.tigerTail.name=Tygr
 tail.texture.birdTail.name=Pták
 
+ears.fox.0.name=Liščí uši
+ears.cat.0.name=Kočičí uši
+ears.panda.0.name=Pandí uši
+
+ears.texture.foxEars.name=Liška
+ears.texture.catEars.name=Kočka
+ears.texture.pandaEars.name=Panda
+
+wings.big.0.name=Velké křídla
+wings.big.1.name=Malé křídla
+
+wings.texture.metalWings.name=Železné křídla
+wings.texture.bigWings.name=Andělské křídla
+
 gui.export.title=Exportovat nastavení
 gui.export.information=Tails umožňuje, že ostatní hráči uvidí Váš ocas i když tento mod není na serveru nainstalován. (Ostatní hráči jej musí mít samozřejmě nainstalovaný.) K této funkci jsou použita prázdná místa na Vašem skinu hráče. Můžete si vybrat zda-li chcete exportovat tento nový skin k vám na disk anebo přímo na Minecraft server.
 
@@ -41,6 +55,16 @@ gui.button.save=Uložit
 gui.button.edit=Upravit
 gui.button.help.camera.0=Klikni a táhni v okně náhledu
 gui.button.help.camera.1=pro otočení postavy
+gui.button.reset.camera=Obnovit kameru
+gui.button.picker.0=Výběr barvy
+gui.button.picker.1=Vyber bod na obrazovce, jehož barva se má použít
+
+gui.slider.red.tooltip=Červená
+gui.slider.green.tooltip=Zelená
+gui.slider.blue.tooltip=Modrá
+gui.slider.hue.tooltip=Odstín
+gui.slider.saturation.tooltip=Saturace
+gui.slider.brightness.tooltip=Jas
 
 gui.tint=Odstín %s
 gui.tint.edit=Úprava odstínu %s
@@ -49,6 +73,11 @@ gui.texture=Textura
 
 tails.export.success=Úspěšně uloženo do %s
 tails.upload.unavailable=Tato funkce není zatím dostupná!
+tails.upload.tooltip=Nahraje tvůj skin na Minecraft server (Musíte se přihlásit na Minecraft webu)
+tails.uploading=Nahrávám...
+tails.upload.success=Úspěšně nahráno! Zkontrolujte si to v prohlížeči
+tails.upload.failed=Nahrávání selhalo. Možná jsou Minecraft servery nebo imgur nefunkční?
+tails.upload.ratelimit=Nahrávání selhalo! Nezkoušíte nahrávat příliš často?
 
 foxlib.downloader.missing=Je vyžadována FoxLib ke spuštění %s! Můžete si jí stáhnout zde: %s
 foxlib.downloader.0=FoxLib chybí a je VYŽADOVÁNA ke spuštění %s!
