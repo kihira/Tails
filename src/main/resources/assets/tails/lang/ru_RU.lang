@@ -1,0 +1,90 @@
+tail.none.name=Без Хвоста
+tail.dragon.0.name=Хвост ящера
+tail.dragon.1.name=Драконий хвост
+tail.fluffy.0.name=Пушистый хвост
+tail.fluffy.1.name=Двойной хвост
+tail.fluffy.2.name=Девятихвост
+tail.raccoon.0.name=Хвост енота
+tail.devil.0.name=Хвост демона
+tail.devil.1.name=Хвост демона (без кончика)
+tail.cat.0.name=Кошачий хвост
+tail.bird.0.name=Птичий хвост
+
+tail.texture.foxTail.name=Лиса
+tail.texture.devilTail.name=Демон
+tail.texture.racoonTail.name=Енот
+tail.texture.dragonTail.name=Стандартный
+tail.texture.dragonTailStriped.name=Полосатый
+tail.texture.tabbyTail.name=Кот
+tail.texture.tigerTail.name=Тигр
+tail.texture.birdTail.name=Птица
+
+ears.fox.0.name=Лисьи ушки
+ears.cat.0.name=Кошачьи ушки
+ears.panda.0.name=Ушки панды
+
+ears.texture.foxEars.name=Лиса
+ears.texture.catEars.name=Кот
+ears.texture.pandaEars.name=Панда
+
+wings.big.0.name=Большие крылья
+wings.big.1.name=Маленькие крылья
+
+wings.texture.metalWings.name=Металлические крылья
+wings.texture.bigWings.name=Ангельские крылья
+
+gui.export.title=Экспорт настроек
+gui.export.information=Tails предназначен для того чтобы дать другим пользователям возможность видеть ваш хвост даже если мод не установлен на сервере (мод должен быть установлен у других пользователей). Для достижения этого Tails сохраняет данные хвоста в неиспользуемые пиксели вашего скина. Ниже вы можете выбрать куда сохранить измененный скин, или сразу же загрузить его на сервер скинов Minecraft. Наведите курсор на кнопку, чтобы увидеть путь сохранения.
+
+gui.button.livepreview=Живое превью
+gui.button.livepreview.0.tooltip=Показывает "живое" превью хвоста во время его настройки
+gui.button.export=Экспорт
+gui.button.export.0.tooltip=Экспортировать модифицированную версию вашего скина чтобы другие пользователи могли видеть ваш хвост на сервере где мод не установлен.
+gui.button.export.tooltip=Экспортировать модифицированную версию вашего скина в %s
+gui.button.export.userdir=Каталог пользователя
+gui.button.export.minecraftdir=Каталог Minecraft
+gui.button.upload=Отправить на сайт Mojang
+gui.button.upload.tooltip=Отправка скина. ВНИМАНИЕ: Приведет к открытию браузера!
+gui.button.export.custom=Экспортировать в...
+gui.button.export.custom.tooltip=Экспортировать в произвольный каталог
+gui.button.openfolder.tooltip=Открыть каталог куда был экспортирован скин
+gui.button.openfolder=Открыть каталог экспорта
+gui.button.editor=Редактор Tails
+gui.button.reset=Сброс
+gui.button.save=Сохранить
+gui.button.edit=Изменить
+gui.button.help.camera.0=Нажмите и тяните ЛКМ в окне превью
+gui.button.help.camera.1=чтобы вращать персонажа
+gui.button.reset.camera=Сбросить камеру
+gui.button.picker.0=Выбор цвета
+gui.button.picker.1=Укажите точку на экране чтобы выбрать ее цвет
+
+gui.slider.red.tooltip=Красный
+gui.slider.green.tooltip=Зеленый
+gui.slider.blue.tooltip=Синий
+gui.slider.hue.tooltip=Оттенок
+gui.slider.saturation.tooltip=Насыщенность
+gui.slider.brightness.tooltip=Яркость
+
+gui.tint=Цвет %s
+gui.tint.edit=Настройка цвета %s
+gui.hex=Hex
+gui.texture=Текстура
+
+tails.export.success=Скин успешно сохранен в %s
+tails.upload.unavailable=Это действие пока что не реализовано!
+tails.upload.tooltip=Загрузка скина на сервер Minecraft (Потребуется авторизация через сайт Minecraft)
+tails.uploading=Загрузка...
+tails.upload.success=Успех! Продолжите в браузере
+tails.upload.failed=Ошибка! Сайты Imgur или Minecraft недоступны?
+tails.upload.ratelimit=Ошибка! Превышен лимит обращений, вы пытаетесь загружать скин слишком часто?
+
+foxlib.downloader.missing=FoxLib необходима для использования %s! Доступна для загрузки здесь: %s
+foxlib.downloader.0=Необходимая для использования %s библиотека FoxLib отсутствует!
+foxlib.downloader.1=Скачать FoxLib автоматически? (Потребуется перезапуск)
+foxlib.downloader.downloading=Скачивание FoxLib
+foxlib.downloader.success=FoxLib была скачана!
+foxlib.downloader.restart=Пожалуйста перезапустите Minecraft для завершения
+foxlib.downloader.failed.0=При загрузке FoxLib произошла ошибка
+foxlib.downloader.failed.1=Пожалуйста загрузите FoxLib вручную с CurseForge (%s)
+foxlib.downloader.outofdate=FoxLib имеет некорректную версию, пожалуйста, обновите FoxLib (%s)
