@@ -24,18 +24,15 @@ public class PlayerRenderHelper implements IRenderHelper {
         if (info.partType == PartsData.PartType.EARS) return;
         if (info.partType == PartsData.PartType.WINGS) return;
         if (tail.modelPart instanceof ModelDragonTail) {
-            if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.68F, 0.1F);
-            else GL11.glTranslatef(0F, 0.6F, 0.35F);
+            GL11.glTranslatef(0F, 0.68F, 0.1F);
             GL11.glScalef(0.8F, 0.8F, 0.8F);
         }
         else if (tail.modelPart instanceof ModelCatTail || tail.modelPart instanceof ModelDevilTail) {
-            if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.65F, 0.1F);
-            else GL11.glTranslatef(0F, 0.55F, 0.4F);
+            GL11.glTranslatef(0F, 0.65F, 0.1F);
             GL11.glScalef(0.9F, 0.9F, 0.9F);
         }
         else {
-            if (!entity.isSneaking()) GL11.glTranslatef(0F, 0.65F, 0.1F);
-            else GL11.glTranslatef(0F, 0.55F, 0.4F);
+            GL11.glTranslatef(0F, 0.65F, 0.1F);
             GL11.glScalef(0.8F, 0.8F, 0.8F);
         }
     }
