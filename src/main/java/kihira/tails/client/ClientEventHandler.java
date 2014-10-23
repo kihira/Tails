@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Zoe Lee (Kihira)
+ * Copyright (c) 2014
  *
  * See LICENSE for full License
  */
@@ -14,29 +14,35 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import kihira.tails.client.gui.GuiEditTail;
-import kihira.tails.client.render.*;
+import kihira.tails.client.gui.GuiEditor;
+import kihira.tails.client.model.ModelRenderer2;
 import kihira.tails.client.texture.TextureHelper;
-import kihira.tails.common.TailInfo;
+import kihira.tails.common.PartInfo;
+import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
-import kihira.tails.common.network.TailInfoMessage;
+import kihira.tails.common.network.PlayerDataMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler {
+    private boolean sentPartInfoToServer = false;
+    private boolean clearAllPartInfo = false;
 
-    //TODO this is not the best way to keep track of tails, enums?
-	public static final RenderTail[] tailTypes = { new RenderFluffyTail(), new RenderDragonTail(), new RenderRaccoonTail(), new RenderDevilTail(), new RenderCatTail(), new RenderBirdTail()};
-
-    private boolean sentTailInfoToServer = false;
-    private boolean clearAllTailInfo = false;
+    public static RenderPlayerEvent.Pre currentEvent = null;
+    public static PartsData currentPartsData = null;
+    public static ResourceLocation currentPlayerTexture = null;
+    boolean flag = false;
 
     /*
         *** Tails Editor Button ***
@@ -53,7 +59,7 @@ public class ClientEventHandler {
     public void onButtonClickPre(GuiScreenEvent.ActionPerformedEvent.Pre event) {
         if (event.gui instanceof GuiIngameMenu) {
             if (event.button.id == 1234) {
-                event.gui.mc.displayGuiScreen(new GuiEditTail());
+                event.gui.mc.displayGuiScreen(new GuiEditor());
                 event.setCanceled(true);
             }
         }
@@ -65,39 +71,68 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         //Add local player texture to map
-        if (Tails.localPlayerTailInfo != null) {
-            Tails.proxy.addTailInfo(Tails.localPlayerTailInfo.uuid, Tails.localPlayerTailInfo);
+        if (Tails.localPartsData != null) {
+            Tails.proxy.addPartsData(Tails.localPartsData.uuid, Tails.localPartsData);
         }
     }
 
     @SubscribeEvent
     public void onPlayerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
         Tails.hasRemote = false;
-        sentTailInfoToServer = false;
-        clearAllTailInfo = true;
+        sentPartInfoToServer = false;
+        clearAllPartInfo = true;
     }
 
     /*
         *** Rendering and building TailInfo ***
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onPlayerRenderTick(RenderPlayerEvent.Specials.Pre e) {
+    public void onPlayerRenderTick(RenderPlayerEvent.Pre e) {
         UUID uuid = e.entityPlayer.getGameProfile().getId();
-        if (Tails.proxy.hasTailInfo(uuid) && Tails.proxy.getTailInfo(uuid).hastail && !e.entityPlayer.isInvisible()) {
-            TailInfo info = Tails.proxy.getTailInfo(uuid);
+        if (Tails.proxy.hasPartsData(uuid) && !e.entityPlayer.isInvisible()) {
+            PartsData data = Tails.proxy.getPartsData(uuid);
 
-            int type = info.typeid;
-            type = type > tailTypes.length ? 0 : type;
+            if (!flag) {
+                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.TAIL));
+                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.WINGS));
+                e.renderer.modelBipedMain.bipedHead.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.EARS));
+                flag = true;
+            }
 
-            tailTypes[type].render(e.entityPlayer, info, e.partialRenderTick);
+            currentPartsData = data;
+            currentPlayerTexture = ((AbstractClientPlayer) e.entityPlayer).getLocationSkin();
+            currentEvent = e;
+        }
+    }
+
+    @SubscribeEvent()
+    public void onPlayerRenderTickPost(RenderPlayerEvent.Post e) {
+        //Reset to null after rendering the current tail
+        currentPartsData = null;
+        currentPlayerTexture = null;
+        currentEvent = null;
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onRenderLivingSpecialsTick(RenderLivingEvent.Specials.Pre e) {
+        //Ignore players here, using the player render currentEvent is better
+        if (!(e.entity instanceof EntityPlayer)) {
+            UUID uuid = e.entity.getPersistentID();
+            //TODO Switch to IExtendedEntityProperties instead? Save the data on the player
+            if (Tails.proxy.hasPartsData(uuid) && Tails.proxy.getPartsData(uuid).hasPartInfo(PartsData.PartType.TAIL) && !e.entity.isInvisible()) {
+                PartInfo info = Tails.proxy.getPartsData(uuid).getPartInfo(PartsData.PartType.TAIL);
+                PartsData.PartType partType = PartsData.PartType.TAIL;
+
+                PartRegistry.getRenderPart(partType, info.typeid).render(e.entity, info, e.x, e.y, e.z, 1);
+            }
         }
     }
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent e) {
         if (e.phase == TickEvent.Phase.START) {
-            if (TextureHelper.needsBuild(e.player)) {
-                TextureHelper.buildPlayerInfo(e.player);
+            if (TextureHelper.needsBuild(e.player) && e.player instanceof AbstractClientPlayer) {
+                TextureHelper.buildPlayerInfo((AbstractClientPlayer) e.player);
             }
         }
     }
@@ -105,15 +140,20 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent e) {
         if (e.phase == TickEvent.Phase.START) {
-            if (clearAllTailInfo) {
-                Tails.proxy.clearAllTailInfo();
-                clearAllTailInfo = false;
+            if (clearAllPartInfo) {
+                Tails.proxy.clearAllPartsData();
+                clearAllPartInfo = false;
             }
             //World can't be null if we want to send a packet it seems
-            else if (!sentTailInfoToServer && Minecraft.getMinecraft().theWorld != null) {
-                Tails.networkWrapper.sendToServer(new TailInfoMessage(Tails.localPlayerTailInfo, false));
-                sentTailInfoToServer = true;
+            else if (!sentPartInfoToServer && Minecraft.getMinecraft().theWorld != null) {
+                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Tails.localPartsData, false));
+                sentPartInfoToServer = true;
             }
         }
+    }
+
+    public enum RenderType {
+        BODY,
+        HEAD
     }
 }

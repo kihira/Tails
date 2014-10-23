@@ -15,17 +15,17 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import kihira.tails.common.TailInfo;
+import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 
-public class TailInfoMessage implements IMessage {
+public class PlayerDataMessage implements IMessage {
 
-    private TailInfo tailInfo;
+    private PartsData partsData;
     private boolean shouldRemove;
 
-    public TailInfoMessage() {}
-    public TailInfoMessage(TailInfo tailInfo, boolean shouldRemove) {
-        this.tailInfo = tailInfo;
+    public PlayerDataMessage() {}
+    public PlayerDataMessage(PartsData partsData, boolean shouldRemove) {
+        this.partsData = partsData;
         this.shouldRemove = shouldRemove;
     }
 
@@ -33,7 +33,7 @@ public class TailInfoMessage implements IMessage {
     public void fromBytes(ByteBuf buf) {
         String tailInfoJson = ByteBufUtils.readUTF8String(buf);
         try {
-            this.tailInfo = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(tailInfoJson, TailInfo.class);
+            this.partsData = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(tailInfoJson, PartsData.class);
         } catch (JsonSyntaxException e) {
             Tails.logger.warn(e);
         }
@@ -41,21 +41,21 @@ public class TailInfoMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        String tailInfoJson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(this.tailInfo);
+        String tailInfoJson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(this.partsData);
         ByteBufUtils.writeUTF8String(buf, tailInfoJson);
     }
 
-    public static class TailInfoMessageHandler implements IMessageHandler<TailInfoMessage, IMessage> {
+    public static class Handler implements IMessageHandler<PlayerDataMessage, IMessage> {
 
         @Override
-        public IMessage onMessage(TailInfoMessage message, MessageContext ctx) {
-            if (message.tailInfo != null) {
-                if (message.shouldRemove) Tails.proxy.removeTailInfo(message.tailInfo.uuid);
+        public IMessage onMessage(PlayerDataMessage message, MessageContext ctx) {
+            if (message.partsData != null) {
+                if (message.shouldRemove) Tails.proxy.removePartsData(message.partsData.uuid);
                 else {
-                    Tails.proxy.addTailInfo(message.tailInfo.uuid, message.tailInfo);
+                    Tails.proxy.addPartsData(message.partsData.uuid, message.partsData);
                     //Tell other clients about the change
                     if (ctx.side.isServer()) {
-                        Tails.networkWrapper.sendToAll(new TailInfoMessage(message.tailInfo, false));
+                        Tails.networkWrapper.sendToAll(new PlayerDataMessage(message.partsData, false));
                     }
                 }
             }

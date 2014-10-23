@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Zoe Lee (Kihira)
+ * Copyright (c) 2014
  *
  * See LICENSE for full License
  */
@@ -19,7 +19,14 @@ import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
+import kihira.tails.client.FakeEntity;
+import kihira.tails.client.render.FakeEntityRenderHelper;
+import kihira.tails.client.render.PlayerRenderHelper;
+import kihira.tails.client.render.RenderPart;
 import kihira.tails.proxy.CommonProxy;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.LogManager;
@@ -43,9 +50,9 @@ public class Tails {
     public static Tails instance;
 
     /**
-     * This is the {@link TailInfo} for the local player
+     * This is the {@link PartInfo} for the local player
      */
-    public static TailInfo localPlayerTailInfo;
+    public static PartsData localPartsData;
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
@@ -56,6 +63,11 @@ public class Tails {
             if (e.getSide().isClient()) {
                 Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
                 loadConfig();
+
+                PlayerRenderHelper helper = new PlayerRenderHelper();
+                RenderPart.registerRenderHelper(EntityClientPlayerMP.class, helper);
+                RenderPart.registerRenderHelper(EntityOtherPlayerMP.class, helper);
+                RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
             }
         }
     }
@@ -78,8 +90,28 @@ public class Tails {
     public void loadConfig() {
         //Load local player info
         try {
-            localPlayerTailInfo = new Gson().fromJson(Tails.configuration.getString("Local Tail Info",
-                    Configuration.CATEGORY_GENERAL, "Local Players tail info. Delete to remove tail. Do not try to edit manually", ""), TailInfo.class);
+            //Load Player Data
+            localPartsData = new Gson().fromJson(Tails.configuration.getString("Local Player Data",
+                    Configuration.CATEGORY_GENERAL, "Local Players data. Delete to remove all customisation data. Do not try to edit manually", ""), PartsData.class);
+
+            //Load old tail info if exists
+            PartInfo tailInfo = null;
+            if (Tails.configuration.hasKey(Configuration.CATEGORY_GENERAL, "Local Tail Info")) {
+                tailInfo = new Gson().fromJson(Tails.configuration.getString("Local Tail Info",
+                        Configuration.CATEGORY_GENERAL, "DEPRECIATED. CAN SAFELY REMOVE", ""), PartInfo.class);
+            }
+            if (tailInfo != null) {
+                if (localPartsData == null) localPartsData = new PartsData(Minecraft.getMinecraft().thePlayer.getUniqueID());
+                tailInfo.partType = PartsData.PartType.TAIL;
+                localPartsData.setPartInfo(PartsData.PartType.TAIL, tailInfo);
+
+                //Delete old info
+                Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Tail Info", "");
+                prop.set("");
+
+                //Force save
+                setLocalPartsData(localPartsData);
+            }
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
         }
@@ -89,12 +121,11 @@ public class Tails {
         }
     }
 
-    public static void setLocalPlayerTailInfo(TailInfo tailInfo) {
-        localPlayerTailInfo = tailInfo;
+    public static void setLocalPartsData(PartsData partsData) {
+        localPartsData = partsData;
 
-        Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Tail Info", "");
-        prop.comment = "Local Players tail info. Delete to remove tail. Do not try to edit manually";
-        prop.set(new Gson().toJson(localPlayerTailInfo));
+        Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Player Data", "");
+        prop.set(new Gson().toJson(localPartsData));
 
         Tails.configuration.save();
     }

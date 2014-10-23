@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Zoe Lee (Kihira)
+ * Copyright (c) 2014
  *
  * See LICENSE for full License
  */
@@ -16,21 +16,21 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import kihira.tails.common.TailInfo;
+import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class TailMapMessage implements IMessage {
+public class PlayerDataMapMessage implements IMessage {
 
-    private Map<UUID, TailInfo> tailInfoMap;
+    private Map<UUID, PartsData> partsDataMap;
 
-    public TailMapMessage() {}
+    public PlayerDataMapMessage() {}
     @SuppressWarnings("unchecked")
-    public TailMapMessage(Map tailInfoMap) {
-        this.tailInfoMap = tailInfoMap;
+    public PlayerDataMapMessage(Map partsDataMap) {
+        this.partsDataMap = partsDataMap;
     }
 
     @Override
@@ -38,26 +38,26 @@ public class TailMapMessage implements IMessage {
     public void fromBytes(ByteBuf buf) {
         String tailInfoJson = ByteBufUtils.readUTF8String(buf);
         try {
-            this.tailInfoMap = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(tailInfoJson, new TypeToken<Map<UUID, TailInfo>>() {}.getType());
+            this.partsDataMap = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(tailInfoJson, new TypeToken<Map<UUID, PartsData>>() {}.getType());
         } catch (JsonSyntaxException e) {
-            Tails.logger.warn(e);
+            Tails.logger.catching(e);
         }
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        String tailInfoJson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(this.tailInfoMap);
+        String tailInfoJson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(this.partsDataMap);
         ByteBufUtils.writeUTF8String(buf, tailInfoJson);
     }
 
-    public static class TailMapMessageHandler implements IMessageHandler<TailMapMessage, IMessage> {
+    public static class Handler implements IMessageHandler<PlayerDataMapMessage, IMessage> {
 
         @Override
-        public IMessage onMessage(TailMapMessage message, MessageContext ctx) {
-            for (Map.Entry<UUID, TailInfo> entry : message.tailInfoMap.entrySet()) {
+        public IMessage onMessage(PlayerDataMapMessage message, MessageContext ctx) {
+            for (Map.Entry<UUID, PartsData> entry : message.partsDataMap.entrySet()) {
                 //Ignore local player
                 if (Minecraft.getMinecraft().thePlayer.getPersistentID() != entry.getKey()) {
-                    Tails.proxy.addTailInfo(entry.getKey(), entry.getValue());
+                    Tails.proxy.addPartsData(entry.getKey(), entry.getValue());
                 }
             }
             return null;

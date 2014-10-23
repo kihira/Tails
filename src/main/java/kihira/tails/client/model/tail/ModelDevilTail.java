@@ -6,15 +6,16 @@
  * See LICENSE for full License
  */
 
-package kihira.tails.client.model;
+package kihira.tails.client.model.tail;
 
+import kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
-public class ModelDevilTail extends ModelTailBase {
+public class ModelDevilTail extends ModelPartBase {
 
     ModelRenderer tailBase;
     ModelRenderer tail1;
@@ -73,22 +74,19 @@ public class ModelDevilTail extends ModelTailBase {
         float seed = this.getAnimationTime(6000, entity);
         float xseed = this.getAnimationTime(12000, entity);
         double xAngleOffset = 0;
-        double yAngleMultiplier = 0; //Used to suppress sway when running
-        if (entity instanceof EntityPlayer) {
-            if (!entity.isRiding()) {
+        double yAngleMultiplier = 1; //Used to suppress sway when running
+        if (!entity.isRiding()) {
+            if (entity instanceof EntityPlayer) {
                 double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
 
                 xAngleOffset = MathHelper.clamp_double(angles[0] / 3.5F, -1F, 0.275D);
                 yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
             }
-            //Mounted
-            else {
-                xAngleOffset = Math.toRadians(13F);
-                yAngleMultiplier = 0.25F;
-            }
         }
+        //Mounted
         else {
-            yAngleMultiplier = 1F; //Used to suppress sway when running
+            xAngleOffset = Math.toRadians(13F);
+            yAngleMultiplier = 0.25F;
         }
 
         setRotationRadians(tailBase, Math.toRadians(-30F) + xAngleOffset * 2F, Math.cos(seed - 1) / 8F * yAngleMultiplier, 0F);

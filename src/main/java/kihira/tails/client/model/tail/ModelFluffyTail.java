@@ -6,8 +6,9 @@
  * See LICENSE for full License
  */
 
-package kihira.tails.client.model;
+package kihira.tails.client.model.tail;
 
+import kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,7 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
-public class ModelFluffyTail extends ModelTailBase {
+public class ModelFluffyTail extends ModelPartBase {
     private ModelRenderer tailBase;
     private ModelRenderer tail1;
     private ModelRenderer tail2;
@@ -65,9 +66,9 @@ public class ModelFluffyTail extends ModelTailBase {
         double xAngleOffset = 0;
         double yAngleOffset = 0;
         double zAngleOffset = 0;
-        double yAngleMultiplier = 0; //Used to suppress sway when running
-        if (entity instanceof EntityPlayer) {
-            if (!entity.isRiding()) {
+        double yAngleMultiplier = 1; //Used to suppress sway when running
+        if (!entity.isRiding()) {
+            if (entity instanceof EntityPlayer) {
                 double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
                 xAngleOffset = angles[0];
                 yAngleOffset = angles[1];
@@ -93,29 +94,26 @@ public class ModelFluffyTail extends ModelTailBase {
                 }
                 yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
             }
-            //Mounted
-            else {
-                switch (subtype) {
-                    //Fox Tail
-                    case 0:
-                        xAngleOffset = Math.toRadians(22F);
-                        yAngleMultiplier = 0.5F;
-                        break;
-                    //Twin Tails
-                    case 1:
-                        xAngleOffset = Math.toRadians(20F);
-                        yAngleMultiplier = 0.5F;
-                        break;
-                    //Nine tails
-                    case 2:
-                        xAngleOffset = Math.toRadians(15F);
-                        yAngleMultiplier = 0.75F;
-                        break;
-                }
-            }
         }
+        //Mounted
         else {
-            yAngleMultiplier = 1F; //Used to suppress sway when running
+            switch (subtype) {
+                //Fox Tail
+                case 0:
+                    xAngleOffset = Math.toRadians(22F);
+                    yAngleMultiplier = 0.5F;
+                    break;
+                //Twin Tails
+                case 1:
+                    xAngleOffset = Math.toRadians(20F);
+                    yAngleMultiplier = 0.5F;
+                    break;
+                //Nine tails
+                case 2:
+                    xAngleOffset = Math.toRadians(15F);
+                    yAngleMultiplier = 0.75F;
+                    break;
+            }
         }
 
         this.setRotationRadians(this.tailBase, xAngle + xAngleOffset, (((-zAngleOffset / 2F) + yAngle + (Math.cos(timestep + yOffset) / 8F)) * yAngleMultiplier) + yAngleOffset, -zAngleOffset / 8F);

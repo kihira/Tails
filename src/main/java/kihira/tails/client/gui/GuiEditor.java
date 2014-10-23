@@ -13,16 +13,18 @@ import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.foxlib.client.gui.GuiList;
 import kihira.foxlib.client.gui.IListCallback;
-import kihira.tails.client.ClientEventHandler;
+import kihira.foxlib.client.toast.ToastManager;
 import kihira.tails.client.FakeEntity;
+import kihira.tails.client.PartRegistry;
 import kihira.tails.client.gui.controls.GuiHSBSlider;
 import kihira.tails.client.gui.controls.GuiHSBSlider.HSBSliderType;
 import kihira.tails.client.gui.controls.GuiHSBSlider.IHSBSliderCallback;
-import kihira.tails.client.render.RenderTail;
+import kihira.tails.client.render.RenderPart;
 import kihira.tails.client.texture.TextureHelper;
-import kihira.tails.common.TailInfo;
+import kihira.tails.common.PartInfo;
+import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
-import kihira.tails.common.network.TailInfoMessage;
+import kihira.tails.common.network.PlayerDataMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended;
@@ -35,17 +37,28 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSliderCallback {
+public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSliderCallback {
 
     private float yaw = 0F;
     private float pitch = 10F;
+    private int prevMouseX = -1;
 
     private int currTintEdit = 0;
     private int currTintColour = 0xFFFFFF;
@@ -53,7 +66,10 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
     private GuiHSBSlider[] hsbSliders;
     private GuiHSBSlider[] rgbSliders;
     private GuiIconButton tintReset;
+    private GuiIconButton colourPicker;
     private int textureID;
+    private IntBuffer pixelBuffer;
+    private boolean selectingColour = false;
 
     private ScaledResolution scaledRes;
 
@@ -61,23 +77,37 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
     private int previewWindowRight;
     private int previewWindowBottom;
     private int editPaneTop;
-    private TailInfo tailInfo;
-    private final TailInfo originalTailInfo;
 
-    private GuiList tailList;
+    private PartsData.PartType partType;
+    private PartsData partsData;
+    private PartInfo partInfo;
+    private PartInfo originalPartInfo;
+
+    private GuiButton partTypeButton;
+    private GuiList partList;
     private FakeEntity fakeEntity;
 
-    public GuiEditTail() {
-        //Backup original TailInfo or create default one
-        TailInfo tailInfo;
-        if (Tails.localPlayerTailInfo == null) {
-            Tails.setLocalPlayerTailInfo(new TailInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0 , 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null));
+    public GuiEditor() {
+        //Backup original PartInfo or create default one
+        PartInfo partInfo;
+        if (Tails.localPartsData == null) {
+            Tails.setLocalPartsData(new PartsData(Minecraft.getMinecraft().thePlayer.getPersistentID()));
         }
-        tailInfo = Tails.localPlayerTailInfo;
-        this.originalTailInfo = tailInfo.deepCopy();
-        this.tailInfo = this.originalTailInfo.deepCopy();
 
-        this.fakeEntity = new FakeEntity(Minecraft.getMinecraft().theWorld);
+        //Default to Tail
+        partType = PartsData.PartType.TAIL;
+        for (PartsData.PartType partType : PartsData.PartType.values()) {
+            if (!Tails.localPartsData.hasPartInfo(partType)) {
+                Tails.localPartsData.setPartInfo(partType, new PartInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType));
+            }
+        }
+        partInfo = Tails.localPartsData.getPartInfo(partType);
+
+        originalPartInfo = partInfo.deepCopy();
+        partsData = Tails.localPartsData.deepCopy();
+        this.partInfo = originalPartInfo.deepCopy();
+
+        fakeEntity = new FakeEntity(Minecraft.getMinecraft().theWorld);
     }
 
     @Override
@@ -104,9 +134,9 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
 
         //RGB sliders
         rgbSliders = new GuiHSBSlider[3];
-        rgbSliders[0] = new GuiHSBSlider(5, this.previewWindowRight + 5, this.editPaneTop + 70, 100, 10, this, HSBSliderType.SATURATION);
-        rgbSliders[1] = new GuiHSBSlider(6, this.previewWindowRight + 5, this.editPaneTop + 80, 100, 10, this, HSBSliderType.SATURATION);
-        rgbSliders[2] = new GuiHSBSlider(7, this.previewWindowRight + 5, this.editPaneTop + 90, 100, 10, this, HSBSliderType.SATURATION);
+        rgbSliders[0] = new GuiHSBSlider(5, this.previewWindowRight + 5, this.editPaneTop + 70, 100, 10, this, HSBSliderType.SATURATION, I18n.format("gui.slider.red.tooltip"));
+        rgbSliders[1] = new GuiHSBSlider(6, this.previewWindowRight + 5, this.editPaneTop + 80, 100, 10, this, HSBSliderType.SATURATION, I18n.format("gui.slider.green.tooltip"));
+        rgbSliders[2] = new GuiHSBSlider(7, this.previewWindowRight + 5, this.editPaneTop + 90, 100, 10, this, HSBSliderType.SATURATION, I18n.format("gui.slider.blue.tooltip"));
         rgbSliders[0].setHue(0);
         rgbSliders[1].setHue(1F/3F);
         rgbSliders[2].setHue(2F/3F);
@@ -117,31 +147,16 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
 
         //HBS sliders
         hsbSliders = new GuiHSBSlider[3];
-        hsbSliders[0] = new GuiHSBSlider(15, this.previewWindowRight + 5, this.editPaneTop + 35, 100, 10, this, HSBSliderType.HUE);
-        hsbSliders[1] = new GuiHSBSlider(16, this.previewWindowRight + 5, this.editPaneTop + 45, 100, 10, this, HSBSliderType.SATURATION);
-        hsbSliders[2] = new GuiHSBSlider(17, this.previewWindowRight + 5, this.editPaneTop + 55, 100, 10, this, HSBSliderType.BRIGHTNESS);
+        hsbSliders[0] = new GuiHSBSlider(15, this.previewWindowRight + 5, this.editPaneTop + 35, 100, 10, this, HSBSliderType.HUE, I18n.format("gui.slider.hue.tooltip"));
+        hsbSliders[1] = new GuiHSBSlider(16, this.previewWindowRight + 5, this.editPaneTop + 45, 100, 10, this, HSBSliderType.SATURATION, I18n.format("gui.slider.saturation.tooltip"));
+        hsbSliders[2] = new GuiHSBSlider(17, this.previewWindowRight + 5, this.editPaneTop + 55, 100, 10, this, HSBSliderType.BRIGHTNESS, I18n.format("gui.slider.brightness.tooltip"));
         this.buttonList.add(hsbSliders[0]);
         this.buttonList.add(hsbSliders[1]);
         this.buttonList.add(hsbSliders[2]);
 
         //Reset/Save
-        this.buttonList.add(this.tintReset = new GuiIconButton(8, this.width - 20, this.editPaneTop + 2, GuiIconButton.Icons.UNDO, new ArrayList<String>() {{ add(I18n.format("gui.button.reset")); }}));
+        this.buttonList.add(this.tintReset = new GuiIconButton(8, this.width - 20, this.editPaneTop + 2, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset")));
         tintReset.enabled = false;
-
-        //Tail List
-        List<TailEntry> tailList = new ArrayList<TailEntry>();
-        UUID uuid = UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"); //Just a random UUID
-        tailList.add(new TailEntry(new TailInfo(uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null))); //No tail
-        //Generate tail preview textures and add to list
-        for (int type = 0; type < ClientEventHandler.tailTypes.length; type++) {
-            for (int subType = 0; subType <= ClientEventHandler.tailTypes[type].getAvailableSubTypes(); subType++) {
-                TailInfo tailInfo = new TailInfo(uuid, true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null);
-                tailList.add(new TailEntry(tailInfo));
-            }
-        }
-
-        this.tailList = new GuiList(this, this.previewWindowLeft, this.height - 43, 0, this.height - 43, 55, tailList);
-        this.selectDefaultListEntry();
 
         //General Editing Pane
         //Reset/Save
@@ -155,15 +170,41 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
         //Texture select
         this.buttonList.add(new GuiButton(18, 5, this.height - 25, 15, 20, "<"));
         this.buttonList.add(new GuiButton(19, this.previewWindowLeft - 20, this.height - 25, 15, 20, ">"));
-        textureID = tailInfo.textureID;
+        textureID = partInfo.textureID;
+
+        //PartType Select
+        buttonList.add(partTypeButton = new GuiButton(20, previewWindowLeft + 3, height - 25, 40, 20, partType.name()));
+
+        //Colour Picker
+        buttonList.add(colourPicker = new GuiIconButton(21, this.width - 36, this.editPaneTop + 1, GuiIconButton.Icons.EYEDROPPER, I18n.format("gui.button.picker.0"), I18n.format("gui.button.picker.1")));
+        colourPicker.visible = false;
+
+        //Reset Camera
+        buttonList.add(new GuiIconButton(22, previewWindowRight - 18, 22, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset.camera")));
 
         //Help
-        this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 20, 4, GuiIconButton.Icons.QUESTION, new ArrayList<String>() {{
-            add(I18n.format("gui.button.help.camera.0"));
-            add(I18n.format("gui.button.help.camera.1"));
-        }}));
+        this.buttonList.add(new GuiIconButton(500, this.previewWindowRight - 18, 4, GuiIconButton.Icons.QUESTION, I18n.format("gui.button.help.camera.0"), I18n.format("gui.button.help.camera.1")));
 
-        this.refreshTintPane();
+        initPartList();
+        refreshTintPane();
+    }
+
+    private void initPartList() {
+        //Part List
+        java.util.List<PartEntry> partList = new ArrayList<PartEntry>();
+        UUID uuid = UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"); //Just a random UUID
+        partList.add(new PartEntry(new PartInfo(uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType))); //No tail
+        //Generate tail preview textures and add to list
+        List<RenderPart> parts = PartRegistry.getParts(partType);
+        for (int type = 0; type < parts.size(); type++) {
+            for (int subType = 0; subType <= parts.get(type).getAvailableSubTypes(); subType++) {
+                PartInfo partInfo = new PartInfo(uuid, true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
+                partList.add(new PartEntry(partInfo));
+            }
+        }
+
+        this.partList = new GuiList(this, this.previewWindowLeft, this.height - 43, 0, this.height - 43, 55, partList);
+        this.selectDefaultListEntry();
     }
 
     @Override
@@ -180,7 +221,8 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
         for (int tint = 1; tint <= 3; tint++) {
             String s = I18n.format("gui.tint", tint);
             this.fontRendererObj.drawString(s, this.previewWindowRight+ 5, topOffset, 0xFFFFFF);
-            this.drawGradientRect(this.previewWindowRight + 5, topOffset + 10, this.previewWindowRight + 25, topOffset + 30, tailInfo.tints[tint - 1], tailInfo.tints[tint - 1]);
+            int colour = partInfo.tints[tint - 1] | 0xFF << 24;
+            this.drawGradientRect(this.previewWindowRight + 5, topOffset + 10, this.previewWindowRight + 25, topOffset + 30, colour, colour);
             topOffset += 35;
         }
 
@@ -198,55 +240,56 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
 
         this.zLevel = 0;
         //Tails list
-        this.tailList.drawScreen(mouseX, mouseY, p_73863_3_);
+        this.partList.drawScreen(mouseX, mouseY, p_73863_3_);
 
         //Texture select
         fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, this.height - 37, 0xFFFFFF);
-        fontRendererObj.drawString(I18n.format("tail.texture." + ClientEventHandler.tailTypes[tailInfo.typeid].getTextureNames(tailInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
+        fontRendererObj.drawString(I18n.format(partType.name().toLowerCase() + ".texture." + PartRegistry.getRenderPart(partType, partInfo.typeid).getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        RenderTail tail = ClientEventHandler.tailTypes[tailInfo.typeid];
+        RenderPart part = PartRegistry.getRenderPart(partType, partInfo.typeid);
         //Edit buttons
         if (button.id >= 2 && button.id <= 4) {
             this.currTintEdit = button.id - 1;
-            this.currTintColour = this.tailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            this.currTintColour = this.partInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
             this.tintReset.enabled = false;
+            colourPicker.enabled = true;
         }
         //Reset Tint
         else if (button.id == 8) {
-            this.currTintColour = this.originalTailInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            this.currTintColour = this.originalPartInfo.tints[this.currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             this.hexText.setText(Integer.toHexString(this.currTintColour));
             this.refreshTintPane();
             tintReset.enabled = false;
         }
         //Reset All
         else if (button.id == 12) {
-            this.tailInfo = this.originalTailInfo.deepCopy();
+            this.partInfo = this.originalPartInfo.deepCopy();
             this.selectDefaultListEntry();
             this.currTintEdit = 0;
             this.refreshTintPane();
-            this.updateTailInfo();
+            this.updatePartsData();
         }
         //Save All
         else if (button.id == 13) {
-            //Update tail info, set local and send it to the server
-            this.updateTailInfo();
-            Tails.setLocalPlayerTailInfo(this.tailInfo);
-            Tails.proxy.addTailInfo(this.tailInfo.uuid, this.tailInfo);
-            Tails.networkWrapper.sendToServer(new TailInfoMessage(tailInfo, false));
-
+            //Update part info, set local and send it to the server
+            this.updatePartsData();
+            Tails.setLocalPartsData(partsData);
+            Tails.proxy.addPartsData(partsData.uuid, partsData);
+            Tails.networkWrapper.sendToServer(new PlayerDataMessage(partsData, false));
+            ToastManager.INSTANCE.createCenteredToast(width / 2, previewWindowBottom - 20, 100, EnumChatFormatting.GREEN + "Saved!");
             this.mc.displayGuiScreen(null);
         }
         //Export
         else if (button.id == 14) {
-            this.updateTailInfo();
-            this.mc.displayGuiScreen(new GuiExport(this, this.tailInfo));
+            this.updatePartsData();
+            this.mc.displayGuiScreen(new GuiExport(this, this.partInfo));
         }
         //Texture select
         else if (button.id == 18) {
@@ -254,18 +297,47 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
                 textureID--;
             }
             else {
-                textureID = tail.getTextureNames(tailInfo.subid).length - 1;
+                textureID = part.getTextureNames(partInfo.subid).length - 1;
             }
-            updateTailInfo();
+            updatePartsData();
         }
         else if (button.id == 19) {
-            if (tail.getTextureNames(tailInfo.subid).length > textureID + 1) {
+            if (part.getTextureNames(partInfo.subid).length > textureID + 1) {
                 textureID++;
             }
             else {
                 textureID = 0;
             }
-            updateTailInfo();
+            updatePartsData();
+        }
+        //PartType
+        else if (button.id == 20) {
+            if (partType.ordinal() + 1 >= PartsData.PartType.values().length) {
+                partType = PartsData.PartType.values()[0];
+            }
+            else {
+                partType = PartsData.PartType.values()[partType.ordinal() + 1];
+            }
+
+            PartInfo newPartInfo = partsData.getPartInfo(partType);
+            if (newPartInfo == null) {
+                newPartInfo = new PartInfo(partsData.uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
+            }
+            originalPartInfo = newPartInfo.deepCopy();
+            partInfo = originalPartInfo.deepCopy();
+
+            partTypeButton.displayString = partType.name();
+            initPartList();
+            refreshTintPane();
+        }
+        //Colour Picker
+        else if (button.id == 21) {
+            setSelectingColour(true);
+        }
+        //Reset Camera
+        else if (button.id == 22) {
+            yaw = 0;
+            pitch = 10F;
         }
     }
 
@@ -282,47 +354,57 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
 
         this.refreshTintPane();
 
-        super.keyTyped(letter, keyCode);
+        if (keyCode == Keyboard.KEY_ESCAPE && selectingColour) {
+            setSelectingColour(false);
+        }
+        else {
+            super.keyTyped(letter, keyCode);
+        }
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseEvent) {
-/*        if (mouseEvent != 0 || !this.tailList.func_148179_a(mouseX, mouseY, mouseEvent)) {
+/*        if (mouseEvent != 0 || !this.partList.func_148179_a(mouseX, mouseY, mouseEvent)) {
             super.mouseClicked(mouseX, mouseY, mouseEvent);
         }*/
-        super.mouseClicked(mouseX, mouseY, mouseEvent);
-        this.hexText.mouseClicked(mouseX, mouseY, mouseEvent);
+        if (selectingColour && mouseEvent == 0) {
+            currTintColour = getColourAtPoint(Mouse.getEventX(), mc.displayHeight - Mouse.getEventY()) & 0xFFFFFF; //Ignore alpha
+            setSelectingColour(false);
+            refreshTintPane();
+        }
+        else {
+            super.mouseClicked(mouseX, mouseY, mouseEvent);
+            this.hexText.mouseClicked(mouseX, mouseY, mouseEvent);
+        }
     }
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick) {
         if (lastButtonClicked == 0 && mouseY < previewWindowBottom && mouseX > previewWindowLeft && mouseX < previewWindowRight) {
             //Yaw
-            float previewWindowWidth = previewWindowRight - previewWindowLeft;
-            yaw = (mouseX - (width / 2F) / (previewWindowWidth / 2F)) * 2F;
-            //Pitch
-/*            if (mouseY < previewWindowBottom) {
-                pitch = (mouseY - (previewWindowBottom / 2F) / (previewWindowBottom / 2F));
-            }*/
+            if (prevMouseX == -1) prevMouseX = mouseX;
+            else {
+                yaw += (mouseX - prevMouseX) * 1.5F;
+                prevMouseX = mouseX;
+            }
         }
     }
 
-/*    @Override
+    @Override
     protected void mouseMovedOrUp(int mouseX, int mouseY, int mouseEvent) {
-        if (mouseEvent != 0 || !this.tailList.func_148181_b(mouseX, mouseY, mouseEvent)) {
-            super.mouseMovedOrUp(mouseX, mouseY, mouseEvent);
-        }
-    }*/
+        prevMouseX = -1;
+        super.mouseMovedOrUp(mouseX, mouseY, mouseEvent);
+    }
 
     @Override
     public void onGuiClosed() {
         //Delete textures on close
-        for (GuiListExtended.IGuiListEntry entry : this.tailList.getEntries()) {
-            TailEntry tailEntry = (TailEntry) entry;
-            tailEntry.tailInfo.setTexture(null);
+        for (GuiListExtended.IGuiListEntry entry : this.partList.getEntries()) {
+            PartEntry tailEntry = (PartEntry) entry;
+            tailEntry.partInfo.setTexture(null);
         }
 
-        Tails.proxy.addTailInfo(this.mc.thePlayer.getPersistentID(), Tails.localPlayerTailInfo);
+        Tails.proxy.addPartsData(this.mc.thePlayer.getPersistentID(), Tails.localPartsData);
     }
 
     //Refreshes the text and text colour to the current set tint colour
@@ -348,16 +430,18 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
             this.rgbSliders[0].visible = this.rgbSliders[1].visible = this.rgbSliders[2].visible = true;
             this.hsbSliders[0].visible = this.hsbSliders[1].visible = this.hsbSliders[2].visible = true;
             this.tintReset.visible = true;
+            colourPicker.visible = true;
         }
         
         else {
             this.rgbSliders[0].visible = this.rgbSliders[1].visible = this.rgbSliders[2].visible = false;
             this.hsbSliders[0].visible = this.hsbSliders[1].visible = this.hsbSliders[2].visible = false;
             this.tintReset.visible = false;
+            colourPicker.visible = false;
         }
 
         tintReset.enabled = true;
-        this.updateTailInfo();
+        this.updatePartsData();
     }
 
     private void drawEntity(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
@@ -397,14 +481,14 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
         GL11.glPopMatrix();
     }
 
-    private void renderTail(int x, int y, int scale, TailInfo tailInfo) {
+    private void renderPart(int x, int y, int scale, PartInfo partInfo) {
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, 10F);
         GL11.glScalef(-scale, scale, 1F);
 
         RenderHelper.enableStandardItemLighting();
         RenderManager.instance.playerViewY = 180.0F;
-        ClientEventHandler.tailTypes[tailInfo.typeid].render(this.fakeEntity, tailInfo, 0);
+        PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).render(this.fakeEntity, partInfo, 0, 0, 0, 0);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -427,24 +511,75 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
         this.refreshTintPane();
     }
 
-    void updateTailInfo() {
+    private void updatePartsData() {
         UUID uuid = this.mc.thePlayer.getPersistentID();
-        TailEntry tailEntry = (TailEntry) this.tailList.getListEntry(this.tailList.getCurrrentIndex());
+        PartEntry tailEntry = (PartEntry) partList.getListEntry(partList.getCurrrentIndex());
 
-        if (this.currTintEdit > 0) this.tailInfo.tints[this.currTintEdit -1] = this.currTintColour | 0xFF << 24; //Add the alpha manually
-        this.tailInfo = new TailInfo(uuid, tailEntry.tailInfo.hastail, tailEntry.tailInfo.typeid, tailEntry.tailInfo.subid, textureID, this.tailInfo.tints, null);
-        this.tailInfo.setTexture(TextureHelper.generateTexture(this.tailInfo));
-        this.tailInfo.needsTextureCompile = false;
+        partInfo.setTexture(null);
+        if (currTintEdit > 0) partInfo.tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
+        partInfo = new PartInfo(uuid, tailEntry.partInfo.hasPart, tailEntry.partInfo.typeid, tailEntry.partInfo.subid, textureID, partInfo.tints, partType, null);
+        if (partInfo.hasPart) partInfo.setTexture(TextureHelper.generateTexture(partInfo));
 
-        Tails.proxy.addTailInfo(uuid, this.tailInfo);
+        partsData.setPartInfo(partType, partInfo);
+
+        Tails.proxy.addPartsData(uuid, partsData);
     }
 
     private void selectDefaultListEntry() {
         //Default selection
-        for (GuiListExtended.IGuiListEntry entry : this.tailList.getEntries()) {
-            TailEntry tailEntry = (TailEntry) entry;
-            if (tailEntry.tailInfo.typeid == this.originalTailInfo.typeid && tailEntry.tailInfo.subid == this.originalTailInfo.subid) {
-                this.tailList.setCurrrentIndex(this.tailList.getEntries().indexOf(tailEntry));
+        for (GuiListExtended.IGuiListEntry entry : this.partList.getEntries()) {
+            PartEntry partEntry = (PartEntry) entry;
+            if ((!partEntry.partInfo.hasPart && !partInfo.hasPart) || (partInfo.hasPart && partEntry.partInfo.hasPart && partEntry.partInfo.typeid == partInfo.typeid && partEntry.partInfo.subid == partInfo.subid)) {
+                this.partList.setCurrrentIndex(this.partList.getEntries().indexOf(partEntry));
+                break;
+            }
+        }
+    }
+
+    private int getColourAtPoint(int x, int y) {
+        int[] pixelData;
+        int pixels = 1;
+
+        if (pixelBuffer == null) {
+            pixelBuffer = BufferUtils.createIntBuffer(pixels);
+        }
+        pixelData = new int[pixels];
+
+        GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        pixelBuffer.clear();
+
+        GL11.glReadPixels(x, mc.displayHeight - y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);
+
+        pixelBuffer.get(pixelData);
+        return pixelData[0];
+    }
+
+    private void setSelectingColour(boolean selectingColour) {
+        this.selectingColour = selectingColour;
+
+        if (selectingColour) {
+            try {
+                BufferedImage bufferedImage = ImageIO.read(mc.getResourceManager().getResource(GuiIconButton.iconsTextures).getInputStream());
+                int[] pixelData;
+                int pixels = 16 * 16;
+                pixelData = new int[pixels];
+                IntBuffer buffer = IntBuffer.wrap(bufferedImage.getRGB(GuiIconButton.Icons.EYEDROPPER.u, GuiIconButton.Icons.EYEDROPPER.v + 16, 16, 16, pixelData, 0, 16));
+                org.lwjgl.input.Cursor cursor = new org.lwjgl.input.Cursor(16, 16, 0, 15, 1, buffer, null);
+
+                Mouse.setNativeCursor(cursor);
+
+            } catch (LWJGLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                Mouse.setNativeCursor(null);
+            } catch (LWJGLException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -453,27 +588,27 @@ public class GuiEditTail extends GuiBaseScreen implements IListCallback, IHSBSli
     public boolean onEntrySelected(GuiList guiList, int index, GuiListExtended.IGuiListEntry entry) {
         //Reset texture ID
         textureID = 0;
-        this.updateTailInfo();
+        this.updatePartsData();
         return true;
     }
 
-    public class TailEntry implements GuiListExtended.IGuiListEntry {
+    public class PartEntry implements GuiListExtended.IGuiListEntry {
 
-        public final TailInfo tailInfo;
+        public final PartInfo partInfo;
 
-        public TailEntry(TailInfo tailInfo) {
-            this.tailInfo = tailInfo;
+        public PartEntry(PartInfo partInfo) {
+            this.partInfo = partInfo;
         }
 
         @Override
         public void drawEntry(int index, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int mouseX, int mouseY, boolean mouseOver) {
-            if (tailInfo.hastail) {
-                RenderTail tail = ClientEventHandler.tailTypes[tailInfo.typeid];
-                renderTail(previewWindowLeft - 25, y - 25, 50, tailInfo);
-                fontRendererObj.drawString(I18n.format(tail.getUnlocalisedName(tailInfo.subid)), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
+            if (partInfo.hasPart) {
+                renderPart(previewWindowLeft - 25, y - 25, 50, partInfo);
+                fontRendererObj.drawString(I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid)
+                        .getUnlocalisedName(partInfo.subid)), 5, y + (partList.slotHeight / 2) - 5, 0xFFFFFF);
             }
             else {
-                fontRendererObj.drawString(I18n.format("tail.none.name"), 5, y + (tailList.slotHeight / 2) - 5, 0xFFFFFF);
+                fontRendererObj.drawString(I18n.format("tail.none.name"), 5, y + (partList.slotHeight / 2) - 5, 0xFFFFFF);
             }
         }
 
