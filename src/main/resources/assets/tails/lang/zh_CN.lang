@@ -20,7 +20,7 @@ tail.texture.tigerTail.name=老虎
 tail.texture.birdTail.name=小鸟
 
 ears.fox.0.name=狐狸耳朵
-ears.cat.0.name=猫耳
+ears.cat.0.name=猫耳朵
 ears.panda.0.name=熊猫耳朵
 
 ears.texture.foxEars.name=狐狸
@@ -34,7 +34,7 @@ wings.texture.metalWings.name=金属翅膀
 wings.texture.bigWings.name=天使翅膀
 
 gui.export.title=导出设定
-gui.export.information=使用本模组中导出的皮肤可以让其他玩家看到你带着尾巴的样子,即便是服务端没有安装本模组(当然其他玩家仍需在客户端安装).这个功能将会把你皮肤中的一些闲置像素替换成尾巴的图形.你可以使用下方的按钮来选择要将皮肤导出到哪里,或是直接上传至Minecraft的皮肤服务器.将鼠标悬浮在下方按钮上来查看详细导出位置
+gui.export.information=使用在此导出的皮肤可以让其他玩家看到你带着尾巴的形象,即便是那个服务端没有安装本模组(当然其他玩家仍需在客户端安装才能看到).这个功能把皮肤中的一些闲置的像素替换成尾巴的图形.你可以使用下方的按钮来选择要将皮肤导出到哪里,或是直接上传至Minecraft的皮肤服务器.将鼠标悬浮在下方按钮上来查看详细导出位置
 
 gui.button.livepreview=实时预览
 gui.button.livepreview.0.tooltip=当你在编辑时预览窗口将会实时更新尾巴的样子
@@ -57,7 +57,7 @@ gui.button.help.camera.0=点击预览窗口并拖动
 gui.button.help.camera.1=来旋转你的形象
 gui.button.reset.camera=重置镜头
 gui.button.picker.0=取色器
-gui.button.picker.1=选择并使用一种显示的颜色
+gui.button.picker.1=选择并使用一种屏幕上显示的颜色
 
 gui.slider.red.tooltip=红色
 gui.slider.green.tooltip=绿色
