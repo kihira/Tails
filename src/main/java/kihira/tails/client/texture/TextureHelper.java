@@ -88,11 +88,14 @@ public class TextureHelper {
         if (image != null) {
             for (PartsData.PartType partType : PartsData.PartType.values()) {
                 PartInfo partInfo = partsData.getPartInfo(partType);
+                int ordinal = partType.ordinal();
+                int switch1 = 0x00000000, switch2 = 0x00000000;
                 if (partInfo != null) {
-                    int ordinal = partType.ordinal();
-                    //Switch colours
-                    image.setRGB(switchPoints[ordinal][0].getX(), switchPoints[ordinal][0].getY(), switch1Colour);
-                    image.setRGB(switchPoints[ordinal][1].getX(), switchPoints[ordinal][1].getY(), switch2Colour);
+                    if (partInfo.hasPart) {
+                        switch1 = switch1Colour;
+                        switch2 = switch2Colour;
+                    }
+
                     //Type, subtype and texture
                     int dataColour = 0xFF000000;
                     dataColour = dataColour | partInfo.typeid << 16;
@@ -104,6 +107,9 @@ public class TextureHelper {
                     image.setRGB(tintPoints[ordinal][1].getX(), tintPoints[ordinal][1].getY(), partInfo.tints[1]);
                     image.setRGB(tintPoints[ordinal][2].getX(), tintPoints[ordinal][2].getY(), partInfo.tints[2]);
                 }
+                //Switch colours
+                image.setRGB(switchPoints[ordinal][0].getX(), switchPoints[ordinal][0].getY(), switch1);
+                image.setRGB(switchPoints[ordinal][1].getX(), switchPoints[ordinal][1].getY(), switch2);
             }
         }
         else Tails.logger.warn("Attempted to write PartInfo to skin but player doesn't have a skin!");
