@@ -25,8 +25,7 @@ import kihira.tails.client.render.PlayerRenderHelper;
 import kihira.tails.client.render.RenderPart;
 import kihira.tails.proxy.CommonProxy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.LogManager;
@@ -64,9 +63,7 @@ public class Tails {
                 Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
                 loadConfig();
 
-                PlayerRenderHelper helper = new PlayerRenderHelper();
-                RenderPart.registerRenderHelper(EntityClientPlayerMP.class, helper);
-                RenderPart.registerRenderHelper(EntityOtherPlayerMP.class, helper);
+                RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
                 RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
             }
         }

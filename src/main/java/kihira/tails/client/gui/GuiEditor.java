@@ -289,7 +289,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         //Export
         else if (button.id == 14) {
             this.updatePartsData();
-            this.mc.displayGuiScreen(new GuiExport(this, this.partInfo));
+            this.mc.displayGuiScreen(new GuiExport(this, this.partsData));
         }
         //Texture select
         else if (button.id == 18) {
