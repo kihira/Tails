@@ -15,8 +15,9 @@ import com.google.gson.JsonParser;
 import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.foxlib.client.toast.ToastManager;
 import kihira.tails.client.texture.TextureHelper;
-import kihira.tails.common.PartInfo;
+import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
+import kihira.tails.common.network.PlayerDataMessage;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
@@ -39,16 +40,16 @@ import java.net.URLEncoder;
 public class GuiExport extends GuiBaseScreen {
 
     private final GuiEditor parent;
-    private final PartInfo tailInfo;
+    private final PartsData partsData;
 
     private ScaledResolution scaledRes;
     private String exportMessage = "";
     private GuiButtonTooltip openFolderButton;
     private URI exportLoc;
 
-    public GuiExport(GuiEditor parent, PartInfo tailInfo) {
+    public GuiExport(GuiEditor parent, PartsData partsData) {
         this.parent = parent;
-        this.tailInfo = tailInfo;
+        this.partsData = partsData;
     }
 
     @Override
@@ -117,7 +118,7 @@ public class GuiExport extends GuiBaseScreen {
                     }
                 }
 
-                BufferedImage image = TextureHelper.writePartInfoToSkin(this.tailInfo, player);
+                BufferedImage image = TextureHelper.writePartsDataToSkin(this.partsData, player);
                 if (image != null) {
                     try {
                         ImageIO.write(image, "png", file);
@@ -133,6 +134,7 @@ public class GuiExport extends GuiBaseScreen {
             }
 
             if (Strings.isNullOrEmpty(this.exportMessage)) {
+                savePartsData();
                 this.openFolderButton.visible = true;
                 setExportMessage(EnumChatFormatting.GREEN + I18n.format("tails.export.success", file));
             }
@@ -148,7 +150,7 @@ public class GuiExport extends GuiBaseScreen {
 
         //Upload
         if (button.id == 10) {
-            final BufferedImage image = TextureHelper.writePartInfoToSkin(this.tailInfo, this.mc.thePlayer);
+            final BufferedImage image = TextureHelper.writePartsDataToSkin(this.partsData, this.mc.thePlayer);
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -160,9 +162,25 @@ public class GuiExport extends GuiBaseScreen {
         }
     }
 
+    @Override
+    protected void keyTyped(char key, int keyCode) {
+        if (keyCode == 1) {
+            this.mc.displayGuiScreen(parent);
+        }
+        else {
+            super.keyTyped(key, keyCode);
+        }
+    }
+
     private void setExportMessage(String message) {
         exportMessage = message;
         ToastManager.INSTANCE.createCenteredToast(width / 2, height - 45, new ScaledResolution(mc, mc.displayWidth, mc.displayHeight).getScaledWidth() / 3, exportMessage);
+    }
+
+    private void savePartsData() {
+        Tails.setLocalPartsData(partsData);
+        Tails.proxy.addPartsData(partsData.uuid, partsData);
+        Tails.networkWrapper.sendToServer(new PlayerDataMessage(partsData, false));
     }
 
     public class ImgurUpload {
@@ -205,6 +223,7 @@ public class GuiExport extends GuiBaseScreen {
                         setExportMessage(EnumChatFormatting.GREEN + I18n.format("tails.upload.success"));
                         exportLoc = URI.create(skinURL + imgurURL);
                         openFolderButton.visible = true;
+                        savePartsData();
 
                         Desktop.getDesktop().browse(exportLoc);
                     }
