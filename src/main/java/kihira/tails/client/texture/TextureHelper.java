@@ -81,25 +81,30 @@ public class TextureHelper {
         }
 	}
 
-    public static BufferedImage writePartInfoToSkin(PartInfo partInfo, AbstractClientPlayer player) {
+    public static BufferedImage writePartsDataToSkin(PartsData partsData, AbstractClientPlayer player) {
         BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
-        int ordinal = partInfo.partType.ordinal();
 
         //Check we have the players skin
         if (image != null) {
-            //Switch colours
-            image.setRGB(switchPoints[ordinal][0].getX(), switchPoints[ordinal][0].getY(), switch1Colour);
-            image.setRGB(switchPoints[ordinal][1].getX(), switchPoints[ordinal][1].getY(), switch2Colour);
-            //Type, subtype and texture
-            int dataColour = 0xFF000000;
-            dataColour = dataColour | partInfo.typeid << 16;
-            dataColour = dataColour | partInfo.subid << 8;
-            dataColour = dataColour | partInfo.textureID;
-            image.setRGB(dataPoints[ordinal].getX(), dataPoints[ordinal].getY(), dataColour);
-            //Tints
-            image.setRGB(tintPoints[ordinal][0].getX(), tintPoints[ordinal][0].getY(), partInfo.tints[0]);
-            image.setRGB(tintPoints[ordinal][1].getX(), tintPoints[ordinal][1].getY(), partInfo.tints[1]);
-            image.setRGB(tintPoints[ordinal][2].getX(), tintPoints[ordinal][2].getY(), partInfo.tints[2]);
+            for (PartsData.PartType partType : PartsData.PartType.values()) {
+                PartInfo partInfo = partsData.getPartInfo(partType);
+                if (partInfo != null) {
+                    int ordinal = partType.ordinal();
+                    //Switch colours
+                    image.setRGB(switchPoints[ordinal][0].getX(), switchPoints[ordinal][0].getY(), switch1Colour);
+                    image.setRGB(switchPoints[ordinal][1].getX(), switchPoints[ordinal][1].getY(), switch2Colour);
+                    //Type, subtype and texture
+                    int dataColour = 0xFF000000;
+                    dataColour = dataColour | partInfo.typeid << 16;
+                    dataColour = dataColour | partInfo.subid << 8;
+                    dataColour = dataColour | partInfo.textureID;
+                    image.setRGB(dataPoints[ordinal].getX(), dataPoints[ordinal].getY(), dataColour);
+                    //Tints
+                    image.setRGB(tintPoints[ordinal][0].getX(), tintPoints[ordinal][0].getY(), partInfo.tints[0]);
+                    image.setRGB(tintPoints[ordinal][1].getX(), tintPoints[ordinal][1].getY(), partInfo.tints[1]);
+                    image.setRGB(tintPoints[ordinal][2].getX(), tintPoints[ordinal][2].getY(), partInfo.tints[2]);
+                }
+            }
         }
         else Tails.logger.warn("Attempted to write PartInfo to skin but player doesn't have a skin!");
 
