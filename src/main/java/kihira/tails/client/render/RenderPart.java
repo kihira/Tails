@@ -16,6 +16,7 @@ import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -44,11 +45,15 @@ public class RenderPart {
         }
 
         GL11.glPushMatrix();
-        //GL11.glColor4f(1F, 1F, 1F, 0F);
-        IRenderHelper helper = getRenderHelper(entity.getClass());
+
+        IRenderHelper helper;
+        //Support for Galacticraft as it adds its own EntityPlayer
+        if (entity instanceof EntityPlayer) helper = getRenderHelper(EntityPlayer.class);
+        else helper = getRenderHelper(entity.getClass());
         if (helper != null) {
             helper.onPreRenderTail(entity, this, info, x, y, z);
         }
+
         this.doRender(entity, info, partialTicks);
         GL11.glPopMatrix();
     }
