@@ -9,7 +9,6 @@
 package kihira.tails.common.network;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -38,7 +37,7 @@ public class PlayerDataMapMessage implements IMessage {
     public void fromBytes(ByteBuf buf) {
         String tailInfoJson = ByteBufUtils.readUTF8String(buf);
         try {
-            this.partsDataMap = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(tailInfoJson, new TypeToken<Map<UUID, PartsData>>() {}.getType());
+            this.partsDataMap = Tails.gson.fromJson(tailInfoJson, new TypeToken<Map<UUID, PartsData>>() {}.getType());
         } catch (JsonSyntaxException e) {
             Tails.logger.catching(e);
         }
@@ -46,7 +45,7 @@ public class PlayerDataMapMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        String tailInfoJson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(this.partsDataMap);
+        String tailInfoJson = Tails.gson.toJson(this.partsDataMap);
         ByteBufUtils.writeUTF8String(buf, tailInfoJson);
     }
 

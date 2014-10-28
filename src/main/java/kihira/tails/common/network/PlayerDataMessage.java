@@ -8,7 +8,6 @@
 
 package kihira.tails.common.network;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -33,7 +32,7 @@ public class PlayerDataMessage implements IMessage {
     public void fromBytes(ByteBuf buf) {
         String tailInfoJson = ByteBufUtils.readUTF8String(buf);
         try {
-            this.partsData = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(tailInfoJson, PartsData.class);
+            this.partsData = Tails.gson.fromJson(tailInfoJson, PartsData.class);
         } catch (JsonSyntaxException e) {
             Tails.logger.warn(e);
         }
@@ -41,7 +40,7 @@ public class PlayerDataMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        String tailInfoJson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(this.partsData);
+        String tailInfoJson = Tails.gson.toJson(this.partsData);
         ByteBufUtils.writeUTF8String(buf, tailInfoJson);
     }
 

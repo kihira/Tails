@@ -9,6 +9,7 @@
 package kihira.tails.common;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.Mod;
@@ -39,6 +40,7 @@ public class Tails {
     public static final String MOD_ID = "Tails";
     public static final Logger logger = LogManager.getLogger(MOD_ID);
     public static final SimpleNetworkWrapper networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
+    public static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     public static Configuration configuration;
     public static boolean hasRemote;
@@ -88,13 +90,13 @@ public class Tails {
         //Load local player info
         try {
             //Load Player Data
-            localPartsData = new Gson().fromJson(Tails.configuration.getString("Local Player Data",
+            localPartsData = gson.fromJson(Tails.configuration.getString("Local Player Data",
                     Configuration.CATEGORY_GENERAL, "Local Players data. Delete to remove all customisation data. Do not try to edit manually", ""), PartsData.class);
 
             //Load old tail info if exists
             PartInfo tailInfo = null;
             if (Tails.configuration.hasKey(Configuration.CATEGORY_GENERAL, "Local Tail Info")) {
-                tailInfo = new Gson().fromJson(Tails.configuration.getString("Local Tail Info",
+                tailInfo = gson.fromJson(Tails.configuration.getString("Local Tail Info",
                         Configuration.CATEGORY_GENERAL, "DEPRECIATED. CAN SAFELY REMOVE", ""), PartInfo.class);
             }
             if (tailInfo != null) {
@@ -122,7 +124,7 @@ public class Tails {
         localPartsData = partsData;
 
         Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Player Data", "");
-        prop.set(new Gson().toJson(localPartsData));
+        prop.set(gson.toJson(localPartsData));
 
         Tails.configuration.save();
     }
