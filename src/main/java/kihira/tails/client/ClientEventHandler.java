@@ -15,7 +15,7 @@ import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.gui.GuiEditor;
-import kihira.tails.client.model.ModelRenderer2;
+import kihira.tails.client.model.ModelRendererWrapper;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
@@ -93,9 +93,9 @@ public class ClientEventHandler {
             PartsData data = Tails.proxy.getPartsData(uuid);
 
             if (!flag) {
-                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.TAIL));
-                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.WINGS));
-                e.renderer.modelBipedMain.bipedHead.addChild(new ModelRenderer2(e.renderer.modelBipedMain, PartsData.PartType.EARS));
+                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRendererWrapper(e.renderer.modelBipedMain, PartsData.PartType.TAIL));
+                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRendererWrapper(e.renderer.modelBipedMain, PartsData.PartType.WINGS));
+                e.renderer.modelBipedMain.bipedHead.addChild(new ModelRendererWrapper(e.renderer.modelBipedMain, PartsData.PartType.EARS));
                 flag = true;
             }
 
