@@ -325,6 +325,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
             }
             originalPartInfo = newPartInfo.deepCopy();
             partInfo = originalPartInfo.deepCopy();
+            textureID = partInfo.textureID;
 
             partTypeButton.displayString = partType.name();
             initPartList();
