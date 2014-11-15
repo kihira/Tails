@@ -19,13 +19,14 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
 @SideOnly(Side.CLIENT)
-public class ModelRenderer2 extends ModelRenderer {
+public class ModelRendererWrapper extends ModelRenderer {
 
     private PartsData.PartType partType;
 
-    public ModelRenderer2(ModelBase p_i1173_1_, PartsData.PartType partType) {
-        super(p_i1173_1_);
+    public ModelRendererWrapper(ModelBase model, PartsData.PartType partType) {
+        super(model);
         this.partType = partType;
+        addBox(0, 0, 0, 0, 0, 0); //Adds in a blank box as it's required in certain cases such as rendering arrows in entities
     }
 
     @Override
