@@ -47,11 +47,11 @@ gui.tint.edit=Tint %s aan het bewerken
 gui.hex=Hex
 gui.texture=Afbeelding
 
-tails.export.success=Slin opslaan naar %s geslaagd!
+tails.export.success=Skin opslaan naar %s geslaagd!
 tails.upload.unavailable=Deze optie werkt nog niet!
 
-foxlib.downloader.missing=Je hebt FoxLib %s nodig1! Je kan het hier downloaden: %s
-foxlib.downloader.0=FoxLib in niet geinstalleerd en je hebt het nodig om te spelen %s!
+foxlib.downloader.missing=Je hebt FoxLib %s nodig! Je kan het hier downloaden: %s
+foxlib.downloader.0=FoxLib is niet geinstalleerd en je hebt het nodig om te spelen %s!
 foxlib.downloader.1=Wil je FoxLib automatish downloaden? (Je moet erna wel restarten)
 foxlib.downloader.downloading=FoxLib aan het downloaden
 foxlib.downloader.success=FoxLib is gedownload!
