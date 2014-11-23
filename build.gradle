@@ -30,7 +30,7 @@ project.ext {
     major = "2"
     minor = "3"
     mcVersion = "1.7.10"
-    forgeVersion = "10.13.0.1180"
+    forgeVersion = "10.13.2.1236"
     foxlibDevVersion = "1.7.10-0.6.0.develop+"
     foxlibVersion = "1.7.10-0.6.0"
     buildVersion = System.getenv("BUILD_NUMBER")
