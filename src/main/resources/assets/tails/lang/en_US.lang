@@ -70,6 +70,7 @@ gui.tint=Tint %s
 gui.tint.edit=Editing Tint %s
 gui.hex=Hex
 gui.texture=Texture
+gui.createdby=Created by
 
 tails.export.success=Successfully saved skin to %s
 tails.upload.unavailable=This feature is not yet functional!

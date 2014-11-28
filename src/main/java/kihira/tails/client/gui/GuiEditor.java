@@ -9,6 +9,7 @@
 package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
+import cpw.mods.fml.client.config.GuiButtonExt;
 import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.foxlib.client.gui.GuiList;
@@ -49,6 +50,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -168,8 +170,8 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
                 this.scaledRes.getScaledWidth() / 3, I18n.format("gui.button.export.0.tooltip")));
 
         //Texture select
-        this.buttonList.add(new GuiButton(18, 5, this.height - 25, 15, 20, "<"));
-        this.buttonList.add(new GuiButton(19, this.previewWindowLeft - 20, this.height - 25, 15, 20, ">"));
+        this.buttonList.add(new GuiButtonExt(18, 5, this.height - 27, 15, 15, "<"));
+        this.buttonList.add(new GuiButtonExt(19, this.previewWindowLeft - 20, this.height - 27, 15, 15, ">"));
         textureID = partInfo.textureID;
 
         //PartType Select
@@ -244,7 +246,19 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
 
         //Texture select
         fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, this.height - 37, 0xFFFFFF);
-        fontRendererObj.drawString(I18n.format(partType.name().toLowerCase() + ".texture." + PartRegistry.getRenderPart(partType, partInfo.typeid).getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 19, 0xFFFFFF);
+        drawRect(7, this.height - 12, 100, this.height - 27, 0x55000000);
+        fontRendererObj.drawString(I18n.format(partType.name().toLowerCase() + ".texture." + PartRegistry.getRenderPart(partType, partInfo.typeid).getTextureNames(partInfo.subid)[textureID] + ".name"), 25, this.height - 23, 0xFFFFFF);
+
+        RenderPart renderPart = PartRegistry.getRenderPart(partType, partInfo.typeid);
+        if (renderPart.hasAuthor(partInfo.subid, partInfo.textureID)) {
+            //Yeah its not nice but eh, works
+            GL11.glPushMatrix();
+            GL11.glTranslatef(7, this.height - 10, 0);
+            GL11.glScalef(0.6F, 0.6F, 1F);
+            fontRendererObj.drawString(I18n.format("gui.createdby") + ": " + EnumChatFormatting.AQUA + renderPart.getAuthor(partInfo.subid, partInfo.textureID), 0, 0, 0xFFFFFF);
+            GL11.glColor4f(1F, 1F, 1F, 1F);
+            GL11.glPopMatrix();
+        }
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
@@ -374,7 +388,22 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
             refreshTintPane();
         }
         else {
+            RenderPart renderPart = PartRegistry.getRenderPart(partType, partInfo.typeid);
+            if (renderPart.hasAuthor(partInfo.subid, textureID)) {
+                String author = renderPart.getAuthor(partInfo.subid, textureID);
+                float authorNameWidth = fontRendererObj.getStringWidth(author) * 0.6F;
+                float authorWidth = fontRendererObj.getStringWidth(I18n.format("gui.createdby")) * 0.6F;
+                if (mouseX > 9 + authorWidth && mouseX < 9 + authorWidth + authorNameWidth && mouseY > this.height - 10 && mouseY < this.height - 4) {
+                    try {
+                        Desktop.getDesktop().browse(URI.create("https://twitter.com/" + author.replace("@", "")));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                }
+            }
             super.mouseClicked(mouseX, mouseY, mouseEvent);
+            this.partList.func_148179_a(mouseX, mouseY, mouseEvent);
             this.hexText.mouseClicked(mouseX, mouseY, mouseEvent);
         }
     }
@@ -394,6 +423,7 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
     @Override
     protected void mouseMovedOrUp(int mouseX, int mouseY, int mouseEvent) {
         prevMouseX = -1;
+        this.partList.func_148181_b(mouseX, mouseY, mouseEvent);
         super.mouseMovedOrUp(mouseX, mouseY, mouseEvent);
     }
 
@@ -482,9 +512,9 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         GL11.glPopMatrix();
     }
 
-    private void renderPart(int x, int y, int scale, PartInfo partInfo) {
+    private void renderPart(int x, int y, int z, int scale, PartInfo partInfo) {
         GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 10F);
+        GL11.glTranslatef(x, y, z);
         GL11.glScalef(-scale, scale, 1F);
 
         RenderHelper.enableStandardItemLighting();
@@ -604,9 +634,25 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         @Override
         public void drawEntry(int index, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int mouseX, int mouseY, boolean mouseOver) {
             if (partInfo.hasPart) {
-                renderPart(previewWindowLeft - 25, y - 25, 50, partInfo);
+                boolean currentPart = partList.getCurrrentIndex() == index;
+                renderPart(previewWindowLeft - 25, y - 25, currentPart ? 10 : -1, 50, partInfo);
                 fontRendererObj.drawString(I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid)
-                        .getUnlocalisedName(partInfo.subid)), 5, y + (partList.slotHeight / 2) - 5, 0xFFFFFF);
+                        .getUnlocalisedName(partInfo.subid)), 5, y + 17, 0xFFFFFF);
+
+                if (currentPart) {
+                    RenderPart renderPart = PartRegistry.getRenderPart(partType, partInfo.typeid);
+                    if (renderPart.getModelAuthor() != null) {
+                        //Yeah its not nice but eh, works
+                        GL11.glPushMatrix();
+                        GL11.glTranslatef(5, y + 27, 0);
+                        GL11.glScalef(0.6F, 0.6F, 1F);
+                        fontRendererObj.drawString(I18n.format("gui.createdby") + ":", 0, 0, 0xFFFFFF);
+                        GL11.glTranslatef(0, 10, 0);
+                        fontRendererObj.drawString(EnumChatFormatting.AQUA + renderPart.getModelAuthor(), 0, 0, 0xFFFFFF);
+                        GL11.glColor4f(1F, 1F, 1F, 1F);
+                        GL11.glPopMatrix();
+                    }
+                }
             }
             else {
                 fontRendererObj.drawString(I18n.format("tail.none.name"), 5, y + (partList.slotHeight / 2) - 5, 0xFFFFFF);
@@ -614,12 +660,23 @@ public class GuiEditor extends GuiBaseScreen implements IListCallback, IHSBSlide
         }
 
         @Override
-        public boolean mousePressed(int index, int mouseX, int mouseY, int p_148278_4_, int mouseSlotX, int mouseSlotY) {
-            return true;
+        public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
+            RenderPart renderPart = PartRegistry.getRenderPart(partType, partInfo.typeid);
+            if (partList.getCurrrentIndex() == index && renderPart.hasAuthor(partInfo.subid, partInfo.textureID)) {
+                String author = renderPart.getAuthor(partInfo.subid, partInfo.textureID);
+                float authorNameWidth = fontRendererObj.getStringWidth(author) * 0.6F;
+                if (mouseSlotX > 5 && mouseSlotX < 5 + authorNameWidth && mouseSlotY > 30 && mouseSlotY < 38) {
+                    try {
+                        Desktop.getDesktop().browse(URI.create("https://twitter.com/" + author.replace("@", "")));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return false;
         }
 
         @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int p_148278_4_, int mouseSlotX, int mouseSlotY) {
-        }
+        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {}
     }
 }

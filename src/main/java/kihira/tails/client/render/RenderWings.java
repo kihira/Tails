@@ -19,8 +19,8 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderWings extends RenderPart {
 
-    public RenderWings(String name, int subTypes, ModelPartBase modelPart, String... textureNames) {
-        super(name, subTypes, modelPart, textureNames);
+    public RenderWings(String name, int subTypes, String modelAuthor, ModelPartBase modelPart, String... textureNames) {
+        super(name, subTypes, modelAuthor, modelPart, textureNames);
     }
 
     @Override

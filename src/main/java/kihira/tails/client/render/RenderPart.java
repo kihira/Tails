@@ -29,13 +29,17 @@ public class RenderPart {
     protected final String name;
     protected final String[] textureNames;
     protected final int subTypes;
+    protected final String[][] authors;
+    protected final String modelAuthor;
     public ModelPartBase modelPart;
 
-    public RenderPart(String name, int subTypes, ModelPartBase modelPart, String ... textureNames) {
+    public RenderPart(String name, int subTypes, String modelAuthor, ModelPartBase modelPart, String... textureNames) {
         this.name = name;
         this.subTypes = subTypes;
+        this.modelAuthor = modelAuthor;
         this.modelPart = modelPart;
         this.textureNames = textureNames;
+        this.authors = new String[subTypes + 1][textureNames.length];
     }
 
     public void render(EntityLivingBase entity, PartInfo info, double x, double y, double z, float partialTicks) {
@@ -83,6 +87,37 @@ public class RenderPart {
 
     public String getUnlocalisedName(int subType) {
         return this.name+"."+subType+".name";
+    }
+
+    public RenderPart setAuthor(String author, int subID, int textureID) {
+        authors[subID][textureID] = author;
+        return this;
+    }
+
+    public RenderPart setAuthor(String author, int subID) {
+        for (int textureID = 0; textureID < getTextureNames(subID).length; textureID++) {
+            setAuthor(author, subID, textureID);
+        }
+        return this;
+    }
+
+    public RenderPart setAuthor(String author) {
+        for (int subID = 0; subID <= subTypes; subID++) {
+            setAuthor(author, subID);
+        }
+        return this;
+    }
+
+    public String getModelAuthor() {
+        return modelAuthor;
+    }
+
+    public String getAuthor(int subID, int textureID) {
+        return authors[subID][textureID];
+    }
+
+    public boolean hasAuthor(int subID, int textureID) {
+        return getAuthor(subID, textureID) != null;
     }
 
     public static void registerRenderHelper(Class<? extends EntityLivingBase> clazz, IRenderHelper helper) {

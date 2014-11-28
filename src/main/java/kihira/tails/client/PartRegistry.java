@@ -29,20 +29,20 @@ public class PartRegistry {
 
     static {
         //Tails
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.fluffy", 2, new ModelFluffyTail(), "foxTail"));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.dragon", 1, new ModelDragonTail(), "dragonTail", "dragonTailStriped"));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.raccoon", 0, new ModelRaccoonTail(), "racoonTail"));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.devil", 1, new ModelDevilTail(), "devilTail"));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.cat", 0, new ModelCatTail(), "tabbyTail", "tigerTail"));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.bird", 0, new ModelBirdTail(), "birdTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.fluffy", 2, null, new ModelFluffyTail(), "foxTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.dragon", 1, null, new ModelDragonTail(), "dragonTail", "dragonTailStriped").setAuthor("@TTFTCUTS", 0, 0).setAuthor("@TTFTCUTS", 1, 0));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.raccoon", 0, null, new ModelRaccoonTail(), "racoonTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.devil", 1, null, new ModelDevilTail(), "devilTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.cat", 0, null, new ModelCatTail(), "tabbyTail", "tigerTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.bird", 0, null, new ModelBirdTail(), "birdTail").setAuthor("@blusunrize", 0, 0));
 
         //Ears
-        registerPart(PartsData.PartType.EARS, new RenderPart("ears.fox", 0, new ModelFoxEars(), "foxEars"));
-        registerPart(PartsData.PartType.EARS, new RenderPart("ears.cat", 0, new ModelCatEars(), "catEars"));
-        registerPart(PartsData.PartType.EARS, new RenderPart("ears.panda", 0, new ModelPandaEars(), "pandaEars"));
+        registerPart(PartsData.PartType.EARS, new RenderPart("ears.fox", 0, "@Adeon", new ModelFoxEars(), "foxEars"));
+        registerPart(PartsData.PartType.EARS, new RenderPart("ears.cat", 0, null, new ModelCatEars(), "catEars"));
+        registerPart(PartsData.PartType.EARS, new RenderPart("ears.panda", 0, null, new ModelPandaEars(), "pandaEars"));
 
         //Wings
-        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 1, null, "bigWings", "metalWings"));
+        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 1, "@littlechippie", null, "bigWings", "metalWings").setAuthor("@littlechippie"));
     }
 
     public static void registerPart(PartsData.PartType partType, RenderPart renderPart) {
