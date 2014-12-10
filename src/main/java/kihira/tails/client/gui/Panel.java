@@ -2,16 +2,17 @@ package kihira.tails.client.gui;
 
 import kihira.foxlib.client.gui.GuiBaseScreen;
 
-public abstract class Panel extends GuiBaseScreen {
+public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
 
-    protected final GuiBase parent;
+    protected final T parent;
     public int left;
     public int top;
     public int right;
     public int bottom;
     public boolean alwaysReceiveMouse = false;
+    public boolean enabled = true;
 
-    public Panel(GuiBase parent, int left, int top, int width, int height) {
+    public Panel(T parent, int left, int top, int width, int height) {
         this.parent = parent;
         this.left = left;
         this.top = top;

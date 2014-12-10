@@ -17,7 +17,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 
-public class ControlsPanel extends Panel {
+public class ControlsPanel extends Panel<GuiEditor> {
 
     private GuiButton partTypeButton;
 
@@ -38,7 +38,7 @@ public class ControlsPanel extends Panel {
                 (width / 2) - 20, I18n.format("gui.button.export.0.tooltip")));
 
         //PartType Select
-        buttonList.add(partTypeButton = new GuiButton(20, 3, height - 25, 40, 20, getParent().partType.name()));
+        buttonList.add(partTypeButton = new GuiButton(20, 3, height - 25, 40, 20, parent.getPartType().name()));
     }
 
     @Override
@@ -50,55 +50,38 @@ public class ControlsPanel extends Panel {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        GuiEditor editor = (GuiEditor) parent;
+        PartsData partsData = parent.getPartsData();
         //Reset All
         if (button.id == 12) {
-            editor.partInfo = editor.originalPartInfo.deepCopy();
-            editor.selectDefaultListEntry();
-            editor.setCurrTintEdit(0);
-            editor.refreshTintPane();
-            editor.updatePartsData();
+            PartInfo partInfo = parent.originalPartInfo.deepCopy();
+            parent.partsPanel.selectDefaultListEntry();
+            parent.setCurrTintEdit(0);
+            parent.refreshTintPane();
+            parent.setPartsInfo(partInfo);
         }
         //Save All
         else if (button.id == 13) {
             //Update part info, set local and send it to the server
-            editor.updatePartsData();
-            Tails.setLocalPartsData(editor.partsData);
-            Tails.proxy.addPartsData(editor.partsData.uuid, editor.partsData);
-            Tails.networkWrapper.sendToServer(new PlayerDataMessage(editor.partsData, false));
+            Tails.setLocalPartsData(partsData);
+            Tails.proxy.addPartsData(partsData.uuid, partsData);
+            Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().func_148256_e().getId(), partsData, false));
             ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, EnumChatFormatting.GREEN + "Saved!");
             this.mc.displayGuiScreen(null);
         }
         //Export
         else if (button.id == 14) {
-            editor.updatePartsData();
-            mc.displayGuiScreen(new GuiExport(editor, editor.partsData));
+            mc.displayGuiScreen(new GuiExport(parent, partsData));
         }
         //PartType
         else if (button.id == 20) {
-            if (editor.partType.ordinal() + 1 >= PartsData.PartType.values().length) {
-                editor.partType = PartsData.PartType.values()[0];
+            if (parent.getPartType().ordinal() + 1 >= PartsData.PartType.values().length) {
+                parent.setPartType(PartsData.PartType.values()[0]);
             }
             else {
-                editor.partType = PartsData.PartType.values()[editor.partType.ordinal() + 1];
+                parent.setPartType(PartsData.PartType.values()[parent.getPartType().ordinal() + 1]);
             }
 
-            PartInfo newPartInfo = editor.partsData.getPartInfo(editor.partType);
-            if (newPartInfo == null) {
-                newPartInfo = new PartInfo(editor.partsData.uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, editor.partType);
-            }
-            editor.originalPartInfo = newPartInfo.deepCopy();
-            editor.partInfo = editor.originalPartInfo.deepCopy();
-            editor.textureID = editor.partInfo.textureID;
-
-            partTypeButton.displayString = editor.partType.name();
-            editor.setCurrTintEdit(0);
-            editor.initPartList();
-            editor.refreshTintPane();
+            partTypeButton.displayString = parent.getPartType().name();
         }
-    }
-
-    private GuiEditor getParent() {
-        return (GuiEditor) parent;
     }
 }

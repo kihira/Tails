@@ -26,7 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
 
-public class TintPanel extends Panel implements GuiHSBSlider.IHSBSliderCallback {
+public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback {
 
     int currTintEdit = 0;
     int currTintColour = 0xFFFFFF;
@@ -98,7 +98,6 @@ public class TintPanel extends Panel implements GuiHSBSlider.IHSBSliderCallback 
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
         zLevel = -100;
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
-        GuiEditor editor = (GuiEditor) parent;
 
         zLevel = 0;
         //Tints
@@ -106,7 +105,7 @@ public class TintPanel extends Panel implements GuiHSBSlider.IHSBSliderCallback 
         for (int tint = 1; tint <= 3; tint++) {
             String s = I18n.format("gui.tint", tint);
             fontRendererObj.drawString(s, 5, topOffset, 0xFFFFFF);
-            int colour = editor.partInfo.tints[tint - 1] | 0xFF << 24;
+            int colour = parent.getPartInfo().tints[tint - 1] | 0xFF << 24;
             drawGradientRect(5, topOffset + 10, 25, topOffset + 30, colour, colour);
             topOffset += 35;
         }
@@ -125,11 +124,10 @@ public class TintPanel extends Panel implements GuiHSBSlider.IHSBSliderCallback 
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        GuiEditor editor = (GuiEditor) parent;
         //Edit buttons
         if (button.id >= 2 && button.id <= 4) {
             currTintEdit = button.id - 1;
-            currTintColour = editor.partInfo.tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            currTintColour = parent.getPartInfo().tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;
@@ -137,7 +135,7 @@ public class TintPanel extends Panel implements GuiHSBSlider.IHSBSliderCallback 
         }
         //Reset Tint
         else if (button.id == 8) {
-            currTintColour = editor.originalPartInfo.tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            currTintColour = parent.originalPartInfo.tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;
@@ -275,10 +273,6 @@ public class TintPanel extends Panel implements GuiHSBSlider.IHSBSliderCallback 
         }
 
         tintReset.enabled = true;
-        getParent().updatePartsData();
-    }
-
-    public GuiEditor getParent() {
-        return (GuiEditor) parent;
+        parent.setPartsInfo(parent.getPartInfo());
     }
 }

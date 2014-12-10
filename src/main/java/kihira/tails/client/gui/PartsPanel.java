@@ -12,9 +12,8 @@ import kihira.foxlib.client.gui.IListCallback;
 import kihira.tails.client.FakeEntity;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.client.render.RenderPart;
-import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
-import kihira.tails.common.Tails;
+import kihira.tails.common.PartsData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -30,11 +29,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public class PartsPanel extends Panel implements IListCallback {
+public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsPanel.PartEntry> {
 
-    private GuiList partList;
+    private GuiList<PartEntry> partList;
     private FakeEntity fakeEntity;
 
     public PartsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
@@ -61,21 +59,20 @@ public class PartsPanel extends Panel implements IListCallback {
     }
 
     void initPartList() {
-        GuiEditor editor = getParent();
         //Part List
-        java.util.List<PartEntry> partList = new ArrayList<PartEntry>();
-        UUID uuid = UUID.fromString("18040390-23b0-11e4-8c21-0800200c9a66"); //Just a random UUID
-        partList.add(new PartEntry(new PartInfo(uuid, false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, editor.partType))); //No tail
+        List<PartEntry> partList = new ArrayList<PartEntry>();
+        PartsData.PartType partType = parent.getPartType();
+        partList.add(new PartEntry(new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType))); //No tail
         //Generate tail preview textures and add to list
-        List<RenderPart> parts = PartRegistry.getParts(editor.partType);
+        List<RenderPart> parts = PartRegistry.getParts(partType);
         for (int type = 0; type < parts.size(); type++) {
             for (int subType = 0; subType <= parts.get(type).getAvailableSubTypes(); subType++) {
-                PartInfo partInfo = new PartInfo(uuid, true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, editor.partType);
+                PartInfo partInfo = new PartInfo(true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
                 partList.add(new PartEntry(partInfo));
             }
         }
 
-        this.partList = new GuiList(this, width, height, 0, height, 55, partList);
+        this.partList = new GuiList<PartEntry>(this, width, height, 0, height, 55, partList);
         this.partList.width = width;
         selectDefaultListEntry();
     }
@@ -95,43 +92,27 @@ public class PartsPanel extends Panel implements IListCallback {
     @Override
     public void onGuiClosed() {
         //Delete textures on close
-        for (GuiListExtended.IGuiListEntry entry : this.partList.getEntries()) {
-            PartEntry tailEntry = (PartEntry) entry;
-            tailEntry.partInfo.setTexture(null);
+        for (PartEntry entry : this.partList.getEntries()) {
+            entry.partInfo.setTexture(null);
         }
     }
 
     @Override
-    public boolean onEntrySelected(GuiList guiList, int index, GuiListExtended.IGuiListEntry entry) {
+    public boolean onEntrySelected(GuiList guiList, int index, PartEntry entry) {
         //Reset texture ID
-        getParent().textureID = 0;
-        updatePartsData();
+        parent.textureID = 0;
+        parent.setPartsInfo(entry.partInfo);
         return true;
     }
 
-    void updatePartsData() {
-        UUID uuid = mc.thePlayer.getPersistentID();
-        PartEntry tailEntry = (PartEntry) partList.getListEntry(partList.getCurrrentIndex());
-        GuiEditor editor = getParent();
-
-        editor.partInfo.setTexture(null);
-        if (editor.getCurrTintEdit() > 0) editor.partInfo.tints[editor.getCurrTintEdit() -1] = editor.getCurrTintColour() | 0xFF << 24; //Add the alpha manually
-        editor.partInfo = new PartInfo(uuid, tailEntry.partInfo.hasPart, tailEntry.partInfo.typeid, tailEntry.partInfo.subid, editor.textureID, editor.partInfo.tints, editor.partType, null);
-        if (editor.partInfo.hasPart) editor.partInfo.setTexture(TextureHelper.generateTexture(editor.partInfo));
-
-        editor.partsData.setPartInfo(editor.partType, editor.partInfo);
-
-        Tails.proxy.addPartsData(uuid, editor.partsData);
-    }
-
     void selectDefaultListEntry() {
-        GuiEditor editor = getParent();
         //Default selection
-        for (GuiListExtended.IGuiListEntry entry : this.partList.getEntries()) {
+        for (GuiListExtended.IGuiListEntry entry : partList.getEntries()) {
             PartEntry partEntry = (PartEntry) entry;
-            if ((!partEntry.partInfo.hasPart && !editor.partInfo.hasPart) || (editor.partInfo.hasPart && partEntry.partInfo.hasPart
-                    && partEntry.partInfo.typeid == editor.partInfo.typeid && partEntry.partInfo.subid == editor.partInfo.subid)) {
-                this.partList.setCurrrentIndex(this.partList.getEntries().indexOf(partEntry));
+            PartInfo partInfo = parent.getPartInfo();
+            if ((!partEntry.partInfo.hasPart && !partInfo.hasPart) || (partInfo.hasPart && partEntry.partInfo.hasPart
+                    && partEntry.partInfo.typeid == partInfo.typeid && partEntry.partInfo.subid == partInfo.subid)) {
+                partList.setCurrrentIndex(partList.getEntries().indexOf(partEntry));
                 break;
             }
         }
@@ -153,10 +134,6 @@ public class PartsPanel extends Panel implements IListCallback {
         GL11.glPopMatrix();
     }
 
-    private GuiEditor getParent() {
-        return (GuiEditor) parent;
-    }
-
     public class PartEntry implements GuiListExtended.IGuiListEntry {
 
         public final PartInfo partInfo;
@@ -174,7 +151,7 @@ public class PartsPanel extends Panel implements IListCallback {
                         .getUnlocalisedName(partInfo.subid)), 5, y + 17, 0xFFFFFF);
 
                 if (currentPart) {
-                    RenderPart renderPart = PartRegistry.getRenderPart(getParent().partType, partInfo.typeid);
+                    RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
                     if (renderPart.getModelAuthor() != null) {
                         //Yeah its not nice but eh, works
                         GL11.glPushMatrix();
@@ -195,7 +172,7 @@ public class PartsPanel extends Panel implements IListCallback {
 
         @Override
         public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
-            RenderPart renderPart = PartRegistry.getRenderPart(getParent().partType, partInfo.typeid);
+            RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
             if (partList.getCurrrentIndex() == index && renderPart.hasAuthor(partInfo.subid, partInfo.textureID)) {
                 String author = renderPart.getAuthor(partInfo.subid, partInfo.textureID);
                 float authorNameWidth = fontRendererObj.getStringWidth(author) * 0.6F;

@@ -57,7 +57,7 @@ public class Tails {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
-        if (FoxLibManager.checkFoxlib()) {
+        //if (FoxLibManager.checkFoxlib()) {
             Tails.proxy.registerHandlers();
             Tails.proxy.registerMessages();
 
@@ -68,7 +68,7 @@ public class Tails {
                 RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
                 RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
             }
-        }
+        //}
     }
 
     @SubscribeEvent

@@ -146,7 +146,7 @@ public class ClientEventHandler {
             }
             //World can't be null if we want to send a packet it seems
             else if (!sentPartInfoToServer && Minecraft.getMinecraft().theWorld != null) {
-                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Tails.localPartsData, false));
+                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Minecraft.getMinecraft().getSession().func_148256_e().getId(), Tails.localPartsData, false));
                 sentPartInfoToServer = true;
             }
         }

@@ -11,6 +11,7 @@ package kihira.tails.common;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class PartsData {
@@ -44,6 +45,26 @@ public class PartsData {
     public PartsData deepCopy() {
         Gson gson = new Gson();
         return gson.fromJson(gson.toJson(this), PartsData.class);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PartsData partsData = (PartsData) o;
+
+        if (!Arrays.equals(partInfos, partsData.partInfos)) return false;
+        if (!uuid.equals(partsData.uuid)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid.hashCode();
+        result = 31 * result + (partInfos != null ? Arrays.hashCode(partInfos) : 0);
+        return result;
     }
 
     //NOTE: We rely on the order of this, don't re-arrange, only append!

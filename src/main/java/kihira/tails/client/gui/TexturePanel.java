@@ -3,6 +3,7 @@ package kihira.tails.client.gui;
 import cpw.mods.fml.client.config.GuiButtonExt;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.client.render.RenderPart;
+import kihira.tails.common.PartInfo;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
@@ -12,7 +13,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 
-public class TexturePanel extends Panel {
+public class TexturePanel extends Panel<GuiEditor> {
 
     public TexturePanel(GuiEditor parent, int left, int top, int width, int height) {
         super(parent, left, top, width, height);
@@ -21,17 +22,18 @@ public class TexturePanel extends Panel {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        GuiEditor editor = (GuiEditor) parent;
         //Texture select
         buttonList.add(new GuiButtonExt(18, 5, height - 27, 15, 15, "<"));
         buttonList.add(new GuiButtonExt(19, width - 20, height - 27, 15, 15, ">"));
-        editor.textureID = editor.partInfo.textureID;
+        parent.textureID = parent.getPartInfo().textureID;
         super.initGui();
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
-        GuiEditor editor = (GuiEditor) parent;
+        PartInfo partInfo = parent.getPartInfo();
+        RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
+
         zLevel = -10;
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
         zLevel = -5;
@@ -39,16 +41,15 @@ public class TexturePanel extends Panel {
 
         //Texture select
         fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, height - 37, 0xFFFFFF);
-        fontRendererObj.drawString(I18n.format(editor.partType.name().toLowerCase() + ".texture." + PartRegistry.getRenderPart(editor.partType,
-                editor.partInfo.typeid).getTextureNames(editor.partInfo.subid)[editor.textureID] + ".name"), 25, height - 23, 0xFFFFFF);
+        fontRendererObj.drawString(I18n.format(parent.getPartType().name().toLowerCase() + ".texture." + PartRegistry.getRenderPart(parent.getPartType(),
+                partInfo.typeid).getTextureNames(partInfo.subid)[parent.textureID] + ".name"), 25, height - 23, 0xFFFFFF);
 
-        RenderPart renderPart = PartRegistry.getRenderPart(editor.partType, editor.partInfo.typeid);
-        if (renderPart.hasAuthor(editor.partInfo.subid, editor.partInfo.textureID)) {
+        if (renderPart.hasAuthor(partInfo.subid, partInfo.textureID)) {
             //Yeah its not nice but eh, works
             GL11.glPushMatrix();
             GL11.glTranslatef(7, this.height - 10, 0);
             GL11.glScalef(0.6F, 0.6F, 1F);
-            fontRendererObj.drawString(I18n.format("gui.createdby") + ": " + EnumChatFormatting.AQUA + renderPart.getAuthor(editor.partInfo.subid, editor.partInfo.textureID), 0, 0, 0xFFFFFF);
+            fontRendererObj.drawString(I18n.format("gui.createdby") + ": " + EnumChatFormatting.AQUA + renderPart.getAuthor(partInfo.subid, partInfo.textureID), 0, 0, 0xFFFFFF);
             GL11.glColor4f(1F, 1F, 1F, 1F);
             GL11.glPopMatrix();
         }
@@ -57,10 +58,10 @@ public class TexturePanel extends Panel {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        GuiEditor editor = (GuiEditor) parent;
-        RenderPart renderPart = PartRegistry.getRenderPart(editor.partType, editor.partInfo.typeid);
-        if (renderPart.hasAuthor(editor.partInfo.subid, editor.textureID)) {
-            String author = renderPart.getAuthor(editor.partInfo.subid, editor.textureID);
+        PartInfo partInfo = parent.getPartInfo();
+        RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
+        if (renderPart.hasAuthor(partInfo.subid, parent.textureID)) {
+            String author = renderPart.getAuthor(partInfo.subid, parent.textureID);
             float authorNameWidth = fontRendererObj.getStringWidth(author) * 0.6F;
             float authorWidth = fontRendererObj.getStringWidth(I18n.format("gui.createdby")) * 0.6F;
             if (mouseX > 9 + authorWidth && mouseX < 9 + authorWidth + authorNameWidth && mouseY > height - 10 && mouseY < height - 4) {
@@ -77,26 +78,25 @@ public class TexturePanel extends Panel {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        GuiEditor editor = (GuiEditor) parent;
-        RenderPart part = PartRegistry.getRenderPart(editor.partType, editor.partInfo.typeid);
+        PartInfo partInfo = parent.getPartInfo();
+        RenderPart part = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
         //Texture select
         if (button.id == 18) {
-            if (editor.textureID - 1 >= 0) {
-                editor.textureID--;
+            if (parent.textureID - 1 >= 0) {
+                parent.textureID--;
             }
             else {
-                editor.textureID = part.getTextureNames(editor.partInfo.subid).length - 1;
+                parent.textureID = part.getTextureNames(partInfo.subid).length - 1;
             }
-            editor.updatePartsData();
         }
         else if (button.id == 19) {
-            if (part.getTextureNames(editor.partInfo.subid).length > editor.textureID + 1) {
-                editor.textureID++;
+            if (part.getTextureNames(partInfo.subid).length > parent.textureID + 1) {
+                parent.textureID++;
             }
             else {
-                editor.textureID = 0;
+                parent.textureID = 0;
             }
-            editor.updatePartsData();
         }
+        parent.setPartsInfo(partInfo);
     }
 }

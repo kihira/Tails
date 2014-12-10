@@ -8,6 +8,7 @@
 
 package kihira.tails.client.gui;
 
+import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
@@ -16,16 +17,18 @@ import net.minecraft.client.Minecraft;
 public class GuiEditor extends GuiBase {
 
     public int textureID;
-    public PartsData.PartType partType;
-    public PartsData partsData;
-    public PartInfo partInfo;
+    private PartsData.PartType partType;
+    private PartsData partsData;
+    private PartInfo partInfo;
     public PartInfo originalPartInfo;
 
-    private TintPanel tintPanel;
-    private PartsPanel partsPanel;
+    public TintPanel tintPanel;
+    public PartsPanel partsPanel;
     private PreviewPanel previewPanel;
-    private TexturePanel texturePanel;
-    private ControlsPanel controlsPanel;
+    public TexturePanel texturePanel;
+    public ControlsPanel controlsPanel;
+    public LibraryPanel libraryPanel;
+    public LibraryInfoPanel libraryInfoPanel;
 
     public GuiEditor() {
         //Backup original PartInfo or create default one
@@ -38,7 +41,7 @@ public class GuiEditor extends GuiBase {
         partType = PartsData.PartType.TAIL;
         for (PartsData.PartType partType : PartsData.PartType.values()) {
             if (!Tails.localPartsData.hasPartInfo(partType)) {
-                Tails.localPartsData.setPartInfo(partType, new PartInfo(Minecraft.getMinecraft().thePlayer.getPersistentID(), false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType));
+                Tails.localPartsData.setPartInfo(partType, new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType));
             }
         }
         partInfo = Tails.localPartsData.getPartInfo(partType);
@@ -62,16 +65,28 @@ public class GuiEditor extends GuiBase {
             previewPanel = new PreviewPanel(this, previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
             texturePanel = new TexturePanel(this, 0, height - 43, previewWindowEdgeOffset, 43);
             controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom);
+            libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height);
+            libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height / 2);
+            partsPanel.enabled = false;
+            texturePanel.enabled = false;
+            tintPanel.enabled = false;
+
+/*            libraryInfoPanel.enabled = false;
+            libraryPanel.enabled = false;*/
 
             panels.add(previewPanel);
             panels.add(partsPanel);
+            panels.add(libraryPanel);
             panels.add(texturePanel);
             panels.add(tintPanel);
+            panels.add(libraryInfoPanel);
             panels.add(controlsPanel);
         }
         else {
             tintPanel.resize(previewWindowRight, 0, width - previewWindowRight, height);
+            libraryInfoPanel.resize(previewWindowRight, 0, width - previewWindowRight, height / 2);
             partsPanel.resize(0, 0, previewWindowEdgeOffset, height - 43);
+            libraryPanel.resize(0, 0, previewWindowEdgeOffset, height);
             previewPanel.resize(previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
             texturePanel.resize(0, height - 43, previewWindowEdgeOffset, 43);
             controlsPanel.resize(previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom);
@@ -89,28 +104,52 @@ public class GuiEditor extends GuiBase {
         tintPanel.refreshTintPane();
     }
 
-    public void updatePartsData() {
-        partsPanel.updatePartsData();
+    public void setPartsInfo(PartInfo newPartInfo) {
+        partInfo.setTexture(null);
+        if (tintPanel.currTintEdit > 0) partInfo.tints[tintPanel.currTintEdit -1] = tintPanel.currTintColour | 0xFF << 24; //Add the alpha manually
+        partInfo = new PartInfo(newPartInfo.hasPart, newPartInfo.typeid, newPartInfo.subid, textureID, partInfo.tints, partType, null);
+        if (partInfo.hasPart) partInfo.setTexture(TextureHelper.generateTexture(partInfo));
+
+        partsData.setPartInfo(partType, partInfo);
+        setPartsData(partsData);
     }
 
-    public int getCurrTintEdit() {
-        return tintPanel.currTintEdit;
+    public PartInfo getPartInfo() {
+        return partInfo;
+    }
+
+    public void setPartsData(PartsData newPartsData) {
+        partsData = newPartsData;
+        Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
+    }
+
+    public PartsData getPartsData() {
+        return partsData;
+    }
+
+    public void setPartType(PartsData.PartType partType) {
+        this.partType = partType;
+
+        PartInfo newPartInfo = partsData.getPartInfo(partType);
+        if (newPartInfo == null) {
+            newPartInfo = new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
+        }
+        originalPartInfo = newPartInfo.deepCopy();
+        PartInfo partInfo = originalPartInfo.deepCopy();
+        textureID = partInfo.textureID;
+
+        setCurrTintEdit(0);
+        initPartList();
+        refreshTintPane();
+        setPartsInfo(partInfo);
+    }
+
+    public PartsData.PartType getPartType() {
+        return partType;
     }
 
     public void setCurrTintEdit(int currTintEdit) {
         tintPanel.currTintEdit = currTintEdit;
-    }
-
-    public int getCurrTintColour() {
-        return tintPanel.currTintColour;
-    }
-
-    public void setCurrTintColour(int currTintColour) {
-        tintPanel.currTintColour = currTintColour;
-    }
-
-    public void selectDefaultListEntry() {
-        partsPanel.selectDefaultListEntry();
     }
 
     public void initPartList() {

@@ -11,14 +11,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
-public class PreviewPanel extends Panel {
+public class PreviewPanel extends Panel<GuiEditor> {
 
     private float yaw = 0F;
     private float pitch = 10F;
     private int prevMouseX = -1;
     private ScaledResolution scaledRes;
 
-    public PreviewPanel(GuiBase parent, int left, int top, int right, int bottom) {
+    public PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);
     }
 

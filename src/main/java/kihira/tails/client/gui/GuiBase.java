@@ -30,12 +30,14 @@ public abstract class GuiBase extends GuiBaseScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
         for (Panel panel : panels) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef(panel.left, panel.top, 0);
-            GL11.glColor4f(1, 1, 1, 1);
-            panel.drawScreen(mouseX - panel.left, mouseY - panel.top, p_73863_3_);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glPopMatrix();
+            if (panel.enabled) {
+                GL11.glPushMatrix();
+                GL11.glTranslatef(panel.left, panel.top, 0);
+                GL11.glColor4f(1, 1, 1, 1);
+                panel.drawScreen(mouseX - panel.left, mouseY - panel.top, p_73863_3_);
+                GL11.glDisable(GL11.GL_LIGHTING);
+                GL11.glPopMatrix();
+            }
         }
         GL11.glColor4f(1, 1, 1, 1);
         super.drawScreen(mouseX, mouseY, p_73863_3_);
@@ -44,7 +46,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     @Override
     protected void keyTyped(char key, int keycode) {
         for (Panel panel : panels) {
-            panel.keyTyped(key, keycode);
+            if (panel.enabled) panel.keyTyped(key, keycode);
         }
         super.keyTyped(key, keycode);
     }
@@ -52,7 +54,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         for (Panel panel : panels) {
-            if (mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
+            if (panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
                 panel.mouseClicked(mouseX - panel.left, mouseY - panel.top, mouseButton);
             }
         }
@@ -62,7 +64,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     @Override
     protected void mouseMovedOrUp(int mouseX, int mouseY, int mouseButton) {
         for (Panel panel : panels) {
-            if (mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
+            if (panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
                 panel.mouseMovedOrUp(mouseX - panel.left, mouseY - panel.top, mouseButton);
             }
         }
@@ -72,7 +74,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int mouseButton, long pressTime) {
         for (Panel panel : panels) {
-            if (mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
+            if (panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
                 panel.mouseClickMove(mouseX - panel.left, mouseY - panel.top, mouseButton, pressTime);
             }
         }

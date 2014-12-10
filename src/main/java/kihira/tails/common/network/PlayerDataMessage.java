@@ -17,22 +17,27 @@ import io.netty.buffer.ByteBuf;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 
+import java.util.UUID;
+
 public class PlayerDataMessage implements IMessage {
 
+    private UUID uuid;
     private PartsData partsData;
     private boolean shouldRemove;
 
     public PlayerDataMessage() {}
-    public PlayerDataMessage(PartsData partsData, boolean shouldRemove) {
+    public PlayerDataMessage(UUID uuid, PartsData partsData, boolean shouldRemove) {
+        this.uuid = uuid;
         this.partsData = partsData;
         this.shouldRemove = shouldRemove;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
+        uuid = UUID.fromString(ByteBufUtils.readUTF8String(buf));
         String tailInfoJson = ByteBufUtils.readUTF8String(buf);
         try {
-            this.partsData = Tails.gson.fromJson(tailInfoJson, PartsData.class);
+            partsData = Tails.gson.fromJson(tailInfoJson, PartsData.class);
         } catch (JsonSyntaxException e) {
             Tails.logger.warn(e);
         }
@@ -40,6 +45,7 @@ public class PlayerDataMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
+        ByteBufUtils.writeUTF8String(buf, uuid.toString());
         String tailInfoJson = Tails.gson.toJson(this.partsData);
         ByteBufUtils.writeUTF8String(buf, tailInfoJson);
     }
@@ -49,12 +55,12 @@ public class PlayerDataMessage implements IMessage {
         @Override
         public IMessage onMessage(PlayerDataMessage message, MessageContext ctx) {
             if (message.partsData != null) {
-                if (message.shouldRemove) Tails.proxy.removePartsData(message.partsData.uuid);
+                if (message.shouldRemove) Tails.proxy.removePartsData(message.uuid);
                 else {
-                    Tails.proxy.addPartsData(message.partsData.uuid, message.partsData);
+                    Tails.proxy.addPartsData(message.uuid, message.partsData);
                     //Tell other clients about the change
                     if (ctx.side.isServer()) {
-                        Tails.networkWrapper.sendToAll(new PlayerDataMessage(message.partsData, false));
+                        Tails.networkWrapper.sendToAll(new PlayerDataMessage(message.uuid, message.partsData, false));
                     }
                 }
             }
