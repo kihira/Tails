@@ -1,29 +1,25 @@
 package kihira.tails.client.gui;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import cpw.mods.fml.client.config.GuiButtonExt;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.foxlib.client.gui.GuiList;
 import kihira.foxlib.client.gui.IListCallback;
+import kihira.tails.common.LibraryEntryData;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.GL11;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<LibraryEntry> {
+public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<LibraryListEntry> {
 
     private static final LibrarySorter sorter = new LibrarySorter();
-    private GuiList<LibraryEntry> list;
-    private List<LibraryEntry> libraryEntries;
+    private GuiList<LibraryListEntry> list;
     private GuiTextField searchField;
 
     public LibraryPanel(GuiEditor parent, int left, int top, int width, int height) {
@@ -33,7 +29,6 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        libraryEntries = loadLibrary();
         initList();
 
         searchField = new GuiTextField(fontRendererObj, 5, height - 31, width - 10, 10);
@@ -80,9 +75,8 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public void keyTyped(char key, int keycode) {
         searchField.textboxKeyTyped(key, keycode);
         if (searchField.getVisible() && searchField.isFocused()) {
-            //TODO update library list.
-            List<LibraryEntry> newEntries = filterListEntries(libraryEntries, searchField.getText().toLowerCase());
-            newEntries.add(0, new LibraryEntry.NewLibraryEntry(this, null));
+            List<LibraryListEntry> newEntries = filterListEntries(searchField.getText().toLowerCase());
+            newEntries.add(0, new LibraryListEntry.NewLibraryListEntry(this, null));
             list.getEntries().clear();
             list.getEntries().addAll(newEntries);
         }
@@ -90,125 +84,82 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     @Override
-    public boolean onEntrySelected(GuiList guiList, int index, LibraryEntry entry) {
-        parent.libraryInfoPanel.setEntry(entry);
-        if (!(entry instanceof LibraryEntry.NewLibraryEntry)) {
-            Tails.localPartsData = entry.partsData;
-            parent.setPartsData(entry.partsData);
+    public boolean onEntrySelected(GuiList guiList, int index, LibraryListEntry entry) {
+        if (!(entry instanceof LibraryListEntry.NewLibraryListEntry)) {
+            parent.libraryInfoPanel.setEntry(entry);
+            Tails.localPartsData = entry.data.partsData;
+            parent.setPartsData(entry.data.partsData);
         }
-        saveLibrary();
         return true;
     }
 
-    private void initList() {
-        List<LibraryEntry> libraryEntries = new ArrayList<LibraryEntry>(this.libraryEntries);
+    public void initList() {
+        List<LibraryListEntry> libraryEntries = new ArrayList<LibraryListEntry>();
+        for (LibraryEntryData data : Tails.proxy.getLibraryManager().libraryEntries) {
+            libraryEntries.add(new LibraryListEntry(data));
+        }
 
         //Add in new entry creation
-        libraryEntries.add(0, new LibraryEntry.NewLibraryEntry(this, null));
+        libraryEntries.add(0, new LibraryListEntry.NewLibraryListEntry(this, null));
 
         Collections.sort(libraryEntries, sorter);
 
-        list = new GuiList<LibraryEntry>(this, width, height - 34, 0, height - 34, 40, libraryEntries);
+        list = new GuiList<LibraryListEntry>(this, width, height - 34, 0, height - 34, 40, libraryEntries);
     }
 
-    public void addSelectedEntry(LibraryEntry entry) {
+    public void addSelectedEntry(LibraryListEntry entry) {
         list.getEntries().add(entry);
-        libraryEntries.add(entry);
         list.setCurrrentIndex(list.getEntries().size() - 1);
         parent.libraryInfoPanel.setEntry(entry);
     }
 
-    public void removeEntry(LibraryEntry entry) {
-        libraryEntries.remove(entry);
+    public void removeEntry(LibraryListEntry entry) {
+        Tails.proxy.getLibraryManager().removeEntry(entry.data);
         list.getEntries().remove(entry);
     }
 
-    /**
-     * Loads the library of entries from disk
-     */
-    private List<LibraryEntry> loadLibrary() {
-        Gson gson = Tails.gson;
-        ArrayList<LibraryEntry> libraryEntries = new ArrayList<LibraryEntry>();
-        FileReader fileReader = null;
+    private List<LibraryListEntry> filterListEntries(String filter) {
+        ArrayList<LibraryListEntry> filteredEntries = new ArrayList<LibraryListEntry>();
+        List<LibraryListEntry> entries = new ArrayList<LibraryListEntry>();
 
-        try {
-            fileReader = new FileReader(getLibraryFile());
-            List<LibraryEntry> loadedEntries = gson.fromJson(fileReader, new TypeToken<List<LibraryEntry>>() {}.getType());
-            if (loadedEntries != null && loadedEntries.size() > 0) {
-                for (LibraryEntry libEntry : loadedEntries) {
-                    if (libEntry.partsData != null) {
-                        libraryEntries.add(libEntry);
-                    }
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            Tails.logger.catching(e);
-        } finally {
-            IOUtils.closeQuietly(fileReader);
+        for (LibraryEntryData data : Tails.proxy.getLibraryManager().libraryEntries) {
+            entries.add(new LibraryListEntry(data));
         }
-        return libraryEntries;
-    }
 
-    /**
-     * Saves the library to disk
-     */
-    public void saveLibrary() {
-        List<LibraryEntry> entries = this.libraryEntries;
-        FileWriter fileWriter = null;
-
-        try {
-            fileWriter = new FileWriter(getLibraryFile());
-            Tails.gson.toJson(entries, fileWriter);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(fileWriter);
-        }
-    }
-
-    private File getLibraryFile() {
-        File libraryFile = new File(mc.mcDataDir, "tailslibrary.json");
-
-        if (!libraryFile.exists()) {
-            try {
-                libraryFile.createNewFile();
-            } catch (IOException e) {
-                Tails.logger.error("Failed to create a library file!", e);
-            }
-        }
-        return libraryFile;
-    }
-
-    private List<LibraryEntry> filterListEntries(List<LibraryEntry> entries, String filter) {
-        ArrayList<LibraryEntry> filteredEntries = new ArrayList<LibraryEntry>();
-        for (LibraryEntry entry : entries) {
-            if (entry instanceof LibraryEntry.NewLibraryEntry || entry.entryName.toLowerCase().contains(filter)) {
+        for (LibraryListEntry entry : entries) {
+            if (entry instanceof LibraryListEntry.NewLibraryListEntry || entry.data.entryName.toLowerCase().contains(filter)) {
                 filteredEntries.add(entry);
             }
         }
         return filteredEntries;
     }
 
-    private static class LibrarySorter implements Comparator<LibraryEntry> {
+    @Override
+    public void onGuiClosed() {
+        Tails.proxy.getLibraryManager().removeRemoteEntries();
+        super.onGuiClosed();
+    }
+
+    private static class LibrarySorter implements Comparator<LibraryListEntry> {
 
         @Override
-        public int compare(LibraryEntry entry1, LibraryEntry entry2) {
+        public int compare(LibraryListEntry entry1, LibraryListEntry entry2) {
             if (entry1.equals(entry2)) {
                 return 0;
             }
 
-            if (entry1 instanceof LibraryEntry.NewLibraryEntry) {
+            if (entry1 instanceof LibraryListEntry.NewLibraryListEntry) {
                 return Integer.MIN_VALUE;
             }
-            else if (entry2 instanceof LibraryEntry.NewLibraryEntry) {
+            else if (entry2 instanceof LibraryListEntry.NewLibraryListEntry) {
                 return Integer.MAX_VALUE;
             }
 
-            if (entry1.favourite && !entry2.favourite) {
+            //Put favourites at the top
+            if (entry1.data.favourite && !entry2.data.favourite) {
                 return -1;
             }
-            else if (!entry1.favourite && entry2.favourite) {
+            else if (!entry1.data.favourite && entry2.data.favourite) {
                 return 1;
             }
 

@@ -52,7 +52,7 @@ public class TextureHelper {
             //Players part data
             PartsData partsData = Tails.proxy.getPartsData(uuid);
             if (partsData == null) {
-                partsData = new PartsData(uuid);
+                partsData = new PartsData();
             }
 
             //Load part data from skin
@@ -76,7 +76,7 @@ public class TextureHelper {
             //If local player, send our skin info the server.
             if (player == Minecraft.getMinecraft().thePlayer) {
                 Tails.setLocalPartsData(partsData);
-                Tails.networkWrapper.sendToServer(new PlayerDataMessage(player.getPersistentID(), partsData, false));
+                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Minecraft.getMinecraft().getSession().func_148256_e().getId(), partsData, false));
             }
         }
 	}

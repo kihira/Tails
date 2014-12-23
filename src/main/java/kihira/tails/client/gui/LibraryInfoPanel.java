@@ -1,6 +1,9 @@
 package kihira.tails.client.gui;
 
 import kihira.foxlib.client.gui.GuiIconButton;
+import kihira.tails.common.LibraryEntryData;
+import kihira.tails.common.Tails;
+import kihira.tails.common.network.LibraryEntriesMessage;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
@@ -8,9 +11,11 @@ import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+
 public class LibraryInfoPanel extends Panel<GuiEditor> {
 
-    private LibraryEntry entry;
+    private LibraryListEntry entry;
 
     private GuiTextField textField;
     private GuiIconButton.GuiIconToggleButton favButton;
@@ -60,7 +65,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             textField.drawTextBox();
 
             fontRendererObj.setUnicodeFlag(true);
-            fontRendererObj.drawSplitString(EnumChatFormatting.ITALIC + entry.comment, 5, 40, width, 0xFFFFFF);
+            fontRendererObj.drawSplitString(EnumChatFormatting.ITALIC + entry.data.comment, 5, 40, width, 0xFFFFFF);
             fontRendererObj.setUnicodeFlag(false);
         }
 
@@ -71,15 +76,31 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
     protected void actionPerformed(GuiButton button) {
         //Favourite
         if (button.id == 0) {
-            entry.favourite = ((GuiIconButton.GuiIconToggleButton) button).toggled;
+            entry.data.favourite = ((GuiIconButton.GuiIconToggleButton) button).toggled;
         }
         //Delete
-        if (button.id == 1) {
+        else if (button.id == 1) {
+            if (entry.data.remoteEntry) {
+                //Only allow removing if player owns the entry
+                if (!entry.data.creatorUUID.equals(mc.thePlayer.getUniqueID())) {
+                    return;
+                }
+            }
             ((GuiIconButton) button).setHover(false);
             parent.libraryPanel.removeEntry(entry);
             setEntry(null);
         }
-        parent.libraryPanel.saveLibrary();
+        //Upload
+        else if (button.id == 2) {
+            Tails.networkWrapper.sendToServer(new LibraryEntriesMessage(new ArrayList<LibraryEntryData>() {{ add(entry.data); }}, false));
+            button.enabled = false;
+        }
+        //Download/save locally
+        else if (button.id == 3) {
+            entry.data.remoteEntry = false;
+            button.enabled = false;
+        }
+        Tails.proxy.getLibraryManager().saveLibrary();
     }
 
     @Override
@@ -93,8 +114,8 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         textField.textboxKeyTyped(key, keycode);
 
         if (textField.isFocused() && entry != null) {
-            entry.entryName = textField.getText();
-            parent.libraryPanel.saveLibrary();
+            entry.data.entryName = textField.getText();
+            Tails.proxy.getLibraryManager().saveLibrary();
         }
         super.keyTyped(key, keycode);
     }
@@ -105,7 +126,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         super.onGuiClosed();
     }
 
-    public void setEntry(LibraryEntry entry) {
+    public void setEntry(LibraryListEntry entry) {
         this.entry = entry;
         if (entry == null) {
             textField.setVisible(false);
@@ -114,19 +135,22 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             }
         }
         else {
-            favButton.toggled = entry.favourite;
+            favButton.toggled = entry.data.favourite;
             textField.setVisible(true);
-            textField.setText(entry.entryName);
+            textField.setText(entry.data.entryName);
             for (Object obj : buttonList) {
                 GuiButton button = (GuiButton) obj;
                 button.visible = true;
 
+                if (button.id == 2 && entry.data.remoteEntry && !entry.data.creatorUUID.equals(mc.thePlayer.getUniqueID())) {
+                    button.visible = false;
+                }
                 //Download
-                if (button.id == 3 && !(entry instanceof LibraryEntry.RemoteLibraryEntry)) {
+                else if (button.id == 3 && !entry.data.remoteEntry) {
                     button.visible = false;
                 }
                 //Upload
-                else if (button.id == 2 && entry instanceof LibraryEntry.RemoteLibraryEntry) {
+                else if (button.id == 2 && entry.data.remoteEntry) {
                     button.visible = false;
                 }
             }

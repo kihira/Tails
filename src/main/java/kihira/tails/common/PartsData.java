@@ -12,15 +12,13 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 public class PartsData {
 
-    @Expose public final UUID uuid;
     @Expose private PartInfo[] partInfos = new PartInfo[PartType.values().length];
 
-    public PartsData(UUID uuid) {
-        this.uuid = uuid;
+    public PartsData() {
+
     }
 
     public void setPartInfo(PartType partType, PartInfo partInfo) {
@@ -55,16 +53,13 @@ public class PartsData {
         PartsData partsData = (PartsData) o;
 
         if (!Arrays.equals(partInfos, partsData.partInfos)) return false;
-        if (!uuid.equals(partsData.uuid)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = uuid.hashCode();
-        result = 31 * result + (partInfos != null ? Arrays.hashCode(partInfos) : 0);
-        return result;
+        return partInfos != null ? Arrays.hashCode(partInfos) : 0;
     }
 
     //NOTE: We rely on the order of this, don't re-arrange, only append!

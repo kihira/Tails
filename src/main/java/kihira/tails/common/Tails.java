@@ -25,7 +25,6 @@ import kihira.tails.client.render.FakeEntityRenderHelper;
 import kihira.tails.client.render.PlayerRenderHelper;
 import kihira.tails.client.render.RenderPart;
 import kihira.tails.proxy.CommonProxy;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -58,8 +57,7 @@ public class Tails {
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
         //if (FoxLibManager.checkFoxlib()) {
-            Tails.proxy.registerHandlers();
-            Tails.proxy.registerMessages();
+            Tails.proxy.init();
 
             if (e.getSide().isClient()) {
                 Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
@@ -100,7 +98,7 @@ public class Tails {
                         Configuration.CATEGORY_GENERAL, "DEPRECIATED. CAN SAFELY REMOVE", ""), PartInfo.class);
             }
             if (tailInfo != null) {
-                if (localPartsData == null) localPartsData = new PartsData(Minecraft.getMinecraft().thePlayer.getUniqueID());
+                if (localPartsData == null) localPartsData = new PartsData();
                 tailInfo.partType = PartsData.PartType.TAIL;
                 localPartsData.setPartInfo(PartsData.PartType.TAIL, tailInfo);
 

@@ -12,7 +12,6 @@ import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
-import net.minecraft.client.Minecraft;
 
 public class GuiEditor extends GuiBase {
 
@@ -34,7 +33,7 @@ public class GuiEditor extends GuiBase {
         //Backup original PartInfo or create default one
         PartInfo partInfo;
         if (Tails.localPartsData == null) {
-            Tails.setLocalPartsData(new PartsData(Minecraft.getMinecraft().thePlayer.getPersistentID()));
+            Tails.setLocalPartsData(new PartsData());
         }
 
         //Default to Tail
@@ -96,7 +95,7 @@ public class GuiEditor extends GuiBase {
 
     @Override
     public void onGuiClosed() {
-        Tails.proxy.addPartsData(this.mc.thePlayer.getPersistentID(), Tails.localPartsData);
+        Tails.proxy.addPartsData(mc.getSession().func_148256_e().getId(), Tails.localPartsData);
         super.onGuiClosed();
     }
 
