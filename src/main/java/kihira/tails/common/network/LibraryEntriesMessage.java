@@ -26,7 +26,6 @@ public class LibraryEntriesMessage implements IMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         String dataJson = ByteBufUtils.readUTF8String(buf);
-        System.out.println(dataJson);
         try {
             entries = Tails.gson.fromJson(dataJson, new TypeToken<List<LibraryEntryData>>() {}.getType());
         } catch (JsonParseException e) {

@@ -12,6 +12,7 @@ import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
+import net.minecraft.client.Minecraft;
 
 public class GuiEditor extends GuiBase {
 
@@ -46,7 +47,7 @@ public class GuiEditor extends GuiBase {
         partInfo = Tails.localPartsData.getPartInfo(partType);
 
         originalPartInfo = partInfo.deepCopy();
-        partsData = Tails.localPartsData.deepCopy();
+        setPartsData(Tails.localPartsData.deepCopy());
         this.partInfo = originalPartInfo.deepCopy();
     }
 
@@ -66,10 +67,6 @@ public class GuiEditor extends GuiBase {
             panels.add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
             panels.add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height / 2));
             panels.add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
-
-/*            partsPanel.enabled = false;
-            texturePanel.enabled = false;
-            tintPanel.enabled = false;*/
 
             libraryInfoPanel.enabled = false;
             libraryPanel.enabled = false;
@@ -112,7 +109,7 @@ public class GuiEditor extends GuiBase {
 
     public void setPartsData(PartsData newPartsData) {
         partsData = newPartsData;
-        Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
+        Tails.proxy.addPartsData(Minecraft.getMinecraft().thePlayer.getGameProfile().getId(), partsData);
     }
 
     public PartsData getPartsData() {
