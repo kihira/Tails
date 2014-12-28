@@ -59,27 +59,20 @@ public class GuiEditor extends GuiBase {
 
         //Not an ideal solution but keeps everything from resetting on resize
         if (tintPanel == null) {
-            tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height);
-            partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - 43);
-            previewPanel = new PreviewPanel(this, previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
-            texturePanel = new TexturePanel(this, 0, height - 43, previewWindowEdgeOffset, 43);
-            controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom);
-            libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height);
-            libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height / 2);
-            partsPanel.enabled = false;
+            panels.add(previewPanel = new PreviewPanel(this, previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom));
+            panels.add(partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - 43));
+            panels.add(libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height));
+            panels.add(texturePanel = new TexturePanel(this, 0, height - 43, previewWindowEdgeOffset, 43));
+            panels.add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
+            panels.add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height / 2));
+            panels.add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
+
+/*            partsPanel.enabled = false;
             texturePanel.enabled = false;
-            tintPanel.enabled = false;
+            tintPanel.enabled = false;*/
 
-/*            libraryInfoPanel.enabled = false;
-            libraryPanel.enabled = false;*/
-
-            panels.add(previewPanel);
-            panels.add(partsPanel);
-            panels.add(libraryPanel);
-            panels.add(texturePanel);
-            panels.add(tintPanel);
-            panels.add(libraryInfoPanel);
-            panels.add(controlsPanel);
+            libraryInfoPanel.enabled = false;
+            libraryPanel.enabled = false;
         }
         else {
             tintPanel.resize(previewWindowRight, 0, width - previewWindowRight, height);

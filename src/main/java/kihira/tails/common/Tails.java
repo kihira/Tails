@@ -42,6 +42,7 @@ public class Tails {
     public static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     public static Configuration configuration;
+    public static boolean libraryEnabled;
     public static boolean hasRemote;
 
     @SidedProxy(clientSide = "kihira.tails.proxy.ClientProxy", serverSide = "kihira.tails.proxy.CommonProxy")
@@ -112,6 +113,8 @@ public class Tails {
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
         }
+
+        libraryEnabled = configuration.getBoolean("Enable Library", Configuration.CATEGORY_GENERAL, true, "Whether to enable the library system for sharing tails. This mostly matters on servers.");
 
         if (Tails.configuration.hasChanged()) {
             Tails.configuration.save();

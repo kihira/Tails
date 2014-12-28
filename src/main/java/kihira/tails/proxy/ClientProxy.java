@@ -18,6 +18,7 @@ import kihira.tails.common.Tails;
 import kihira.tails.common.network.LibraryEntriesMessage;
 import kihira.tails.common.network.PlayerDataMapMessage;
 import kihira.tails.common.network.PlayerDataMessage;
+import kihira.tails.common.network.ServerCapabilitiesMessage;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.UUID;
@@ -62,6 +63,7 @@ public class ClientProxy extends CommonProxy {
         Tails.networkWrapper.registerMessage(PlayerDataMessage.Handler.class, PlayerDataMessage.class, 0, Side.CLIENT);
         Tails.networkWrapper.registerMessage(PlayerDataMapMessage.Handler.class, PlayerDataMapMessage.class, 1, Side.CLIENT);
         Tails.networkWrapper.registerMessage(LibraryEntriesMessage.Handler.class, LibraryEntriesMessage.class, 2, Side.CLIENT);
+        Tails.networkWrapper.registerMessage(ServerCapabilitiesMessage.Handler.class, ServerCapabilitiesMessage.class, 4, Side.CLIENT);
         super.registerMessages();
     }
 

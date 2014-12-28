@@ -79,10 +79,12 @@ public class ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
+    public void onDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
         Tails.hasRemote = false;
         sentPartInfoToServer = false;
         clearAllPartInfo = true;
+
+        Tails.instance.loadConfig();
     }
 
     /*
