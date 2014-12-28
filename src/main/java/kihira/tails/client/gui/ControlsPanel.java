@@ -29,16 +29,18 @@ public class ControlsPanel extends Panel<GuiEditor> {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
+        //Mode Switch
+        buttonList.add(new GuiButton(0, 38, height - 25, 45, 20, "Library"));
         //Reset/Save
-        buttonList.add(new GuiButton(12, width - 83, height - 25, 40, 20, I18n.format("gui.button.reset")));
-        buttonList.add(new GuiButton(13, width - 43, height - 25, 40, 20, I18n.format("gui.done")));
+        buttonList.add(new GuiButton(1, width - 83, height - 25, 40, 20, I18n.format("gui.button.reset")));
+        buttonList.add(new GuiButton(2, width - 43, height - 25, 40, 20, I18n.format("gui.done")));
 
         //Export
-        buttonList.add(new GuiBaseScreen.GuiButtonTooltip(14, (width / 2) - 20, height - 25, 40, 20, I18n.format("gui.button.export"),
+        buttonList.add(new GuiBaseScreen.GuiButtonTooltip(3, (width / 2) - 20, height - 25, 40, 20, I18n.format("gui.button.export"),
                 (width / 2) - 20, I18n.format("gui.button.export.0.tooltip")));
 
         //PartType Select
-        buttonList.add(partTypeButton = new GuiButton(20, 3, height - 25, 40, 20, parent.getPartType().name()));
+        buttonList.add(partTypeButton = new GuiButton(4, 3, height - 25, 35, 20, parent.getPartType().name()));
     }
 
     @Override
@@ -51,8 +53,21 @@ public class ControlsPanel extends Panel<GuiEditor> {
     @Override
     protected void actionPerformed(GuiButton button) {
         PartsData partsData = parent.getPartsData();
+        //Mode Switch
+        if (button.id == 0) {
+            //>.> You see nothing!
+            boolean libraryMode = button.displayString.equals("Library");
+            parent.partsPanel.enabled = !libraryMode;
+            parent.texturePanel.enabled = !libraryMode;
+            parent.tintPanel.enabled = !libraryMode;
+
+            parent.libraryInfoPanel.enabled = libraryMode;
+            parent.libraryPanel.enabled = libraryMode;
+
+            button.displayString = (libraryMode ? "Editor" : "Library");
+        }
         //Reset All
-        if (button.id == 12) {
+        else if (button.id == 1) {
             PartInfo partInfo = parent.originalPartInfo.deepCopy();
             parent.partsPanel.selectDefaultListEntry();
             parent.setCurrTintEdit(0);
@@ -60,7 +75,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
             parent.setPartsInfo(partInfo);
         }
         //Save All
-        else if (button.id == 13) {
+        else if (button.id == 2) {
             //Update part info, set local and send it to the server
             Tails.setLocalPartsData(partsData);
             Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
@@ -69,11 +84,11 @@ public class ControlsPanel extends Panel<GuiEditor> {
             this.mc.displayGuiScreen(null);
         }
         //Export
-        else if (button.id == 14) {
+        else if (button.id == 3) {
             mc.displayGuiScreen(new GuiExport(parent, partsData));
         }
         //PartType
-        else if (button.id == 20) {
+        else if (button.id == 4) {
             if (parent.getPartType().ordinal() + 1 >= PartsData.PartType.values().length) {
                 parent.setPartType(PartsData.PartType.values()[0]);
             }
