@@ -9,6 +9,8 @@
 package kihira.tails.common.network;
 
 import com.google.gson.JsonSyntaxException;
+import com.mojang.util.UUIDTypeAdapter;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -27,6 +29,7 @@ public class PlayerDataMessage implements IMessage {
 
     public PlayerDataMessage() {}
     public PlayerDataMessage(UUID uuid, PartsData partsData, boolean shouldRemove) {
+        System.out.println(uuid + " " + FMLCommonHandler.instance().getSide());
         this.uuid = uuid;
         this.partsData = partsData;
         this.shouldRemove = shouldRemove;
@@ -34,7 +37,7 @@ public class PlayerDataMessage implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        uuid = UUID.fromString(ByteBufUtils.readUTF8String(buf));
+        uuid = UUIDTypeAdapter.fromString(ByteBufUtils.readUTF8String(buf));
         String tailInfoJson = ByteBufUtils.readUTF8String(buf);
         try {
             partsData = Tails.gson.fromJson(tailInfoJson, PartsData.class);
@@ -45,7 +48,7 @@ public class PlayerDataMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeUTF8String(buf, uuid.toString());
+        ByteBufUtils.writeUTF8String(buf, UUIDTypeAdapter.fromUUID(uuid));
         String tailInfoJson = Tails.gson.toJson(this.partsData);
         ByteBufUtils.writeUTF8String(buf, tailInfoJson);
     }

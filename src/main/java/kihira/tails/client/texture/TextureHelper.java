@@ -9,6 +9,7 @@
 package kihira.tails.client.texture;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.util.UUIDTypeAdapter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.PartRegistry;
@@ -76,7 +77,7 @@ public class TextureHelper {
             //If local player, send our skin info the server.
             if (player == Minecraft.getMinecraft().thePlayer) {
                 Tails.setLocalPartsData(partsData);
-                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Minecraft.getMinecraft().getSession().func_148256_e().getId(), partsData, false));
+                Tails.networkWrapper.sendToServer(new PlayerDataMessage(UUIDTypeAdapter.fromString(Minecraft.getMinecraft().getSession().getPlayerID()), partsData, false));
             }
         }
 	}
