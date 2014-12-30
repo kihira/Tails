@@ -9,6 +9,7 @@
 package kihira.tails.client.texture;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.util.UUIDTypeAdapter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.PartRegistry;
@@ -52,7 +53,7 @@ public class TextureHelper {
             //Players part data
             PartsData partsData = Tails.proxy.getPartsData(uuid);
             if (partsData == null) {
-                partsData = new PartsData(uuid);
+                partsData = new PartsData();
             }
 
             //Load part data from skin
@@ -63,10 +64,10 @@ public class TextureHelper {
 
                 PartInfo tailInfo;
                 if (scol1 == switch1Colour && scol2 == switch2Colour) {
-                    tailInfo = buildPartInfoFromSkin(uuid, partType, image);
+                    tailInfo = buildPartInfoFromSkin(partType, image);
                 }
                 else {
-                    tailInfo = new PartInfo(uuid, false, 0, 0, 0, 0, 0, 0, null, partType);
+                    tailInfo = new PartInfo(false, 0, 0, 0, 0, 0, 0, null, partType);
                 }
                 partsData.setPartInfo(partType, tailInfo);
             }
@@ -76,7 +77,7 @@ public class TextureHelper {
             //If local player, send our skin info the server.
             if (player == Minecraft.getMinecraft().thePlayer) {
                 Tails.setLocalPartsData(partsData);
-                Tails.networkWrapper.sendToServer(new PlayerDataMessage(partsData, false));
+                Tails.networkWrapper.sendToServer(new PlayerDataMessage(UUIDTypeAdapter.fromString(Minecraft.getMinecraft().getSession().getPlayerID()), partsData, false));
             }
         }
 	}
@@ -117,7 +118,7 @@ public class TextureHelper {
         return image;
     }
 
-	public static PartInfo buildPartInfoFromSkin(UUID id, PartsData.PartType partType, BufferedImage skin) {
+	public static PartInfo buildPartInfoFromSkin(PartsData.PartType partType, BufferedImage skin) {
         int ordinal = partType.ordinal();
 		int data = skin.getRGB(dataPoints[ordinal].getX(), dataPoints[ordinal].getY());
 		int typeid = (data >> 16) & 0xFF;
@@ -131,33 +132,32 @@ public class TextureHelper {
 		int tint2 = skin.getRGB(tintPoints[ordinal][1].getX(), tintPoints[ordinal][1].getY());
 		int tint3 = skin.getRGB(tintPoints[ordinal][2].getX(), tintPoints[ordinal][2].getY());
 		
-		ResourceLocation tailtexture = generateTexture(id, partType, typeid, subtype, textureid, new int[] {tint1, tint2, tint3});
+		ResourceLocation tailtexture = generateTexture(partType, typeid, subtype, textureid, new int[] {tint1, tint2, tint3});
 		
-		return new PartInfo(id, true, typeid, subtype, 0, tint1, tint2, tint3, tailtexture, partType);
+		return new PartInfo(true, typeid, subtype, 0, tint1, tint2, tint3, tailtexture, partType);
 	}
 
     /**
      * Creates and loads the tail texture into memory based upon the provided params
-     * @param id The UUID of the owner
      * @param partType
      * @param typeid The type ID
      * @param subid The subtype ID
      * @param textureID The texture ID
      * @param tints An array of int[3]     @return A resource location for the generated texture
      */
-    public static ResourceLocation generateTexture(UUID id, PartsData.PartType partType, int typeid, int subid, int textureID, int[] tints) {
+    public static ResourceLocation generateTexture(PartsData.PartType partType, int typeid, int subid, int textureID, int[] tints) {
         String[] textures = PartRegistry.getRenderPart(partType, typeid).getTextureNames(subid);
         textureID = textureID >= textures.length ? 0 : textureID;
         String texturePath = "texture/" + partType.name().toLowerCase() + "/"+textures[textureID]+".png";
 
-        ResourceLocation tailtexture = new ResourceLocation("tails_"+id.toString()+"_"+partType.name()+"_"+typeid+"_"+subid+"_"+textureID+"_"+tints[0]+"_"+tints[1]+"_"+tints[2]);
+        ResourceLocation tailtexture = new ResourceLocation("tails_"+partType.name()+"_"+typeid+"_"+subid+"_"+textureID+"_"+tints[0]+"_"+tints[1]+"_"+tints[2]);
         Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturePath, tints[0], tints[1], tints[2]));
 
         return tailtexture;
     }
 
     public static ResourceLocation generateTexture(PartInfo partInfo) {
-        return generateTexture(partInfo.uuid, partInfo.partType, partInfo.typeid, partInfo.subid, partInfo.textureID, partInfo.tints);
+        return generateTexture(partInfo.partType, partInfo.typeid, partInfo.subid, partInfo.textureID, partInfo.tints);
     }
 	
 	public static boolean needsBuild(EntityPlayer player) {

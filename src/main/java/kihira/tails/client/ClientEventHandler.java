@@ -20,6 +20,7 @@ import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
+import kihira.tails.common.network.LibraryRequestMessage;
 import kihira.tails.common.network.PlayerDataMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -59,6 +60,10 @@ public class ClientEventHandler {
     public void onButtonClickPre(GuiScreenEvent.ActionPerformedEvent.Pre event) {
         if (event.gui instanceof GuiIngameMenu) {
             if (event.button.id == 1234) {
+                //Only request library if on remote server
+                if (!Minecraft.getMinecraft().isIntegratedServerRunning()) {
+                    Tails.networkWrapper.sendToServer(new LibraryRequestMessage());
+                }
                 event.gui.mc.displayGuiScreen(new GuiEditor());
                 event.setCanceled(true);
             }
@@ -72,15 +77,17 @@ public class ClientEventHandler {
     public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         //Add local player texture to map
         if (Tails.localPartsData != null) {
-            Tails.proxy.addPartsData(Tails.localPartsData.uuid, Tails.localPartsData);
+            Tails.proxy.addPartsData(Minecraft.getMinecraft().getSession().func_148256_e().getId(), Tails.localPartsData);
         }
     }
 
     @SubscribeEvent
-    public void onPlayerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
+    public void onDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
         Tails.hasRemote = false;
         sentPartInfoToServer = false;
         clearAllPartInfo = true;
+
+        Tails.instance.loadConfig();
     }
 
     /*
@@ -146,14 +153,9 @@ public class ClientEventHandler {
             }
             //World can't be null if we want to send a packet it seems
             else if (!sentPartInfoToServer && Minecraft.getMinecraft().theWorld != null) {
-                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Tails.localPartsData, false));
+                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Minecraft.getMinecraft().thePlayer.getGameProfile().getId(), Tails.localPartsData, false));
                 sentPartInfoToServer = true;
             }
         }
-    }
-
-    public enum RenderType {
-        BODY,
-        HEAD
     }
 }

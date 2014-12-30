@@ -179,8 +179,8 @@ public class GuiExport extends GuiBaseScreen {
 
     private void savePartsData() {
         Tails.setLocalPartsData(partsData);
-        Tails.proxy.addPartsData(partsData.uuid, partsData);
-        Tails.networkWrapper.sendToServer(new PlayerDataMessage(partsData, false));
+        Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
+        Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().func_148256_e().getId(), partsData, false));
     }
 
     public class ImgurUpload {

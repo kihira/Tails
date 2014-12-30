@@ -25,7 +25,6 @@ import kihira.tails.client.render.FakeEntityRenderHelper;
 import kihira.tails.client.render.PlayerRenderHelper;
 import kihira.tails.client.render.RenderPart;
 import kihira.tails.proxy.CommonProxy;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -43,6 +42,7 @@ public class Tails {
     public static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     public static Configuration configuration;
+    public static boolean libraryEnabled;
     public static boolean hasRemote;
 
     @SidedProxy(clientSide = "kihira.tails.proxy.ClientProxy", serverSide = "kihira.tails.proxy.CommonProxy")
@@ -57,9 +57,8 @@ public class Tails {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
-        if (FoxLibManager.checkFoxlib()) {
-            Tails.proxy.registerHandlers();
-            Tails.proxy.registerMessages();
+        //if (FoxLibManager.checkFoxlib()) {
+            Tails.proxy.init();
 
             if (e.getSide().isClient()) {
                 Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
@@ -68,7 +67,7 @@ public class Tails {
                 RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
                 RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
             }
-        }
+        //}
     }
 
     @SubscribeEvent
@@ -100,7 +99,7 @@ public class Tails {
                         Configuration.CATEGORY_GENERAL, "DEPRECIATED. CAN SAFELY REMOVE", ""), PartInfo.class);
             }
             if (tailInfo != null) {
-                if (localPartsData == null) localPartsData = new PartsData(Minecraft.getMinecraft().thePlayer.getUniqueID());
+                if (localPartsData == null) localPartsData = new PartsData();
                 tailInfo.partType = PartsData.PartType.TAIL;
                 localPartsData.setPartInfo(PartsData.PartType.TAIL, tailInfo);
 
@@ -114,6 +113,8 @@ public class Tails {
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
         }
+
+        libraryEnabled = configuration.getBoolean("Enable Library", Configuration.CATEGORY_GENERAL, true, "Whether to enable the library system for sharing tails. This mostly matters on servers.");
 
         if (Tails.configuration.hasChanged()) {
             Tails.configuration.save();
