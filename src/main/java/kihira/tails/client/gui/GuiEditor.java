@@ -125,12 +125,12 @@ public class GuiEditor extends GuiBase {
         }
         originalPartInfo = newPartInfo.deepCopy();
         PartInfo partInfo = originalPartInfo.deepCopy();
-        textureID = partInfo.textureID;
 
         setCurrTintEdit(0);
-        initPartList();
-        refreshTintPane();
         setPartsInfo(partInfo);
+        partsPanel.initPartList();
+        refreshTintPane();
+        textureID = partInfo.textureID;
     }
 
     public PartsData.PartType getPartType() {
@@ -139,9 +139,5 @@ public class GuiEditor extends GuiBase {
 
     public void setCurrTintEdit(int currTintEdit) {
         tintPanel.currTintEdit = currTintEdit;
-    }
-
-    public void initPartList() {
-        partsPanel.initPartList();
     }
 }

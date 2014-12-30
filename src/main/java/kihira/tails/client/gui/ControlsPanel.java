@@ -71,7 +71,10 @@ public class ControlsPanel extends Panel<GuiEditor> {
             parent.setCurrTintEdit(0);
             parent.refreshTintPane();
 
-            parent.setPartsData(Tails.proxy.getPartsData(mc.thePlayer.getPersistentID()));
+            if (!libraryMode) {
+                Tails.setLocalPartsData(parent.getPartsData());
+            }
+            parent.setPartsData(Tails.localPartsData);
 
             button.displayString = (libraryMode ? "Editor" : "Library");
 
