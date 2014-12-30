@@ -71,6 +71,6 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(eventHandler);
         FMLCommonHandler.instance().bus().register(eventHandler);
 
-        super.registerHandlers();
+        //super.registerHandlers();
     }
 }

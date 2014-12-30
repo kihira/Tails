@@ -56,6 +56,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
         //Mode Switch
         if (button.id == 0) {
             //>.> You see nothing!
+            //TODO change parts data when switching? clear libraryinfo panel?
             boolean libraryMode = button.displayString.equals("Library");
             parent.partsPanel.enabled = !libraryMode;
             parent.texturePanel.enabled = !libraryMode;
@@ -64,12 +65,23 @@ public class ControlsPanel extends Panel<GuiEditor> {
             parent.libraryInfoPanel.enabled = libraryMode;
             parent.libraryPanel.enabled = libraryMode;
 
+            parent.partsPanel.selectDefaultListEntry();
+            parent.libraryPanel.initList();
+            parent.libraryInfoPanel.setEntry(null);
+            parent.setCurrTintEdit(0);
+            parent.refreshTintPane();
+
+            parent.setPartsData(Tails.proxy.getPartsData(mc.thePlayer.getPersistentID()));
+
             button.displayString = (libraryMode ? "Editor" : "Library");
+
         }
         //Reset All
         else if (button.id == 1) {
             PartInfo partInfo = parent.originalPartInfo.deepCopy();
             parent.partsPanel.selectDefaultListEntry();
+            parent.libraryPanel.initList();
+            parent.libraryInfoPanel.setEntry(null);
             parent.setCurrTintEdit(0);
             parent.refreshTintPane();
             parent.setPartsInfo(partInfo);

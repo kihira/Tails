@@ -30,8 +30,6 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
     public void initGui() {
         textField = new GuiTextField(fontRendererObj, 3, 3, width - 20, 15);
         textField.setMaxStringLength(16);
-        textField.setFocused(true);
-        textField.setCursorPositionEnd();
 
         buttonList.add(favButton = new GuiIconButton.GuiIconToggleButton(0, 5, height - 20, GuiIconButton.Icons.STAR, "Favourite"));
         buttonList.add(new GuiIconButton(1, 21, height - 20, GuiIconButton.Icons.DELETE, "Delete"));
@@ -47,18 +45,19 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         zLevel = -100;
         drawHorizontalLine(0, width, height, 0xFF000000);
 
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glColor4f(0F, 0F, 0F, 0F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
         tessellator.setColorOpaque_I(8421504);
-        tessellator.addVertexWithUV(0, height, 0.0D, 0.0D, 1.0D);
-        tessellator.addVertexWithUV(width, height, 0.0D, 1.0D, 1.0D);
-        tessellator.addVertexWithUV(width, 0, 0.0D, 1.0D, 0.0D);
-        tessellator.addVertexWithUV(0, 0, 0.0D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV(0, height, -10D, 0.0D, 1.0D);
+        tessellator.addVertexWithUV(width, height, -10D, 1.0D, 1.0D);
+        tessellator.addVertexWithUV(width, 0, -10D, 1.0D, 0.0D);
+        tessellator.addVertexWithUV(0, 0, -10D, 0.0D, 0.0D);
         tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
 
+        zLevel = 0;
         drawGradientRect(1, 1, width - 1, height - 1, 0xFF000000, 0xFF000000);
 
         if (entry != null) {
@@ -142,7 +141,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
                 GuiButton button = (GuiButton) obj;
                 button.visible = true;
 
-                if (button.id == 2 && entry.data.remoteEntry && !entry.data.creatorUUID.equals(mc.thePlayer.getUniqueID())) {
+                if (button.id == 1 && entry.data.remoteEntry && !entry.data.creatorUUID.equals(mc.thePlayer.getUniqueID())) {
                     button.visible = false;
                 }
                 //Download

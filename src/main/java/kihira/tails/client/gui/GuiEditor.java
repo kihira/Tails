@@ -65,15 +65,15 @@ public class GuiEditor extends GuiBase {
             panels.add(libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height));
             panels.add(texturePanel = new TexturePanel(this, 0, height - 43, previewWindowEdgeOffset, 43));
             panels.add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
-            panels.add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height / 2));
             panels.add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
+            panels.add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 1));
 
             libraryInfoPanel.enabled = false;
             libraryPanel.enabled = false;
         }
         else {
             tintPanel.resize(previewWindowRight, 0, width - previewWindowRight, height);
-            libraryInfoPanel.resize(previewWindowRight, 0, width - previewWindowRight, height / 2);
+            libraryInfoPanel.resize(previewWindowRight, 0, width - previewWindowRight, height - 1);
             partsPanel.resize(0, 0, previewWindowEdgeOffset, height - 43);
             libraryPanel.resize(0, 0, previewWindowEdgeOffset, height);
             previewPanel.resize(previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
