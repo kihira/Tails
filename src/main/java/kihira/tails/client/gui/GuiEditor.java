@@ -29,6 +29,7 @@ public class GuiEditor extends GuiBase {
     public ControlsPanel controlsPanel;
     public LibraryPanel libraryPanel;
     public LibraryInfoPanel libraryInfoPanel;
+    private LibrarySharePanel librarySharePanel;
 
     public GuiEditor() {
         //Backup original PartInfo or create default one
@@ -66,18 +67,20 @@ public class GuiEditor extends GuiBase {
             panels.add(texturePanel = new TexturePanel(this, 0, height - 43, previewWindowEdgeOffset, 43));
             panels.add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
             panels.add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
-            panels.add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 1));
+            panels.add(librarySharePanel = new LibrarySharePanel(this, previewWindowRight, height - 80, width - previewWindowRight, 80));
+            panels.add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 80));
 
             libraryInfoPanel.enabled = false;
             libraryPanel.enabled = false;
         }
         else {
             tintPanel.resize(previewWindowRight, 0, width - previewWindowRight, height);
-            libraryInfoPanel.resize(previewWindowRight, 0, width - previewWindowRight, height - 1);
+            libraryInfoPanel.resize(previewWindowRight, 0, width - previewWindowRight, height - 80);
             partsPanel.resize(0, 0, previewWindowEdgeOffset, height - 43);
             libraryPanel.resize(0, 0, previewWindowEdgeOffset, height);
             previewPanel.resize(previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
             texturePanel.resize(0, height - 43, previewWindowEdgeOffset, 43);
+            librarySharePanel.resize(previewWindowRight, height - 80, width - previewWindowRight, 80);
             controlsPanel.resize(previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom);
         }
         super.initGui();

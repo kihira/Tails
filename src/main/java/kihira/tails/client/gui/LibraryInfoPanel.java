@@ -155,4 +155,8 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             }
         }
     }
+
+    public LibraryListEntry getEntry() {
+        return this.entry;
+    }
 }

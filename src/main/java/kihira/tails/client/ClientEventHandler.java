@@ -139,7 +139,7 @@ public class ClientEventHandler {
     public void onPlayerTick(TickEvent.PlayerTickEvent e) {
         if (e.phase == TickEvent.Phase.START) {
             if (TextureHelper.needsBuild(e.player) && e.player instanceof AbstractClientPlayer) {
-                TextureHelper.buildPlayerInfo((AbstractClientPlayer) e.player);
+                TextureHelper.buildPlayerPartsData((AbstractClientPlayer) e.player);
             }
         }
     }

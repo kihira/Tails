@@ -44,8 +44,29 @@ public class TextureHelper {
             new Point[] {new Point(59,18), new Point(60,18), new Point(61,18)}
     };
 
+    /**
+     * Returns if the player has any PartInfo encoded onto the skin file no matter the type.
+     * @param player The player
+     * @return Has part info(s).
+     */
+    public static boolean hasSkinData(AbstractClientPlayer player) {
+        BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
+        if (image != null) {
+            for (PartsData.PartType partType : PartsData.PartType.values()) {
+                int ordinal = partType.ordinal();
+                int scol1 = image.getRGB(switchPoints[ordinal][0].getX(), switchPoints[ordinal][0].getY());
+                int scol2 = image.getRGB(switchPoints[ordinal][1].getX(), switchPoints[ordinal][1].getY());
+
+                if (scol1 == switch1Colour && scol2 == switch2Colour) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @SuppressWarnings("rawtypes")
-	public static void buildPlayerInfo(AbstractClientPlayer player) {
+	public static void buildPlayerPartsData(AbstractClientPlayer player) {
 		GameProfile profile = player.getGameProfile();
 		UUID uuid = profile.getId();
         BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
