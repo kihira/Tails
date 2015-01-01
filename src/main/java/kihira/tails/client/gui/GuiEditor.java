@@ -69,6 +69,7 @@ public class GuiEditor extends GuiBase {
             panels.add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
             panels.add(librarySharePanel = new LibrarySharePanel(this, previewWindowRight, height - 80, width - previewWindowRight, 80));
             panels.add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 80));
+            panels.add(new Dialog(this, "Import", width / 2, height / 2, 100, 50));
 
             libraryInfoPanel.enabled = false;
             libraryPanel.enabled = false;

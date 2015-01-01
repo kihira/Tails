@@ -46,6 +46,7 @@ configurations {
 dependencies {
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
     compile "kihira:FoxLib:"+project.foxlibDevVersion+":dev"
+    compile 'com.intellij:annotations:+@jar'
 }
 
 project.version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}"
