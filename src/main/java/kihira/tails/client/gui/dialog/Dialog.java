@@ -1,9 +1,13 @@
-package kihira.tails.client.gui;
+package kihira.tails.client.gui.dialog;
 
 import com.google.common.base.Strings;
+import kihira.tails.client.gui.GuiBase;
+import kihira.tails.client.gui.Panel;
+import net.minecraft.client.gui.GuiButton;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
-public class Dialog<T extends GuiBase> extends Panel<T> {
+public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T> {
 
     protected boolean dragging;
     private int mouseXStart;
@@ -18,6 +22,12 @@ public class Dialog<T extends GuiBase> extends Panel<T> {
 
     public Dialog(@NotNull T parent, int left, int top, int width, int height) {
         super(parent, left, top, width, height);
+        Validate.isInstanceOf(IDialogCallback.class, parent);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) {
+        parent.buttonPressed(this, button);
     }
 
     @Override

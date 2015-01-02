@@ -1,6 +1,7 @@
 package kihira.tails.client.gui;
 
 import kihira.foxlib.client.gui.GuiBaseScreen;
+import org.apache.commons.lang3.Validate;
 
 public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
 
@@ -12,12 +13,14 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
     public boolean alwaysReceiveMouse = false;
     public boolean enabled = true;
 
-    public Panel(T parent, int left, int top, int width, int height) {
+    public Panel(T parent, int x, int y, int width, int height) {
+        Validate.isInstanceOf(GuiBase.class, parent);
+
         this.parent = parent;
-        this.left = left;
-        this.top = top;
-        this.right = left + width;
-        this.bottom = top + height;
+        this.left = x;
+        this.top = y;
+        this.right = x + width;
+        this.bottom = y + height;
     }
 
     public void resize(int x, int y, int newWidth, int newHeight) {
@@ -25,6 +28,16 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
         top = y;
         right = x + newWidth;
         bottom = y + newHeight;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+        bottom = top + height;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+        right = left + width;
     }
 
     //All this stuff is to make them public
