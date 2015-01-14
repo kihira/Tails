@@ -2,7 +2,6 @@ package kihira.tails.client.gui.controls;
 
 import cpw.mods.fml.client.config.GuiSlider;
 import cpw.mods.fml.client.config.GuiUtils;
-import kihira.foxlib.client.RenderHelper;
 import kihira.foxlib.client.gui.ITooltip;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
@@ -74,7 +73,6 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 drawTexturedModalRectScaled(xPosition + 1, yPosition + 1, 0, srcY, 256, 20, this.width - 2, this.height - 2);
             }
-
             
             this.mouseDragged(mc, mouseX, mouseY);
         }
@@ -92,11 +90,11 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderHelper.startGlScissor(xPosition, yPosition, width, height);
+            //RenderHelper.startGlScissor(xPosition, yPosition, width, height);
             mc.renderEngine.bindTexture(sliderTexture);
             this.drawTexturedModalRect(this.xPosition + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.yPosition, 0, 0, 7, 4);
             this.drawTexturedModalRect(this.xPosition + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.yPosition + this.height - 4, 7, 0, 7, 4);
-            RenderHelper.endGlScissor();
+            //RenderHelper.endGlScissor();
         }
     }
     
