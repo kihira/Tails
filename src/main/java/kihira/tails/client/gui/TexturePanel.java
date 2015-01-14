@@ -78,25 +78,27 @@ public class TexturePanel extends Panel<GuiEditor> {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        PartInfo partInfo = parent.getEditingPartInfo();
-        RenderPart part = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
+        PartInfo originalPartInfo = parent.getEditingPartInfo();
+        RenderPart part = PartRegistry.getRenderPart(parent.getPartType(), originalPartInfo.typeid);
         //Texture select
         if (button.id == 18) {
             if (parent.textureID - 1 >= 0) {
                 parent.textureID--;
             }
             else {
-                parent.textureID = part.getTextureNames(partInfo.subid).length - 1;
+                parent.textureID = part.getTextureNames(originalPartInfo.subid).length - 1;
             }
         }
         else if (button.id == 19) {
-            if (part.getTextureNames(partInfo.subid).length > parent.textureID + 1) {
+            if (part.getTextureNames(originalPartInfo.subid).length > parent.textureID + 1) {
                 parent.textureID++;
             }
             else {
                 parent.textureID = 0;
             }
         }
+        PartInfo partInfo = new PartInfo(true, originalPartInfo.typeid, originalPartInfo.subid, parent.textureID,
+                originalPartInfo.tints, originalPartInfo.partType, null);
         parent.setPartsInfo(partInfo);
     }
 }

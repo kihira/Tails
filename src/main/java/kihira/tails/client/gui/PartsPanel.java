@@ -83,12 +83,6 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-
-    @Override
-    public void mouseMovedOrUp(int mouseX, int mouseY, int mouseButton) {
-        super.mouseMovedOrUp(mouseX, mouseY, mouseButton);
-    }
-
     @Override
     public void onGuiClosed() {
         //Delete textures on close
@@ -101,7 +95,10 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     public boolean onEntrySelected(GuiList guiList, int index, PartEntry entry) {
         //Reset texture ID
         parent.textureID = 0;
-        parent.setPartsInfo(entry.partInfo);
+        //Need to keep tints from original part
+        PartInfo partInfo = new PartInfo(true, entry.partInfo.typeid, entry.partInfo.subid, entry.partInfo.textureID,
+                parent.getEditingPartInfo().tints.clone(), entry.partInfo.partType, null);
+        parent.setPartsInfo(partInfo);
         return true;
     }
 
