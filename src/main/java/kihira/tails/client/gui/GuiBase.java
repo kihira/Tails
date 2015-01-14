@@ -10,12 +10,13 @@ import java.util.ArrayList;
 public abstract class GuiBase extends GuiBaseScreen {
 
     //0 is bottom layer
-    private final ArrayList<ArrayList<Panel>> layers = new ArrayList<ArrayList<Panel>>() {{
-        add(0, new ArrayList<Panel>());
-        add(1, new ArrayList<Panel>());
-        add(2, new ArrayList<Panel>());
-        add(3, new ArrayList<Panel>());
-    }};
+    private final ArrayList<ArrayList<Panel>> layers = new ArrayList<ArrayList<Panel>>();
+
+    public GuiBase(int layerCount) {
+        for (int i = 0; i < layerCount; i++) {
+            layers.add(new ArrayList<Panel>());
+        }
+    }
 
     public ArrayList<Panel> getLayer(int layer) {
         return layers.get(layer);

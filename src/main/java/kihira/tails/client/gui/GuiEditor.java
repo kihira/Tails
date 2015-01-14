@@ -8,16 +8,13 @@
 
 package kihira.tails.client.gui;
 
-import kihira.tails.client.gui.dialog.Dialog;
-import kihira.tails.client.gui.dialog.IDialogCallback;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 
-public class GuiEditor extends GuiBase implements IDialogCallback {
+public class GuiEditor extends GuiBase {
 
     public int textureID;
     private PartsData.PartType partType;
@@ -32,9 +29,10 @@ public class GuiEditor extends GuiBase implements IDialogCallback {
     public ControlsPanel controlsPanel;
     public LibraryPanel libraryPanel;
     public LibraryInfoPanel libraryInfoPanel;
-    public LibrarySharePanel librarySharePanel;
+    public LibraryImportPanel libraryImportPanel;
 
     public GuiEditor() {
+        super(4);
         //Backup original PartInfo or create default one
         PartInfo partInfo;
         if (Tails.localPartsData == null) {
@@ -70,21 +68,21 @@ public class GuiEditor extends GuiBase implements IDialogCallback {
             getLayer(1).add(texturePanel = new TexturePanel(this, 0, height - 43, previewWindowEdgeOffset, 43));
             getLayer(1).add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
             getLayer(1).add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
-            getLayer(1).add(librarySharePanel = new LibrarySharePanel(this, previewWindowRight, height - 80, width - previewWindowRight, 80));
-            getLayer(1).add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 80));
+            getLayer(1).add(libraryImportPanel = new LibraryImportPanel(this, previewWindowRight, height - 60, width - previewWindowRight, 60));
+            getLayer(1).add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 60));
 
             libraryInfoPanel.enabled = false;
-            librarySharePanel.enabled = false;
+            libraryImportPanel.enabled = false;
             libraryPanel.enabled = false;
         }
         else {
             tintPanel.resize(previewWindowRight, 0, width - previewWindowRight, height);
-            libraryInfoPanel.resize(previewWindowRight, 0, width - previewWindowRight, height - 80);
+            libraryInfoPanel.resize(previewWindowRight, 0, width - previewWindowRight, height - 60);
             partsPanel.resize(0, 0, previewWindowEdgeOffset, height - 43);
             libraryPanel.resize(0, 0, previewWindowEdgeOffset, height);
             previewPanel.resize(previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
             texturePanel.resize(0, height - 43, previewWindowEdgeOffset, 43);
-            librarySharePanel.resize(previewWindowRight, height - 80, width - previewWindowRight, 80);
+            libraryImportPanel.resize(previewWindowRight, height - 60, width - previewWindowRight, 60);
             controlsPanel.resize(previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom);
         }
         super.initGui();
@@ -145,10 +143,5 @@ public class GuiEditor extends GuiBase implements IDialogCallback {
 
     public void setCurrTintEdit(int currTintEdit) {
         tintPanel.currTintEdit = currTintEdit;
-    }
-
-    @Override
-    public void buttonPressed(Dialog dialog, GuiButton button) {
-
     }
 }

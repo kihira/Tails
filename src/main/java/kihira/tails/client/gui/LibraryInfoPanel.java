@@ -1,10 +1,12 @@
 package kihira.tails.client.gui;
 
 import kihira.foxlib.client.gui.GuiIconButton;
+import kihira.foxlib.client.toast.ToastManager;
 import kihira.tails.common.LibraryEntryData;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.LibraryEntriesMessage;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.EnumChatFormatting;
@@ -35,6 +37,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         buttonList.add(new GuiIconButton(1, 21, height - 20, GuiIconButton.Icons.DELETE, "Delete"));
         buttonList.add(new GuiIconButton(2, 36, height - 20, GuiIconButton.Icons.UPLOAD, "Upload to server"));
         buttonList.add(new GuiIconButton(3, 53, height - 20, GuiIconButton.Icons.DOWNLOAD, "Save locally"));
+        buttonList.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, "Export to String.\nSend the exported code to your friends to share!"));
         super.initGui();
 
         setEntry(null);
@@ -99,6 +102,17 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             entry.data.remoteEntry = false;
             button.enabled = false;
         }
+        //Export to string
+        else if (button.id == 4) {
+            StringBuilder sb = new StringBuilder();
+            LibraryEntryData libData = parent.libraryInfoPanel.getEntry().data;
+            sb.append(libData.entryName).append(":");
+            sb.append(libData.creatorUUID).append(":");
+            sb.append(Tails.gson.toJson(libData.partsData));
+
+            ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height / 2, parent.width / 2, "Copied library entry data to clipboard!");
+            GuiScreen.setClipboardString(sb.toString());
+        }
         Tails.proxy.getLibraryManager().saveLibrary();
     }
 
@@ -132,7 +146,6 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             for (Object button : buttonList) {
                 ((GuiButton) button).visible = false;
             }
-            parent.librarySharePanel.enabled = false;
         }
         else {
             favButton.toggled = entry.data.favourite;
@@ -154,7 +167,6 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
                     button.visible = false;
                 }
             }
-            parent.librarySharePanel.enabled = true;
         }
     }
 

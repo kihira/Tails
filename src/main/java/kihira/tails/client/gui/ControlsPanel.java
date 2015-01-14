@@ -64,7 +64,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
 
             parent.libraryInfoPanel.enabled = libraryMode;
             parent.libraryPanel.enabled = libraryMode;
-            parent.librarySharePanel.enabled = false;
+            parent.libraryImportPanel.enabled = libraryMode;
 
             parent.partsPanel.selectDefaultListEntry();
             parent.libraryPanel.initList();
