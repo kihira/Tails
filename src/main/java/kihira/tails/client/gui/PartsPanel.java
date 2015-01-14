@@ -109,7 +109,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         //Default selection
         for (GuiListExtended.IGuiListEntry entry : partList.getEntries()) {
             PartEntry partEntry = (PartEntry) entry;
-            PartInfo partInfo = parent.getPartInfo();
+            PartInfo partInfo = parent.getEditingPartInfo();
             if ((!partEntry.partInfo.hasPart && !partInfo.hasPart) || (partInfo.hasPart && partEntry.partInfo.hasPart
                     && partEntry.partInfo.typeid == partInfo.typeid && partEntry.partInfo.subid == partInfo.subid)) {
                 partList.setCurrrentIndex(partList.getEntries().indexOf(partEntry));

@@ -105,7 +105,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         for (int tint = 1; tint <= 3; tint++) {
             String s = I18n.format("gui.tint", tint);
             fontRendererObj.drawString(s, 5, topOffset, 0xFFFFFF);
-            int colour = parent.getPartInfo().tints[tint - 1] | 0xFF << 24;
+            int colour = parent.getEditingPartInfo().tints[tint - 1] | 0xFF << 24;
             drawGradientRect(5, topOffset + 10, 25, topOffset + 30, colour, colour);
             topOffset += 35;
         }
@@ -127,7 +127,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         //Edit buttons
         if (button.id >= 2 && button.id <= 4) {
             currTintEdit = button.id - 1;
-            currTintColour = parent.getPartInfo().tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            currTintColour = parent.getEditingPartInfo().tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;
@@ -273,6 +273,8 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
 
         tintReset.enabled = true;
-        parent.setPartsInfo(parent.getPartInfo());
+
+        if (currTintEdit > 0) parent.getEditingPartInfo().tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
+        parent.setPartsInfo(parent.getEditingPartInfo());
     }
 }

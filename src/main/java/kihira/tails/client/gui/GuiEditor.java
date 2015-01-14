@@ -22,7 +22,7 @@ public class GuiEditor extends GuiBase implements IDialogCallback {
     public int textureID;
     private PartsData.PartType partType;
     private PartsData partsData;
-    private PartInfo partInfo;
+    private PartInfo editingPartInfo;
     public PartInfo originalPartInfo;
 
     public TintPanel tintPanel;
@@ -52,7 +52,7 @@ public class GuiEditor extends GuiBase implements IDialogCallback {
 
         originalPartInfo = partInfo.deepCopy();
         setPartsData(Tails.localPartsData.deepCopy());
-        this.partInfo = originalPartInfo.deepCopy();
+        this.editingPartInfo = originalPartInfo.deepCopy();
     }
 
     @Override
@@ -101,17 +101,16 @@ public class GuiEditor extends GuiBase implements IDialogCallback {
     }
 
     public void setPartsInfo(PartInfo newPartInfo) {
-        partInfo.setTexture(null);
-        if (tintPanel.currTintEdit > 0) partInfo.tints[tintPanel.currTintEdit -1] = tintPanel.currTintColour | 0xFF << 24; //Add the alpha manually
-        partInfo = new PartInfo(newPartInfo.hasPart, newPartInfo.typeid, newPartInfo.subid, textureID, partInfo.tints, partType, null);
-        if (partInfo.hasPart) partInfo.setTexture(TextureHelper.generateTexture(partInfo));
+        editingPartInfo.setTexture(null); //Clear texture data as we will no longer need it
+        editingPartInfo = newPartInfo;
+        if (editingPartInfo.hasPart) editingPartInfo.setTexture(TextureHelper.generateTexture(editingPartInfo));
 
-        partsData.setPartInfo(partType, partInfo);
+        partsData.setPartInfo(partType, editingPartInfo);
         setPartsData(partsData);
     }
 
-    public PartInfo getPartInfo() {
-        return partInfo;
+    public PartInfo getEditingPartInfo() {
+        return editingPartInfo;
     }
 
     public void setPartsData(PartsData newPartsData) {

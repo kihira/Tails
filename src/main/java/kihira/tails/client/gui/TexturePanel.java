@@ -25,13 +25,13 @@ public class TexturePanel extends Panel<GuiEditor> {
         //Texture select
         buttonList.add(new GuiButtonExt(18, 5, height - 27, 15, 15, "<"));
         buttonList.add(new GuiButtonExt(19, width - 20, height - 27, 15, 15, ">"));
-        parent.textureID = parent.getPartInfo().textureID;
+        parent.textureID = parent.getEditingPartInfo().textureID;
         super.initGui();
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
-        PartInfo partInfo = parent.getPartInfo();
+        PartInfo partInfo = parent.getEditingPartInfo();
         RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
 
         zLevel = -10;
@@ -58,7 +58,7 @@ public class TexturePanel extends Panel<GuiEditor> {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        PartInfo partInfo = parent.getPartInfo();
+        PartInfo partInfo = parent.getEditingPartInfo();
         RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
         if (renderPart.hasAuthor(partInfo.subid, parent.textureID)) {
             String author = renderPart.getAuthor(partInfo.subid, parent.textureID);
@@ -78,7 +78,7 @@ public class TexturePanel extends Panel<GuiEditor> {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        PartInfo partInfo = parent.getPartInfo();
+        PartInfo partInfo = parent.getEditingPartInfo();
         RenderPart part = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
         //Texture select
         if (button.id == 18) {
