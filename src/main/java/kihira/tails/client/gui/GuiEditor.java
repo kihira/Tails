@@ -8,13 +8,16 @@
 
 package kihira.tails.client.gui;
 
+import kihira.tails.client.gui.dialog.Dialog;
+import kihira.tails.client.gui.dialog.IDialogCallback;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 
-public class GuiEditor extends GuiBase {
+public class GuiEditor extends GuiBase implements IDialogCallback {
 
     public int textureID;
     private PartsData.PartType partType;
@@ -29,7 +32,7 @@ public class GuiEditor extends GuiBase {
     public ControlsPanel controlsPanel;
     public LibraryPanel libraryPanel;
     public LibraryInfoPanel libraryInfoPanel;
-    private LibrarySharePanel librarySharePanel;
+    public LibrarySharePanel librarySharePanel;
 
     public GuiEditor() {
         //Backup original PartInfo or create default one
@@ -69,8 +72,11 @@ public class GuiEditor extends GuiBase {
             panels.add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
             panels.add(librarySharePanel = new LibrarySharePanel(this, previewWindowRight, height - 80, width - previewWindowRight, 80));
             panels.add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 80));
+            //panels.add(new Dialog(this, "Import", width / 2, height / 2, 100, 50));
+            //panels.add(new ConfirmationDialog(this, "Warning", "Are you sure you wish to do the thing?"));
 
             libraryInfoPanel.enabled = false;
+            librarySharePanel.enabled = false;
             libraryPanel.enabled = false;
         }
         else {
@@ -142,5 +148,10 @@ public class GuiEditor extends GuiBase {
 
     public void setCurrTintEdit(int currTintEdit) {
         tintPanel.currTintEdit = currTintEdit;
+    }
+
+    @Override
+    public void buttonPressed(Dialog dialog, GuiButton button) {
+
     }
 }

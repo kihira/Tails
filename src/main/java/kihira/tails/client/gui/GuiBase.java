@@ -11,7 +11,7 @@ import java.util.List;
 
 public abstract class GuiBase extends GuiBaseScreen {
 
-    protected List<Panel> panels = new ArrayList<Panel>();
+    public final List<Panel> panels;
 
     @SuppressWarnings("unchecked")
     public GuiBase(Panel... panels) {
