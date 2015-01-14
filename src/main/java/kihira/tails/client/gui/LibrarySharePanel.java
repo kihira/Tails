@@ -3,7 +3,10 @@ package kihira.tails.client.gui;
 import cpw.mods.fml.client.config.GuiButtonExt;
 import kihira.foxlib.client.toast.ToastManager;
 import kihira.tails.client.texture.TextureHelper;
+import kihira.tails.common.LibraryEntryData;
+import kihira.tails.common.Tails;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 
 public class LibrarySharePanel extends Panel<GuiEditor> {
@@ -36,8 +39,21 @@ public class LibrarySharePanel extends Panel<GuiEditor> {
             ToastManager.INSTANCE.createCenteredToast(parent.width, parent.height - 50, 200, "Loaded data from your skin!");
             TextureHelper.hasSkinData(mc.thePlayer);
         }
+        //Import from string
         else if (button.id == 1) {
 
+        }
+        //Export to String
+        else if (button.id == 2) {
+            StringBuilder sb = new StringBuilder();
+            LibraryEntryData libData = parent.libraryInfoPanel.getEntry().data;
+            sb.append(libData.entryName).append(":");
+            sb.append(libData.creatorUUID).append(":");
+            sb.append(Tails.gson.toJson(libData.partsData));
+
+            shareTextField.setText(sb.toString());
+            ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height / 2, parent.width / 2, "Copied library data to clipboard!");
+            GuiScreen.setClipboardString(sb.toString());
         }
     }
 

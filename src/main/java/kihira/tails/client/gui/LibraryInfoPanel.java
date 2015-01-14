@@ -132,6 +132,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             for (Object button : buttonList) {
                 ((GuiButton) button).visible = false;
             }
+            parent.librarySharePanel.enabled = false;
         }
         else {
             favButton.toggled = entry.data.favourite;
@@ -153,6 +154,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
                     button.visible = false;
                 }
             }
+            parent.librarySharePanel.enabled = true;
         }
     }
 

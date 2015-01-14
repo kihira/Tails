@@ -30,7 +30,7 @@ public class ConfirmationDialog<T extends GuiBase & IDialogCallback> extends Dia
     @Override
     protected void actionPerformed(GuiButton button) {
         super.actionPerformed(button);
-        parent.panels.remove(this);
+        //parent.panels.remove(this); TODO CME
     }
 
     @Override
