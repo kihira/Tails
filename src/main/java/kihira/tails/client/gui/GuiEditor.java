@@ -64,16 +64,14 @@ public class GuiEditor extends GuiBase implements IDialogCallback {
 
         //Not an ideal solution but keeps everything from resetting on resize
         if (tintPanel == null) {
-            panels.add(previewPanel = new PreviewPanel(this, previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom));
-            panels.add(partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - 43));
-            panels.add(libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height));
-            panels.add(texturePanel = new TexturePanel(this, 0, height - 43, previewWindowEdgeOffset, 43));
-            panels.add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
-            panels.add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
-            panels.add(librarySharePanel = new LibrarySharePanel(this, previewWindowRight, height - 80, width - previewWindowRight, 80));
-            panels.add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 80));
-            //panels.add(new Dialog(this, "Import", width / 2, height / 2, 100, 50));
-            //panels.add(new ConfirmationDialog(this, "Warning", "Are you sure you wish to do the thing?"));
+            getLayer(0).add(previewPanel = new PreviewPanel(this, previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom));
+            getLayer(1).add(partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - 43));
+            getLayer(1).add(libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height));
+            getLayer(1).add(texturePanel = new TexturePanel(this, 0, height - 43, previewWindowEdgeOffset, 43));
+            getLayer(1).add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
+            getLayer(1).add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
+            getLayer(1).add(librarySharePanel = new LibrarySharePanel(this, previewWindowRight, height - 80, width - previewWindowRight, 80));
+            getLayer(1).add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 80));
 
             libraryInfoPanel.enabled = false;
             librarySharePanel.enabled = false;
