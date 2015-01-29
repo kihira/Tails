@@ -30,7 +30,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        textField = new GuiTextField(fontRendererObj, 3, 3, width - 20, 15);
+        textField = new GuiTextField(fontRendererObj, 6, 6, width - 12, 15);
         textField.setMaxStringLength(16);
 
         buttonList.add(favButton = new GuiIconButton.GuiIconToggleButton(0, 5, height - 20, GuiIconButton.Icons.STAR, "Favourite"));
@@ -45,23 +45,23 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
-        zLevel = -100;
-        drawHorizontalLine(0, width, height, 0xFF000000);
+        zLevel = 0;
+        drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
 
         GL11.glColor4f(0F, 0F, 0F, 0F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
         tessellator.setColorOpaque_I(8421504);
-        tessellator.addVertexWithUV(0, height, -10D, 0.0D, 1.0D);
-        tessellator.addVertexWithUV(width, height, -10D, 1.0D, 1.0D);
-        tessellator.addVertexWithUV(width, 0, -10D, 1.0D, 0.0D);
-        tessellator.addVertexWithUV(0, 0, -10D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV(2, height - 2, -10D, 0.0D, 1.0D);
+        tessellator.addVertexWithUV(width - 2, height - 2, -10D, 1.0D, 1.0D);
+        tessellator.addVertexWithUV(width - 2, 2, -10D, 1.0D, 0.0D);
+        tessellator.addVertexWithUV(2, 2, -10D, 0.0D, 0.0D);
         tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-        zLevel = 0;
-        drawGradientRect(1, 1, width - 1, height - 1, 0xFF000000, 0xFF000000);
+        zLevel = 10;
+        drawGradientRect(3, 3, width - 3, height - 3, 0xFF000000, 0xFF000000);
 
         if (entry != null) {
             textField.drawTextBox();
