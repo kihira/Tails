@@ -9,6 +9,7 @@ import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
@@ -39,22 +40,14 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         fontRendererObj.drawString((data.partsData.equals(Tails.localPartsData) ? EnumChatFormatting.GREEN + "" + EnumChatFormatting.ITALIC : "") + data.entryName, 5, y + 3, 0xFFFFFF);
 
         fontRendererObj.setUnicodeFlag(true);
-        PartInfo partInfo = data.partsData.getPartInfo(PartsData.PartType.TAIL);
-        fontRendererObj.drawString(I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).getUnlocalisedName(partInfo.subid)), x + 5, y + 12, 0xFFFFFF);
-        for (int i = 1; i < 4; i++) {
-            //libraryPanel.drawGradientRect((int) (listWidth * 1.25) - (10 * i), -1, (int) (listWidth * 1.25) + 10 - (10 * i), 9, partInfo.tints[i - 1], partInfo.tints[i - 1]);
-        }
-
-        partInfo = data.partsData.getPartInfo(PartsData.PartType.EARS);
-        fontRendererObj.drawString(I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).getUnlocalisedName(partInfo.subid)), x + 5, y + 19, 0xFFFFFF);
-        for (int i = 1; i < 4; i++) {
-            //libraryPanel.drawGradientRect((int) (listWidth * 1.25) - (10 * i), -1, (int) (listWidth * 1.25) + 10 - (10 * i), 9, partInfo.tints[i - 1], partInfo.tints[i - 1]);
-        }
-
-        partInfo = data.partsData.getPartInfo(PartsData.PartType.WINGS);
-        fontRendererObj.drawString(I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).getUnlocalisedName(partInfo.subid)), x + 5, y + 26, 0xFFFFFF);
-        for (int i = 1; i < 4; i++) {
-            //libraryPanel.drawGradientRect((int) (listWidth * 1.25) - (10 * i), -1, (int) (listWidth * 1.25) + 10 - (10 * i), 9, partInfo.tints[i - 1], partInfo.tints[i - 1]);
+        for (PartsData.PartType type : PartsData.PartType.values()) {
+            PartInfo partInfo = data.partsData.getPartInfo(type);
+            if (partInfo.hasPart) {
+                fontRendererObj.drawString(I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).getUnlocalisedName(partInfo.subid)), x + 5, y + 12 + (8 * type.ordinal()), 0xFFFFFF);
+                for (int i = 1; i < 4; i++) {
+                    Gui.drawRect(listWidth - (8 * i), y + 13 + (type.ordinal() * 8), listWidth + 7 - (8 * i), y + 20 + (type.ordinal() * 8), partInfo.tints[i - 1]);
+                }
+            }
         }
         fontRendererObj.setUnicodeFlag(false);
 
