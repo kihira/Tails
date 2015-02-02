@@ -1,6 +1,10 @@
 package kihira.tails.common;
 
 import com.google.gson.annotations.Expose;
+import com.mojang.authlib.GameProfile;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -12,6 +16,7 @@ public class LibraryEntryData {
     @Expose public UUID creatorUUID;
     @Expose public boolean favourite;
     @Expose public long creationDate;
+    public GameProfile gameProfile;
     public boolean remoteEntry = false;
 
     public LibraryEntryData(UUID creatorUUID, String name, PartsData partsData) {
@@ -40,6 +45,14 @@ public class LibraryEntryData {
         if (partsData != null ? !partsData.equals(data.partsData) : data.partsData != null) return false;
 
         return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public GameProfile getGameProfile() {
+        if (gameProfile == null) {
+            gameProfile = Minecraft.getMinecraft().func_152347_ac().fillProfileProperties(new GameProfile(creatorUUID, null), false);
+        }
+        return gameProfile;
     }
 
     @Override

@@ -9,7 +9,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -67,7 +66,9 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             textField.drawTextBox();
 
             fontRendererObj.setUnicodeFlag(true);
-            fontRendererObj.drawSplitString(EnumChatFormatting.ITALIC + entry.data.comment, 5, 40, width, 0xFFFFFF);
+            fontRendererObj.drawString("Created by:", 5, height - 40, 0xAAAAAA);
+            fontRendererObj.drawString(entry.data.getGameProfile().getName(), 5, height - 32, 0xAAAAAA);
+            //fontRendererObj.drawSplitString(EnumChatFormatting.ITALIC + entry.data.comment, 5, 40, width, 0xFFFFFF);
             fontRendererObj.setUnicodeFlag(false);
         }
 
