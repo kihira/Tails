@@ -51,9 +51,9 @@ public class LibraryImportPanel extends Panel<GuiEditor> {
                         EnumChatFormatting.RED + "Unable to import, missing or invalid data!");
             }
             else {
-                String[] strings = inputField.getText().split(":", 3);
+                String[] strings = inputField.getText().split(":", 4);
                 try {
-                    LibraryEntryData entryData = new LibraryEntryData(UUID.fromString(strings[1]), strings[0], Tails.gson.fromJson(strings[2], PartsData.class));
+                    LibraryEntryData entryData = new LibraryEntryData(UUID.fromString(strings[1]), strings[2], strings[0], Tails.gson.fromJson(strings[3], PartsData.class));
                     Tails.proxy.getLibraryManager().addEntry(entryData);
                     parent.libraryPanel.initList();
 

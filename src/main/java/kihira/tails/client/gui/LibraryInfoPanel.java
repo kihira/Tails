@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class LibraryInfoPanel extends Panel<GuiEditor> {
@@ -67,7 +69,10 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
 
             fontRendererObj.setUnicodeFlag(true);
             fontRendererObj.drawString("Created by:", 5, height - 40, 0xAAAAAA);
-            fontRendererObj.drawString(entry.data.getGameProfile().getName(), 5, height - 32, 0xAAAAAA);
+            fontRendererObj.drawString(entry.data.creatorName, width - 5 - fontRendererObj.getStringWidth(entry.data.creatorName), height - 40, 0xAAAAAA);
+            fontRendererObj.drawString("Creation Date:", 5, height - 32, 0xAAAAAA);
+            String date = new SimpleDateFormat("dd/MM/YY").format(new Date(entry.data.creationDate));
+            fontRendererObj.drawString(date, width - 5 - fontRendererObj.getStringWidth(date), height - 32, 0xAAAAAA);
             //fontRendererObj.drawSplitString(EnumChatFormatting.ITALIC + entry.data.comment, 5, 40, width, 0xFFFFFF);
             fontRendererObj.setUnicodeFlag(false);
         }

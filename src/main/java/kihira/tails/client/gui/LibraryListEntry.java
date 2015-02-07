@@ -1,5 +1,6 @@
 package kihira.tails.client.gui;
 
+import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.client.config.GuiUtils;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.tails.client.PartRegistry;
@@ -87,7 +88,8 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         @Override
         public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
             //Create entry and add to library
-            LibraryEntryData data = new LibraryEntryData(Minecraft.getMinecraft().thePlayer.getGameProfile().getId(), I18n.format("gui.library.entry.default"), Tails.localPartsData);
+            GameProfile profile = Minecraft.getMinecraft().thePlayer.getGameProfile();
+            LibraryEntryData data = new LibraryEntryData(profile.getId(), profile.getName(), I18n.format("gui.library.entry.default"), Tails.localPartsData);
             Tails.proxy.getLibraryManager().addEntry(data);
             panel.addSelectedEntry(new LibraryListEntry(data));
             return false;
