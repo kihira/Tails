@@ -96,7 +96,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         //Reset texture ID
         parent.textureID = 0;
         //Need to keep tints from original part
-        PartInfo partInfo = new PartInfo(true, entry.partInfo.typeid, entry.partInfo.subid, entry.partInfo.textureID,
+        PartInfo partInfo = new PartInfo(entry.partInfo.hasPart, entry.partInfo.typeid, entry.partInfo.subid, entry.partInfo.textureID,
                 parent.getEditingPartInfo().tints.clone(), entry.partInfo.partType, null);
         parent.setPartsInfo(partInfo);
         return true;
