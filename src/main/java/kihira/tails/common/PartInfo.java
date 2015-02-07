@@ -45,12 +45,15 @@ public class PartInfo implements Cloneable {
     }
 
     public void setTexture(ResourceLocation texture) {
-        if (this.texture == null || !this.texture.equals(texture)) {
+        if (texture == null || (this.texture != null && !this.texture.equals(texture))) {
             try {
                 Minecraft.getMinecraft().renderEngine.deleteTexture(this.texture);
             } catch (Exception ignored) {}
 
             this.needsTextureCompile = true;
+        }
+        else {
+            this.needsTextureCompile = false;
         }
         this.texture = texture;
     }

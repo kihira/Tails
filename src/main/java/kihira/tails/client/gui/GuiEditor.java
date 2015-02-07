@@ -99,7 +99,7 @@ public class GuiEditor extends GuiBase {
     }
 
     public void setPartsInfo(PartInfo newPartInfo) {
-        editingPartInfo.setTexture(null); //Clear texture data as we will no longer need it
+        //editingPartInfo.setTexture(null); //Clear texture data as we will no longer need it
         editingPartInfo = newPartInfo;
         if (editingPartInfo.hasPart) editingPartInfo.setTexture(TextureHelper.generateTexture(editingPartInfo));
 
