@@ -14,22 +14,22 @@ import net.minecraft.entity.EntityLivingBase;
 
 public class ModelCatEars extends ModelPartBase {
 
-    ModelRenderer leftEarBottom;
-    ModelRenderer leftEarRearTop;
-    ModelRenderer leftEarRearLayer1;
-    ModelRenderer leftEarRearBottom;
-    ModelRenderer leftEarLayer1;
-    ModelRenderer leftEarTop;
-    ModelRenderer leftEarLayer3;
-    ModelRenderer leftEarLayer2;
-    ModelRenderer rightEarBottom;
-    ModelRenderer rightEarLayer1;
-    ModelRenderer rightEarRearTop;
-    ModelRenderer rightEarRearLayer1;
-    ModelRenderer rightEarRearBottom;
-    ModelRenderer rightEarLayer2;
-    ModelRenderer rightEarTop;
-    ModelRenderer rightEarLayer3;
+    final ModelRenderer leftEarBottom;
+    final ModelRenderer leftEarRearTop;
+    final ModelRenderer leftEarRearLayer1;
+    final ModelRenderer leftEarRearBottom;
+    final ModelRenderer leftEarLayer1;
+    final ModelRenderer leftEarTop;
+    final ModelRenderer leftEarLayer3;
+    final ModelRenderer leftEarLayer2;
+    final ModelRenderer rightEarBottom;
+    final ModelRenderer rightEarLayer1;
+    final ModelRenderer rightEarRearTop;
+    final ModelRenderer rightEarRearLayer1;
+    final ModelRenderer rightEarRearBottom;
+    final ModelRenderer rightEarLayer2;
+    final ModelRenderer rightEarTop;
+    final ModelRenderer rightEarLayer3;
 
     public ModelCatEars() {
         textureWidth = 64;

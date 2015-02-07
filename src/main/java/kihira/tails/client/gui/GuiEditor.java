@@ -130,7 +130,7 @@ public class GuiEditor extends GuiBase {
         originalPartInfo = newPartInfo.deepCopy();
         PartInfo partInfo = originalPartInfo.deepCopy();
 
-        setCurrTintEdit(0);
+        clearCurrTintEdit();
         setPartsInfo(partInfo);
         partsPanel.initPartList();
         refreshTintPane();
@@ -141,7 +141,7 @@ public class GuiEditor extends GuiBase {
         return partType;
     }
 
-    public void setCurrTintEdit(int currTintEdit) {
-        tintPanel.currTintEdit = currTintEdit;
+    public void clearCurrTintEdit() {
+        tintPanel.currTintEdit = 0;
     }
 }

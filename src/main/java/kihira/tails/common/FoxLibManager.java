@@ -208,8 +208,8 @@ public class FoxLibManager {
 
     @SideOnly(Side.CLIENT)
     private static class GuiScreenHold extends GuiScreen {
-        private String topMessage;
-        private String bottomMessage;
+        private final String topMessage;
+        private final String bottomMessage;
 
         public GuiScreenHold(String topMessage, String bottomMessage) {
             this.topMessage = topMessage;

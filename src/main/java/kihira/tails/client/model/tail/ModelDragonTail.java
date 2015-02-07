@@ -17,15 +17,15 @@ import net.minecraft.util.MathHelper;
 
 public class ModelDragonTail extends ModelPartBase {
 
-    private ModelRenderer tailBase;
-    private ModelRenderer tail1;
-    private ModelRenderer tail2;
-    private ModelRenderer tail3;
+    private final ModelRenderer tailBase;
+    private final ModelRenderer tail1;
+    private final ModelRenderer tail2;
+    private final ModelRenderer tail3;
 
-    private ModelRenderer tailSubBase;
-    private ModelRenderer tailSub1;
-    private ModelRenderer tailSub2;
-    private ModelRenderer tailSub3;
+    private final ModelRenderer tailSubBase;
+    private final ModelRenderer tailSub1;
+    private final ModelRenderer tailSub2;
+    private final ModelRenderer tailSub3;
 
     public ModelDragonTail() {
         this.tailBase = new ModelRenderer(this, 22, 0);

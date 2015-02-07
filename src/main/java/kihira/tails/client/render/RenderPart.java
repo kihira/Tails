@@ -24,14 +24,14 @@ import java.util.HashMap;
 @SideOnly(Side.CLIENT)
 public class RenderPart {
 
-    private static HashMap<Class<? extends EntityLivingBase>, IRenderHelper> renderHelpers = new HashMap<Class<? extends EntityLivingBase>, IRenderHelper>();
+    private static final HashMap<Class<? extends EntityLivingBase>, IRenderHelper> renderHelpers = new HashMap<Class<? extends EntityLivingBase>, IRenderHelper>();
 
     protected final String name;
     protected final String[] textureNames;
     protected final int subTypes;
     protected final String[][] authors;
     protected final String modelAuthor;
-    public ModelPartBase modelPart;
+    public final ModelPartBase modelPart;
 
     public RenderPart(String name, int subTypes, String modelAuthor, ModelPartBase modelPart, String... textureNames) {
         this.name = name;

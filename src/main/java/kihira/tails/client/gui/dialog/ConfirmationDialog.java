@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ConfirmationDialog<T extends GuiBase & IDialogCallback> extends Dialog<T> {
 
-    private List<String> messageList;
+    private final List<String> messageList;
 
     @SuppressWarnings("unchecked")
     public ConfirmationDialog(@NotNull T parent, String title, final String messageList) {

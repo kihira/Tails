@@ -6,12 +6,12 @@ import java.util.Calendar;
 import java.util.UUID;
 
 public class LibraryEntryData {
-    @Expose public PartsData partsData;
+    @Expose public final PartsData partsData;
     @Expose public String entryName = "";
-    @Expose public String comment = "";
+    @Expose public final String comment = "";
     @Expose public boolean favourite;
-    @Expose public long creationDate;
-    @Expose public UUID creatorUUID;
+    @Expose public final long creationDate;
+    @Expose public final UUID creatorUUID;
     /**
      * Name is used purely for display purposes.
      */
@@ -19,17 +19,14 @@ public class LibraryEntryData {
     public boolean remoteEntry = false;
 
     public LibraryEntryData(UUID creatorUUID, String creatorName, String name, PartsData partsData) {
-        this(name, partsData);
+        this.entryName = name;
+        this.partsData = partsData;
+        this.creationDate = Calendar.getInstance().getTimeInMillis();
         this.creatorUUID = creatorUUID;
         this.creatorName = creatorName;
     }
 
-    public LibraryEntryData(String name, PartsData partsData) {
-        this.entryName = name;
-        this.partsData = partsData;
-        this.creationDate = Calendar.getInstance().getTimeInMillis();
-    }
-
+    @SuppressWarnings("RedundantIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

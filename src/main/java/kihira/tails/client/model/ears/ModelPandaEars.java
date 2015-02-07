@@ -14,8 +14,8 @@ import net.minecraft.entity.EntityLivingBase;
 
 public class ModelPandaEars extends ModelPartBase {
 
-    ModelRenderer leftEar;
-    ModelRenderer rightEar;
+    final ModelRenderer leftEar;
+    final ModelRenderer rightEar;
 
     public ModelPandaEars() {
         textureWidth = 32;

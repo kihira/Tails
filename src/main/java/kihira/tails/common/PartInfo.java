@@ -58,6 +58,7 @@ public class PartInfo implements Cloneable {
         this.texture = texture;
     }
 
+    @SuppressWarnings("RedundantIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

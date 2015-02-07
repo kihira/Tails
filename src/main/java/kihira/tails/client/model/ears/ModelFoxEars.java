@@ -14,24 +14,24 @@ import net.minecraft.entity.EntityLivingBase;
 
 public class ModelFoxEars extends ModelPartBase {
     //TODO we can cut down on the amount of models a little
-    ModelRenderer LeftEarInnerSmall;
-    ModelRenderer LeftEarInnerBig;
-    ModelRenderer RightEarInnerSmall;
-    ModelRenderer RightEarInnerBig;
-    ModelRenderer LeftEarInnerEdge;
-    ModelRenderer RightEarInnerEdge;
-    ModelRenderer LeftEarMiddleEdge;
-    ModelRenderer RightEarMiddleEdge;
-    ModelRenderer LeftEarTopEdge;
-    ModelRenderer RightEarTopEdge;
-    ModelRenderer LeftEarOuterEdge;
-    ModelRenderer RightEarOuterEdge;
-    ModelRenderer LeftEarBottomEdge;
-    ModelRenderer RightEarBottomEdge;
-    ModelRenderer LeftEarBackBig;
-    ModelRenderer RightEarBackBig;
-    ModelRenderer LeftEarBackSmall;
-    ModelRenderer RightEarBackSmall;
+    final ModelRenderer LeftEarInnerSmall;
+    final ModelRenderer LeftEarInnerBig;
+    final ModelRenderer RightEarInnerSmall;
+    final ModelRenderer RightEarInnerBig;
+    final ModelRenderer LeftEarInnerEdge;
+    final ModelRenderer RightEarInnerEdge;
+    final ModelRenderer LeftEarMiddleEdge;
+    final ModelRenderer RightEarMiddleEdge;
+    final ModelRenderer LeftEarTopEdge;
+    final ModelRenderer RightEarTopEdge;
+    final ModelRenderer LeftEarOuterEdge;
+    final ModelRenderer RightEarOuterEdge;
+    final ModelRenderer LeftEarBottomEdge;
+    final ModelRenderer RightEarBottomEdge;
+    final ModelRenderer LeftEarBackBig;
+    final ModelRenderer RightEarBackBig;
+    final ModelRenderer LeftEarBackSmall;
+    final ModelRenderer RightEarBackSmall;
 
     public ModelFoxEars() {
         textureWidth = 16;

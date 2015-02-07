@@ -17,8 +17,8 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
 
     private static final ResourceLocation sliderTexture = new ResourceLocation(Tails.MOD_ID.toLowerCase(), "texture/gui/controls/sliderHue.png");
     
-    private HSBSliderType type;
-    private IHSBSliderCallback callback = null;
+    private final HSBSliderType type;
+    private final IHSBSliderCallback callback;
     private float hueValue;
     private float briValue;
     private List<String> tooltips;

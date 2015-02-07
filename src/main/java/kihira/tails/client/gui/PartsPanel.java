@@ -33,7 +33,7 @@ import java.util.List;
 public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsPanel.PartEntry> {
 
     private GuiList<PartEntry> partList;
-    private FakeEntity fakeEntity;
+    private final FakeEntity fakeEntity;
 
     public PartsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);

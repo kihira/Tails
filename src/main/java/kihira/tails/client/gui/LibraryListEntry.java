@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11;
 
 public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
 
-    public LibraryEntryData data;
+    public final LibraryEntryData data;
 
     public LibraryListEntry(LibraryEntryData libraryEntryData) {
         this.data = libraryEntryData;

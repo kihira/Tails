@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class CommonProxy {
 
-    protected HashMap<UUID, PartsData> partsData = new HashMap<UUID, PartsData>();
+    protected final HashMap<UUID, PartsData> partsData = new HashMap<UUID, PartsData>();
     protected LibraryManager libraryManager;
 
     public void init() {

@@ -17,10 +17,10 @@ import net.minecraft.util.MathHelper;
 
 public class ModelRaccoonTail extends ModelPartBase {
 
-    private ModelRenderer tailBase;
-    private ModelRenderer tail1;
-    private ModelRenderer tail2;
-    private ModelRenderer tailTip;
+    private final ModelRenderer tailBase;
+    private final ModelRenderer tail1;
+    private final ModelRenderer tail2;
+    private final ModelRenderer tailTip;
 
     public ModelRaccoonTail() {
         this.tailBase = new ModelRenderer(this, 12, 16);

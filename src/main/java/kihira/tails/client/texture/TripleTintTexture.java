@@ -24,11 +24,11 @@ import java.io.InputStream;
  */
 public class TripleTintTexture extends AbstractTexture {
 
-	private String namespace;
-	private String texturename;
-	private int tint1;
-	private int tint2;
-	private int tint3;
+	private final String namespace;
+	private final String texturename;
+	private final int tint1;
+	private final int tint2;
+	private final int tint3;
 	
 	private static final int MINBRIGHTNESS = 22;
 	
@@ -43,7 +43,7 @@ public class TripleTintTexture extends AbstractTexture {
 	@Override
 	public void loadTexture(IResourceManager p_110551_1_) throws IOException {
 		this.deleteGlTexture();
-        BufferedImage texture = null;
+        BufferedImage texture;
 
         try
         {
@@ -72,6 +72,7 @@ public class TripleTintTexture extends AbstractTexture {
                 }
                 
                 texture.setRGB(0, 0, w, h, pixeldata, 0, w);
+                TextureUtil.uploadTextureImage(this.getGlTextureId(), texture);
             }
         }
         catch (IOException ioexception)
@@ -79,8 +80,6 @@ public class TripleTintTexture extends AbstractTexture {
         	LogManager.getLogger().error("Couldn\'t load tripe tint texture image", ioexception);
             return;
         }
-
-        TextureUtil.uploadTextureImage(this.getGlTextureId(), texture);
 	}
 
     /**

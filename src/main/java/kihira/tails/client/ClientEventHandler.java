@@ -35,6 +35,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import java.util.UUID;
 
+@SuppressWarnings("UnusedParameters")
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler {
     private boolean sentPartInfoToServer = false;

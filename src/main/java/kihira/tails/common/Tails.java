@@ -80,6 +80,7 @@ public class Tails {
     }
 
     @NetworkCheckHandler
+    //TODO
     public boolean checkRemoteVersions(Map<String, String> versions, Side side) {
         if (side.isClient()) {
             if (versions.containsKey(MOD_ID)) hasRemote = true;

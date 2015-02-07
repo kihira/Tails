@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 public class PartsData {
 
-    @Expose private PartInfo[] partInfos = new PartInfo[PartType.values().length];
+    @Expose private final PartInfo[] partInfos = new PartInfo[PartType.values().length];
 
     public PartsData() {
 
@@ -45,6 +45,7 @@ public class PartsData {
         return gson.fromJson(gson.toJson(this), PartsData.class);
     }
 
+    @SuppressWarnings("RedundantIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

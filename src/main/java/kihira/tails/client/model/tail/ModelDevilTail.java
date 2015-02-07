@@ -17,13 +17,13 @@ import net.minecraft.util.MathHelper;
 
 public class ModelDevilTail extends ModelPartBase {
 
-    ModelRenderer tailBase;
-    ModelRenderer tail1;
-    ModelRenderer tail2;
-    ModelRenderer tail3;
-    ModelRenderer tail4;
-    ModelRenderer tail5;
-    ModelRenderer tailTip;
+    final ModelRenderer tailBase;
+    final ModelRenderer tail1;
+    final ModelRenderer tail2;
+    final ModelRenderer tail3;
+    final ModelRenderer tail4;
+    final ModelRenderer tail5;
+    final ModelRenderer tailTip;
 
     public ModelDevilTail() {
         tailBase = new ModelRenderer(this, 0, 0);

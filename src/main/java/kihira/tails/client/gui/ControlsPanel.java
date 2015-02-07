@@ -69,7 +69,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
             parent.partsPanel.selectDefaultListEntry();
             parent.libraryPanel.initList();
             parent.libraryInfoPanel.setEntry(null);
-            parent.setCurrTintEdit(0);
+            parent.clearCurrTintEdit();
             parent.refreshTintPane();
 
             if (!libraryMode) {
@@ -86,7 +86,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
             parent.partsPanel.selectDefaultListEntry();
             parent.libraryPanel.initList();
             parent.libraryInfoPanel.setEntry(null);
-            parent.setCurrTintEdit(0);
+            parent.clearCurrTintEdit();
             parent.refreshTintPane();
             parent.setPartsInfo(partInfo);
         }

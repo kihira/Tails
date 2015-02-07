@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 
 public class ModelMetalWings extends ModelPartBase {
 
-    ModelRenderer wing;
+    final ModelRenderer wing;
 
     public ModelMetalWings() {
         textureWidth = 64;
