@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -19,6 +20,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.common.versioning.DefaultArtifactVersion;
+import cpw.mods.fml.common.versioning.VersionParser;
 import cpw.mods.fml.relauncher.Side;
 import kihira.tails.client.FakeEntity;
 import kihira.tails.client.render.FakeEntityRenderHelper;
@@ -80,10 +83,20 @@ public class Tails {
     }
 
     @NetworkCheckHandler
-    //TODO
     public boolean checkRemoteVersions(Map<String, String> versions, Side side) {
         if (side.isClient()) {
-            if (versions.containsKey(MOD_ID)) hasRemote = true;
+
+            if (versions.containsKey(MOD_ID)) {
+                String clientVer = Loader.instance().getReversedModObjectList().get(this).getVersion();
+                if (VersionParser.parseRange("[" + clientVer + ",)")
+                        .containsVersion(new DefaultArtifactVersion(versions.get(MOD_ID)))) {
+                    logger.warn(String.format("Server version not in acceptable version bounds! Client is %s, server is %s", clientVer, versions.get(MOD_ID)));
+                }
+                else {
+                    logger.debug(String.format("Server version is in acceptable version bounds. Client is %s, server is %s", clientVer, versions.get(MOD_ID)));
+                    hasRemote = true;
+                }
+            }
         }
         return true;
     }
