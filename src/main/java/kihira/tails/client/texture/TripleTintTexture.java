@@ -120,7 +120,7 @@ public class TripleTintTexture extends AbstractTexture {
 		
 		//System.out.println(rfinal+", "+gfinal+", "+bfinal);
 		
-		return (int)compose(rfinal, gfinal, bfinal, a);
+		return compose(rfinal, gfinal, bfinal, a);
 	}
 
     /**

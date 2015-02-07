@@ -70,7 +70,7 @@ public class ModelBirdTail extends ModelPartBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float partialTicks, Entity entity) {
-        float timestep = this.getAnimationTime(8000, entity);
+        float timestep = getAnimationTime(8000, entity);
         double xAngleOffset = 0;
         double zAngleOffset = 0;
 

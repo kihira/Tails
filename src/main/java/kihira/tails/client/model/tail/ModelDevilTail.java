@@ -71,8 +71,8 @@ public class ModelDevilTail extends ModelPartBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float partialTicks, Entity entity) {
-        float seed = this.getAnimationTime(6000, entity);
-        float xseed = this.getAnimationTime(12000, entity);
+        float seed = getAnimationTime(6000, entity);
+        float xseed = getAnimationTime(12000, entity);
         double xAngleOffset = 0;
         double yAngleMultiplier = 1; //Used to suppress sway when running
         if (!entity.isRiding()) {

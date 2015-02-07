@@ -67,8 +67,8 @@ public class ModelCatTail extends ModelPartBase {
 
     @Override
     public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float partialTicks, Entity entity) {
-        float seed = this.getAnimationTime(6000, entity);
-        float xseed = this.getAnimationTime(12000, entity);
+        float seed = getAnimationTime(6000, entity);
+        float xseed = getAnimationTime(12000, entity);
         double xAngleOffset = 0;
         double yAngleMultiplier = 1; //Used to suppress sway when running
         if (!entity.isRiding()) {
