@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:foxlib")
 public class Tails {
 
     public static final String MOD_ID = "Tails";
@@ -62,7 +62,7 @@ public class Tails {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
-        //if (FoxLibManager.checkFoxlib()) {
+        if (FoxLibManager.checkFoxlib()) {
             Tails.proxy.init();
 
             if (e.getSide().isClient()) {
@@ -72,7 +72,7 @@ public class Tails {
                 RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
                 RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
             }
-        //}
+        }
     }
 
     @SubscribeEvent

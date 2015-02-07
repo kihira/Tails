@@ -99,8 +99,6 @@ public class FoxLibManager {
         }
         catch (IOException ignored) { }
 
-        System.out.println(Loader.instance().getIndexedModList().get("foxlib").getProcessedVersion().getVersionString());
-
         return VersionParser.parseRange(foxlibReqVersion).containsVersion(Loader.instance().getIndexedModList().get("foxlib").getProcessedVersion());
     }
 
