@@ -38,7 +38,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         buttonList.add(new GuiIconButton(1, 21, height - 20, GuiIconButton.Icons.DELETE, "Delete"));
         buttonList.add(new GuiIconButton(2, 36, height - 20, GuiIconButton.Icons.UPLOAD, "Upload to server"));
         buttonList.add(new GuiIconButton(3, 53, height - 20, GuiIconButton.Icons.DOWNLOAD, "Save locally"));
-        buttonList.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, "Export to String.\nSend the exported code to your friends to share!"));
+        buttonList.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, "Export to String. Send the exported code to your friends to share!"));
         super.initGui();
 
         setEntry(null);
