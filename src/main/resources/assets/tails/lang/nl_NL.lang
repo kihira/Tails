@@ -1,61 +1,92 @@
-tail.none.name=Geen Staart
-tail.dragon.0.name=Hegedis Staart
+tail.none.name=Geen
+tail.dragon.0.name=Hagedissen Staart
 tail.dragon.1.name=Draken Staart
-tail.fluffy.0.name=Pluizige Staart
+tail.fluffy.0.name=Zachte Staart
 tail.fluffy.1.name=Dubbele Staart
 tail.fluffy.2.name=Negen Staarten
-tail.raccoon.0.name=Wasbeer Staart
-tail.devil.0.name=Duivel Staart
-tail.devil.1.name=Duivel Staart (Geen Top)
+tail.raccoon.0.name=Wasberen Staart
+tail.devil.0.name=Duivelse Staart
+tail.devil.1.name=Duivelse Staart (Geen Top)
 tail.cat.0.name=Katten Staart
-tail.bird.0.name=Vogel Staart
+tail.bird.0.name=Volgel Staart
 
 tail.texture.foxTail.name=Vos
 tail.texture.devilTail.name=Duivel
 tail.texture.racoonTail.name=Wasbeer
-tail.texture.dragonTail.name=Standaart
+tail.texture.dragonTail.name=Standaard
 tail.texture.dragonTailStriped.name=Gestreept
 tail.texture.tabbyTail.name=Kat
 tail.texture.tigerTail.name=Tijger
 tail.texture.birdTail.name=Vogel
 
+ears.fox.0.name=Vossen Oren
+ears.cat.0.name=Katten Oren
+ears.panda.0.name=Panda Oren
+
+ears.texture.foxEars.name=Vos
+ears.texture.catEars.name=Kat
+ears.texture.pandaEars.name=Panda
+
+wings.big.0.name=Grote Vleugels
+wings.big.1.name=Kleine Vleugels
+
+wings.texture.metalWings.name=Metalen Vleugels
+wings.texture.bigWings.name=Engelen Vleugels
+
 gui.export.title=Exporteer Opties
-gui.export.information=Een optie voor client-side spelers op servers zonder de mod.
+gui.export.information=Een toevoegeing aan Tails is dat je staarten van andere spelers kan zien, zelfs als de server de mod niet heeft geinstalleerd. Om dit te doen, worden een paar niet-gebruikte pixels in jouw skin gebruikt om data op te slaan voor Tails. Ja kan hieronder kiezen waar je de skin naar wil exporteren, of gewoon meteen naar mojang uploaden. Sweef met de cursor over de knoppen om de exporteer locaties te zien.
 
 gui.button.livepreview=Live Voorbeeld
-gui.button.livepreview.0.tooltip=Laat een live voorbeeld zien van je staart
+gui.button.livepreview.0.tooltip=Laat een live voorbeeld zien van jouw skin
 gui.button.export=Exporteer
-gui.button.export.0.tooltip=Exporteert een aangepaste versie van jouw skin met pixels voor je staart
-gui.button.export.tooltip=Exporteer een aangepaste versie van je skin naar %s
-gui.button.export.userdir=Exporteer naar Gebruikers Home
-gui.button.export.minecraftdir=Exporteer naar Minecraft Folder
+gui.button.export.0.tooltip=Exporteer je skin met extra pixels, zodat je op servers ook je staart kan zien zonder dat de mod is geinstalleerd op de server.
+gui.button.export.tooltip=Exporteer een bewerkte versie van je skin naar %s
+gui.button.export.userdir=Exporteer naar User Home
+gui.button.export.minecraftdir=Exporteer naar de Minecraft folder
 gui.button.upload=Upload naar Mojang
-gui.button.upload.tooltip=Upload je skin. WAARSCHUWING: Opent jouw browser!
-gui.button.export.custom=Exporteren naar...
-gui.button.export.custom.tooltip=Exporteer naar een folder
-gui.button.openfolder.tooltip=Open de folder waar jij je skin hebt geexporteerd
-gui.button.openfolder=Open exporteer locatie
-gui.button.editor=Staart Bewerker
+gui.button.upload.tooltip=Uploads jouw slin. WAARSCHUWING: Opent je browser!
+gui.button.export.custom=Exporteer naar...
+gui.button.export.custom.tooltip=Exporteer naar een andere folder
+gui.button.openfolder.tooltip=Open de folder waar je je skin hebt geexporteerd
+gui.button.openfolder=Open Exporteer Locatie
+gui.button.editor=Tails Bewerker
 gui.button.reset=Reset
 gui.button.save=Opslaan
 gui.button.edit=Bewerk
-gui.button.help.camera.0=Klik en sleep om het voorbeeld
-gui.button.help.camera.1=te roteren
+gui.button.help.camera.0=Klik en beweeg om je
+gui.button.help.camera.1=spelen rond te draaien
+gui.button.reset.camera=Reset camera
+gui.button.picker.0=Kleuren Kiezer
+gui.button.picker.1=Selecteer een punt op het scherm om die kleur te gebruiken
+
+gui.slider.red.tooltip=Rood
+gui.slider.green.tooltip=Groen
+gui.slider.blue.tooltip=Blauw
+gui.slider.hue.tooltip=Tint
+gui.slider.saturation.tooltip=Verzadiging
+gui.slider.brightness.tooltip=Helderheid
 
 gui.tint=Tint %s
 gui.tint.edit=Tint %s aan het bewerken
 gui.hex=Hex
-gui.texture=Afbeelding
+gui.texture=Structuur
 
-tails.export.success=Slin opslaan naar %s geslaagd!
-tails.upload.unavailable=Deze optie werkt nog niet!
+tails.export.success=Skin opslaan naar %s voltooit
+tails.upload.unavailable=Deze toevoeging werkt nog niet!
+tails.upload.tooltip=Upload je skin naar de Minecraft skin server (Je moet inloggen op de site van Minecraft)
+tails.uploading=Aan het uploaden...
+tails.upload.success=Uploaden voltooid! Kijk in je browser
+tails.upload.failed=Upload gefaalt! Werkt de site van Imgur of Minecraft niet meer?
+tails.upload.ratelimit=Upload gefaalt! Je kan niet zo vaak uploaden!
 
-foxlib.downloader.missing=Je hebt FoxLib %s nodig1! Je kan het hier downloaden: %s
-foxlib.downloader.0=FoxLib in niet geinstalleerd en je hebt het nodig om te spelen %s!
-foxlib.downloader.1=Wil je FoxLib automatish downloaden? (Je moet erna wel restarten)
+foxlib.downloader.missing=Je hebt FoxLib nodig om %s te gebruiken! Je kan het hier downloaden: %s
+foxlib.downloader.0=Je hebt FoxLib niet en je hebt het nodig om %s te gebruiken!
+foxlib.downloader.1=Wil je FoxLib automatisch downloaden? (Will require a game restart)
 foxlib.downloader.downloading=FoxLib aan het downloaden
 foxlib.downloader.success=FoxLib is gedownload!
-foxlib.downloader.restart=Je moet Minecraft restarten om de installatie te voltooien!
-foxlib.downloader.failed.0=We konden FoxLib niet downloaden!
-foxlib.downloader.failed.1=Je kan de mod download op CurseForge (%s)
-foxlib.downloader.outofdate=Je moet FoxLib updaten (%s)
+foxlib.downloader.restart=Restart Minecraft om het te voltooien
+foxlib.downloader.failed.0=FoxLib is niet gedownload
+foxlib.downloader.failed.1=Download FoxLib vanaf CurseForge (%s) om verder te gaan
+foxlib.downloader.outofdate=FoxLib is niet de juiste versie, update naar (%s)
+foxlib.downloader.2=Er is een update voor FoxLib en die heb je nodig om verder te gaan! (%s)
+foxlib.downloader.3=Wil je FoxLib automatisch updaten? (Je moet Minecraft restarten na de update)
