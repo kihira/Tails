@@ -31,7 +31,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
     @SuppressWarnings("unchecked")
     public void initGui() {
         //Mode Switch
-        buttonList.add(new GuiButton(0, 38, height - 25, 45, 20, StatCollector.translateToLocal("gui.button.library")));
+        buttonList.add(new GuiButton(0, 38, height - 25, 45, 20, StatCollector.translateToLocal("gui.button.mode.library")));
         //Reset/Save
         buttonList.add(new GuiButton(1, width - 83, height - 25, 40, 20, I18n.format("gui.button.reset")));
         buttonList.add(new GuiButton(2, width - 43, height - 25, 40, 20, I18n.format("gui.done")));

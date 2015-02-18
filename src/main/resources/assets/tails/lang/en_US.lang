@@ -63,7 +63,7 @@ gui.button.delete=Delete
 gui.button.upload=Upload to server
 gui.button.savelocal=Save to local library
 gui.button.share=Export to clipboard. Send the exported code to your friends to share!
-gui.button.mode.editorLibrary
+gui.button.mode.library=Library
 gui.button.mode.editor=Editor
 gui.button.all=All
 
