@@ -11,6 +11,7 @@ package kihira.tails.common;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import kihira.tails.common.network.PlayerDataMapMessage;
+import kihira.tails.common.network.ServerCapabilitiesMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class ServerEventHandler {
@@ -19,6 +20,7 @@ public class ServerEventHandler {
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         //Send current known tails to client
         Tails.networkWrapper.sendTo(new PlayerDataMapMessage(Tails.proxy.getPartsData()), (EntityPlayerMP) event.player);
+        Tails.networkWrapper.sendTo(new ServerCapabilitiesMessage(Tails.libraryEnabled), (EntityPlayerMP) event.player);
     }
 
     @SubscribeEvent

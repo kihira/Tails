@@ -14,19 +14,18 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
-import org.lwjgl.opengl.GL11;
 
 public class ModelDragonTail extends ModelPartBase {
 
-    private ModelRenderer tailBase;
-    private ModelRenderer tail1;
-    private ModelRenderer tail2;
-    private ModelRenderer tail3;
+    private final ModelRenderer tailBase;
+    private final ModelRenderer tail1;
+    private final ModelRenderer tail2;
+    private final ModelRenderer tail3;
 
-    private ModelRenderer tailSubBase;
-    private ModelRenderer tailSub1;
-    private ModelRenderer tailSub2;
-    private ModelRenderer tailSub3;
+    private final ModelRenderer tailSubBase;
+    private final ModelRenderer tailSub1;
+    private final ModelRenderer tailSub2;
+    private final ModelRenderer tailSub3;
 
     public ModelDragonTail() {
         this.tailBase = new ModelRenderer(this, 22, 0);
@@ -96,7 +95,7 @@ public class ModelDragonTail extends ModelPartBase {
         }
 
         //TODO if we want to speed up the swing, we can't do so via this method
-        float timestep = this.getAnimationTime(4000D, entity);
+        float timestep = getAnimationTime(4000D, entity);
         setRotationRadians(tailBase, Math.toRadians(-40F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
         setRotationRadians(tail1, Math.toRadians(-8F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 2) / 5F) * yAngleMultiplier, 0F);
         setRotationRadians(tail2, Math.toRadians(10F) - xAngleOffset / 4F, ((float) Math.cos(timestep - 3) / 5F) * yAngleMultiplier, 0F);
@@ -118,9 +117,7 @@ public class ModelDragonTail extends ModelPartBase {
         this.tailBase.render(0.0625F);
 
         if (subtype == 1) {
-            GL11.glDisable(GL11.GL_CULL_FACE);
             this.tailSubBase.render(0.0625F);
-            GL11.glEnable(GL11.GL_CULL_FACE);
         }
     }
 }

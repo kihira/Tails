@@ -58,6 +58,14 @@ gui.button.help.camera.1=to rotate your character
 gui.button.reset.camera=Reset camera
 gui.button.picker.0=Color Picker
 gui.button.picker.1=Select a point on the screen to use that colour
+gui.button.favourite=Favourite
+gui.button.delete=Delete
+gui.button.upload=Upload to server
+gui.button.savelocal=Save to local library
+gui.button.share=Export to clipboard. Send the exported code to your friends to share!
+gui.button.mode.library=Library
+gui.button.mode.editor=Editor
+gui.button.all=All
 
 gui.slider.red.tooltip=Red
 gui.slider.green.tooltip=Green
@@ -66,10 +74,26 @@ gui.slider.hue.tooltip=Hue
 gui.slider.saturation.tooltip=Saturation
 gui.slider.brightness.tooltip=Brightness
 
+# GUI Library Strings
+gui.library.create=Create new entry
+gui.library.entry.default=New entry
+gui.library.entry=Library Entry
+gui.library.info.created=Created by
+gui.library.info.createdate=Created on
+gui.library.info.toast.export=Copied library entry data to clipboard!
+gui.library.import.skin=Import from Skin
+gui.library.import.string=Import from String
+gui.library.import.toast.skin=Loaded data from your skin!
+gui.library.import.toast.success=Successfully imported the parts data %s
+gui.library.import.toast.invalid=Unable to import, missing or invalid data!
+gui.library.import.toast.invalid.uuid=Unable to import, UUID data may be corrupted!
+gui.library.import.toast.invalid.parts=Unable to import, parts data may be corrupted!
+
 gui.tint=Tint %s
 gui.tint.edit=Editing Tint %s
 gui.hex=Hex
 gui.texture=Texture
+gui.createdby=Created by
 
 tails.export.success=Successfully saved skin to %s
 tails.upload.unavailable=This feature is not yet functional!
@@ -78,15 +102,3 @@ tails.uploading=Uploading...
 tails.upload.success=Successfully uploaded! Check your browser
 tails.upload.failed=Upload failed! Is imgur or Minecrafts website down?
 tails.upload.ratelimit=Upload failed! Rate limit has been hit, are you uploading too often?
-
-foxlib.downloader.missing=You need FoxLib to use %s! You can download it here: %s
-foxlib.downloader.0=FoxLib is missing and it is REQUIRED to use %s!
-foxlib.downloader.1=Do you want to automatically download FoxLib? (Will require a game restart)
-foxlib.downloader.downloading=Downloading FoxLib
-foxlib.downloader.success=FoxLib has been downloaded!
-foxlib.downloader.restart=Please restart your game to finish
-foxlib.downloader.failed.0=FoxLib has failed to download
-foxlib.downloader.failed.1=Please download FoxLib manually from CurseForge (%s)
-foxlib.downloader.outofdate=FoxLib is not the correct version, please update (%s)
-foxlib.downloader.2=FoxLib is out of date and a newer version is REQUIRED to use %s!
-foxlib.downloader.3=Do you want to automatically update FoxLib? (Will require a game restart)

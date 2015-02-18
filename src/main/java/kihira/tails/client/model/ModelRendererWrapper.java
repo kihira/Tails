@@ -21,7 +21,7 @@ import net.minecraft.client.model.ModelRenderer;
 @SideOnly(Side.CLIENT)
 public class ModelRendererWrapper extends ModelRenderer {
 
-    private PartsData.PartType partType;
+    private final PartsData.PartType partType;
 
     public ModelRendererWrapper(ModelBase model, PartsData.PartType partType) {
         super(model);

@@ -11,15 +11,14 @@ package kihira.tails.common;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
-import java.util.UUID;
+import java.util.Arrays;
 
 public class PartsData {
 
-    @Expose public final UUID uuid;
-    @Expose private PartInfo[] partInfos = new PartInfo[PartType.values().length];
+    @Expose private final PartInfo[] partInfos = new PartInfo[PartType.values().length];
 
-    public PartsData(UUID uuid) {
-        this.uuid = uuid;
+    public PartsData() {
+
     }
 
     public void setPartInfo(PartType partType, PartInfo partInfo) {
@@ -44,6 +43,24 @@ public class PartsData {
     public PartsData deepCopy() {
         Gson gson = new Gson();
         return gson.fromJson(gson.toJson(this), PartsData.class);
+    }
+
+    @SuppressWarnings("RedundantIfStatement")
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PartsData partsData = (PartsData) o;
+
+        if (!Arrays.equals(partInfos, partsData.partInfos)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return partInfos != null ? Arrays.hashCode(partInfos) : 0;
     }
 
     //NOTE: We rely on the order of this, don't re-arrange, only append!

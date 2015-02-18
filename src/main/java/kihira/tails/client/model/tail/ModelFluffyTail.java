@@ -17,12 +17,12 @@ import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 public class ModelFluffyTail extends ModelPartBase {
-    private ModelRenderer tailBase;
-    private ModelRenderer tail1;
-    private ModelRenderer tail2;
-    private ModelRenderer tail3;
-    private ModelRenderer tail4;
-    private ModelRenderer tail5;
+    private final ModelRenderer tailBase;
+    private final ModelRenderer tail1;
+    private final ModelRenderer tail2;
+    private final ModelRenderer tail3;
+    private final ModelRenderer tail4;
+    private final ModelRenderer tail5;
 
     public ModelFluffyTail() {
         this.tailBase = new ModelRenderer(this);

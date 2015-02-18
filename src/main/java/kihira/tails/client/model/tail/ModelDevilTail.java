@@ -17,13 +17,13 @@ import net.minecraft.util.MathHelper;
 
 public class ModelDevilTail extends ModelPartBase {
 
-    ModelRenderer tailBase;
-    ModelRenderer tail1;
-    ModelRenderer tail2;
-    ModelRenderer tail3;
-    ModelRenderer tail4;
-    ModelRenderer tail5;
-    ModelRenderer tailTip;
+    final ModelRenderer tailBase;
+    final ModelRenderer tail1;
+    final ModelRenderer tail2;
+    final ModelRenderer tail3;
+    final ModelRenderer tail4;
+    final ModelRenderer tail5;
+    final ModelRenderer tailTip;
 
     public ModelDevilTail() {
         tailBase = new ModelRenderer(this, 0, 0);
@@ -71,8 +71,8 @@ public class ModelDevilTail extends ModelPartBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float partialTicks, Entity entity) {
-        float seed = this.getAnimationTime(6000, entity);
-        float xseed = this.getAnimationTime(12000, entity);
+        float seed = getAnimationTime(6000, entity);
+        float xseed = getAnimationTime(12000, entity);
         double xAngleOffset = 0;
         double yAngleMultiplier = 1; //Used to suppress sway when running
         if (!entity.isRiding()) {

@@ -27,12 +27,12 @@ apply plugin: 'forge'
 
 project.ext {
     massive = "1"
-    major = "2"
-    minor = "3"
+    major = "3"
+    minor = "0"
     mcVersion = "1.7.10"
     forgeVersion = "10.13.2.1236"
-    foxlibDevVersion = "1.7.10-0.6.0.develop+"
-    foxlibVersion = "1.7.10-0.6.0"
+    foxlibDevVersion = "1.7.10-0.6.0.develop.22"
+    foxlibVersion = "1.7.10-0.7.0"
     buildVersion = System.getenv("BUILD_NUMBER")
 }
 
@@ -46,6 +46,7 @@ configurations {
 dependencies {
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
     compile "kihira:FoxLib:"+project.foxlibDevVersion+":dev"
+    compile 'com.intellij:annotations:+@jar'
 }
 
 project.version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}"
@@ -73,6 +74,13 @@ processResources {
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.info'
+    }
+}
+
+jar {
+    manifest {
+        attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
+                'FMLCorePluginContainsFMLMod': 'true'
     }
 }
 

@@ -17,10 +17,10 @@ import net.minecraft.util.MathHelper;
 
 public class ModelRaccoonTail extends ModelPartBase {
 
-    private ModelRenderer tailBase;
-    private ModelRenderer tail1;
-    private ModelRenderer tail2;
-    private ModelRenderer tailTip;
+    private final ModelRenderer tailBase;
+    private final ModelRenderer tail1;
+    private final ModelRenderer tail2;
+    private final ModelRenderer tailTip;
 
     public ModelRaccoonTail() {
         this.tailBase = new ModelRenderer(this, 12, 16);
@@ -48,7 +48,7 @@ public class ModelRaccoonTail extends ModelPartBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float partialTicks, Entity entity) {
-        float timestep = this.getAnimationTime(8000, entity);
+        float timestep = getAnimationTime(8000, entity);
         double xAngleOffset = 0;
         double yAngleOffset = 0;
         double zAngleOffset = 0;

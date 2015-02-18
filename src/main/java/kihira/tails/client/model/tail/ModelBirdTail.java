@@ -8,13 +8,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
 public class ModelBirdTail extends ModelPartBase {
-    ModelRenderer center;
-    ModelRenderer left0;
-    ModelRenderer left1;
-    ModelRenderer left2;
-    ModelRenderer right0;
-    ModelRenderer right2;
-    ModelRenderer right1;
+    final ModelRenderer center;
+    final ModelRenderer left0;
+    final ModelRenderer left1;
+    final ModelRenderer left2;
+    final ModelRenderer right0;
+    final ModelRenderer right2;
+    final ModelRenderer right1;
 
     public ModelBirdTail() {
         center = new ModelRenderer(this, 0, 0);
@@ -70,7 +70,7 @@ public class ModelBirdTail extends ModelPartBase {
 
     @Override
     public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float partialTicks, Entity entity) {
-        float timestep = this.getAnimationTime(8000, entity);
+        float timestep = getAnimationTime(8000, entity);
         double xAngleOffset = 0;
         double zAngleOffset = 0;
 

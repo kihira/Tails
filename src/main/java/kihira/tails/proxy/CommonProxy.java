@@ -10,11 +10,11 @@ package kihira.tails.proxy;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import kihira.tails.common.LibraryManager;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.ServerEventHandler;
 import kihira.tails.common.Tails;
-import kihira.tails.common.network.PlayerDataMapMessage;
-import kihira.tails.common.network.PlayerDataMessage;
+import kihira.tails.common.network.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,11 +22,21 @@ import java.util.UUID;
 
 public class CommonProxy {
 
-    protected HashMap<UUID, PartsData> partsData = new HashMap<UUID, PartsData>();
+    protected final HashMap<UUID, PartsData> partsData = new HashMap<UUID, PartsData>();
+    protected LibraryManager libraryManager;
+
+    public void init() {
+        registerMessages();
+        registerHandlers();
+        libraryManager = new LibraryManager();
+    }
 
     public void registerMessages() {
         Tails.networkWrapper.registerMessage(PlayerDataMessage.Handler.class, PlayerDataMessage.class, 0, Side.SERVER);
         Tails.networkWrapper.registerMessage(PlayerDataMapMessage.Handler.class, PlayerDataMapMessage.class, 1, Side.SERVER);
+        Tails.networkWrapper.registerMessage(LibraryEntriesMessage.Handler.class, LibraryEntriesMessage.class, 2, Side.SERVER);
+        Tails.networkWrapper.registerMessage(LibraryRequestMessage.Handler.class, LibraryRequestMessage.class, 3, Side.SERVER);
+        Tails.networkWrapper.registerMessage(ServerCapabilitiesMessage.Handler.class, ServerCapabilitiesMessage.class, 4, Side.SERVER);
     }
 
     public void registerHandlers() {
@@ -43,7 +53,7 @@ public class CommonProxy {
         if (hasPartsData(uuid)) {
             if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
                 //Tell client to remove textures
-                Tails.networkWrapper.sendToAll(new PlayerDataMessage(this.partsData.get(uuid), true));
+                //Tails.networkWrapper.sendToAll(new PlayerDataMessage(uuid, this.partsData.get(uuid), true));
             }
             this.partsData.remove(uuid);
         }
@@ -63,5 +73,9 @@ public class CommonProxy {
 
     public Map<UUID, PartsData> getPartsData() {
         return this.partsData;
+    }
+
+    public LibraryManager getLibraryManager() {
+        return libraryManager;
     }
 }
