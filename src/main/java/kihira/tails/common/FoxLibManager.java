@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
     public static final String foxlibVersion = "@FOXLIBVERSION@";
-    public static final String foxlibReqVersion = "[1.7.10-0.6.0,)";
+    public static final String foxlibReqVersion = "[1.7.10-0.7.0,)";
     public static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
     public static final String foxlibDownloadLink = "http://maven.kihirakreations.co.uk/kihira/FoxLib/"+foxlibVersion+"/"+foxlibFileName;
     public static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-foxlib/files";
