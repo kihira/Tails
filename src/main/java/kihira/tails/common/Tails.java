@@ -82,18 +82,15 @@ public class Tails {
 
     @NetworkCheckHandler
     public boolean checkRemoteVersions(Map<String, String> versions, Side side) {
-        if (side.isClient()) {
-
-            if (versions.containsKey(MOD_ID)) {
-                String clientVer = Loader.instance().getReversedModObjectList().get(this).getVersion();
-                if (VersionParser.parseRange("[" + clientVer + ",)")
-                        .containsVersion(new DefaultArtifactVersion(versions.get(MOD_ID)))) {
-                    logger.warn(String.format("Server version not in acceptable version bounds! Client is %s, server is %s", clientVer, versions.get(MOD_ID)));
-                }
-                else {
-                    logger.debug(String.format("Server version is in acceptable version bounds. Client is %s, server is %s", clientVer, versions.get(MOD_ID)));
-                    hasRemote = true;
-                }
+        if (versions.containsKey(MOD_ID)) {
+            String clientVer = Loader.instance().getReversedModObjectList().get(this).getVersion();
+            if (VersionParser.parseRange("[" + clientVer + ",)")
+                    .containsVersion(new DefaultArtifactVersion(versions.get(MOD_ID)))) {
+                logger.warn(String.format("Remote version not in acceptable version bounds! Local (%s) is %s, Remote is %s", side.toString(), clientVer, versions.get(MOD_ID)));
+            }
+            else {
+                logger.debug(String.format("Remote version is in acceptable version bounds. Local (%s) is %s, Remote is %s", side.toString(), clientVer, versions.get(MOD_ID)));
+                hasRemote = true;
             }
         }
         return true;
