@@ -170,7 +170,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
                     button.visible = false;
                 }
                 //Upload
-                else if (button.id == 2 && entry.data.remoteEntry && Tails.hasRemote && !mc.isSingleplayer()) {
+                else if (button.id == 2 && (entry.data.remoteEntry || mc.isSingleplayer() || !Tails.hasRemote)) {
                     button.visible = false;
                 }
             }
