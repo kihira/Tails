@@ -31,7 +31,7 @@ project.ext {
     minor = "0-beta"
     mcVersion = "1.7.10"
     forgeVersion = "10.13.2.1236"
-    foxlibDevVersion = "1.7.10-0.6.0.develop.17"
+    foxlibDevVersion = "1.7.10-0.6.0.develop.22"
     foxlibVersion = "1.7.10-0.6.0"
     buildVersion = System.getenv("BUILD_NUMBER")
 }
@@ -74,6 +74,13 @@ processResources {
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.info'
+    }
+}
+
+jar {
+    manifest {
+        attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
+                'FMLCorePluginContainsFMLMod': 'true'
     }
 }
 
