@@ -3,6 +3,8 @@
  *
  * Copyright (c) 2014 Zoe Lee (Kihira) and iLexiconn
  *
+ * Some code used from CodeChickenCore under the MIT License
+ *
  * See LICENSE for full License
  */
 
