@@ -62,16 +62,14 @@ public class Tails {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
-        if (FoxLibManager.checkFoxlib()) {
-            Tails.proxy.init();
+        Tails.proxy.init();
 
-            if (e.getSide().isClient()) {
-                Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
-                loadConfig();
+        if (e.getSide().isClient()) {
+            Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
+            loadConfig();
 
-                RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
-                RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
-            }
+            RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
+            RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
         }
     }
 
