@@ -136,15 +136,17 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
         //Compile file list
         findFoxlibFiles(foxLibs, files);
-        files = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + MC_VERSION).listFiles();
-        findFoxlibFiles(foxLibs, files);
+        File dir = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + MC_VERSION);
+        if (dir.exists()) {
+            files = dir.listFiles();
+            findFoxlibFiles(foxLibs, files);
+        }
 
         return foxLibs;
     }
 
     private void findFoxlibFiles(TreeMap<ComparableVersion, File> map, File[] files) {
         for (File file : files) {
-            System.out.println("Checking file " + file.toString());
 /*            if (file.isDirectory()) {
                 findFoxlibFiles(map, file.listFiles());
             }*/
@@ -171,7 +173,13 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
             OutputStream output = null;
             InputStream input = null;
             try {
-                target = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + foxlibFileName);
+                File dir = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + MC_VERSION);
+                if (!dir.exists()) {
+                    if (!dir.mkdir()) {
+                        logger.error("Failed to create specific sub directory!");
+                    }
+                }
+                target = new File(dir, File.separator + foxlibFileName);
                 download = new URL(foxlibDownloadLink);
                 output = new FileOutputStream(target);
                 input = download.openStream();
