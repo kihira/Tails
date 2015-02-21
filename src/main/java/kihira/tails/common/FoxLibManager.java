@@ -125,7 +125,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
     private TreeMap<ComparableVersion, File> buildFoxLibFileList() {
         File[] files = new File((File) FMLInjectionData.data()[6], "mods").listFiles();
-        Pattern pattern = Pattern.compile("(\\w+).*?([\\d\\.]+)[-\\w]*\\.[^\\d]+");
+        Pattern pattern = Pattern.compile("(\\w+)[-][\\d\\.]+.*?([\\d\\.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
         TreeMap<ComparableVersion, File> foxLibs = new TreeMap<ComparableVersion, File>(new Comparator<ComparableVersion>() {
             @Override
             public int compare(ComparableVersion o1, ComparableVersion o2) {
@@ -139,7 +139,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
             if (matcher.matches()) {
                 String name = matcher.group(1);
                 //Check we have the mod
-                if (name.equals("FoxLib")) {
+                if (name.equalsIgnoreCase("FoxLib")) {
                     ComparableVersion version = new ComparableVersion(matcher.group(2));
                     foxLibs.put(version, file);
                 }
