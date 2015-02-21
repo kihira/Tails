@@ -174,12 +174,13 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
             InputStream input = null;
             try {
                 File dir = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + MC_VERSION);
-                if (!dir.exists()) {
-                    if (!dir.mkdir()) {
-                        logger.error("Failed to create specific sub directory!");
-                    }
+                if (dir.exists()) {
+                    logger.info("Detected MC specific sub directory, downloading to there instead of main directory");
+                    target = new File(dir, File.separator + foxlibFileName);
                 }
-                target = new File(dir, File.separator + foxlibFileName);
+                else {
+                    target = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + foxlibFileName);
+                }
                 download = new URL(foxlibDownloadLink);
                 output = new FileOutputStream(target);
                 input = download.openStream();
