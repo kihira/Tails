@@ -32,7 +32,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@IFMLLoadingPlugin.MCVersion(value = "1.7.10")
+@IFMLLoadingPlugin.MCVersion(value = FoxLibManager.MC_VERSION)
 public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
     public static final String foxlibVersion = "@FOXLIBVERSION@";
@@ -41,6 +41,8 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
     public static final String foxlibDownloadLink = "http://maven.kihirakreations.co.uk/kihira/FoxLib/"+foxlibVersion+"/"+foxlibFileName;
     public static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-foxlib/files";
     public static final Logger logger = LogManager.getLogger("FoxLib Manager");
+    public static final String MC_VERSION = "1.7.10";
+    public static final Pattern pattern = Pattern.compile("(\\w+)[-][\\d\\.]+.*?([\\d\\.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
 
     int totalSize;
 
@@ -125,7 +127,6 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
     private TreeMap<ComparableVersion, File> buildFoxLibFileList() {
         File[] files = new File((File) FMLInjectionData.data()[6], "mods").listFiles();
-        Pattern pattern = Pattern.compile("(\\w+)[-][\\d\\.]+.*?([\\d\\.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
         TreeMap<ComparableVersion, File> foxLibs = new TreeMap<ComparableVersion, File>(new Comparator<ComparableVersion>() {
             @Override
             public int compare(ComparableVersion o1, ComparableVersion o2) {
@@ -134,19 +135,29 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
         });
 
         //Compile file list
-        for (File file : files != null ? files : new File[0]) {
+        findFoxlibFiles(foxLibs, files);
+        files = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + MC_VERSION).listFiles();
+        findFoxlibFiles(foxLibs, files);
+
+        return foxLibs;
+    }
+
+    private void findFoxlibFiles(TreeMap<ComparableVersion, File> map, File[] files) {
+        for (File file : files) {
+            System.out.println("Checking file " + file.toString());
+/*            if (file.isDirectory()) {
+                findFoxlibFiles(map, file.listFiles());
+            }*/
             Matcher matcher = pattern.matcher(file.getName());
             if (matcher.matches()) {
                 String name = matcher.group(1);
                 //Check we have the mod
                 if (name.equalsIgnoreCase("FoxLib")) {
                     ComparableVersion version = new ComparableVersion(matcher.group(2));
-                    foxLibs.put(version, file);
+                    map.put(version, file);
                 }
             }
         }
-
-        return foxLibs;
     }
 
     @SideOnly(Side.CLIENT)
