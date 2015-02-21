@@ -18,12 +18,12 @@ import cpw.mods.fml.relauncher.*;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.CountingOutputStream;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Comparator;
@@ -99,7 +99,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
         }
         //We have none, ask for download
         else if (foxLibs.size() == 0) {
-            if (!SystemUtils.isJavaAwtHeadless()) {
+            if (!GraphicsEnvironment.isHeadless()) {
                 showDownloadOptionDialog("FoxLib is not installed and required! Would you like to download it?");
                 checkFoxLib();
             }
@@ -111,7 +111,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
         //We have one, check it is the correct version
         else {
             if (!VersionParser.parseRange(foxlibReqVersion).containsVersion(new DefaultArtifactVersion("1.7.10-" + foxLibs.firstKey().toString()))) {
-                if (!SystemUtils.isJavaAwtHeadless()) {
+                if (!GraphicsEnvironment.isHeadless()) {
                     showDownloadOptionDialog("FoxLib is not the required version! Would you like to update it?");
                     checkFoxLib();
                 }
@@ -152,6 +152,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
     @SideOnly(Side.CLIENT)
     private void showDownloadOptionDialog(String message) {
         logger.info("Requesting users input for FoxLib. Check your windows!");
+        logger.info(message);
         int opt = JOptionPane.showConfirmDialog(Display.getParent(), message);
         if (opt == JOptionPane.OK_OPTION) {
             File target = null;
