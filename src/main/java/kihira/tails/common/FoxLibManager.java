@@ -18,12 +18,12 @@ import cpw.mods.fml.relauncher.*;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.CountingOutputStream;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Comparator;
@@ -32,15 +32,17 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@IFMLLoadingPlugin.MCVersion(value = "1.7.10")
+@IFMLLoadingPlugin.MCVersion(value = FoxLibManager.MC_VERSION)
 public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
     public static final String foxlibVersion = "@FOXLIBVERSION@";
-    public static final String foxlibReqVersion = "[1.7.10-0.6.0,)";
+    public static final String foxlibReqVersion = "[1.7.10-0.7.0,)";
     public static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
     public static final String foxlibDownloadLink = "http://maven.kihirakreations.co.uk/kihira/FoxLib/"+foxlibVersion+"/"+foxlibFileName;
     public static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-foxlib/files";
     public static final Logger logger = LogManager.getLogger("FoxLib Manager");
+    public static final String MC_VERSION = "1.7.10";
+    public static final Pattern pattern = Pattern.compile("(\\w+)[-][\\d\\.]+.*?([\\d\\.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
 
     int totalSize;
 
@@ -99,7 +101,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
         }
         //We have none, ask for download
         else if (foxLibs.size() == 0) {
-            if (!SystemUtils.isJavaAwtHeadless()) {
+            if (!GraphicsEnvironment.isHeadless()) {
                 showDownloadOptionDialog("FoxLib is not installed and required! Would you like to download it?");
                 checkFoxLib();
             }
@@ -111,7 +113,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
         //We have one, check it is the correct version
         else {
             if (!VersionParser.parseRange(foxlibReqVersion).containsVersion(new DefaultArtifactVersion("1.7.10-" + foxLibs.firstKey().toString()))) {
-                if (!SystemUtils.isJavaAwtHeadless()) {
+                if (!GraphicsEnvironment.isHeadless()) {
                     showDownloadOptionDialog("FoxLib is not the required version! Would you like to update it?");
                     checkFoxLib();
                 }
@@ -125,7 +127,6 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
     private TreeMap<ComparableVersion, File> buildFoxLibFileList() {
         File[] files = new File((File) FMLInjectionData.data()[6], "mods").listFiles();
-        Pattern pattern = Pattern.compile("(\\w+).*?([\\d\\.]+)[-\\w]*\\.[^\\d]+");
         TreeMap<ComparableVersion, File> foxLibs = new TreeMap<ComparableVersion, File>(new Comparator<ComparableVersion>() {
             @Override
             public int compare(ComparableVersion o1, ComparableVersion o2) {
@@ -134,24 +135,37 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
         });
 
         //Compile file list
-        for (File file : files != null ? files : new File[0]) {
-            Matcher matcher = pattern.matcher(file.getName());
-            if (matcher.matches()) {
-                String name = matcher.group(1);
-                //Check we have the mod
-                if (name.equals("FoxLib")) {
-                    ComparableVersion version = new ComparableVersion(matcher.group(2));
-                    foxLibs.put(version, file);
-                }
-            }
+        findFoxlibFiles(foxLibs, files);
+        File dir = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + MC_VERSION);
+        if (dir.exists()) {
+            files = dir.listFiles();
+            findFoxlibFiles(foxLibs, files);
         }
 
         return foxLibs;
     }
 
+    private void findFoxlibFiles(TreeMap<ComparableVersion, File> map, File[] files) {
+        for (File file : files) {
+/*            if (file.isDirectory()) {
+                findFoxlibFiles(map, file.listFiles());
+            }*/
+            Matcher matcher = pattern.matcher(file.getName());
+            if (matcher.matches()) {
+                String name = matcher.group(1);
+                //Check we have the mod
+                if (name.equalsIgnoreCase("FoxLib")) {
+                    ComparableVersion version = new ComparableVersion(matcher.group(2));
+                    map.put(version, file);
+                }
+            }
+        }
+    }
+
     @SideOnly(Side.CLIENT)
     private void showDownloadOptionDialog(String message) {
         logger.info("Requesting users input for FoxLib. Check your windows!");
+        logger.info(message);
         int opt = JOptionPane.showConfirmDialog(Display.getParent(), message);
         if (opt == JOptionPane.OK_OPTION) {
             File target = null;
@@ -159,7 +173,14 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
             OutputStream output = null;
             InputStream input = null;
             try {
-                target = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + foxlibFileName);
+                File dir = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + MC_VERSION);
+                if (dir.exists()) {
+                    logger.info("Detected MC specific sub directory, downloading to there instead of main directory");
+                    target = new File(dir, File.separator + foxlibFileName);
+                }
+                else {
+                    target = new File((File) FMLInjectionData.data()[6], "mods" + File.separator + foxlibFileName);
+                }
                 download = new URL(foxlibDownloadLink);
                 output = new FileOutputStream(target);
                 input = download.openStream();
