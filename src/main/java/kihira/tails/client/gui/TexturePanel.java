@@ -62,15 +62,17 @@ public class TexturePanel extends Panel<GuiEditor> {
         RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
         if (renderPart.hasAuthor(partInfo.subid, parent.textureID)) {
             String author = renderPart.getAuthor(partInfo.subid, parent.textureID);
-            float authorNameWidth = fontRendererObj.getStringWidth(author) * 0.6F;
-            float authorWidth = fontRendererObj.getStringWidth(I18n.format("gui.createdby")) * 0.6F;
-            if (mouseX > 9 + authorWidth && mouseX < 9 + authorWidth + authorNameWidth && mouseY > height - 10 && mouseY < height - 4) {
-                try {
-                    Desktop.getDesktop().browse(URI.create("https://twitter.com/" + author.replace("@", "")));
-                } catch (IOException e) {
-                    e.printStackTrace();
+            if (author.startsWith("@")) {
+                float authorNameWidth = fontRendererObj.getStringWidth(author) * 0.6F;
+                float authorWidth = fontRendererObj.getStringWidth(I18n.format("gui.createdby")) * 0.6F;
+                if (mouseX > 9 + authorWidth && mouseX < 9 + authorWidth + authorNameWidth && mouseY > height - 10 && mouseY < height - 4) {
+                    try {
+                        Desktop.getDesktop().browse(URI.create("https://twitter.com/" + author.replace("@", "")));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return;
                 }
-                return;
             }
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);

@@ -51,7 +51,6 @@ public class ModelDragonTail extends ModelPartBase {
         this.tail1.addChild(this.tail2);
         this.tailBase.addChild(this.tail1);
 
-
         this.tailSubBase = new ModelRenderer(this, 22, 5);
         this.tailSubBase.addBox(0F, -7.25F, -2F, 0, 5, 8);
         this.setRotationDegrees(this.tailSubBase, -40F, 0F, 0F);

@@ -9,6 +9,7 @@ tail.devil.0.name=Devil Tail
 tail.devil.1.name=Devil Tail (No Tip)
 tail.cat.0.name=Cat Tail
 tail.bird.0.name=Bird Tail
+tail.shark.0.name=Shark Tail
 
 tail.texture.foxTail.name=Fox
 tail.texture.devilTail.name=Devil
@@ -18,6 +19,7 @@ tail.texture.dragonTailStriped.name=Striped
 tail.texture.tabbyTail.name=Cat
 tail.texture.tigerTail.name=Tiger
 tail.texture.birdTail.name=Bird
+tail.texture.sharkTail.name=Shark
 
 ears.fox.0.name=Fox Ears
 ears.cat.0.name=Cat Ears
