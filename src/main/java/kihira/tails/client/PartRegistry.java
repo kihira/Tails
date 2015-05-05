@@ -43,7 +43,8 @@ public class PartRegistry {
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.panda", 0, null, new ModelPandaEars(), "pandaEars"));
 
         //Wings
-        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 1, "@littlechippie", null, "bigWings", "metalWings").setAuthor("@littlechippie"));
+        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 1, null, null, "bigWings", "metalWings", "dragonWings", "dragonBonelessWings")
+                .setAuthor("@littlechippie").setAuthor("Dracyoshi", 0, 2).setAuthor("Dracyoshi", 0, 3).setAuthor("Dracyoshi", 1, 2).setAuthor("Dracyoshi", 1, 3));
     }
 
     public static void registerPart(PartsData.PartType partType, RenderPart renderPart) {
