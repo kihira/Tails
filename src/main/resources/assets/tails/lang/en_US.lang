@@ -23,10 +23,12 @@ tail.texture.sharkTail.name=Shark
 
 ears.fox.0.name=Fox Ears
 ears.cat.0.name=Cat Ears
+ears.catSmall.0.name=Small Cat Ears
 ears.panda.0.name=Panda Ears
 
 ears.texture.foxEars.name=Fox
 ears.texture.catEars.name=Cat
+ears.texture.catSmallEars.name=Cat
 ears.texture.pandaEars.name=Panda
 
 wings.big.0.name=Large Wings

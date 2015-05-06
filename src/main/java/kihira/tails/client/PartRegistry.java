@@ -12,6 +12,7 @@ import com.google.common.collect.ArrayListMultimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.model.ears.ModelCatEars;
+import kihira.tails.client.model.ears.ModelCatSmallEars;
 import kihira.tails.client.model.ears.ModelFoxEars;
 import kihira.tails.client.model.ears.ModelPandaEars;
 import kihira.tails.client.model.tail.*;
@@ -41,6 +42,7 @@ public class PartRegistry {
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.fox", 0, "@Adeon", new ModelFoxEars(), "foxEars"));
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.cat", 0, null, new ModelCatEars(), "catEars"));
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.panda", 0, null, new ModelPandaEars(), "pandaEars"));
+        registerPart(PartsData.PartType.EARS, new RenderPart("ears.catSmall", 0, null, new ModelCatSmallEars(), "catSmallEars"));
 
         //Wings
         registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 1, null, null, "bigWings", "metalWings", "dragonWings", "dragonBonelessWings")
