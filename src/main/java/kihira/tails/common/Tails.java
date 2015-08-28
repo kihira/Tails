@@ -42,7 +42,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:foxlib")
+//@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:foxlib")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "1.4.0", dependencies = "after:foxlib")
 public class Tails {
 
     public static final String MOD_ID = "Tails";
@@ -114,12 +115,11 @@ public class Tails {
     public boolean checkRemoteVersions(Map<String, String> versions, Side side) {
         if (versions.containsKey(MOD_ID)) {
             String clientVer = Loader.instance().getReversedModObjectList().get(this).getVersion();
-            if (VersionParser.parseRange("[" + clientVer + ",)")
-                    .containsVersion(new DefaultArtifactVersion(versions.get(MOD_ID)))) {
-                logger.warn(String.format("Remote version not in acceptable version bounds! Local (%s) is %s, Remote is %s", side.toString(), clientVer, versions.get(MOD_ID)));
+            if (!VersionParser.parseRange("[" + clientVer + ",)").containsVersion(new DefaultArtifactVersion(versions.get(MOD_ID)))) {
+                logger.warn(String.format("Remote version not in acceptable version bounds! Local is %s, Remote (%s) is %s", clientVer, side.toString(), versions.get(MOD_ID)));
             }
             else {
-                logger.debug(String.format("Remote version is in acceptable version bounds. Local (%s) is %s, Remote is %s", side.toString(), clientVer, versions.get(MOD_ID)));
+                logger.debug(String.format("Remote version is in acceptable version bounds. Local is %s, Remote (%s) is %s", clientVer, side.toString(), versions.get(MOD_ID)));
                 hasRemote = true;
             }
         }
