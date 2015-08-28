@@ -27,8 +27,8 @@ apply plugin: 'forge'
 
 project.ext {
     massive = "1"
-    major = "3"
-    minor = "1"
+    major = "4"
+    minor = "0"
     mcVersion = "1.7.10"
     forgeVersion = "10.13.3.1401-1710ls"
     foxlibDevVersion = "1.7.10-0.6.0.develop.22"
