@@ -82,7 +82,7 @@ public class Tails {
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent e) {
         if (e.getSide() == Side.CLIENT && Loader.isModLoaded("Botania") && VersionParser.parseRange("[r1.7-205,)").containsVersion(Loader.instance().getIndexedModList().get("Botania").getProcessedVersion())) {
-            logger.debug(String.format("Botania (%s) found, loading Foxtato renderer", Loader.instance().getIndexedModList().get("Botania").getProcessedVersion()));
+            logger.debug(String.format("Botania (%s) found, loading Foxtato renderer", Loader.instance().getIndexedModList().get("Botania").getProcessedVersion().getVersionString()));
             MinecraftForge.EVENT_BUS.register(new FoxtatoRender());
             RenderPart.registerRenderHelper(FoxtatoRender.FoxtatoFakeEntity.class, new IRenderHelper() {
                 @Override
