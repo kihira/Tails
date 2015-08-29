@@ -18,19 +18,19 @@ public class FoxtatoRender {
     private PartInfo earPartInfo = new PartInfo(true, 0, 0, 0, new int[]{-5480951, 0xFF000000, -5197647}, PartsData.PartType.EARS, null);
 
     @SubscribeEvent
-    public void onWorldLoad(WorldEvent.Load e) {
-        fakeEntity = new FoxtatoFakeEntity(Minecraft.getMinecraft().theWorld);
-    }
-
-    @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload e) {
-        fakeEntity.setDead();
-        fakeEntity = null;
+        if (fakeEntity != null) {
+            fakeEntity.setDead();
+            fakeEntity = null;
+        }
     }
 
     @SubscribeEvent
     public void onPotatoRender(TinyPotatoRenderEvent e) {
         if (e.name.equalsIgnoreCase("foxtato")) {
+            if (fakeEntity == null) {
+                fakeEntity = new FoxtatoFakeEntity(Minecraft.getMinecraft().theWorld);
+            }
             RenderPart foxTailRender = PartRegistry.getRenderPart(PartsData.PartType.TAIL, 0);
             RenderPart foxEarRender = PartRegistry.getRenderPart(PartsData.PartType.EARS, 0);
 
