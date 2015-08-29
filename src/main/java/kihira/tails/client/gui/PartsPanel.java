@@ -172,12 +172,14 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
             RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
             if (partList.getCurrrentIndex() == index && renderPart.hasAuthor(partInfo.subid, partInfo.textureID)) {
                 String author = renderPart.getAuthor(partInfo.subid, partInfo.textureID);
-                float authorNameWidth = fontRendererObj.getStringWidth(author) * 0.6F;
-                if (mouseSlotX > 5 && mouseSlotX < 5 + authorNameWidth && mouseSlotY > 30 && mouseSlotY < 38) {
-                    try {
-                        Desktop.getDesktop().browse(URI.create("https://twitter.com/" + author.replace("@", "")));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                if (author.startsWith("@")) {
+                    float authorNameWidth = fontRendererObj.getStringWidth(author) * 0.6F;
+                    if (mouseSlotX > 5 && mouseSlotX < 5 + authorNameWidth && mouseSlotY > 30 && mouseSlotY < 38) {
+                        try {
+                            Desktop.getDesktop().browse(URI.create("https://twitter.com/" + author.replace("@", "")));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

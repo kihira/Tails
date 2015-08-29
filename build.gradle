@@ -27,10 +27,10 @@ apply plugin: 'forge'
 
 project.ext {
     massive = "1"
-    major = "3"
+    major = "4"
     minor = "1"
     mcVersion = "1.7.10"
-    forgeVersion = "10.13.2.1236"
+    forgeVersion = "10.13.3.1401-1710ls"
     foxlibDevVersion = "1.7.10-0.6.0.develop.22"
     foxlibVersion = "1.7.10-0.7.0"
     buildVersion = System.getenv("BUILD_NUMBER")

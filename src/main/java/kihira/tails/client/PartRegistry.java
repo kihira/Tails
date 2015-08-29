@@ -12,6 +12,7 @@ import com.google.common.collect.ArrayListMultimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.model.ears.ModelCatEars;
+import kihira.tails.client.model.ears.ModelCatSmallEars;
 import kihira.tails.client.model.ears.ModelFoxEars;
 import kihira.tails.client.model.ears.ModelPandaEars;
 import kihira.tails.client.model.tail.*;
@@ -35,14 +36,17 @@ public class PartRegistry {
         registerPart(PartsData.PartType.TAIL, new RenderPart("tail.devil", 1, null, new ModelDevilTail(), "devilTail"));
         registerPart(PartsData.PartType.TAIL, new RenderPart("tail.cat", 0, null, new ModelCatTail(), "tabbyTail", "tigerTail"));
         registerPart(PartsData.PartType.TAIL, new RenderPart("tail.bird", 0, null, new ModelBirdTail(), "birdTail").setAuthor("@blusunrize", 0, 0));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.shark", 0, "access_denied", new ModelSharkTail(), "sharkTail"));
 
         //Ears
-        registerPart(PartsData.PartType.EARS, new RenderPart("ears.fox", 0, "@Adeon", new ModelFoxEars(), "foxEars"));
+        registerPart(PartsData.PartType.EARS, new RenderPart("ears.fox", 1, "@Adeon", new ModelFoxEars(), "foxEars"));
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.cat", 0, null, new ModelCatEars(), "catEars"));
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.panda", 0, null, new ModelPandaEars(), "pandaEars"));
+        registerPart(PartsData.PartType.EARS, new RenderPart("ears.catSmall", 0, null, new ModelCatSmallEars(), "catSmallEars"));
 
         //Wings
-        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 1, "@littlechippie", null, "bigWings", "metalWings").setAuthor("@littlechippie"));
+        registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 1, null, null, "bigWings", "metalWings", "dragonWings", "dragonBonelessWings")
+                .setAuthor("@littlechippie").setAuthor("Dracyoshi", 0, 2).setAuthor("Dracyoshi", 0, 3).setAuthor("Dracyoshi", 1, 2).setAuthor("Dracyoshi", 1, 3));
     }
 
     public static void registerPart(PartsData.PartType partType, RenderPart renderPart) {

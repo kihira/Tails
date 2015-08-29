@@ -1,61 +1,104 @@
-tail.none.name=Geen Staart
-tail.dragon.0.name=Hegedis Staart
-tail.dragon.1.name=Draken Staart
-tail.fluffy.0.name=Pluizige Staart
+tail.none.name=Geen
+tail.dragon.0.name=Hagedissenstaart
+tail.dragon.1.name=Drakenstaart
+tail.fluffy.0.name=Zachte Staart
 tail.fluffy.1.name=Dubbele Staart
 tail.fluffy.2.name=Negen Staarten
-tail.raccoon.0.name=Wasbeer Staart
-tail.devil.0.name=Duivel Staart
-tail.devil.1.name=Duivel Staart (Geen Top)
-tail.cat.0.name=Katten Staart
-tail.bird.0.name=Vogel Staart
+tail.raccoon.0.name=Wasberenstaart
+tail.devil.0.name=Duivelsstaart
+tail.devil.1.name=Duivelsstaart (Geen punt)
+tail.cat.0.name=Kattenstaart
+tail.bird.0.name=Vogelsstaart
 
 tail.texture.foxTail.name=Vos
 tail.texture.devilTail.name=Duivel
 tail.texture.racoonTail.name=Wasbeer
-tail.texture.dragonTail.name=Standaart
+tail.texture.dragonTail.name=Standaard
 tail.texture.dragonTailStriped.name=Gestreept
 tail.texture.tabbyTail.name=Kat
 tail.texture.tigerTail.name=Tijger
 tail.texture.birdTail.name=Vogel
 
+ears.fox.0.name=Vossenoren
+ears.cat.0.name=Kattenoren
+ears.panda.0.name=Pandaoren
+
+ears.texture.foxEars.name=Vos
+ears.texture.catEars.name=Kat
+ears.texture.pandaEars.name=Panda
+
+wings.big.0.name=Grote Vleugels
+wings.big.1.name=Kleine Vleugels
+
+wings.texture.metalWings.name=Metalen Vleugels
+wings.texture.bigWings.name=Engelenvleugels
+
 gui.export.title=Exporteer Opties
-gui.export.information=Een optie voor client-side spelers op servers zonder de mod.
+gui.export.information=A feature of Tails is the ability to allow other players to see your tail even if the server doesn't have the mod installed (The other player still needs Tails installed though). To do this, some unused pixels in your skin are used by Tails instead to store information about your tail. You can use the options below to choose where to export or whether to upload it straight to Minecraft skin servers. Hover over the buttons to see the file locations.
 
 gui.button.livepreview=Live Voorbeeld
-gui.button.livepreview.0.tooltip=Laat een live voorbeeld zien van je staart
+gui.button.livepreview.0.tooltip=Laat een live voorbeeld zien van jouw staart terwijl jij de kleuren aanpast.
 gui.button.export=Exporteer
-gui.button.export.0.tooltip=Exporteert een aangepaste versie van jouw skin met pixels voor je staart
-gui.button.export.tooltip=Exporteer een aangepaste versie van je skin naar %s
-gui.button.export.userdir=Exporteer naar Gebruikers Home
-gui.button.export.minecraftdir=Exporteer naar Minecraft Folder
+gui.button.export.0.tooltip=Exporteerd een aangepaste versie van jouw skin, zodat mensen op een server jouw staart kunnen zien zonder de mod op de server geinstalleerd te hebben.
+gui.button.export.tooltip=Exporteer een anngepaste versie van jouw skin naar %s
+gui.button.export.userdir=Exporteer naar Thuisfolder
+gui.button.export.minecraftdir=Exporteer naar .minecraft
 gui.button.upload=Upload naar Mojang
-gui.button.upload.tooltip=Upload je skin. WAARSCHUWING: Opent jouw browser!
-gui.button.export.custom=Exporteren naar...
-gui.button.export.custom.tooltip=Exporteer naar een folder
-gui.button.openfolder.tooltip=Open de folder waar jij je skin hebt geexporteerd
+gui.button.upload.tooltip=Uploads jouw skin. WAARSCHUWING: Opent je browser!
+gui.button.export.custom=Exporteer naar...
+gui.button.export.custom.tooltip=Exporteer naar eigen folder
+gui.button.openfolder.tooltip=Open de folder waar jij jouw skin hebt geexporteerd
 gui.button.openfolder=Open exporteer locatie
 gui.button.editor=Staart Bewerker
 gui.button.reset=Reset
 gui.button.save=Opslaan
-gui.button.edit=Bewerk
-gui.button.help.camera.0=Klik en sleep om het voorbeeld
-gui.button.help.camera.1=te roteren
+gui.button.edit=Wijzig
+gui.button.help.camera.0=Klik en sleep in de voolbeeld venster
+gui.button.help.camera.1=om de speler te roteren
+gui.button.reset.camera=Reset camera
+gui.button.picker.0=Kleuren
+gui.button.picker.1=Selecteer een punt op het scherm om die kleur te gebruiken
+gui.button.favourite=Favorieten
+gui.button.delete=Verwijder
+gui.button.upload=Upload naar server
+gui.button.savelocal=Opslaan in locale bibliotheek
+gui.button.share=Exporteer naar clipboard, sturr de code naar je vrienden!
+gui.button.mode.library=Bibliotheek
+gui.button.mode.editor=Bewerker
+gui.button.all=Alle
+
+gui.slider.red.tooltip=Rood
+gui.slider.green.tooltip=Groen
+gui.slider.blue.tooltip=Blauw
+gui.slider.hue.tooltip=Tint
+gui.slider.saturation.tooltip=Verzadiging
+gui.slider.brightness.tooltip=Helderheid
+
+# GUI Library Strings
+gui.library.create=Maak nieuw onderdeel
+gui.library.entry.default=Nieuw onderdeel
+gui.library.entry=Bibliotheek onderdeel
+gui.library.info.created=Gemaakt door
+gui.library.info.createdate=Gemaakt op
+gui.library.info.toast.export=Bibliotheek onderdeel data gekopieerd naar clipboard!
+gui.library.import.skin=Importeer via skin
+gui.library.import.string=Importeer via string
+gui.library.import.toast.skin=Data via de skin gelanden!
+gui.library.import.toast.success=Het laden van onderdelen %s successvol!
+gui.library.import.toast.invalid=Kan niet importeren, ongeldige data!
+gui.library.import.toast.invalid.uuid=Kan niet importeren, UUID data is waarschijnlijk corrupt!
+gui.library.import.toast.invalid.parts=Kan niet importeren, onderdeel data is waarschijnlijk corrupt!
 
 gui.tint=Tint %s
 gui.tint.edit=Tint %s aan het bewerken
 gui.hex=Hex
-gui.texture=Afbeelding
+gui.texture=Textuur
+gui.createdby=Gemaakt door
 
-tails.export.success=Slin opslaan naar %s geslaagd!
-tails.upload.unavailable=Deze optie werkt nog niet!
-
-foxlib.downloader.missing=Je hebt FoxLib %s nodig1! Je kan het hier downloaden: %s
-foxlib.downloader.0=FoxLib in niet geinstalleerd en je hebt het nodig om te spelen %s!
-foxlib.downloader.1=Wil je FoxLib automatish downloaden? (Je moet erna wel restarten)
-foxlib.downloader.downloading=FoxLib aan het downloaden
-foxlib.downloader.success=FoxLib is gedownload!
-foxlib.downloader.restart=Je moet Minecraft restarten om de installatie te voltooien!
-foxlib.downloader.failed.0=We konden FoxLib niet downloaden!
-foxlib.downloader.failed.1=Je kan de mod download op CurseForge (%s)
-foxlib.downloader.outofdate=Je moet FoxLib updaten (%s)
+tails.export.success=Skin opslaan naar %s gelukt!
+tails.upload.unavailable=Deze toevoeging werkt nog niet!
+tails.upload.tooltip=Uploads jouw skin naar de Minecraft skin server (Je moet inloggen op de Minecraft site)
+tails.uploading=Uploading...
+tails.upload.success=Uploaden gelukt! Ga verder in je browser
+tails.upload.failed=Upload mislukt! Is de side van Imgur or Minecraft down?
+tails.upload.ratelimit=Upload mislukt! Je moet minder vaak uploaden!

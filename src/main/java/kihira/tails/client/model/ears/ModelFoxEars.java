@@ -11,6 +11,7 @@ package kihira.tails.client.model.ears;
 import kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
+import org.lwjgl.opengl.GL11;
 
 public class ModelFoxEars extends ModelPartBase {
     //TODO we can cut down on the amount of models a little
@@ -121,23 +122,36 @@ public class ModelFoxEars extends ModelPartBase {
 
     @Override
     public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+        GL11.glPushMatrix();
+        if (subtype == 1) {
+            GL11.glTranslatef(0f, 0f, -0.0625f);
+            GL11.glTranslatef(-0.4375f, 0f, 0f);
+        }
         LeftEarInnerSmall.render(0.0625F);
         LeftEarInnerBig.render(0.0625F);
+        LeftEarInnerEdge.render(0.0625F);
+        LeftEarMiddleEdge.render(0.0625F);
+        LeftEarTopEdge.render(0.0625F);
+        LeftEarOuterEdge.render(0.0625F);
+        LeftEarBottomEdge.render(0.0625F);
+        LeftEarBackBig.render(0.0625F);
+        LeftEarBackSmall.render(0.0625F);
+        if (subtype == 1) {
+            GL11.glTranslatef(0.875f, 0f, 0f);
+        }
         RightEarInnerSmall.render(0.0625F);
         RightEarInnerBig.render(0.0625F);
-        LeftEarInnerEdge.render(0.0625F);
         RightEarInnerEdge.render(0.0625F);
-        LeftEarMiddleEdge.render(0.0625F);
         RightEarMiddleEdge.render(0.0625F);
-        LeftEarTopEdge.render(0.0625F);
         RightEarTopEdge.render(0.0625F);
-        LeftEarOuterEdge.render(0.0625F);
         RightEarOuterEdge.render(0.0625F);
-        LeftEarBottomEdge.render(0.0625F);
         RightEarBottomEdge.render(0.0625F);
-        LeftEarBackBig.render(0.0625F);
         RightEarBackBig.render(0.0625F);
-        LeftEarBackSmall.render(0.0625F);
         RightEarBackSmall.render(0.0625F);
+        if (subtype == 1) {
+            GL11.glTranslatef(-0.4375f, 0f, 0f);
+            GL11.glTranslatef(0f, 0f, 0.0625f);
+        }
+        GL11.glPopMatrix();
     }
 }

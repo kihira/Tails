@@ -15,6 +15,7 @@ import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
@@ -23,16 +24,21 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.versioning.DefaultArtifactVersion;
 import cpw.mods.fml.common.versioning.VersionParser;
 import cpw.mods.fml.relauncher.Side;
+import kihira.tails.api.IRenderHelper;
 import kihira.tails.client.FakeEntity;
 import kihira.tails.client.render.FakeEntityRenderHelper;
+import kihira.tails.client.render.FoxtatoRender;
 import kihira.tails.client.render.PlayerRenderHelper;
 import kihira.tails.client.render.RenderPart;
 import kihira.tails.proxy.CommonProxy;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
@@ -73,6 +79,34 @@ public class Tails {
         }
     }
 
+    @Mod.EventHandler
+    public void onPostInit(FMLPostInitializationEvent e) {
+        if (e.getSide() == Side.CLIENT && Loader.isModLoaded("Botania") && VersionParser.parseRange("[r1.7-205,)").containsVersion(Loader.instance().getIndexedModList().get("Botania").getProcessedVersion())) {
+            logger.debug(String.format("Botania (%s) found, loading Foxtato renderer", Loader.instance().getIndexedModList().get("Botania").getProcessedVersion()));
+            MinecraftForge.EVENT_BUS.register(new FoxtatoRender());
+            RenderPart.registerRenderHelper(FoxtatoRender.FoxtatoFakeEntity.class, new IRenderHelper() {
+                @Override
+                public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z) {
+                    switch (info.partType) {
+                        case TAIL: {
+                            GL11.glTranslatef(0F, 1.325F, 0.125F);
+                            GL11.glScalef(0.25F, 0.25F, 0.25F);
+                            break;
+                        }
+                        case EARS: {
+                            GL11.glTranslatef(0F, 1.375F, -0.1F);
+                            GL11.glScalef(0.5F, 0.5F, 0.5F);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+        else {
+            logger.debug("Valid Botania not found, skipping Foxtato renderer");
+        }
+    }
+
     @SubscribeEvent
     public void onConfigChange(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.modID.equals(Tails.MOD_ID)) {
@@ -84,12 +118,11 @@ public class Tails {
     public boolean checkRemoteVersions(Map<String, String> versions, Side side) {
         if (versions.containsKey(MOD_ID)) {
             String clientVer = Loader.instance().getReversedModObjectList().get(this).getVersion();
-            if (VersionParser.parseRange("[" + clientVer + ",)")
-                    .containsVersion(new DefaultArtifactVersion(versions.get(MOD_ID)))) {
-                logger.warn(String.format("Remote version not in acceptable version bounds! Local (%s) is %s, Remote is %s", side.toString(), clientVer, versions.get(MOD_ID)));
+            if (!VersionParser.parseRange("[" + clientVer + ",)").containsVersion(new DefaultArtifactVersion(versions.get(MOD_ID)))) {
+                logger.warn(String.format("Remote version not in acceptable version bounds! Local is %s, Remote (%s) is %s", clientVer, side.toString(), versions.get(MOD_ID)));
             }
             else {
-                logger.debug(String.format("Remote version is in acceptable version bounds. Local (%s) is %s, Remote is %s", side.toString(), clientVer, versions.get(MOD_ID)));
+                logger.debug(String.format("Remote version is in acceptable version bounds. Local is %s, Remote (%s) is %s", clientVer, side.toString(), versions.get(MOD_ID)));
                 hasRemote = true;
             }
         }
