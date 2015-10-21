@@ -14,7 +14,7 @@ public class ConfirmationDialog<T extends GuiBase & IDialogCallback> extends Dia
     @SuppressWarnings("unchecked")
     public ConfirmationDialog(T parent, String title, final String messageList) {
         super(parent, title, parent.width / 4, parent.height / 4, parent.width / 2, 100);
-        this.messageList = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageList, (parent.width / 2) - 10);
+        this.messageList = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageList, (parent.width / 2) - 10);
     }
 
     @Override

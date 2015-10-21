@@ -18,8 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
@@ -37,6 +35,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     public PartsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);
+        alwaysReceiveMouse = true;
 
         fakeEntity = new FakeEntity(Minecraft.getMinecraft().theWorld);
     }
@@ -78,9 +77,21 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        partList.func_148179_a(mouseX, mouseY, mouseButton);
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
+        this.partList.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        this.partList.mouseReleased(mouseX, mouseY, state);
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        this.partList.handleMouseInput();
     }
 
     @Override
@@ -121,7 +132,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         GL11.glScalef(-scale, scale, 1F);
 
         RenderHelper.enableStandardItemLighting();
-        RenderManager.instance.playerViewY = 180.0F;
+        Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
         PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).render(fakeEntity, partInfo, 0, 0, 0, 0);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
@@ -140,9 +151,9 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         }
 
         @Override
-        public void drawEntry(int index, int x, int y, int listWidth, int p_148279_5_, Tessellator tessellator, int mouseX, int mouseY, boolean mouseOver) {
+        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
             if (partInfo.hasPart) {
-                boolean currentPart = partList.getCurrrentIndex() == index;
+                boolean currentPart = partList.getCurrrentIndex() == slotIndex;
                 renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, partInfo);
                 fontRendererObj.drawString(I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid)
                         .getUnlocalisedName(partInfo.subid)), 5, y + 17, 0xFFFFFF);
@@ -168,6 +179,9 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         }
 
         @Override
+        public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_) {}
+
+        @Override
         public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
             RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
             if (partList.getCurrrentIndex() == index && renderPart.hasAuthor(partInfo.subid, partInfo.textureID)) {
@@ -183,10 +197,12 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
                     }
                 }
             }
-            return false;
+            return true;
         }
 
         @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {}
+        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
+            //System.out.println(partList.getListEntry(index));
+        }
     }
 }

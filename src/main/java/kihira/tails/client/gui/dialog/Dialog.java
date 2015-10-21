@@ -6,6 +6,8 @@ import kihira.tails.client.gui.Panel;
 import net.minecraft.client.gui.GuiButton;
 import org.apache.commons.lang3.Validate;
 
+import java.io.IOException;
+
 public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T> {
 
     protected boolean dragging;
@@ -42,7 +44,7 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T> {
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         //Only if they grab the top
         if (mouseButton == 0 && mouseY < 12) {
             dragging = true;
@@ -54,15 +56,15 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T> {
         }
     }
 
-    @Override
-    public void mouseMovedOrUp(int mouseX, int mouseY, int mouseButton) {
+/*    @Override
+    TODO public void mouseMovedOrUp(int mouseX, int mouseY, int mouseButton) {
         if (dragging && mouseButton == 0) {
             dragging = false;
         }
         else {
             super.mouseMovedOrUp(mouseX, mouseY, mouseButton);
         }
-    }
+    }*/
 
     @Override
     public void mouseClickMove(int mouseX, int mouseY, int mouseButton, long pressTime) {

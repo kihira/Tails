@@ -1,7 +1,6 @@
 package kihira.tails.client.gui;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraftforge.fml.client.config.GuiUtils;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.common.LibraryEntryData;
@@ -12,9 +11,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import org.lwjgl.opengl.GL11;
 
 public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
@@ -26,7 +25,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
     }
 
     @Override
-    public void drawEntry(int index, int x, int y, int listWidth, int slotHeight, Tessellator tessellator, int mouseX, int mouseY, boolean mouseOver) {
+    public void drawEntry(int slowIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
         if (data.remoteEntry) {
             Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.iconsTextures);
             GuiIconButton.Icons icon = GuiIconButton.Icons.SERVER;
@@ -37,7 +36,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
             GL11.glPopMatrix();
         }
 
-        FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRenderer;
+        FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
         fontRendererObj.drawString((data.partsData.equals(Tails.localPartsData) ? EnumChatFormatting.GREEN + "" + EnumChatFormatting.ITALIC : "") + data.entryName, 5, y + 3, 0xFFFFFF);
 
         fontRendererObj.setUnicodeFlag(true);
@@ -64,6 +63,9 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
     }
 
     @Override
+    public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_) {}
+
+    @Override
     public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
         return false;
     }
@@ -81,8 +83,8 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         }
 
         @Override
-        public void drawEntry(int index, int x, int y, int listWidth, int slotHeight, Tessellator tessellator, int mouseX, int mouseY, boolean mouseOver) {
-            Minecraft.getMinecraft().fontRenderer.drawString(I18n.format("gui.library.create"), x + 3, y + (slotHeight / 2) - 4, 0xFFFFFF);
+        public void drawEntry(int slowIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+            Minecraft.getMinecraft().fontRendererObj.drawString(I18n.format("gui.library.create"), x + 3, y + (slotHeight / 2) - 4, 0xFFFFFF);
         }
 
         @Override

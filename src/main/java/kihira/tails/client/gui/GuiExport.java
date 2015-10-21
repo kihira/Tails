@@ -68,7 +68,7 @@ public class GuiExport extends GuiBaseScreen {
         //Right
         this.buttonList.add(this.openFolderButton = new GuiButtonTooltip(3, this.width - 150, this.height - 65, 130, 20, I18n.format("gui.button.openfolder"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.openfolder.tooltip")));
-        this.openFolderButton.visible = !Strings.isNullOrEmpty(this.exportMessage);
+        // TODO this.openFolderButton.visible = !Strings.isNullOrEmpty(this.exportMessage);
 
         this.buttonList.add(new GuiButtonTooltip(10, this.width - 150, this.height - 40, 130, 20, I18n.format("gui.button.upload"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("tails.upload.tooltip")));
@@ -107,7 +107,7 @@ public class GuiExport extends GuiBaseScreen {
 
             if (file.exists() && file.canWrite()) {
                 this.exportLoc = file.toURI();
-                file = new File(file, File.separatorChar + player.getCommandSenderName() + ".png");
+                file = new File(file, File.separatorChar + player.getName() + ".png");
 
                 if (!file.exists()) {
                     try {
@@ -135,7 +135,7 @@ public class GuiExport extends GuiBaseScreen {
 
             if (Strings.isNullOrEmpty(this.exportMessage)) {
                 savePartsData();
-                this.openFolderButton.visible = true;
+                // TODO this.openFolderButton.visible = true;
                 setExportMessage(EnumChatFormatting.GREEN + I18n.format("tails.export.success", file));
             }
         }
@@ -163,7 +163,7 @@ public class GuiExport extends GuiBaseScreen {
     }
 
     @Override
-    protected void keyTyped(char key, int keyCode) {
+    protected void keyTyped(char key, int keyCode) throws IOException {
         if (keyCode == 1) {
             this.mc.displayGuiScreen(parent);
         }
@@ -180,7 +180,7 @@ public class GuiExport extends GuiBaseScreen {
     private void savePartsData() {
         Tails.setLocalPartsData(partsData);
         Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
-        Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().func_148256_e().getId(), partsData, false));
+        Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), partsData, false));
     }
 
     public class ImgurUpload {
@@ -222,7 +222,7 @@ public class GuiExport extends GuiBaseScreen {
 
                         setExportMessage(EnumChatFormatting.GREEN + I18n.format("tails.upload.success"));
                         exportLoc = URI.create(skinURL + imgurURL);
-                        openFolderButton.visible = true;
+                        // TODO openFolderButton.visible = true;
                         savePartsData();
 
                         Desktop.getDesktop().browse(exportLoc);

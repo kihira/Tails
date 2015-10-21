@@ -96,7 +96,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
             //Update part info, set local and send it to the server
             Tails.setLocalPartsData(partsData);
             Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
-            Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().func_148256_e().getId(), partsData, false));
+            Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), partsData, false));
             ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, EnumChatFormatting.GREEN + "Saved!");
             this.mc.displayGuiScreen(null);
         }

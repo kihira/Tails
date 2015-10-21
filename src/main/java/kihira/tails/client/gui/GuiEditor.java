@@ -90,7 +90,7 @@ public class GuiEditor extends GuiBase {
 
     @Override
     public void onGuiClosed() {
-        Tails.proxy.addPartsData(mc.getSession().func_148256_e().getId(), Tails.localPartsData);
+        Tails.proxy.addPartsData(mc.getSession().getProfile().getId(), Tails.localPartsData);
         super.onGuiClosed();
     }
 

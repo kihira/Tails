@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public class LibraryImportPanel extends Panel<GuiEditor> {
@@ -35,7 +36,7 @@ public class LibraryImportPanel extends Panel<GuiEditor> {
 
         buttonList.add(new GuiButtonExt(1, 3, 21, width - 6, 18, StatCollector.translateToLocal("gui.library.import.string")));
 
-        inputField = new GuiTextField(fontRendererObj, 3, 41, width - 6, 15);
+        inputField = new GuiTextField(2, fontRendererObj, 3, 41, width - 6, 15);
         inputField.setMaxStringLength(5000);
     }
 
@@ -79,7 +80,7 @@ public class LibraryImportPanel extends Panel<GuiEditor> {
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         inputField.mouseClicked(mouseX, mouseY, mouseButton);
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }

@@ -1,5 +1,6 @@
 package kihira.tails.client.gui.controls;
 
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import kihira.foxlib.client.gui.ITooltip;
@@ -39,7 +40,7 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
-            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 
             GuiUtils.drawContinuousTexturedBox(buttonTextures, this.xPosition, this.yPosition, 0, 46, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
             mc.renderEngine.bindTexture(sliderTexture);
@@ -148,13 +149,13 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
     public void drawTexturedModalRectScaled (int x, int y, int u, int v, int srcWidth, int srcHeight, int tarWidth, int tarHeight) {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + tarHeight), (double)this.zLevel, (double)((float)(u + 0) * f), (double)((float)(v + srcHeight) * f1));
-        tessellator.addVertexWithUV((double)(x + tarWidth), (double)(y + tarHeight), (double)this.zLevel, (double)((float)(u + srcWidth) * f), (double)((float)(v + srcHeight) * f1));
-        tessellator.addVertexWithUV((double)(x + tarWidth), (double)(y + 0), (double)this.zLevel, (double)((float)(u + srcWidth) * f), (double)((float)(v + 0) * f1));
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)this.zLevel, (double)((float)(u + 0) * f), (double)((float)(v + 0) * f1));
-        tessellator.draw();
+        WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
+        renderer.startDrawingQuads();
+        renderer.addVertexWithUV((double) (x + 0), (double) (y + tarHeight), (double) this.zLevel, (double) ((float) (u + 0) * f), (double) ((float) (v + srcHeight) * f1));
+        renderer.addVertexWithUV((double) (x + tarWidth), (double) (y + tarHeight), (double) this.zLevel, (double) ((float) (u + srcWidth) * f), (double) ((float) (v + srcHeight) * f1));
+        renderer.addVertexWithUV((double) (x + tarWidth), (double) (y + 0), (double) this.zLevel, (double) ((float) (u + srcWidth) * f), (double) ((float) (v + 0) * f1));
+        renderer.addVertexWithUV((double) (x + 0), (double) (y + 0), (double) this.zLevel, (double) ((float) (u + 0) * f), (double) ((float) (v + 0) * f1));
+        renderer.finishDrawing();
     }
 
     @Override

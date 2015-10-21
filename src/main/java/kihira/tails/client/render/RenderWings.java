@@ -11,7 +11,7 @@ package kihira.tails.client.render;
 import kihira.tails.client.model.ModelPartBase;
 import kihira.tails.common.PartInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,13 +41,15 @@ public class RenderWings extends RenderPart {
         GL11.glPushMatrix();
         GL11.glTranslatef(0F, 0F, 1F * ModelPartBase.SCALE);
         GL11.glRotatef(30F - angle, 1F, 0F, 0F);
-        ItemRenderer.renderItemIn2D(tessellator, 0, 0, 1, 1, 32, 32, ModelPartBase.SCALE / scale);
+        // TODO ItemRenderer.renderItemIn2D(tessellator, 0, 0, 1, 1, 32, 32, ModelPartBase.SCALE / scale);
+        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 32, 32, 32, 32);
         GL11.glPopMatrix();
 
         GL11.glPushMatrix();
         GL11.glTranslatef(0F, 0.3F * ModelPartBase.SCALE, 0F);
         GL11.glRotatef(-30F + angle, 1F, 0F, 0F);
-        ItemRenderer.renderItemIn2D(tessellator, 0, 0, 1, 1, 32, 32, ModelPartBase.SCALE / scale);
+        // TODO ItemRenderer.renderItemIn2D(tessellator, 0, 0, 1, 1, 32, 32, ModelPartBase.SCALE / scale);
+        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 32, 32, 32, 32);
         GL11.glPopMatrix();
     }
 }

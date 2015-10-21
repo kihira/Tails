@@ -8,6 +8,7 @@
 
 package kihira.tails.client;
 
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -78,7 +79,7 @@ public class ClientEventHandler {
     public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         //Add local player texture to map
         if (Tails.localPartsData != null) {
-            Tails.proxy.addPartsData(Minecraft.getMinecraft().getSession().func_148256_e().getId(), Tails.localPartsData);
+            Tails.proxy.addPartsData(Minecraft.getMinecraft().getSession().getProfile().getId(), Tails.localPartsData);
         }
     }
 
@@ -101,9 +102,10 @@ public class ClientEventHandler {
             PartsData data = Tails.proxy.getPartsData(uuid);
 
             if (!flag) {
-                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRendererWrapper(e.renderer.modelBipedMain, PartsData.PartType.TAIL));
-                e.renderer.modelBipedMain.bipedBody.addChild(new ModelRendererWrapper(e.renderer.modelBipedMain, PartsData.PartType.WINGS));
-                e.renderer.modelBipedMain.bipedHead.addChild(new ModelRendererWrapper(e.renderer.modelBipedMain, PartsData.PartType.EARS));
+                ModelPlayer model = e.renderer.getPlayerModel();
+                model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.TAIL));
+                model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.WINGS));
+                model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.EARS));
                 flag = true;
             }
 

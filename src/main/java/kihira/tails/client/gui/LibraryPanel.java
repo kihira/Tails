@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,8 +33,8 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public void initGui() {
         initList();
 
-        searchField = new GuiTextField(fontRendererObj, 5, height - 31, width - 10, 10);
         buttonList.add(new GuiButtonExt(0, 3, height - 18, width - 6, 15, StatCollector.translateToLocal("gui.button.all")));
+        searchField = new GuiTextField(1, fontRendererObj, 5, height - 31, width - 10, 10);
         super.initGui();
     }
 
@@ -65,8 +66,8 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        list.func_148179_a(mouseX, mouseY, mouseButton);
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        list.mouseClicked(mouseX, mouseY, mouseButton);
         searchField.mouseClicked(mouseX, mouseY, mouseButton);
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
