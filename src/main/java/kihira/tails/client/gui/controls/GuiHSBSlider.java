@@ -1,7 +1,7 @@
 package kihira.tails.client.gui.controls;
 
-import cpw.mods.fml.client.config.GuiSlider;
-import cpw.mods.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.config.GuiSlider;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import kihira.foxlib.client.gui.ITooltip;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;

@@ -1,6 +1,6 @@
 package kihira.tails.client.gui;
 
-import cpw.mods.fml.client.config.GuiButtonExt;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.client.render.RenderPart;
 import kihira.tails.common.PartInfo;

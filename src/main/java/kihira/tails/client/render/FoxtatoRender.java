@@ -1,6 +1,6 @@
 package kihira.tails.client.render;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import kihira.tails.client.FakeEntity;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.common.PartInfo;

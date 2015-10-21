@@ -2,7 +2,7 @@ package kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
 import com.google.gson.JsonSyntaxException;
-import cpw.mods.fml.client.config.GuiButtonExt;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 import kihira.foxlib.client.toast.ToastManager;
 import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.LibraryEntryData;

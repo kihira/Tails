@@ -26,7 +26,7 @@ public class RenderWings extends RenderPart {
     @Override
     protected void doRender(EntityLivingBase entity, PartInfo info, float partialTicks) {
         Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
-        Tessellator tessellator = Tessellator.instance;
+        Tessellator tessellator = Tessellator.getInstance();
         boolean isFlying = entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isFlying && entity.isAirBorne || entity.fallDistance > 0F;
         float timestep = ModelPartBase.getAnimationTime(isFlying ? 500 : 6500, entity);
         float angle = (float) Math.sin(timestep) * (isFlying ? 24F : 4F);

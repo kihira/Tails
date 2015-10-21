@@ -1,6 +1,6 @@
 package kihira.tails.client.gui;
 
-import cpw.mods.fml.client.config.GuiButtonExt;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.foxlib.client.gui.GuiList;
 import kihira.foxlib.client.gui.IListCallback;

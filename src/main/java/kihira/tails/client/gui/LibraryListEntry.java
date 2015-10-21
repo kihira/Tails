@@ -1,7 +1,7 @@
 package kihira.tails.client.gui;
 
 import com.mojang.authlib.GameProfile;
-import cpw.mods.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.common.LibraryEntryData;

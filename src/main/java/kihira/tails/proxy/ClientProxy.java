@@ -8,15 +8,15 @@
 
 package kihira.tails.proxy;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.common.LibraryManager;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.*;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.UUID;
 

@@ -8,8 +8,8 @@
 
 package kihira.tails.client.render;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import kihira.tails.api.IRenderHelper;
 import kihira.tails.client.model.ModelPartBase;
 import kihira.tails.client.texture.TextureHelper;

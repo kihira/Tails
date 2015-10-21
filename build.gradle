@@ -1,18 +1,5 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-    }
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.1"
 }
 
 repositories {
@@ -23,17 +10,34 @@ repositories {
     }
 }
 
-apply plugin: 'forge'
+group= "kihira"
+archivesBaseName = "Tails"
 
 project.ext {
     massive = "1"
     major = "4"
     minor = "1a"
-    mcVersion = "1.7.10"
-    forgeVersion = "10.13.3.1401-1710ls"
+    mcVersion = "1.8"
+    forgeVersion = "11.14.3.1521"
     foxlibDevVersion = "1.7.10-0.6.0.develop.22"
     foxlibVersion = "1.7.10-0.7.0"
     buildVersion = System.getenv("BUILD_NUMBER")
+}
+
+minecraft {
+    version = "${project.ext.mcVersion}-${project.ext.forgeVersion}"
+    runDir = "run"
+
+    replace '@VERSION@', project.version
+    replace '@FOXLIBVERSION@', project.foxlibVersion
+
+    // the mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   snapshot are built nightly.
+    // stable_#            stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not allways work.
+    // simply re-run your setup task after changing the mappings to update your workspace.
+    mappings = "snapshot_20141130"
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
 configurations {
@@ -44,110 +48,59 @@ configurations {
 }
 
 dependencies {
+    // you may put jars on which you depend on in ./libs
+    // or you may define them like so..
+    //compile "some.group:artifact:version:classifier"
+    //compile "some.group:artifact:version"
+
+    // real examples
+    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
+    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+
+    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
+    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
+    // except that these dependencies get remapped to your current MCP mappings
+    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // for more info...
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
     compile "kihira:FoxLib:"+project.foxlibDevVersion+":dev"
-    compile 'com.intellij:annotations:+@jar'
 }
+
+processResources
+        {
+            // this will ensure that this task is redone when the versions change.
+            inputs.property "version", project.version
+            inputs.property "mcversion", project.minecraft.version
+
+            // replace stuff in mcmod.info, nothing else
+            from(sourceSets.main.resources.srcDirs) {
+                include 'mcmod.info'
+
+                // replace version and mcversion
+                expand 'version':project.version, 'mcversion':project.minecraft.version
+            }
+
+            // copy everything else, thats not the mcmod.info
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+            }
+        }
 
 project.version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}"
 if (project.hasProperty("teamcity") && project.ext.buildVersion != null && teamcity["maven_release"] == null) {
     version = version + ".${System.getenv("BUILD_NUMBER")}"
 }
 
-group= "kihira"
-archivesBaseName = "Tails"
-
-minecraft {
-    version = "${project.ext.mcVersion}-${project.ext.forgeVersion}"
-    replace '@VERSION@', project.version
-    replace '@FOXLIBVERSION@', project.foxlibVersion
-}
-processResources {
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include '**/*.info'
-
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.info'
-    }
-}
-
 jar {
     manifest {
         attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
                 'FMLCorePluginContainsFMLMod': 'true'
-    }
-}
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    from sourceSets.api.allSource
-    classifier = 'src'
-}
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    from sourceSets.api.output
-    classifier = 'dev'
-}
-
-artifacts {
-    archives sourceJar
-    archives deobfJar
-}
-
-uploadArchives {
-    dependsOn 'reobf'
-
-    if (project.hasProperty("teamcity")) {
-        repositories.mavenDeployer {
-            configuration = configurations.deployerJars
-            repository(url: teamcity["maven_url"]) {
-                authentication(userName: teamcity["maven_username"], password: teamcity["maven_password"])
-            }
-            pom {
-                groupId = project.group
-                version = project.version
-                artifactId = project.archivesBaseName
-                project {
-                    name project.archivesBaseName
-                    packaging 'jar'
-                    description 'Tails'
-                    url 'http://kihirakreations.co.uk'
-
-                    scm {
-                        url 'https://github.com/kihira/Tails'
-                        connection 'scm:git:git://github.com/kihira/Tails.git'
-                        developerConnection 'scm:git:git@github.com:kihira/Tails.git'
-                    }
-
-                    issueManagement {
-                        system 'github'
-                        url 'https://github.com/kihira/Tails/issues'
-                    }
-
-                    licenses {
-                        license {
-                            name 'MIT'
-                            url 'https://github.com/kihira/Tails/blob/master/LICENSE'
-                            distribution 'repo'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id 'Kihira'
-                            name 'Kihira'
-                            roles { role 'developer' }
-                        }
-                    }
-                }
-            }
-        }
     }
 }

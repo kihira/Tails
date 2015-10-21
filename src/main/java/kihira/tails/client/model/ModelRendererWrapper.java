@@ -8,8 +8,8 @@
 
 package kihira.tails.client.model;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.common.PartInfo;

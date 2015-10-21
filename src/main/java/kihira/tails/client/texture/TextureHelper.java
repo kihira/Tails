@@ -10,8 +10,8 @@ package kihira.tails.client.texture;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.util.UUIDTypeAdapter;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
