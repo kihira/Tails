@@ -155,7 +155,7 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
         renderer.addVertexWithUV((double) (x + tarWidth), (double) (y + tarHeight), (double) this.zLevel, (double) ((float) (u + srcWidth) * f), (double) ((float) (v + srcHeight) * f1));
         renderer.addVertexWithUV((double) (x + tarWidth), (double) (y + 0), (double) this.zLevel, (double) ((float) (u + srcWidth) * f), (double) ((float) (v + 0) * f1));
         renderer.addVertexWithUV((double) (x + 0), (double) (y + 0), (double) this.zLevel, (double) ((float) (u + 0) * f), (double) ((float) (v + 0) * f1));
-        renderer.finishDrawing();
+        Tessellator.getInstance().draw();
     }
 
     @Override
