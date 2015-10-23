@@ -90,7 +90,6 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     @Override
     public void handleMouseInput() throws IOException {
-        super.handleMouseInput();
         this.partList.handleMouseInput();
     }
 

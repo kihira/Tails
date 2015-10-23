@@ -67,11 +67,21 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
         list.mouseClicked(mouseX, mouseY, mouseButton);
         searchField.mouseClicked(mouseX, mouseY, mouseButton);
-        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
+        super.mouseReleased(mouseX, mouseY, mouseButton);
+        list.mouseReleased(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        list.handleMouseInput();
+    }
 
     @Override
     public void keyTyped(char key, int keycode) {

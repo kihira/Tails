@@ -102,7 +102,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     public void handleMouseInput() throws IOException {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
-                if (panel.enabled && panel.alwaysReceiveMouse) {
+                if (panel.enabled) {
                     panel.handleMouseInput();
                 }
             }

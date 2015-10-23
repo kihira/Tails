@@ -56,4 +56,13 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
     public void mouseClickMove(int mouseX, int mouseY, int mouseButton, long pressTime) {
         super.mouseClickMove(mouseX, mouseY, mouseButton, pressTime);
     }
+
+    /**
+     * Handles mouse input if required
+     * This is ALWAYS called regardless of if the mouse is in the bounds or not
+     * It is also generally the first method to be called
+     * Does not call super as we never want to call super from a panel for this method
+     * @throws IOException
+     */
+    public void handleMouseInput() throws IOException {}
 }
