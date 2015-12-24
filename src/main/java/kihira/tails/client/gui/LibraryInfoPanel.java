@@ -55,13 +55,14 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         GL11.glColor4f(0F, 0F, 0F, 0F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
-        renderer.startDrawingQuads();
+        // TODO Port to 1.8.8
+/*        renderer.startDrawingQuads();
         renderer.setColorOpaque_I(8421504);
         renderer.addVertexWithUV(2, height - 2, -10D, 0.0D, 1.0D);
         renderer.addVertexWithUV(width - 2, height - 2, -10D, 1.0D, 1.0D);
         renderer.addVertexWithUV(width - 2, 2, -10D, 1.0D, 0.0D);
         renderer.addVertexWithUV(2, 2, -10D, 0.0D, 0.0D);
-        renderer.finishDrawing();
+        renderer.finishDrawing();*/
         GL11.glEnable(GL11.GL_TEXTURE_2D);
 
         zLevel = 10;

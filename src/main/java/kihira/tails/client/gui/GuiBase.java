@@ -28,8 +28,15 @@ public abstract class GuiBase extends GuiBaseScreen {
         super.setWorldAndResolution(mc, width, height);
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
-                ScaledResolution scaledRes = new ScaledResolution(mc, panel.right - panel.left, panel.bottom - panel.top);
+                // Gotta cache displayWidth/Height as it can't be passed in as params anymore
+                int displayWidth = mc.displayWidth;
+                int displayHeight = mc.displayHeight;
+                mc.displayWidth = panel.right - panel.left;
+                mc.displayHeight = panel.bottom - panel.top;
+                ScaledResolution scaledRes = new ScaledResolution(mc);
                 panel.setWorldAndResolution(mc, scaledRes.getScaledWidth(), scaledRes.getScaledHeight());
+                mc.displayWidth = displayWidth;
+                mc.displayHeight = displayHeight;
             }
         }
     }

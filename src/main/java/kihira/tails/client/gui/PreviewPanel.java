@@ -25,7 +25,7 @@ public class PreviewPanel extends Panel<GuiEditor> {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        scaledRes = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+        scaledRes = new ScaledResolution(this.mc);
         //Reset Camera
         buttonList.add(new GuiIconButton(0, width - 18, 22, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset.camera")));
         //Help

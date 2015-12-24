@@ -102,7 +102,7 @@ public class ClientEventHandler {
             PartsData data = Tails.proxy.getPartsData(uuid);
 
             if (!flag) {
-                ModelPlayer model = e.renderer.getPlayerModel();
+                ModelPlayer model = e.renderer.getMainModel();
                 model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.TAIL));
                 model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.WINGS));
                 model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.EARS));

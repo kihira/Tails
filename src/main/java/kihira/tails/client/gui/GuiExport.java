@@ -55,7 +55,7 @@ public class GuiExport extends GuiBaseScreen {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        this.scaledRes = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+        this.scaledRes = new ScaledResolution(this.mc);
 
         //Left
         this.buttonList.add(new GuiButtonTooltip(0, 20, this.height - 90, 130, 20, I18n.format("gui.button.export.userdir"),
@@ -107,7 +107,7 @@ public class GuiExport extends GuiBaseScreen {
 
             if (file.exists() && file.canWrite()) {
                 this.exportLoc = file.toURI();
-                file = new File(file, File.separatorChar + player.getName() + ".png");
+                file = new File(file, File.separatorChar + player.getDisplayNameString() + ".png");
 
                 if (!file.exists()) {
                     try {
@@ -174,7 +174,7 @@ public class GuiExport extends GuiBaseScreen {
 
     private void setExportMessage(String message) {
         exportMessage = message;
-        ToastManager.INSTANCE.createCenteredToast(width / 2, height - 45, new ScaledResolution(mc, mc.displayWidth, mc.displayHeight).getScaledWidth() / 3, exportMessage);
+        ToastManager.INSTANCE.createCenteredToast(width / 2, height - 45, new ScaledResolution(mc).getScaledWidth() / 3, exportMessage);
     }
 
     private void savePartsData() {

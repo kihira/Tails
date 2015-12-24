@@ -41,23 +41,24 @@ public class RenderWings extends RenderPart {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, 0F, 1F * ModelPartBase.SCALE);
         GlStateManager.rotate(30F - angle, 1F, 0F, 0F);
-        renderer.startDrawingQuads();
+        // TODO Port to 1.8.8
+/*        renderer.startDrawingQuads();
         renderer.addVertexWithUV(0, 1, 0, 0, 0);
         renderer.addVertexWithUV(1, 1, 0, 1, 0);
         renderer.addVertexWithUV(1, 0, 0, 1, 1);
         renderer.addVertexWithUV(0, 0, 0, 0, 1);
-        Tessellator.getInstance().draw();
+        Tessellator.getInstance().draw();*/
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, 0.3F * ModelPartBase.SCALE, 0F);
         GlStateManager.rotate(-30F + angle, 1F, 0F, 0F);
-        renderer.startDrawingQuads();
+/*        renderer.startDrawingQuads();
         renderer.addVertexWithUV(0, 1, 0, 0, 0);
         renderer.addVertexWithUV(1, 1, 0, 1, 0);
         renderer.addVertexWithUV(1, 0, 0, 1, 1);
         renderer.addVertexWithUV(0, 0, 0, 0, 1);
-        Tessellator.getInstance().draw();
+        Tessellator.getInstance().draw();*/
         GlStateManager.popMatrix();
     }
 }

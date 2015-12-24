@@ -150,12 +150,13 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
-        renderer.startDrawingQuads();
+        // TODO Port to 1.8.8
+/*        renderer.startDrawingQuads();
         renderer.addVertexWithUV((double) (x + 0), (double) (y + tarHeight), (double) this.zLevel, (double) ((float) (u + 0) * f), (double) ((float) (v + srcHeight) * f1));
         renderer.addVertexWithUV((double) (x + tarWidth), (double) (y + tarHeight), (double) this.zLevel, (double) ((float) (u + srcWidth) * f), (double) ((float) (v + srcHeight) * f1));
         renderer.addVertexWithUV((double) (x + tarWidth), (double) (y + 0), (double) this.zLevel, (double) ((float) (u + srcWidth) * f), (double) ((float) (v + 0) * f1));
         renderer.addVertexWithUV((double) (x + 0), (double) (y + 0), (double) this.zLevel, (double) ((float) (u + 0) * f), (double) ((float) (v + 0) * f1));
-        Tessellator.getInstance().draw();
+        Tessellator.getInstance().draw();*/
     }
 
     @Override
