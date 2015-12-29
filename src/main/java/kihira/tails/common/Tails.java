@@ -13,11 +13,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import kihira.tails.api.IRenderHelper;
 import kihira.tails.client.FakeEntity;
-import kihira.tails.client.render.FakeEntityRenderHelper;
-import kihira.tails.client.render.FoxtatoRender;
-import kihira.tails.client.render.PlayerRenderHelper;
-import kihira.tails.client.render.RenderPart;
+import kihira.tails.client.render.*;
 import kihira.tails.proxy.CommonProxy;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -105,6 +104,21 @@ public class Tails {
         else {
             logger.debug("Valid Botania not found, skipping Foxtato renderer");
         }
+
+        // TODO move to proxy
+        Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
+        // Default
+        RenderPlayer renderPlayer = skinMap.get("default");
+        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
+        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
+        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
+        // Slim
+        renderPlayer = skinMap.get("slim");
+        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
+        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
+        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
+
+        // TODO fake entity rendering
     }
 
     @SubscribeEvent
