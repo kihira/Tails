@@ -1,8 +1,8 @@
-package kihira.tails.client.animation;
+package kihira.tails.client.animation.interpolation;
 
 import org.lwjgl.util.vector.Vector2f;
 
-public class BezierCurve {
+public class BezierCurve implements IInterpolation {
 
     public final Vector2f[] points;
 
@@ -25,13 +25,13 @@ public class BezierCurve {
         else {
             Vector2f[] newPoints = new Vector2f[points.length-1];
             for (int i = 0; i < newPoints.length; i++) {
-                newPoints[i] = new Vector2f((1f-time) * points[i].x + time * points[i+1].x, (1f-time) * points[i].y + time * points[i+1].y);
+                newPoints[i] = new Vector2f((1f - time) * points[i].x + time * points[i + 1].x, (1f - time) * points[i].y + time * points[i + 1].y);
             }
             return getPoint(newPoints, time);
         }
     }
 
-    public Vector2f update(float time) {
-        return getPoint(points, time);
+    public float getValue(float time) {
+        return getPoint(points, time).getY();
     }
 }

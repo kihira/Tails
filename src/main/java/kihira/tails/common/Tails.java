@@ -13,7 +13,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import kihira.tails.api.IRenderHelper;
 import kihira.tails.client.FakeEntity;
-import kihira.tails.client.animation.BezierCurve;
 import kihira.tails.client.render.FakeEntityRenderHelper;
 import kihira.tails.client.render.FoxtatoRender;
 import kihira.tails.client.render.PlayerRenderHelper;
@@ -40,7 +39,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
 
 import java.util.Map;
 
@@ -78,13 +76,6 @@ public class Tails {
 
             RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
             RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
-        }
-
-        // TODO test code
-        BezierCurve bezierCurve = new BezierCurve(new Vector2f(0, 1), new Vector2f(0.5f, 2), new Vector2f(1, 1));
-        int animLength = 20;
-        for (int t = 0; t <= animLength; t += 1) {
-            System.out.println(t + " " + bezierCurve.update(t * (1f/20f)));
         }
     }
 
