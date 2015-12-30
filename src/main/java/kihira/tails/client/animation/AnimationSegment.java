@@ -11,8 +11,11 @@ public class AnimationSegment {
     public int startFrame;
     public int length;
 
-    public AnimationSegment() {
-
+    public AnimationSegment(double[] rotChange, BezierCurve curve, int startFrame, int length) {
+        this.rotChange = rotChange;
+        this.curve = curve;
+        this.startFrame = startFrame;
+        this.length = length;
     }
 
     public void animate(ModelRenderer model, float currFrame) {
@@ -23,9 +26,7 @@ public class AnimationSegment {
         }
 
         for (int i = 0; i < 3; i++) {
-            model.rotateAngleX += Math.toRadians(rotChange[i] * value);
-            model.rotateAngleY += Math.toRadians(rotChange[i] * value);
-            model.rotateAngleZ += Math.toRadians(rotChange[i] * value);
+            model.rotateAngleY = value;
         }
     }
 }

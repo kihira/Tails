@@ -17,7 +17,7 @@ import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 public class ModelFluffyTail extends ModelPartBase {
-    private final ModelRenderer tailBase;
+    public final ModelRenderer tailBase;
     private final ModelRenderer tail1;
     private final ModelRenderer tail2;
     private final ModelRenderer tail3;
@@ -116,12 +116,12 @@ public class ModelFluffyTail extends ModelPartBase {
             }
         }
 
-        this.setRotationRadians(this.tailBase, xAngle + xAngleOffset, (((-zAngleOffset / 2F) + yAngle + (Math.cos(timestep + yOffset) / 8F)) * yAngleMultiplier) + yAngleOffset, -zAngleOffset / 8F);
+/*        this.setRotationRadians(this.tailBase, xAngle + xAngleOffset, (((-zAngleOffset / 2F) + yAngle + (Math.cos(timestep + yOffset) / 8F)) * yAngleMultiplier) + yAngleOffset, -zAngleOffset / 8F);
         this.setRotationRadians(this.tail1, -0.2617993877991494 + xAngleOffset + Math.abs(zAngleOffset / 2F), ((-zAngleOffset / 2F) + Math.cos(timestep - 1 + yOffset) / 8F) * yAngleMultiplier, -zAngleOffset / 8F);
         this.setRotationRadians(this.tail2, -0.2617993877991494 + (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Math.cos(timestep - 1.5F + yOffset) / 8F) * yAngleMultiplier, -zAngleOffset / 8F);
         this.setRotationRadians(this.tail3, -0.4363323129985824 + (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Math.cos(timestep - 2 + yOffset) / 20F) * yAngleMultiplier, -zAngleOffset / 20F);
         this.setRotationRadians(this.tail4, 0.2617993877991494 - (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Math.cos(timestep - 3 + yOffset) / 8F) * yAngleMultiplier, 0F);
-        this.setRotationRadians(this.tail5, 0.2617993877991494 - (xAngleOffset / 2.5F), ((-zAngleOffset / 2F) + Math.cos(timestep - 4 + yOffset) / 8F) * yAngleMultiplier, 0F);
+        this.setRotationRadians(this.tail5, 0.2617993877991494 - (xAngleOffset / 2.5F), ((-zAngleOffset / 2F) + Math.cos(timestep - 4 + yOffset) / 8F) * yAngleMultiplier, 0F);*/
     }
 
     @Override

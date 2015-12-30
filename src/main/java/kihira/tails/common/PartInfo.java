@@ -10,6 +10,7 @@ package kihira.tails.common;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+import kihira.tails.client.animation.AnimationClip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
@@ -22,6 +23,7 @@ public class PartInfo implements Cloneable {
     @Expose public final int subid;
     @Expose public final int[] tints;
     @Expose public final int textureID;
+    @Expose public AnimationClip animation;
     @Expose public PartsData.PartType partType; //Not final to preserve compat
 	private ResourceLocation texture;
     public boolean needsTextureCompile = true;

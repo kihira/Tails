@@ -7,17 +7,20 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class AnimationClip {
 
-    public Map<ModelRenderer, ArrayBlockingQueue<AnimationSegment>> animSegmenents;
+    private final Map<ModelRenderer, ArrayBlockingQueue<AnimationSegment>> animSegmenents;
 
-    public boolean loop;
+    private final boolean loop;
+    private int length = -1; // Cached for performance
 
-    public AnimationClip(Map<ModelRenderer, ArrayBlockingQueue<AnimationSegment>> animSegmenents) {
+    public AnimationClip(Map<ModelRenderer, ArrayBlockingQueue<AnimationSegment>> animSegmenents, boolean loop) {
         this.animSegmenents = animSegmenents;
+        this.loop = loop;
+        calcLength();
     }
 
     /**
      * Updates this clip and causes each AnimationSegment to animate in order
-     * @param time Current time
+     * @param time Current world time
      * @return If the clip is complete
      */
     public boolean update(float time) {
@@ -36,5 +39,22 @@ public class AnimationClip {
             }
         }
         return true;
+    }
+
+    private void calcLength() {
+        int length = 0;
+        for (Map.Entry<ModelRenderer, ArrayBlockingQueue<AnimationSegment>> entry : animSegmenents.entrySet()) {
+            for (AnimationSegment segment : entry.getValue()) {
+                length += segment.length;
+            }
+        }
+        this.length = length;
+    }
+
+    public int getLength() {
+        if (length == -1) {
+            calcLength();
+        }
+        return length;
     }
 }
