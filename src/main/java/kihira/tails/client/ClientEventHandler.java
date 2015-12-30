@@ -159,6 +159,16 @@ public class ClientEventHandler {
                 Tails.networkWrapper.sendToServer(new PlayerDataMessage(Minecraft.getMinecraft().thePlayer.getGameProfile().getId(), Tails.localPartsData, false));
                 sentPartInfoToServer = true;
             }
+
+            // Animation update
+            for (PartsData partsData : Tails.proxy.getPartsData().values()) {
+                for (PartsData.PartType partType : PartsData.PartType.values()) {
+                    PartInfo partInfo = partsData.getPartInfo(partType);
+                    if (partInfo.animation != null) {
+                        partInfo.animation.update();
+                    }
+                }
+            }
         }
     }
 }

@@ -114,7 +114,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
         else {
             if (!VersionParser.parseRange(foxlibReqVersion).containsVersion(new DefaultArtifactVersion("1.7.10-" + foxLibs.firstKey().toString()))) {
                 if (!GraphicsEnvironment.isHeadless()) {
-                    showDownloadOptionDialog("FoxLib is not the required version! Would you like to update it?");
+                    showDownloadOptionDialog("FoxLib is not the required version! Would you like to animate it?");
                     checkFoxLib();
                 }
                 else {

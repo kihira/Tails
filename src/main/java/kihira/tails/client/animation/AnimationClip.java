@@ -2,54 +2,59 @@ package kihira.tails.client.animation;
 
 import net.minecraft.client.model.ModelRenderer;
 
-import java.util.ArrayDeque;
 import java.util.Map;
+import java.util.SortedSet;
 
 public class AnimationClip {
 
-    private final Map<ModelRenderer, ArrayDeque<AnimationSegment>> animSegmenents;
+    private final Map<ModelRenderer, SortedSet<AnimationSegment>> animSegmenents;
 
     private final boolean loop;
     private int length = -1; // Cached for performance
+    private int playTime = 0;
 
-    public AnimationClip(Map<ModelRenderer, ArrayDeque<AnimationSegment>> animSegmenents, boolean loop) {
+    public AnimationClip(Map<ModelRenderer, SortedSet<AnimationSegment>> animSegmenents, boolean loop) {
         this.animSegmenents = animSegmenents;
         this.loop = loop;
         calcLength();
     }
 
     /**
-     * Updates this clip and causes each AnimationSegment to animate in order
-     * @param worldTime Current world time
-     * @param partialTicks Partial tick time between render
-     * @return If the clip is complete
+     * Animates this clip and causes each AnimationSegment to animate if within their time frame
+     * @param partialTicks Partial time between ticks
      */
-    // TODO track play time ourselves (instead of via worldTime)
-    public boolean update(float worldTime, float partialTicks) {
-        for (Map.Entry<ModelRenderer, ArrayDeque<AnimationSegment>> entry : animSegmenents.entrySet()) {
-            ArrayDeque<AnimationSegment> queue = entry.getValue();
-            AnimationSegment segment = queue.peekFirst();
-            float time = worldTime % getLength();
-
-            // Move component to back of queue if completed and looping
-            if (time < segment.startFrame || time >= segment.startFrame + segment.length) {
-                if (loop) {
-                    queue.addLast(segment);
-                }
-                queue.removeFirst();
-                segment = queue.peekFirst();
-                if (segment == null) {
-                    return false;
+    public void animate(float partialTicks) {
+        for (Map.Entry<ModelRenderer, SortedSet<AnimationSegment>> entry : animSegmenents.entrySet()) {
+            for (AnimationSegment segment : entry.getValue()) {
+                if (playTime >= segment.startFrame && playTime <= segment.startFrame + segment.length) {
+                    segment.animate(entry.getKey(), playTime + partialTicks);
                 }
             }
-            segment.animate(entry.getKey(), time + partialTicks);
         }
-        return true;
+    }
+
+    /**
+     * Updates playTime each tick. If loop is set to false and playTime is larger then length, animation is set to finish
+     * @return If this clip has finished playing
+     */
+    public boolean update() {
+        playTime++;
+
+        if (playTime > getLength()) {
+            if (loop) {
+                playTime = 0;
+            }
+            else {
+                finish();
+                return true;
+            }
+        }
+        return false;
     }
 
     private void calcLength() {
         int length = 0;
-        for (Map.Entry<ModelRenderer, ArrayDeque<AnimationSegment>> entry : animSegmenents.entrySet()) {
+        for (Map.Entry<ModelRenderer, SortedSet<AnimationSegment>> entry : animSegmenents.entrySet()) {
             for (AnimationSegment segment : entry.getValue()) {
                 length += segment.length;
             }
@@ -62,5 +67,9 @@ public class AnimationClip {
             calcLength();
         }
         return length;
+    }
+
+    public void finish() {
+        playTime = 0;
     }
 }
