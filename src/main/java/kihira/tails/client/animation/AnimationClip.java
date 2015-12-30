@@ -1,7 +1,9 @@
 package kihira.tails.client.animation;
 
+import com.google.common.collect.Sets;
 import net.minecraft.client.model.ModelRenderer;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.SortedSet;
 
@@ -52,6 +54,30 @@ public class AnimationClip {
         return false;
     }
 
+    public void addSegments(ModelRenderer renderer, AnimationSegment ... segments) {
+        if (animSegmenents.containsKey(renderer)) {
+            Collections.addAll(animSegmenents.get(renderer), segments);
+        }
+        else {
+            SortedSet<AnimationSegment> set = Sets.newTreeSet();
+            Collections.addAll(set, segments);
+            animSegmenents.put(renderer, set);
+        }
+    }
+
+    public void removeSegment(ModelRenderer renderer, AnimationSegment segment) {
+        if (animSegmenents.containsKey(renderer)) {
+            animSegmenents.get(renderer).remove(segment);
+        }
+    }
+
+    public void removeAllSegments(ModelRenderer renderer) {
+        animSegmenents.remove(renderer);
+    }
+
+    /**
+     * Calculate total time length of the animation in ticks
+     */
     private void calcLength() {
         int length = 0;
         for (Map.Entry<ModelRenderer, SortedSet<AnimationSegment>> entry : animSegmenents.entrySet()) {
@@ -62,6 +88,11 @@ public class AnimationClip {
         this.length = length;
     }
 
+    /**
+     * Returns total time length of the animation in ticks
+     * Total length is calculated via getLength and cached in length for performance
+     * @return Total animation time length
+     */
     public int getLength() {
         if (length == -1) {
             calcLength();
