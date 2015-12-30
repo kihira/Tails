@@ -9,8 +9,9 @@ import java.util.SortedSet;
 
 public class AnimationClip {
 
-    private final Map<ModelRenderer, SortedSet<AnimationSegment>> animSegmenents;
+    public static final AnimationClip identityClip = new AnimationClip(null, true);
 
+    private final Map<ModelRenderer, SortedSet<AnimationSegment>> animSegmenents;
     private final boolean loop;
     private int length = -1; // Cached for performance
     private int playTime = 0;
