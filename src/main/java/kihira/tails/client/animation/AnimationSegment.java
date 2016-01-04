@@ -5,24 +5,23 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.util.MathHelper;
 
 public class AnimationSegment implements Comparable {
-    private final AnimationVariable variable;
-    public IInterpolation curve;
-    public int startFrame;
-    public int length;
+    public final Variable variable;
+    protected IInterpolation interpolation;
+    public final int startFrame;
+    public final int length;
 
-    public AnimationSegment(AnimationVariable variable, IInterpolation curve, int startFrame, int length) {
+    protected int playTime;
+
+    public AnimationSegment(Variable variable, int startFrame, int length, IInterpolation interpolation) {
         this.variable = variable;
-        this.curve = curve;
+        this.interpolation = interpolation;
         this.startFrame = startFrame;
         this.length = length;
     }
 
-    public void animate(ModelRenderer model, float currFrame) {
-        float time = MathHelper.clamp_float((currFrame - startFrame) / (float) length, 0f, 1f);
-        float value = time;
-        if (curve != null) {
-            value = curve.getValue(time);
-        }
+    public void animate(ModelRenderer model, float partialTicks) {
+        float time = MathHelper.clamp_float((playTime + partialTicks) / (float) length, 0f, 1f);
+        float value = interpolation.getValue(time);
 
         // TODO modify off the base variable
         switch (variable) {
@@ -47,6 +46,19 @@ public class AnimationSegment implements Comparable {
         }
     }
 
+    /**
+     * Called once per tick whilst this segment is active
+     * @return Whether segment is complete
+     */
+    public boolean update() {
+        playTime++;
+        if (playTime > length) {
+            playTime = 0;
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,14 +69,14 @@ public class AnimationSegment implements Comparable {
         if (startFrame != segment.startFrame) return false;
         if (length != segment.length) return false;
         if (variable != segment.variable) return false;
-        return curve.equals(segment.curve);
+        return interpolation.equals(segment.interpolation);
 
     }
 
     @Override
     public int hashCode() {
         int result = variable.hashCode();
-        result = 31 * result + curve.hashCode();
+        result = 31 * result + interpolation.hashCode();
         result = 31 * result + startFrame;
         result = 31 * result + length;
         return result;
@@ -88,5 +100,15 @@ public class AnimationSegment implements Comparable {
             }
         }
         return 0;
+    }
+
+    public static class Blank extends AnimationSegment {
+
+        public Blank(int startFrame, int length) {
+            super(null, startFrame, length, null);
+        }
+
+        @Override
+        public void animate(ModelRenderer model, float partialTicks) {}
     }
 }

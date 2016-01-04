@@ -1,20 +1,23 @@
 package kihira.tails.client.animation;
 
+import net.minecraft.entity.EntityLivingBase;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AnimationStateMachine {
 
-    // TODO make these states
     private final Map<String, AnimationState> animClips;
     private final Map<AnimationState, List<Transition>> transitions;
     private final Map<String, Parameter> parameters = new HashMap<>();
+    private final EntityLivingBase entity;
 
     private AnimationState currState;
     private Transition currTrans;
 
-    public AnimationStateMachine(Map<String, AnimationState> animClips, Map<AnimationState, List<Transition>> transitions, String startClip) {
+    public AnimationStateMachine(EntityLivingBase entity, Map<String, AnimationState> animClips, Map<AnimationState, List<Transition>> transitions, String startClip) {
+        this.entity = entity;
         this.animClips = animClips;
         this.transitions = transitions;
 
@@ -28,7 +31,7 @@ public class AnimationStateMachine {
         AnimationState clip = animClips.get(newClip);
 
         // TODO implement transitions
-        currState.getClip().finish();
+        //currState.getClip().finish();
         currState = clip;
     }
 
@@ -57,6 +60,7 @@ public class AnimationStateMachine {
     }
 
     public void animate(float partialRenderTick) {
-        currState.getClip().animate(partialRenderTick);
+        // TODO motion affect animation
+        currState.getClip().animate(entity, partialRenderTick);
     }
 }

@@ -18,11 +18,11 @@ import org.lwjgl.opengl.GL11;
 
 public class ModelFluffyTail extends ModelPartBase {
     public final ModelRenderer tailBase;
-    private final ModelRenderer tail1;
-    private final ModelRenderer tail2;
-    private final ModelRenderer tail3;
-    private final ModelRenderer tail4;
-    private final ModelRenderer tail5;
+    public final ModelRenderer tail1;
+    public final ModelRenderer tail2;
+    public final ModelRenderer tail3;
+    public final ModelRenderer tail4;
+    public final ModelRenderer tail5;
 
     public ModelFluffyTail() {
         this.tailBase = new ModelRenderer(this);

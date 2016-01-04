@@ -2,6 +2,7 @@ package kihira.tails.client.animation;
 
 import com.google.common.collect.Sets;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.EntityLivingBase;
 
 import java.util.Collections;
 import java.util.Map;
@@ -11,26 +12,26 @@ public class AnimationClip {
 
     public static final AnimationClip identityClip = new AnimationClip(null, true);
 
-    private final Map<ModelRenderer, SortedSet<AnimationSegment>> animSegmenents;
+    private final Map<ModelRenderer, SortedSet<AnimationSegment>> animSegments;
     private final boolean loop;
     private int length = -1; // Cached for performance
     private int playTime = 0;
 
-    public AnimationClip(Map<ModelRenderer, SortedSet<AnimationSegment>> animSegmenents, boolean loop) {
-        this.animSegmenents = animSegmenents;
+    public AnimationClip(Map<ModelRenderer, SortedSet<AnimationSegment>> animSegments, boolean loop) {
+        this.animSegments = animSegments;
         this.loop = loop;
-        calcLength();
     }
 
     /**
      * Animates this clip and causes each AnimationSegment to animate if within their time frame
+     * @param entity
      * @param partialTicks Partial time between ticks
      */
-    public void animate(float partialTicks) {
-        for (Map.Entry<ModelRenderer, SortedSet<AnimationSegment>> entry : animSegmenents.entrySet()) {
+    public void animate(EntityLivingBase entity, float partialTicks) {
+        for (Map.Entry<ModelRenderer, SortedSet<AnimationSegment>> entry : animSegments.entrySet()) {
             for (AnimationSegment segment : entry.getValue()) {
                 if (playTime >= segment.startFrame && playTime <= segment.startFrame + segment.length) {
-                    segment.animate(entry.getKey(), playTime + partialTicks);
+                    segment.animate(entry.getKey(), partialTicks);
                 }
             }
         }
@@ -42,6 +43,14 @@ public class AnimationClip {
      */
     public boolean update() {
         playTime++;
+
+        for (Map.Entry<ModelRenderer, SortedSet<AnimationSegment>> entry : animSegments.entrySet()) {
+            for (AnimationSegment segment : entry.getValue()) {
+                if (playTime >= segment.startFrame && playTime <= segment.startFrame + segment.length) {
+                    segment.update();
+                }
+            }
+        }
 
         if (playTime > getLength()) {
             if (loop) {
@@ -56,24 +65,24 @@ public class AnimationClip {
     }
 
     public void addSegments(ModelRenderer renderer, AnimationSegment ... segments) {
-        if (animSegmenents.containsKey(renderer)) {
-            Collections.addAll(animSegmenents.get(renderer), segments);
+        if (animSegments.containsKey(renderer)) {
+            Collections.addAll(animSegments.get(renderer), segments);
         }
         else {
             SortedSet<AnimationSegment> set = Sets.newTreeSet();
             Collections.addAll(set, segments);
-            animSegmenents.put(renderer, set);
+            animSegments.put(renderer, set);
         }
     }
 
     public void removeSegment(ModelRenderer renderer, AnimationSegment segment) {
-        if (animSegmenents.containsKey(renderer)) {
-            animSegmenents.get(renderer).remove(segment);
+        if (animSegments.containsKey(renderer)) {
+            animSegments.get(renderer).remove(segment);
         }
     }
 
     public void removeAllSegments(ModelRenderer renderer) {
-        animSegmenents.remove(renderer);
+        animSegments.remove(renderer);
     }
 
     /**
@@ -81,9 +90,16 @@ public class AnimationClip {
      */
     private void calcLength() {
         int length = 0;
-        for (Map.Entry<ModelRenderer, SortedSet<AnimationSegment>> entry : animSegmenents.entrySet()) {
+        for (Map.Entry<ModelRenderer, SortedSet<AnimationSegment>> entry : animSegments.entrySet()) {
+            int setLength = 0;
             for (AnimationSegment segment : entry.getValue()) {
-                length += segment.length;
+                if (segment.startFrame > setLength) {
+                    setLength = segment.startFrame;
+                }
+                setLength += segment.length;
+            }
+            if (setLength > length) {
+                length = setLength;
             }
         }
         this.length = length;
