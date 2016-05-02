@@ -63,6 +63,13 @@ public class PartsData {
         return partInfos != null ? Arrays.hashCode(partInfos) : 0;
     }
 
+    @Override
+    public String toString() {
+        return "PartsData{" +
+                "partInfos=" + Arrays.toString(partInfos) +
+                '}';
+    }
+
     //NOTE: We rely on the order of this, don't re-arrange, only append!
     public enum PartType {
         TAIL,

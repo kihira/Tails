@@ -105,19 +105,7 @@ public class Tails {
             logger.debug("Valid Botania not found, skipping Foxtato renderer");
         }
 
-        // TODO move to proxy
-        Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
-        // Default
-        RenderPlayer renderPlayer = skinMap.get("default");
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
-        // Slim
-        renderPlayer = skinMap.get("slim");
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
-
+        proxy.registerRenderers();
         // TODO fake entity rendering
     }
 
@@ -166,6 +154,15 @@ public class Tails {
                 prop.set("");
 
                 //Force save
+                setLocalPartsData(localPartsData);
+            }
+
+            //Load default if none exists
+            if (localPartsData == null) {
+                localPartsData = new PartsData();
+                for (PartsData.PartType partType : PartsData.PartType.values()) {
+                    localPartsData.setPartInfo(partType, new PartInfo(false, 0, 0, 0, 0, 0, 0, null, partType));
+                }
                 setLocalPartsData(localPartsData);
             }
         } catch (JsonSyntaxException e) {

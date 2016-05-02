@@ -13,6 +13,7 @@ import kihira.tails.common.PartsData;
 import kihira.tails.common.ServerEventHandler;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.*;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -40,13 +41,17 @@ public class CommonProxy {
     }
 
     public void registerHandlers() {
-        FMLCommonHandler.instance().bus().register(new ServerEventHandler());
+        MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
     }
+
+    public void registerRenderers() {}
 
     public void addPartsData(UUID uuid, PartsData partsData) {
         if (uuid != null) {
             this.partsData.put(uuid, partsData);
+            Tails.logger.info(String.format("Added part data for %s %s", uuid.toString(), partsData));
         }
+        else Tails.logger.warn(String.format("Attempted to add part data with null UUID! %s", partsData));
     }
 
     public void removePartsData(UUID uuid) {
@@ -56,11 +61,13 @@ public class CommonProxy {
                 //Tails.networkWrapper.sendToAll(new PlayerDataMessage(uuid, this.partsData.get(uuid), true));
             }
             this.partsData.remove(uuid);
+            Tails.logger.debug(String.format("Removed part data for %s", uuid.toString()));
         }
     }
 
     public void clearAllPartsData() {
         this.partsData.clear();
+        Tails.logger.debug("Clearing parts data");
     }
 
     public boolean hasPartsData(UUID uuid) {

@@ -171,7 +171,8 @@ public class TextureHelper {
         textureID = textureID >= textures.length ? 0 : textureID;
         String texturePath = "texture/" + partType.name().toLowerCase() + "/"+textures[textureID]+".png";
 
-        ResourceLocation tailtexture = new ResourceLocation("tails_"+partType.name()+"_"+typeid+"_"+subid+"_"+textureID+"_"+tints[0]+"_"+tints[1]+"_"+tints[2]);
+        //Add UUID to prevent deleting similar textures. todo use player uuid?
+        ResourceLocation tailtexture = new ResourceLocation("tails_"+UUID.randomUUID()+"_"+partType.name()+"_"+typeid+"_"+subid+"_"+textureID+"_"+tints[0]+"_"+tints[1]+"_"+tints[2]);
         Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturePath, tints[0], tints[1], tints[2]));
 
         return tailtexture;

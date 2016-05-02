@@ -5,6 +5,8 @@ import kihira.foxlib.client.toast.ToastManager;
 import kihira.tails.common.LibraryEntryData;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.LibraryEntriesMessage;
+import kihira.tails.common.network.LibraryRequestMessage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -43,6 +45,11 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         buttonList.add(new GuiIconButton(3, 53, height - 20, GuiIconButton.Icons.DOWNLOAD, StatCollector.translateToLocal("gui.button.savelocal")));
         buttonList.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, StatCollector.translateToLocal("gui.button.share")));
         super.initGui();
+
+        //Only request library if on remote server
+        if (!Minecraft.getMinecraft().isIntegratedServerRunning()) {
+            Tails.networkWrapper.sendToServer(new LibraryRequestMessage());
+        }
 
         setEntry(null);
     }

@@ -54,10 +54,6 @@ public class ClientEventHandler {
     public void onButtonClickPre(GuiScreenEvent.ActionPerformedEvent.Pre event) {
         if (event.gui instanceof GuiIngameMenu) {
             if (event.button.id == 1234) {
-                //Only request library if on remote server
-                if (!Minecraft.getMinecraft().isIntegratedServerRunning()) {
-                    Tails.networkWrapper.sendToServer(new LibraryRequestMessage());
-                }
                 event.gui.mc.displayGuiScreen(new GuiEditor());
                 event.setCanceled(true);
             }

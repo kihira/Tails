@@ -14,6 +14,7 @@ import io.netty.buffer.ByteBuf;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -55,7 +56,7 @@ public class PlayerDataMapMessage implements IMessage {
         public IMessage onMessage(PlayerDataMapMessage message, MessageContext ctx) {
             for (Map.Entry<UUID, PartsData> entry : message.partsDataMap.entrySet()) {
                 //Ignore local player
-                if (Minecraft.getMinecraft().thePlayer.getPersistentID() != entry.getKey()) {
+                if (EntityPlayer.getUUID(Minecraft.getMinecraft().getSession().getProfile()) != entry.getKey()) {
                     Tails.proxy.addPartsData(entry.getKey(), entry.getValue());
                 }
             }

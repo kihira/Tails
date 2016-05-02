@@ -12,7 +12,9 @@ import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
+import kihira.tails.common.network.LibraryRequestMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class GuiEditor extends GuiBase {
 
@@ -90,7 +92,7 @@ public class GuiEditor extends GuiBase {
 
     @Override
     public void onGuiClosed() {
-        Tails.proxy.addPartsData(mc.getSession().getProfile().getId(), Tails.localPartsData);
+        Tails.proxy.addPartsData(EntityPlayer.getUUID(Minecraft.getMinecraft().getSession().getProfile()), Tails.localPartsData);
         super.onGuiClosed();
     }
 
@@ -113,7 +115,7 @@ public class GuiEditor extends GuiBase {
 
     public void setPartsData(PartsData newPartsData) {
         partsData = newPartsData;
-        Tails.proxy.addPartsData(Minecraft.getMinecraft().thePlayer.getGameProfile().getId(), partsData);
+        Tails.proxy.addPartsData(EntityPlayer.getUUID(Minecraft.getMinecraft().getSession().getProfile()), partsData);
     }
 
     public PartsData getPartsData() {

@@ -87,6 +87,19 @@ public class PartInfo implements Cloneable {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "PartInfo{" +
+                "hasPart=" + hasPart +
+                ", typeid=" + typeid +
+                ", subid=" + subid +
+                ", tints=" + Arrays.toString(tints) +
+                ", textureID=" + textureID +
+                ", partType=" + partType +
+                ", texture=" + texture +
+                '}';
+    }
+
     public PartInfo deepCopy() {
         Gson gson = new Gson();
         return gson.fromJson(gson.toJson(this), PartInfo.class);
