@@ -1,6 +1,7 @@
 package kihira.tails.client.gui.controls;
 
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import kihira.foxlib.client.gui.ITooltip;
@@ -146,17 +147,16 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
         this.briValue = value;
     }
     
-    public void drawTexturedModalRectScaled (int x, int y, int u, int v, int srcWidth, int srcHeight, int tarWidth, int tarHeight) {
+    void drawTexturedModalRectScaled (int x, int y, int u, int v, int srcWidth, int srcHeight, int tarWidth, int tarHeight) {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
-        // TODO Port to 1.8.8
-/*        renderer.startDrawingQuads();
-        renderer.addVertexWithUV((double) (x + 0), (double) (y + tarHeight), (double) this.zLevel, (double) ((float) (u + 0) * f), (double) ((float) (v + srcHeight) * f1));
-        renderer.addVertexWithUV((double) (x + tarWidth), (double) (y + tarHeight), (double) this.zLevel, (double) ((float) (u + srcWidth) * f), (double) ((float) (v + srcHeight) * f1));
-        renderer.addVertexWithUV((double) (x + tarWidth), (double) (y + 0), (double) this.zLevel, (double) ((float) (u + srcWidth) * f), (double) ((float) (v + 0) * f1));
-        renderer.addVertexWithUV((double) (x + 0), (double) (y + 0), (double) this.zLevel, (double) ((float) (u + 0) * f), (double) ((float) (v + 0) * f1));
-        Tessellator.getInstance().draw();*/
+        renderer.func_181668_a(7, DefaultVertexFormats.field_181707_g);
+        renderer.func_181662_b((double) (x + 0), (double) (y + tarHeight), (double) this.zLevel).func_181673_a((double) ((float) (u + 0) * f), (double) ((float) (v + srcHeight) * f1)).func_181675_d();
+        renderer.func_181662_b((double) (x + tarWidth), (double) (y + tarHeight), (double) this.zLevel).func_181673_a((double) ((float) (u + srcWidth) * f), (double) ((float) (v + srcHeight) * f1)).func_181675_d();
+        renderer.func_181662_b((double) (x + tarWidth), (double) (y + 0), (double) this.zLevel).func_181673_a((double) ((float) (u + srcWidth) * f), (double) ((float) (v + 0) * f1)).func_181675_d();
+        renderer.func_181662_b((double) (x + 0), (double) (y + 0), (double) this.zLevel).func_181673_a((double) ((float) (u + 0) * f), (double) ((float) (v + 0) * f1)).func_181675_d();
+        Tessellator.getInstance().draw();
     }
 
     @Override
@@ -169,6 +169,6 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
     }
     
     public interface IHSBSliderCallback {
-        public void onValueChangeHSBSlider(GuiHSBSlider source, double sliderValue);
+        void onValueChangeHSBSlider(GuiHSBSlider source, double sliderValue);
     }
 }

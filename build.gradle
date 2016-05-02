@@ -16,15 +16,15 @@ project.ext {
     massive = "1"
     major = "5"
     minor = "0"
-    mcVersion = "1.8.8"
-    forgeVersion = "11.15.0.1639"
+    mcVersion = "1.8.9"
+    forgeVersion = "11.15.1.1855"
     foxlibDevVersion = "1.7.10-0.6.0.develop.22"
     foxlibVersion = "1.8-0.8.0"
     buildVersion = System.getenv("BUILD_NUMBER")
 }
 
 minecraft {
-    version = "${project.ext.mcVersion}-${project.ext.forgeVersion}-${project.ext.mcVersion}"
+    version = "${project.ext.mcVersion}-${project.ext.forgeVersion}"
     runDir = "run"
     mappings = "snapshot_20151122"
 
@@ -62,7 +62,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
-    compile "kihira:FoxLib:"+project.foxlibDevVersion+":dev"
+    //compile "kihira:FoxLib:"+project.foxlibDevVersion+":dev"
 }
 
 processResources
