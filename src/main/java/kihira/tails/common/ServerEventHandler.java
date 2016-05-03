@@ -22,7 +22,7 @@ public class ServerEventHandler {
         //Send current known tails to client
         Tails.networkWrapper.sendTo(new PlayerDataMapMessage(Tails.proxy.getPartsData()), (EntityPlayerMP) event.player);
         Tails.networkWrapper.sendTo(new ServerCapabilitiesMessage(Tails.libraryEnabled), (EntityPlayerMP) event.player);
-        Tails.logger.debug(String.format("Sent tail data of size %d to %s ", Tails.proxy.getPartsData().size(), event.player.getCommandSenderName()));
+        Tails.logger.debug(String.format("Sent tail data of size %d to %s ", Tails.proxy.getPartsData().size(), event.player.getName()));
     }
 
     @SubscribeEvent

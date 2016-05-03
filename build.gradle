@@ -26,9 +26,9 @@ project.ext {
 minecraft {
     version = "${project.ext.mcVersion}-${project.ext.forgeVersion}"
     runDir = "run"
-    mappings = "snapshot_20151122"
+    mappings = "stable_20"
 
-    replace '@VERSION@', project.version
+    replace '@VERSION@', version
     replace '@FOXLIBVERSION@', project.foxlibVersion
 }
 

@@ -151,11 +151,11 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
-        renderer.func_181668_a(7, DefaultVertexFormats.field_181707_g);
-        renderer.func_181662_b((double) (x + 0), (double) (y + tarHeight), (double) this.zLevel).func_181673_a((double) ((float) (u + 0) * f), (double) ((float) (v + srcHeight) * f1)).func_181675_d();
-        renderer.func_181662_b((double) (x + tarWidth), (double) (y + tarHeight), (double) this.zLevel).func_181673_a((double) ((float) (u + srcWidth) * f), (double) ((float) (v + srcHeight) * f1)).func_181675_d();
-        renderer.func_181662_b((double) (x + tarWidth), (double) (y + 0), (double) this.zLevel).func_181673_a((double) ((float) (u + srcWidth) * f), (double) ((float) (v + 0) * f1)).func_181675_d();
-        renderer.func_181662_b((double) (x + 0), (double) (y + 0), (double) this.zLevel).func_181673_a((double) ((float) (u + 0) * f), (double) ((float) (v + 0) * f1)).func_181675_d();
+        renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        renderer.pos((double) (x + 0), (double) (y + tarHeight), (double) this.zLevel).tex((double) ((float) (u + 0) * f), (double) ((float) (v + srcHeight) * f1)).endVertex();
+        renderer.pos((double) (x + tarWidth), (double) (y + tarHeight), (double) this.zLevel).tex((double) ((float) (u + srcWidth) * f), (double) ((float) (v + srcHeight) * f1)).endVertex();
+        renderer.pos((double) (x + tarWidth), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (u + srcWidth) * f), (double) ((float) (v + 0) * f1)).endVertex();
+        renderer.pos((double) (x + 0), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (u + 0) * f), (double) ((float) (v + 0) * f1)).endVertex();
         Tessellator.getInstance().draw();
     }
 
