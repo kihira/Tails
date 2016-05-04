@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import org.lwjgl.opengl.GL11;
 
 public class PreviewPanel extends Panel<GuiEditor> {
@@ -74,7 +75,8 @@ public class PreviewPanel extends Panel<GuiEditor> {
         float prevHeadYaw = entity.rotationYawHead;
         float prevRotYaw = entity.rotationYaw;
         float prevRotPitch = entity.rotationPitch;
-        ItemStack prevItemStack = entity.getHeldItem();
+        ItemStack prevItemStack = entity.getHeldItem(EnumHand.MAIN_HAND);
+        ItemStack prevItemStackOff = entity.getHeldItem(EnumHand.OFF_HAND);
 
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, 100F);
@@ -89,11 +91,12 @@ public class PreviewPanel extends Panel<GuiEditor> {
         entity.rotationPitch = 0F;
         entity.renderYawOffset = 0F;
         entity.setSneaking(false);
-        entity.setCurrentItemOrArmor(0, null);
+        entity.setHeldItem(EnumHand.MAIN_HAND, null);
+        entity.setHeldItem(EnumHand.OFF_HAND, null);
 
         RenderHelper.enableStandardItemLighting();
         Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
-        Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0D, 0D, 0D, 0F, 1F);
+        Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0D, 0D, 0D, 0F, 1F, false);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -102,7 +105,8 @@ public class PreviewPanel extends Panel<GuiEditor> {
         entity.rotationYawHead = prevHeadYaw;
         entity.rotationYaw = prevRotYaw;
         entity.rotationPitch = prevRotPitch;
-        entity.setCurrentItemOrArmor(0, prevItemStack);
+        entity.setHeldItem(EnumHand.MAIN_HAND, prevItemStack);
+        entity.setHeldItem(EnumHand.OFF_HAND, prevItemStackOff);
 
         GL11.glPopMatrix();
     }

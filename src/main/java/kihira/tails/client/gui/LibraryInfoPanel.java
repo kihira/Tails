@@ -11,8 +11,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -39,11 +39,11 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         textField = new GuiTextField(-1, fontRendererObj, 6, 6, width - 12, 15);
         textField.setMaxStringLength(16);
 
-        buttonList.add(favButton = new GuiIconButton.GuiIconToggleButton(0, 5, height - 20, GuiIconButton.Icons.STAR, StatCollector.translateToLocal("gui.button.favourite")));
-        buttonList.add(new GuiIconButton(1, 21, height - 20, GuiIconButton.Icons.DELETE, StatCollector.translateToLocal("gui.button.delete")));
-        buttonList.add(new GuiIconButton(2, 36, height - 20, GuiIconButton.Icons.UPLOAD, StatCollector.translateToLocal("gui.button.upload")));
-        buttonList.add(new GuiIconButton(3, 53, height - 20, GuiIconButton.Icons.DOWNLOAD, StatCollector.translateToLocal("gui.button.savelocal")));
-        buttonList.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, StatCollector.translateToLocal("gui.button.share")));
+        buttonList.add(favButton = new GuiIconButton.GuiIconToggleButton(0, 5, height - 20, GuiIconButton.Icons.STAR, I18n.translateToLocal("gui.button.favourite")));
+        buttonList.add(new GuiIconButton(1, 21, height - 20, GuiIconButton.Icons.DELETE, I18n.translateToLocal("gui.button.delete")));
+        buttonList.add(new GuiIconButton(2, 36, height - 20, GuiIconButton.Icons.UPLOAD, I18n.translateToLocal("gui.button.upload")));
+        buttonList.add(new GuiIconButton(3, 53, height - 20, GuiIconButton.Icons.DOWNLOAD, I18n.translateToLocal("gui.button.savelocal")));
+        buttonList.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, I18n.translateToLocal("gui.button.share")));
         super.initGui();
 
         //Only request library if on remote server
@@ -61,7 +61,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
 
         GL11.glColor4f(0F, 0F, 0F, 0F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
-        WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
+        VertexBuffer renderer = Tessellator.getInstance().getBuffer();
         // TODO Port to 1.8.8
 /*        renderer.startDrawingQuads();
         renderer.setColorOpaque_I(8421504);
@@ -79,9 +79,9 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             textField.drawTextBox();
 
             fontRendererObj.setUnicodeFlag(true);
-            fontRendererObj.drawString(StatCollector.translateToLocal("gui.library.info.created") + ":", 5, height - 40, 0xAAAAAA);
+            fontRendererObj.drawString(I18n.translateToLocal("gui.library.info.created") + ":", 5, height - 40, 0xAAAAAA);
             fontRendererObj.drawString(entry.data.creatorName, width - 5 - fontRendererObj.getStringWidth(entry.data.creatorName), height - 40, 0xAAAAAA);
-            fontRendererObj.drawString(StatCollector.translateToLocal("gui.library.info.createdate") + ":", 5, height - 32, 0xAAAAAA);
+            fontRendererObj.drawString(I18n.translateToLocal("gui.library.info.createdate") + ":", 5, height - 32, 0xAAAAAA);
             String date = new SimpleDateFormat("dd/MM/YY").format(new Date(entry.data.creationDate));
             fontRendererObj.drawString(date, width - 5 - fontRendererObj.getStringWidth(date), height - 32, 0xAAAAAA);
             //fontRendererObj.drawSplitString(EnumChatFormatting.ITALIC + entry.data.comment, 5, 40, width, 0xFFFFFF);
@@ -127,7 +127,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             sb.append(libData.creatorUUID).append(":");
             sb.append(Tails.gson.toJson(libData.partsData));
 
-            ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height / 2, parent.width / 2, StatCollector.translateToLocal("gui.library.info.toast.export"));
+            ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height / 2, parent.width / 2, I18n.translateToLocal("gui.library.info.toast.export"));
             GuiScreen.setClipboardString(sb.toString());
         }
         Tails.proxy.getLibraryManager().saveLibrary();

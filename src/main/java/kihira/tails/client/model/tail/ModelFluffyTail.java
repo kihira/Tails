@@ -13,7 +13,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 public class ModelFluffyTail extends ModelPartBase {

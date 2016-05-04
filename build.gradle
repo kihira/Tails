@@ -16,8 +16,8 @@ project.ext {
     massive = "1"
     major = "5"
     minor = "1"
-    mcVersion = "1.8.9"
-    forgeVersion = "11.15.1.1855"
+    mcVersion = "1.9"
+    forgeVersion = "12.16.1.1888"
     foxlibDevVersion = "1.7.10-0.6.0.develop.22"
     foxlibVersion = "1.8.9-0.8.2"
     buildVersion = System.getenv("BUILD_NUMBER")
@@ -26,7 +26,7 @@ project.ext {
 minecraft {
     version = "${project.ext.mcVersion}-${project.ext.forgeVersion}"
     runDir = "run"
-    mappings = "stable_20"
+    mappings = "snapshot_20160312"
 
     replace '@VERSION@', version
     replace '@FOXLIBVERSION@', project.foxlibVersion

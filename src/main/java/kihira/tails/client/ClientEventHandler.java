@@ -45,16 +45,16 @@ public class ClientEventHandler {
     @SubscribeEvent
     @SuppressWarnings("unchecked")
     public void onScreenInitPost(GuiScreenEvent.InitGuiEvent.Post event) {
-        if (event.gui instanceof GuiIngameMenu) {
-            event.buttonList.add(new GuiButton(1234, (event.gui.width / 2) - 35, event.gui.height - 25, 70, 20, I18n.format("gui.button.editor")));
+        if (event.getGui() instanceof GuiIngameMenu) {
+            event.getButtonList().add(new GuiButton(1234, (event.getGui().width / 2) - 35, event.getGui().height - 25, 70, 20, I18n.format("gui.button.editor")));
         }
     }
 
     @SubscribeEvent
     public void onButtonClickPre(GuiScreenEvent.ActionPerformedEvent.Pre event) {
-        if (event.gui instanceof GuiIngameMenu) {
-            if (event.button.id == 1234) {
-                event.gui.mc.displayGuiScreen(new GuiEditor());
+        if (event.getGui() instanceof GuiIngameMenu) {
+            if (event.getButton().id == 1234) {
+                event.getGui().mc.displayGuiScreen(new GuiEditor());
                 event.setCanceled(true);
             }
         }

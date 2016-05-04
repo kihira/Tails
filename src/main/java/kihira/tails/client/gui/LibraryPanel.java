@@ -9,7 +9,7 @@ import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public void initGui() {
         initList();
 
-        buttonList.add(new GuiButtonExt(0, 3, height - 18, width - 6, 15, StatCollector.translateToLocal("gui.button.all")));
+        buttonList.add(new GuiButtonExt(0, 3, height - 18, width - 6, 15, I18n.translateToLocal("gui.button.all")));
         searchField = new GuiTextField(1, fontRendererObj, 5, height - 31, width - 10, 10);
         super.initGui();
     }

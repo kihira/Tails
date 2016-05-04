@@ -12,6 +12,7 @@ import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.foxlib.client.toast.ToastManager;
 import kihira.tails.client.texture.TextureHelper;
@@ -22,7 +23,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.Display;
 
@@ -113,7 +114,7 @@ public class GuiExport extends GuiBaseScreen {
                     try {
                         file.createNewFile();
                     } catch (IOException e) {
-                        setExportMessage(EnumChatFormatting.DARK_RED + String.format("Failed to create skin file! %s", e));
+                        setExportMessage(TextFormatting.DARK_RED + String.format("Failed to create skin file! %s", e));
                         e.printStackTrace();
                     }
                 }
@@ -123,12 +124,12 @@ public class GuiExport extends GuiBaseScreen {
                     try {
                         ImageIO.write(image, "png", file);
                     } catch (IOException e) {
-                        setExportMessage(EnumChatFormatting.DARK_RED + String.format("Failed to save skin file! %s", e));
+                        setExportMessage(TextFormatting.DARK_RED + String.format("Failed to save skin file! %s", e));
                         e.printStackTrace();
                     }
                 }
                 else {
-                    setExportMessage(EnumChatFormatting.DARK_RED + String.format("Failed to export skin, image was null!"));
+                    setExportMessage(TextFormatting.DARK_RED + String.format("Failed to export skin, image was null!"));
                     file.delete();
                 }
             }
@@ -136,14 +137,14 @@ public class GuiExport extends GuiBaseScreen {
             if (Strings.isNullOrEmpty(this.exportMessage)) {
                 savePartsData();
                 // TODO this.openFolderButton.visible = true;
-                setExportMessage(EnumChatFormatting.GREEN + I18n.format("tails.export.success", file));
+                setExportMessage(TextFormatting.GREEN + I18n.format("tails.export.success", file));
             }
         }
         if (button.id == 3 && this.exportLoc != null) {
             try {
                 Desktop.getDesktop().browse(this.exportLoc);
             } catch (IOException e) {
-                setExportMessage(EnumChatFormatting.DARK_RED + String.format("Failed to open export location: %s", e));
+                setExportMessage(TextFormatting.DARK_RED + String.format("Failed to open export location: %s", e));
                 e.printStackTrace();
             }
         }
@@ -220,7 +221,7 @@ public class GuiExport extends GuiBaseScreen {
                         String imgurURL = "http://imgur.com/" + id + ".png";
                         String skinURL = "https://minecraft.net/profile/skin/remote?url=";
 
-                        setExportMessage(EnumChatFormatting.GREEN + I18n.format("tails.upload.success"));
+                        setExportMessage(TextFormatting.GREEN + I18n.format("tails.upload.success"));
                         exportLoc = URI.create(skinURL + imgurURL);
                         // TODO openFolderButton.visible = true;
                         savePartsData();
@@ -237,7 +238,7 @@ public class GuiExport extends GuiBaseScreen {
                         JsonObject jsonElement = new JsonParser().parse(in).getAsJsonObject();
                         handleError(jsonElement);
                     }
-                    else setExportMessage(EnumChatFormatting.DARK_RED + I18n.format("tails.upload.failed"));
+                    else setExportMessage(TextFormatting.DARK_RED + I18n.format("tails.upload.failed"));
                 }
 
             } catch (IOException e) {
@@ -255,9 +256,9 @@ public class GuiExport extends GuiBaseScreen {
 
             //Rate limiting
             if (status == 429 || status == 403) {
-                setExportMessage(EnumChatFormatting.DARK_RED + I18n.format("tails.upload.ratelimit"));
+                setExportMessage(TextFormatting.DARK_RED + I18n.format("tails.upload.ratelimit"));
             }
-            else setExportMessage(EnumChatFormatting.DARK_RED + I18n.format("tails.upload.failed"));
+            else setExportMessage(TextFormatting.DARK_RED + I18n.format("tails.upload.failed"));
         }
     }
 

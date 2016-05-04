@@ -6,7 +6,7 @@ import kihira.tails.client.render.RenderPart;
 import kihira.tails.common.PartInfo;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -49,7 +49,7 @@ public class TexturePanel extends Panel<GuiEditor> {
             GL11.glPushMatrix();
             GL11.glTranslatef(7, this.height - 10, 0);
             GL11.glScalef(0.6F, 0.6F, 1F);
-            fontRendererObj.drawString(I18n.format("gui.createdby") + ": " + EnumChatFormatting.AQUA + renderPart.getAuthor(partInfo.subid, partInfo.textureID), 0, 0, 0xFFFFFF);
+            fontRendererObj.drawString(I18n.format("gui.createdby") + ": " + TextFormatting.AQUA + renderPart.getAuthor(partInfo.subid, partInfo.textureID), 0, 0, 0xFFFFFF);
             GL11.glColor4f(1F, 1F, 1F, 1F);
             GL11.glPopMatrix();
         }

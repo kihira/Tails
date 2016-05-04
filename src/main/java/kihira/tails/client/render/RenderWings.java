@@ -13,7 +13,7 @@ import kihira.tails.common.PartInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -26,7 +26,7 @@ public class RenderWings extends RenderPart {
     @Override
     protected void doRender(EntityLivingBase entity, PartInfo info, float partialTicks) {
         Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
-        WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
+        VertexBuffer renderer = Tessellator.getInstance().getBuffer();
         boolean isFlying = entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isFlying && entity.isAirBorne || entity.fallDistance > 0F;
         float timestep = ModelPartBase.getAnimationTime(isFlying ? 500 : 6500, entity);
         float angle = (float) Math.sin(timestep) * (isFlying ? 24F : 4F);

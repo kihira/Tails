@@ -15,8 +15,7 @@ import kihira.tails.common.Tails;
 import kihira.tails.common.network.PlayerDataMessage;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextFormatting;
 
 public class ControlsPanel extends Panel<GuiEditor> {
 
@@ -31,7 +30,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
     @SuppressWarnings("unchecked")
     public void initGui() {
         //Mode Switch
-        buttonList.add(new GuiButton(0, 38, height - 25, 45, 20, StatCollector.translateToLocal("gui.button.mode.library")));
+        buttonList.add(new GuiButton(0, 38, height - 25, 45, 20, net.minecraft.util.text.translation.I18n.translateToLocal("gui.button.mode.library")));
         //Reset/Save
         buttonList.add(new GuiButton(1, width - 83, height - 25, 40, 20, I18n.format("gui.button.reset")));
         buttonList.add(new GuiButton(2, width - 43, height - 25, 40, 20, I18n.format("gui.done")));
@@ -58,7 +57,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
         if (button.id == 0) {
             //>.> You see nothing!
             //TODO change parts data when switching? clear libraryinfo panel?
-            boolean libraryMode = button.displayString.equals(StatCollector.translateToLocal("gui.button.mode.library"));
+            boolean libraryMode = button.displayString.equals(net.minecraft.util.text.translation.I18n.translateToLocal("gui.button.mode.library"));
             parent.partsPanel.enabled = !libraryMode;
             parent.texturePanel.enabled = !libraryMode;
             parent.tintPanel.enabled = !libraryMode;
@@ -78,7 +77,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
             }
             parent.setPartsData(Tails.localPartsData);
 
-            button.displayString = (libraryMode ? StatCollector.translateToLocal("gui.button.mode.editor") : StatCollector.translateToLocal("gui.button.mode.library"));
+            button.displayString = (libraryMode ? net.minecraft.util.text.translation.I18n.translateToLocal("gui.button.mode.editor") : net.minecraft.util.text.translation.I18n.translateToLocal("gui.button.mode.library"));
 
         }
         //Reset All
@@ -97,7 +96,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
             Tails.setLocalPartsData(partsData);
             Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
             Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), partsData, false));
-            ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, EnumChatFormatting.GREEN + "Saved!");
+            ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, TextFormatting.GREEN + "Saved!");
             this.mc.displayGuiScreen(null);
         }
         //Export

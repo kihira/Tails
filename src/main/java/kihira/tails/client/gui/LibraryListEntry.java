@@ -12,7 +12,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -37,7 +37,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         }
 
         FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
-        fontRendererObj.drawString((data.partsData.equals(Tails.localPartsData) ? EnumChatFormatting.GREEN + "" + EnumChatFormatting.ITALIC : "") + data.entryName, 5, y + 3, 0xFFFFFF);
+        fontRendererObj.drawString((data.partsData.equals(Tails.localPartsData) ? TextFormatting.GREEN + "" + TextFormatting.ITALIC : "") + data.entryName, 5, y + 3, 0xFFFFFF);
 
         fontRendererObj.setUnicodeFlag(true);
         for (PartsData.PartType type : PartsData.PartType.values()) {

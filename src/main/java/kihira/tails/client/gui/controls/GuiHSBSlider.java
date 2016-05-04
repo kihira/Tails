@@ -1,6 +1,6 @@
 package kihira.tails.client.gui.controls;
 
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -150,7 +150,7 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
     void drawTexturedModalRectScaled (int x, int y, int u, int v, int srcWidth, int srcHeight, int tarWidth, int tarHeight) {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
-        WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
+        VertexBuffer renderer = Tessellator.getInstance().getBuffer();
         renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
         renderer.pos((double) (x + 0), (double) (y + tarHeight), (double) this.zLevel).tex((double) ((float) (u + 0) * f), (double) ((float) (v + srcHeight) * f1)).endVertex();
         renderer.pos((double) (x + tarWidth), (double) (y + tarHeight), (double) this.zLevel).tex((double) ((float) (u + srcWidth) * f), (double) ((float) (v + srcHeight) * f1)).endVertex();

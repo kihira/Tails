@@ -111,7 +111,7 @@ public class Tails {
 
     @SubscribeEvent
     public void onConfigChange(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.modID.equals(Tails.MOD_ID)) {
+        if (event.getModID().equals(Tails.MOD_ID)) {
             loadConfig();
         }
     }

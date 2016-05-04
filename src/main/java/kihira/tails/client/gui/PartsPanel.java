@@ -19,7 +19,7 @@ import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -166,7 +166,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
                         GL11.glScalef(0.6F, 0.6F, 1F);
                         fontRendererObj.drawString(I18n.format("gui.createdby") + ":", 0, 0, 0xFFFFFF);
                         GL11.glTranslatef(0, 10, 0);
-                        fontRendererObj.drawString(EnumChatFormatting.AQUA + renderPart.getModelAuthor(), 0, 0, 0xFFFFFF);
+                        fontRendererObj.drawString(TextFormatting.AQUA + renderPart.getModelAuthor(), 0, 0, 0xFFFFFF);
                         GL11.glColor4f(1F, 1F, 1F, 1F);
                         GL11.glPopMatrix();
                     }
