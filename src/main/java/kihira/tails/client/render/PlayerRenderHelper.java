@@ -14,6 +14,7 @@ import kihira.tails.client.model.tail.ModelDevilTail;
 import kihira.tails.client.model.tail.ModelDragonTail;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 
@@ -21,7 +22,10 @@ public class PlayerRenderHelper implements IRenderHelper {
 
     @Override
     public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z) {
-        if (info.partType == PartsData.PartType.EARS) return;
+        if (info.partType == PartsData.PartType.EARS) {
+
+            return;
+        }
         if (info.partType == PartsData.PartType.WINGS) return;
         if (tail.modelPart instanceof ModelDragonTail) {
             GL11.glTranslatef(0F, 0.68F, 0.1F);
@@ -32,7 +36,8 @@ public class PlayerRenderHelper implements IRenderHelper {
             GL11.glScalef(0.9F, 0.9F, 0.9F);
         }
         else {
-            GL11.glTranslatef(0F, 0.65F, 0.1F);
+            if (entity.isSneaking()) GL11.glTranslatef(0f, 0.82f, 0f);
+            else GL11.glTranslatef(0F, 0.65F, 0.1F);
             GL11.glScalef(0.8F, 0.8F, 0.8F);
         }
     }

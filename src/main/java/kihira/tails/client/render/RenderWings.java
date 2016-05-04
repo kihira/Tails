@@ -14,6 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -41,24 +43,23 @@ public class RenderWings extends RenderPart {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, 0F, 1F * ModelPartBase.SCALE);
         GlStateManager.rotate(30F - angle, 1F, 0F, 0F);
-        // TODO Port to 1.8.8
-/*        renderer.startDrawingQuads();
-        renderer.addVertexWithUV(0, 1, 0, 0, 0);
-        renderer.addVertexWithUV(1, 1, 0, 1, 0);
-        renderer.addVertexWithUV(1, 0, 0, 1, 1);
-        renderer.addVertexWithUV(0, 0, 0, 0, 1);
-        Tessellator.getInstance().draw();*/
+        renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        renderer.pos(0, 1, 0).tex(0, 0).endVertex();
+        renderer.pos(1, 1, 0).tex(1, 0).endVertex();
+        renderer.pos(1, 0, 0).tex(1, 1).endVertex();
+        renderer.pos(0, 0, 0).tex(0, 1).endVertex();
+        Tessellator.getInstance().draw();
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, 0.3F * ModelPartBase.SCALE, 0F);
         GlStateManager.rotate(-30F + angle, 1F, 0F, 0F);
-/*        renderer.startDrawingQuads();
-        renderer.addVertexWithUV(0, 1, 0, 0, 0);
-        renderer.addVertexWithUV(1, 1, 0, 1, 0);
-        renderer.addVertexWithUV(1, 0, 0, 1, 1);
-        renderer.addVertexWithUV(0, 0, 0, 0, 1);
-        Tessellator.getInstance().draw();*/
+        renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        renderer.pos(0, 1, 0).tex(0, 0).endVertex();
+        renderer.pos(1, 1, 0).tex(1, 0).endVertex();
+        renderer.pos(1, 0, 0).tex(1, 1).endVertex();
+        renderer.pos(0, 0, 0).tex(0, 1).endVertex();
+        Tessellator.getInstance().draw();
         GlStateManager.popMatrix();
     }
 }

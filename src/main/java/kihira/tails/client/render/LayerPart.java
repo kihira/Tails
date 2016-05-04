@@ -7,6 +7,8 @@ import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,14 +28,19 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
     }
 
     @Override
-    public void doRenderLayer(AbstractClientPlayer entity, float p_177141_2_, float p_177141_3_, float partialTicks, float p_177141_5_, float p_177141_6_, float p_177141_7_, float scale) {
+    public void doRenderLayer(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         UUID uuid = EntityPlayer.getUUID(entity.getGameProfile());
         if (Tails.proxy.hasPartsData(uuid)) {
             PartsData partsData = Tails.proxy.getPartsData(uuid);
             if (partsData.hasPartInfo(partType) && partsData.getPartInfo(partType).hasPart) {
-                modelRenderer.postRender(0.0625F);
                 PartInfo tailInfo = partsData.getPartInfo(partType);
+
+                GlStateManager.pushMatrix();
+                if (partType == PartsData.PartType.EARS && entity.isSneaking()) GlStateManager.translate(0f, 0.2F, 0f);
+                modelRenderer.postRender(0.0625F);
+
                 PartRegistry.getRenderPart(tailInfo.partType, tailInfo.typeid).render(entity, tailInfo, 0, 0, 0, partialTicks);
+                GlStateManager.popMatrix();
             }
         }
     }
