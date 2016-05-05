@@ -2,10 +2,14 @@ package kihira.tails.client.gui;
 
 import kihira.foxlib.client.gui.GuiIconButton;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -75,39 +79,32 @@ class PreviewPanel extends Panel<GuiEditor> {
         float prevHeadYaw = entity.rotationYawHead;
         float prevRotYaw = entity.rotationYaw;
         float prevRotPitch = entity.rotationPitch;
-        ItemStack prevItemStack = entity.getHeldItem(EnumHand.MAIN_HAND);
-        ItemStack prevItemStackOff = entity.getHeldItem(EnumHand.OFF_HAND);
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 100F);
-        GL11.glScalef(-scale, scale, scale);
-        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-        GL11.glRotatef(pitch, 1F, 0.0F, 0.0F);
-        GL11.glRotatef(yaw, 0F, 1F, 0.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, 100F);
+        GlStateManager.scale(-scale, scale, scale);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.translate(0.0F, (float) entity.getYOffset(), 0.0F);
+        GlStateManager.rotate(pitch, 1F, 0.0F, 0.0F);
+        GlStateManager.rotate(yaw, 0F, 1F, 0.0F);
 
         entity.rotationYawHead = 0F;
         entity.rotationYaw = 0F;
         entity.rotationPitch = 0F;
         entity.renderYawOffset = 0F;
         entity.setSneaking(false);
-        entity.setHeldItem(EnumHand.MAIN_HAND, null);
-        entity.setHeldItem(EnumHand.OFF_HAND, null);
 
         RenderHelper.enableStandardItemLighting();
         Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
         Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0D, 0D, 0D, 0F, 1F, false);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
         entity.rotationYawHead = prevHeadYaw;
         entity.rotationYaw = prevRotYaw;
         entity.rotationPitch = prevRotPitch;
-        entity.setHeldItem(EnumHand.MAIN_HAND, prevItemStack);
-        entity.setHeldItem(EnumHand.OFF_HAND, prevItemStackOff);
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 }

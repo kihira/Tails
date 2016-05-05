@@ -16,6 +16,7 @@ import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
@@ -48,9 +49,10 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
-        zLevel = -100;
+        //zLevel = -100;
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
-        GL11.glColor4f(1, 1, 1, 1);
+        zLevel = 0;
+        GlStateManager.color(1, 1, 1, 1);
         //Tails list
         partList.drawScreen(mouseX, mouseY, p_73863_3_);
 

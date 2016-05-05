@@ -10,7 +10,9 @@ package kihira.tails.proxy;
 
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.render.LayerPart;
+import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.LibraryManager;
+import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.*;
