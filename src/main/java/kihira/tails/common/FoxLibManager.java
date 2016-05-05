@@ -33,18 +33,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @IFMLLoadingPlugin.MCVersion(value = FoxLibManager.MC_VERSION)
-public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
+class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
-    public static final String foxlibVersion = "@FOXLIBVERSION@";
-    public static final String foxlibReqVersion = "[0.8.2,)";
-    public static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
-    public static final String foxlibDownloadLink = "http://addons-origin.cursecdn.com/files/2263/633/FoxLib-1.8.9-0.8.2.jar";
-    public static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-kihira.foxlib/files";
+    private static final String foxlibVersion = "@FOXLIBVERSION@";
+    private static final String foxlibReqVersion = "[0.9.0,)";
+    private static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
+    private static final String foxlibDownloadLink = "http://addons-origin.cursecdn.com/files/2263/633/FoxLib-"+foxlibVersion+".jar";
+    private static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-kihira.foxlib/files";
     public static final Logger logger = LogManager.getLogger("FoxLib Manager");
-    public static final String MC_VERSION = "1.8.9";
-    public static final Pattern pattern = Pattern.compile("(\\w+)[-][\\d\\.]+.*?([\\d\\.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
+    static final String MC_VERSION = "@MCVERSION@";
+    private static final Pattern pattern = Pattern.compile("(\\w+)[-][\\d\\.]+.*?([\\d\\.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
 
-    int totalSize;
+    private int totalSize;
 
     @Override
     public String[] getASMTransformerClass() {
@@ -231,7 +231,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
         private final ProgressMonitor update;
 
-        public DownloadCountingOutputStream(OutputStream out, ProgressMonitor update) {
+        DownloadCountingOutputStream(OutputStream out, ProgressMonitor update) {
             super(out);
             this.update = update;
         }
