@@ -22,7 +22,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.Display;
 
@@ -37,17 +37,17 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
-public class GuiExport extends GuiBaseScreen {
+class GuiExport extends GuiBaseScreen {
 
     private final GuiEditor parent;
     private final PartsData partsData;
 
     private ScaledResolution scaledRes;
     private String exportMessage = "";
-    private GuiButtonTooltip openFolderButton;
     private URI exportLoc;
+    private GuiButton openFolderButton;
 
-    public GuiExport(GuiEditor parent, PartsData partsData) {
+    GuiExport(GuiEditor parent, PartsData partsData) {
         this.parent = parent;
         this.partsData = partsData;
     }
@@ -55,7 +55,7 @@ public class GuiExport extends GuiBaseScreen {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        this.scaledRes = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+        this.scaledRes = new ScaledResolution(this.mc);
 
         //Left
         this.buttonList.add(new GuiButtonTooltip(0, 20, this.height - 90, 130, 20, I18n.format("gui.button.export.userdir"),
@@ -66,7 +66,7 @@ public class GuiExport extends GuiBaseScreen {
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.export.custom.tooltip")));
 
         //Right
-        this.buttonList.add(this.openFolderButton = new GuiButtonTooltip(3, this.width - 150, this.height - 65, 130, 20, I18n.format("gui.button.openfolder"),
+        this.buttonList.add(openFolderButton = new GuiButtonTooltip(3, this.width - 150, this.height - 65, 130, 20, I18n.format("gui.button.openfolder"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.openfolder.tooltip")));
         this.openFolderButton.visible = !Strings.isNullOrEmpty(this.exportMessage);
 
@@ -85,6 +85,7 @@ public class GuiExport extends GuiBaseScreen {
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     protected void actionPerformed(GuiButton button) {
         //Export to file
@@ -107,13 +108,13 @@ public class GuiExport extends GuiBaseScreen {
 
             if (file.exists() && file.canWrite()) {
                 this.exportLoc = file.toURI();
-                file = new File(file, File.separatorChar + player.getCommandSenderName() + ".png");
+                file = new File(file, File.separatorChar + player.getDisplayNameString() + ".png");
 
                 if (!file.exists()) {
                     try {
                         file.createNewFile();
                     } catch (IOException e) {
-                        setExportMessage(EnumChatFormatting.DARK_RED + String.format("Failed to create skin file! %s", e));
+                        setExportMessage(TextFormatting.DARK_RED + String.format("Failed to create skin file! %s", e));
                         e.printStackTrace();
                     }
                 }
@@ -123,12 +124,12 @@ public class GuiExport extends GuiBaseScreen {
                     try {
                         ImageIO.write(image, "png", file);
                     } catch (IOException e) {
-                        setExportMessage(EnumChatFormatting.DARK_RED + String.format("Failed to save skin file! %s", e));
+                        setExportMessage(TextFormatting.DARK_RED + String.format("Failed to save skin file! %s", e));
                         e.printStackTrace();
                     }
                 }
                 else {
-                    setExportMessage(EnumChatFormatting.DARK_RED + String.format("Failed to export skin, image was null!"));
+                    setExportMessage(TextFormatting.DARK_RED + "Failed to export skin, image was null!");
                     file.delete();
                 }
             }
@@ -136,14 +137,14 @@ public class GuiExport extends GuiBaseScreen {
             if (Strings.isNullOrEmpty(this.exportMessage)) {
                 savePartsData();
                 this.openFolderButton.visible = true;
-                setExportMessage(EnumChatFormatting.GREEN + I18n.format("tails.export.success", file));
+                setExportMessage(TextFormatting.GREEN + I18n.format("tails.export.success", file));
             }
         }
         if (button.id == 3 && this.exportLoc != null) {
             try {
                 Desktop.getDesktop().browse(this.exportLoc);
             } catch (IOException e) {
-                setExportMessage(EnumChatFormatting.DARK_RED + String.format("Failed to open export location: %s", e));
+                setExportMessage(TextFormatting.DARK_RED + String.format("Failed to open export location: %s", e));
                 e.printStackTrace();
             }
         }
@@ -163,7 +164,7 @@ public class GuiExport extends GuiBaseScreen {
     }
 
     @Override
-    protected void keyTyped(char key, int keyCode) {
+    protected void keyTyped(char key, int keyCode) throws IOException {
         if (keyCode == 1) {
             this.mc.displayGuiScreen(parent);
         }
@@ -174,19 +175,19 @@ public class GuiExport extends GuiBaseScreen {
 
     private void setExportMessage(String message) {
         exportMessage = message;
-        ToastManager.INSTANCE.createCenteredToast(width / 2, height - 45, new ScaledResolution(mc, mc.displayWidth, mc.displayHeight).getScaledWidth() / 3, exportMessage);
+        ToastManager.INSTANCE.createCenteredToast(width / 2, height - 45, new ScaledResolution(mc).getScaledWidth() / 3, exportMessage);
     }
 
     private void savePartsData() {
         Tails.setLocalPartsData(partsData);
         Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
-        Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().func_148256_e().getId(), partsData, false));
+        Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), partsData, false));
     }
 
-    public class ImgurUpload {
-        public static final String CLIENT_ID = "ceb9fca19ef9a31";
+    private class ImgurUpload {
+        static final String CLIENT_ID = "ceb9fca19ef9a31";
 
-        public void uploadImage(BufferedImage image) {
+        void uploadImage(BufferedImage image) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             BufferedReader in = null;
 
@@ -215,12 +216,11 @@ public class GuiExport extends GuiBaseScreen {
                     if (jsonElement.get("status").getAsInt() == 200) {
                         JsonObject dataJson = jsonElement.get("data").getAsJsonObject();
                         String id = dataJson.get("id").getAsString();
-                        String deleteHash = dataJson.get("deletehash").getAsString();
 
                         String imgurURL = "http://imgur.com/" + id + ".png";
                         String skinURL = "https://minecraft.net/profile/skin/remote?url=";
 
-                        setExportMessage(EnumChatFormatting.GREEN + I18n.format("tails.upload.success"));
+                        setExportMessage(TextFormatting.GREEN + I18n.format("tails.upload.success"));
                         exportLoc = URI.create(skinURL + imgurURL);
                         openFolderButton.visible = true;
                         savePartsData();
@@ -237,7 +237,7 @@ public class GuiExport extends GuiBaseScreen {
                         JsonObject jsonElement = new JsonParser().parse(in).getAsJsonObject();
                         handleError(jsonElement);
                     }
-                    else setExportMessage(EnumChatFormatting.DARK_RED + I18n.format("tails.upload.failed"));
+                    else setExportMessage(TextFormatting.DARK_RED + I18n.format("tails.upload.failed"));
                 }
 
             } catch (IOException e) {
@@ -255,9 +255,9 @@ public class GuiExport extends GuiBaseScreen {
 
             //Rate limiting
             if (status == 429 || status == 403) {
-                setExportMessage(EnumChatFormatting.DARK_RED + I18n.format("tails.upload.ratelimit"));
+                setExportMessage(TextFormatting.DARK_RED + I18n.format("tails.upload.ratelimit"));
             }
-            else setExportMessage(EnumChatFormatting.DARK_RED + I18n.format("tails.upload.failed"));
+            else setExportMessage(TextFormatting.DARK_RED + I18n.format("tails.upload.failed"));
         }
     }
 

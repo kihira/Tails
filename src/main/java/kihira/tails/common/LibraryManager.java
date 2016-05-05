@@ -114,7 +114,7 @@ public class LibraryManager {
         return libraryFile;
     }
 
-    public static class ClientLibraryManager extends LibraryManager{
+    public static class ClientLibraryManager extends LibraryManager {
 
         @Override
         public void addEntries(List<? extends LibraryEntryData> entries) {
@@ -122,6 +122,8 @@ public class LibraryManager {
             GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
 
             if (guiScreen instanceof GuiEditor) {
+                GuiEditor editor = (GuiEditor) guiScreen;
+                if (editor.libraryPanel != null && editor.libraryInfoPanel != null)
                 ((GuiEditor) guiScreen).libraryPanel.initList();
                 ((GuiEditor) guiScreen).libraryInfoPanel.setEntry(null);
             }

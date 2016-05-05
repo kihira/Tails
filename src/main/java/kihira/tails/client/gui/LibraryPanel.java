@@ -1,6 +1,7 @@
 package kihira.tails.client.gui;
 
-import cpw.mods.fml.client.config.GuiButtonExt;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.foxlib.client.gui.GuiList;
 import kihira.foxlib.client.gui.IListCallback;
@@ -9,9 +10,10 @@ import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,8 +34,8 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public void initGui() {
         initList();
 
-        searchField = new GuiTextField(fontRendererObj, 5, height - 31, width - 10, 10);
-        buttonList.add(new GuiButtonExt(0, 3, height - 18, width - 6, 15, StatCollector.translateToLocal("gui.button.all")));
+        buttonList.add(new GuiButtonExt(0, 3, height - 18, width - 6, 15, I18n.translateToLocal("gui.button.all")));
+        searchField = new GuiTextField(1, fontRendererObj, 5, height - 31, width - 10, 10);
         super.initGui();
     }
 
@@ -41,18 +43,18 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
         zLevel = -100;
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
-        GL11.glColor4f(1, 1, 1, 1);
 
         searchField.drawTextBox();
         list.drawScreen(mouseX, mouseY, p_73863_3_);
 
         zLevel = 0;
         Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.iconsTextures);
-        GL11.glPushMatrix();
-        GL11.glTranslatef(width - 16, height - 32, 0);
-        GL11.glScalef(0.75F, 0.75F, 0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.translate(width - 16, height - 32, 0);
+        GlStateManager.scale(0.75F, 0.75F, 0F);
         drawTexturedModalRect(0, 0, 160, 0, 16, 16);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
@@ -65,12 +67,22 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        list.func_148179_a(mouseX, mouseY, mouseButton);
-        searchField.mouseClicked(mouseX, mouseY, mouseButton);
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
+        list.mouseClicked(mouseX, mouseY, mouseButton);
+        searchField.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
+        super.mouseReleased(mouseX, mouseY, mouseButton);
+        list.mouseReleased(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        list.handleMouseInput();
+    }
 
     @Override
     public void keyTyped(char key, int keycode) {

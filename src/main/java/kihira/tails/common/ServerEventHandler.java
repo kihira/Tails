@@ -8,11 +8,12 @@
 
 package kihira.tails.common;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import kihira.tails.common.network.PlayerDataMapMessage;
 import kihira.tails.common.network.ServerCapabilitiesMessage;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 public class ServerEventHandler {
 
@@ -21,11 +22,12 @@ public class ServerEventHandler {
         //Send current known tails to client
         Tails.networkWrapper.sendTo(new PlayerDataMapMessage(Tails.proxy.getPartsData()), (EntityPlayerMP) event.player);
         Tails.networkWrapper.sendTo(new ServerCapabilitiesMessage(Tails.libraryEnabled), (EntityPlayerMP) event.player);
+        Tails.logger.debug(String.format("Sent tail data of size %d to %s ", Tails.proxy.getPartsData().size(), event.player.getName()));
     }
 
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         //Server doesn't save tails so we discard
-        Tails.proxy.removePartsData(event.player.getGameProfile().getId());
+        Tails.proxy.removePartsData(EntityPlayer.getUUID(event.player.getGameProfile()));
     }
 }

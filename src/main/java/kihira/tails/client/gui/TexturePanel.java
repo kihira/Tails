@@ -1,12 +1,12 @@
 package kihira.tails.client.gui;
 
-import cpw.mods.fml.client.config.GuiButtonExt;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.client.render.RenderPart;
 import kihira.tails.common.PartInfo;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -49,7 +49,7 @@ public class TexturePanel extends Panel<GuiEditor> {
             GL11.glPushMatrix();
             GL11.glTranslatef(7, this.height - 10, 0);
             GL11.glScalef(0.6F, 0.6F, 1F);
-            fontRendererObj.drawString(I18n.format("gui.createdby") + ": " + EnumChatFormatting.AQUA + renderPart.getAuthor(partInfo.subid, partInfo.textureID), 0, 0, 0xFFFFFF);
+            fontRendererObj.drawString(I18n.format("gui.createdby") + ": " + TextFormatting.AQUA + renderPart.getAuthor(partInfo.subid, partInfo.textureID), 0, 0, 0xFFFFFF);
             GL11.glColor4f(1F, 1F, 1F, 1F);
             GL11.glPopMatrix();
         }
@@ -57,8 +57,8 @@ public class TexturePanel extends Panel<GuiEditor> {
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        PartInfo partInfo = parent.getEditingPartInfo();
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+/*        PartInfo partInfo = parent.getEditingPartInfo();
         RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
         if (renderPart.hasAuthor(partInfo.subid, parent.textureID)) {
             String author = renderPart.getAuthor(partInfo.subid, parent.textureID);
@@ -74,7 +74,7 @@ public class TexturePanel extends Panel<GuiEditor> {
                     return;
                 }
             }
-        }
+        }*/
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 

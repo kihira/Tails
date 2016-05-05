@@ -13,23 +13,27 @@ import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+
+import java.util.UUID;
 
 public class GuiEditor extends GuiBase {
 
-    public int textureID;
+    int textureID;
     private PartsData.PartType partType;
     private PartsData partsData;
     private PartInfo editingPartInfo;
-    public PartInfo originalPartInfo;
+    PartInfo originalPartInfo;
+    private UUID playerUUID;
 
-    public TintPanel tintPanel;
-    public PartsPanel partsPanel;
+    TintPanel tintPanel;
+    PartsPanel partsPanel;
     private PreviewPanel previewPanel;
-    public TexturePanel texturePanel;
-    public ControlsPanel controlsPanel;
+    TexturePanel texturePanel;
+    private ControlsPanel controlsPanel;
     public LibraryPanel libraryPanel;
     public LibraryInfoPanel libraryInfoPanel;
-    public LibraryImportPanel libraryImportPanel;
+    LibraryImportPanel libraryImportPanel;
 
     public GuiEditor() {
         super(4);
@@ -47,6 +51,7 @@ public class GuiEditor extends GuiBase {
             }
         }
         partInfo = Tails.localPartsData.getPartInfo(partType);
+        playerUUID = EntityPlayer.getUUID(Minecraft.getMinecraft().getSession().getProfile());
 
         originalPartInfo = partInfo.deepCopy();
         setPartsData(Tails.localPartsData.deepCopy());
@@ -90,30 +95,30 @@ public class GuiEditor extends GuiBase {
 
     @Override
     public void onGuiClosed() {
-        Tails.proxy.addPartsData(mc.getSession().func_148256_e().getId(), Tails.localPartsData);
+        Tails.proxy.addPartsData(playerUUID, Tails.localPartsData);
         super.onGuiClosed();
     }
 
-    public void refreshTintPane() {
+    void refreshTintPane() {
         tintPanel.refreshTintPane();
     }
 
-    public void setPartsInfo(PartInfo newPartInfo) {
+    void setPartsInfo(PartInfo newPartInfo) {
         //editingPartInfo.setTexture(null); //Clear texture data as we will no longer need it
         editingPartInfo = newPartInfo;
-        if (editingPartInfo.hasPart) editingPartInfo.setTexture(TextureHelper.generateTexture(editingPartInfo));
+        if (editingPartInfo.hasPart) editingPartInfo.setTexture(TextureHelper.generateTexture(playerUUID, editingPartInfo));
 
         partsData.setPartInfo(partType, editingPartInfo);
         setPartsData(partsData);
     }
 
-    public PartInfo getEditingPartInfo() {
+    PartInfo getEditingPartInfo() {
         return editingPartInfo;
     }
 
     public void setPartsData(PartsData newPartsData) {
         partsData = newPartsData;
-        Tails.proxy.addPartsData(Minecraft.getMinecraft().thePlayer.getGameProfile().getId(), partsData);
+        Tails.proxy.addPartsData(playerUUID, partsData);
     }
 
     public PartsData getPartsData() {
@@ -141,7 +146,7 @@ public class GuiEditor extends GuiBase {
         return partType;
     }
 
-    public void clearCurrTintEdit() {
+    void clearCurrTintEdit() {
         tintPanel.currTintEdit = 0;
     }
 }

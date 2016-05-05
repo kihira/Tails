@@ -8,8 +8,8 @@
 
 package kihira.tails.client.render;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import kihira.tails.api.IRenderHelper;
 import kihira.tails.client.model.ModelPartBase;
 import kihira.tails.client.texture.TextureHelper;
@@ -44,7 +44,7 @@ public class RenderPart {
 
     public void render(EntityLivingBase entity, PartInfo info, double x, double y, double z, float partialTicks) {
         if (info.needsTextureCompile || info.getTexture() == null) {
-            info.setTexture(TextureHelper.generateTexture(info));
+            info.setTexture(TextureHelper.generateTexture(entity.getUniqueID(), info));
             info.needsTextureCompile = false;
         }
 

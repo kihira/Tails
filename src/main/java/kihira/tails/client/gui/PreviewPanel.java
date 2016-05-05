@@ -1,31 +1,36 @@
 package kihira.tails.client.gui;
 
 import kihira.foxlib.client.gui.GuiIconButton;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import org.lwjgl.opengl.GL11;
 
-public class PreviewPanel extends Panel<GuiEditor> {
+class PreviewPanel extends Panel<GuiEditor> {
 
     private float yaw = 0F;
     private float pitch = 10F;
     private int prevMouseX = -1;
     private ScaledResolution scaledRes;
 
-    public PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom) {
+    PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        scaledRes = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+        scaledRes = new ScaledResolution(this.mc);
         //Reset Camera
         buttonList.add(new GuiIconButton(0, width - 18, 22, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset.camera")));
         //Help
@@ -65,45 +70,41 @@ public class PreviewPanel extends Panel<GuiEditor> {
     }
 
     @Override
-    public void mouseMovedOrUp(int mouseX, int mouseY, int mouseEvent) {
+    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
         prevMouseX = -1;
-        super.mouseMovedOrUp(mouseX, mouseY, mouseEvent);
+        super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     private void drawEntity(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
         float prevHeadYaw = entity.rotationYawHead;
         float prevRotYaw = entity.rotationYaw;
         float prevRotPitch = entity.rotationPitch;
-        ItemStack prevItemStack = entity.getHeldItem();
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 100F);
-        GL11.glScalef(-scale, scale, scale);
-        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-        GL11.glTranslatef(0.0F, entity.yOffset, 0.0F);
-        GL11.glRotatef(pitch, 1F, 0.0F, 0.0F);
-        GL11.glRotatef(yaw, 0F, 1F, 0.0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, 100F);
+        GlStateManager.scale(-scale, scale, scale);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.translate(0.0F, (float) entity.getYOffset(), 0.0F);
+        GlStateManager.rotate(pitch, 1F, 0.0F, 0.0F);
+        GlStateManager.rotate(yaw, 0F, 1F, 0.0F);
 
         entity.rotationYawHead = 0F;
         entity.rotationYaw = 0F;
         entity.rotationPitch = 0F;
         entity.renderYawOffset = 0F;
         entity.setSneaking(false);
-        entity.setCurrentItemOrArmor(0, null);
 
         RenderHelper.enableStandardItemLighting();
-        RenderManager.instance.playerViewY = 180.0F;
-        RenderManager.instance.renderEntityWithPosYaw(entity, 0D, 0D, 0D, 0F, 1F);
+        Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
+        Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0D, 0D, 0D, 0F, 1F, false);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
         entity.rotationYawHead = prevHeadYaw;
         entity.rotationYaw = prevRotYaw;
         entity.rotationPitch = prevRotPitch;
-        entity.setCurrentItemOrArmor(0, prevItemStack);
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 }

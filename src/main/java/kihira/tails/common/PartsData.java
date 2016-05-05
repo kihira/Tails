@@ -60,7 +60,14 @@ public class PartsData {
 
     @Override
     public int hashCode() {
-        return partInfos != null ? Arrays.hashCode(partInfos) : 0;
+        return Arrays.hashCode(partInfos);
+    }
+
+    @Override
+    public String toString() {
+        return "PartsData{" +
+                "partInfos=" + Arrays.toString(partInfos) +
+                '}';
     }
 
     //NOTE: We rely on the order of this, don't re-arrange, only append!

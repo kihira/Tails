@@ -11,38 +11,35 @@ package kihira.tails.common;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.NetworkCheckHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.common.versioning.DefaultArtifactVersion;
-import cpw.mods.fml.common.versioning.VersionParser;
-import cpw.mods.fml.relauncher.Side;
 import kihira.tails.api.IRenderHelper;
 import kihira.tails.client.FakeEntity;
-import kihira.tails.client.render.FakeEntityRenderHelper;
-import kihira.tails.client.render.FoxtatoRender;
-import kihira.tails.client.render.PlayerRenderHelper;
-import kihira.tails.client.render.RenderPart;
+import kihira.tails.client.render.*;
 import kihira.tails.proxy.CommonProxy;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkCheckHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
+import net.minecraftforge.fml.common.versioning.VersionParser;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:foxlib")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:kihira.foxlib")
 public class Tails {
 
     public static final String MOD_ID = "Tails";
@@ -105,11 +102,13 @@ public class Tails {
         else {
             logger.debug("Valid Botania not found, skipping Foxtato renderer");
         }
+
+        proxy.registerRenderers();
     }
 
     @SubscribeEvent
     public void onConfigChange(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.modID.equals(Tails.MOD_ID)) {
+        if (event.getModID().equals(Tails.MOD_ID)) {
             loadConfig();
         }
     }
@@ -152,6 +151,15 @@ public class Tails {
                 prop.set("");
 
                 //Force save
+                setLocalPartsData(localPartsData);
+            }
+
+            //Load default if none exists
+            if (localPartsData == null) {
+                localPartsData = new PartsData();
+                for (PartsData.PartType partType : PartsData.PartType.values()) {
+                    localPartsData.setPartInfo(partType, new PartInfo(false, 0, 0, 0, 0, 0, 0, null, partType));
+                }
                 setLocalPartsData(localPartsData);
             }
         } catch (JsonSyntaxException e) {

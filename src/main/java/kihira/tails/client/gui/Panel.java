@@ -3,6 +3,8 @@ package kihira.tails.client.gui;
 import kihira.foxlib.client.gui.GuiBaseScreen;
 import org.apache.commons.lang3.Validate;
 
+import java.io.IOException;
+
 public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
 
     protected final T parent;
@@ -43,15 +45,24 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
     //All this stuff is to make them public
     public void keyTyped(char key, int keycode) {}
 
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-    public void mouseMovedOrUp(int mouseX, int mouseY, int mouseButton) {
-        super.mouseMovedOrUp(mouseX, mouseY, mouseButton);
+    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
+        super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     public void mouseClickMove(int mouseX, int mouseY, int mouseButton, long pressTime) {
         super.mouseClickMove(mouseX, mouseY, mouseButton, pressTime);
     }
+
+    /**
+     * Handles mouse input if required
+     * This is ALWAYS called regardless of if the mouse is in the bounds or not
+     * It is also generally the first method to be called
+     * Does not call super as we never want to call super from a panel for this method
+     * @throws IOException
+     */
+    public void handleMouseInput() throws IOException {}
 }

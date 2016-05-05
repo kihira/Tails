@@ -9,4 +9,4 @@
 @API(owner = "Tails", provides = "TailsAPI", apiVersion = "1.1.1")
 package kihira.tails.api;
 
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;

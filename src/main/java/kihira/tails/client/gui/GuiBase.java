@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public abstract class GuiBase extends GuiBaseScreen {
@@ -27,8 +28,15 @@ public abstract class GuiBase extends GuiBaseScreen {
         super.setWorldAndResolution(mc, width, height);
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
-                ScaledResolution scaledRes = new ScaledResolution(mc, panel.right - panel.left, panel.bottom - panel.top);
+                // Gotta cache displayWidth/Height as it can't be passed in as params anymore
+                int displayWidth = mc.displayWidth;
+                int displayHeight = mc.displayHeight;
+                mc.displayWidth = panel.right - panel.left;
+                mc.displayHeight = panel.bottom - panel.top;
+                ScaledResolution scaledRes = new ScaledResolution(mc);
                 panel.setWorldAndResolution(mc, scaledRes.getScaledWidth(), scaledRes.getScaledHeight());
+                mc.displayWidth = displayWidth;
+                mc.displayHeight = displayHeight;
             }
         }
     }
@@ -52,7 +60,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     }
 
     @Override
-    protected void keyTyped(char key, int keycode) {
+    protected void keyTyped(char key, int keycode) throws IOException {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
                 if (panel.enabled) panel.keyTyped(key, keycode);
@@ -62,7 +70,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
                 if (panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
@@ -74,15 +82,15 @@ public abstract class GuiBase extends GuiBaseScreen {
     }
 
     @Override
-    protected void mouseMovedOrUp(int mouseX, int mouseY, int mouseButton) {
+    protected void mouseReleased(int mouseX, int mouseY, int mouseButton) {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
                 if (panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
-                    panel.mouseMovedOrUp(mouseX - panel.left, mouseY - panel.top, mouseButton);
+                    panel.mouseReleased(mouseX - panel.left, mouseY - panel.top, mouseButton);
                 }
             }
         }
-        super.mouseMovedOrUp(mouseX, mouseY, mouseButton);
+        super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -95,6 +103,18 @@ public abstract class GuiBase extends GuiBaseScreen {
             }
         }
         super.mouseClickMove(mouseX, mouseY, mouseButton, pressTime);
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        for (ArrayList<Panel> layer : layers) {
+            for (Panel panel : layer) {
+                if (panel.enabled) {
+                    panel.handleMouseInput();
+                }
+            }
+        }
+        super.handleMouseInput();
     }
 
     @Override

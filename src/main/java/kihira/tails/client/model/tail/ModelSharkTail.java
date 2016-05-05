@@ -4,7 +4,7 @@ import kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class ModelSharkTail extends ModelPartBase {
 
@@ -112,7 +112,6 @@ public class ModelSharkTail extends ModelPartBase {
             yAngleMultiplier = 0.25F;
         }
 
-        //TODO if we want to speed up the swing, we can't do so via this method
         float timestep = getAnimationTime(3000D, entity);
         setRotationRadians(tailBase, -0.6522295414702809F + xAngleOffset * 4F, ((float) Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
         setRotationRadians(tail1, 0.0013962634015954637F + xAngleOffset * 1F, ((float) Math.cos(timestep - 2) / 5F) * yAngleMultiplier, 0F);

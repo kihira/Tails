@@ -5,7 +5,8 @@ import kihira.tails.client.gui.GuiBase;
 import kihira.tails.client.gui.Panel;
 import net.minecraft.client.gui.GuiButton;
 import org.apache.commons.lang3.Validate;
-import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T> {
 
@@ -15,12 +16,12 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T> {
 
     protected String title;
 
-    public Dialog(@NotNull T parent, String title, int left, int top, int width, int height) {
+    public Dialog(T parent, String title, int left, int top, int width, int height) {
         this(parent, left, top, width, height);
         this.title = title;
     }
 
-    public Dialog(@NotNull T parent, int left, int top, int width, int height) {
+    public Dialog(T parent, int left, int top, int width, int height) {
         super(parent, left, top, width, height);
         Validate.isInstanceOf(IDialogCallback.class, parent);
     }
@@ -43,7 +44,7 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T> {
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         //Only if they grab the top
         if (mouseButton == 0 && mouseY < 12) {
             dragging = true;
@@ -55,15 +56,15 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T> {
         }
     }
 
-    @Override
-    public void mouseMovedOrUp(int mouseX, int mouseY, int mouseButton) {
+/*    @Override
+    TODO public void mouseMovedOrUp(int mouseX, int mouseY, int mouseButton) {
         if (dragging && mouseButton == 0) {
             dragging = false;
         }
         else {
             super.mouseMovedOrUp(mouseX, mouseY, mouseButton);
         }
-    }
+    }*/
 
     @Override
     public void mouseClickMove(int mouseX, int mouseY, int mouseButton, long pressTime) {

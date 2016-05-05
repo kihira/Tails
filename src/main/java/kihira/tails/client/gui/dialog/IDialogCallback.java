@@ -4,5 +4,5 @@ import net.minecraft.client.gui.GuiButton;
 
 public interface IDialogCallback {
 
-    public void buttonPressed(Dialog dialog, GuiButton button);
+    void buttonPressed(Dialog dialog, GuiButton button);
 }

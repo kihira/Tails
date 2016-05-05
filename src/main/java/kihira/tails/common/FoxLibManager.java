@@ -10,12 +10,12 @@
 
 package kihira.tails.common;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.versioning.ComparableVersion;
-import cpw.mods.fml.common.versioning.DefaultArtifactVersion;
-import cpw.mods.fml.common.versioning.VersionParser;
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.versioning.ComparableVersion;
+import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
+import net.minecraftforge.fml.common.versioning.VersionParser;
+import net.minecraftforge.fml.relauncher.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.logging.log4j.LogManager;
@@ -33,18 +33,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @IFMLLoadingPlugin.MCVersion(value = FoxLibManager.MC_VERSION)
-public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
+class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
-    public static final String foxlibVersion = "@FOXLIBVERSION@";
-    public static final String foxlibReqVersion = "[1.7.10-0.7.0,)";
-    public static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
-    public static final String foxlibDownloadLink = "http://addons-origin.cursecdn.com/files/2227/736/FoxLib-1.7.10-0.7.0.jar";
-    public static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-foxlib/files";
+    private static final String foxlibVersion = "@FOXLIBVERSION@";
+    private static final String foxlibReqVersion = "[0.9.0,)";
+    private static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
+    private static final String foxlibDownloadLink = "http://addons-origin.cursecdn.com/files/2263/633/FoxLib-"+foxlibVersion+".jar";
+    private static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-kihira.foxlib/files";
     public static final Logger logger = LogManager.getLogger("FoxLib Manager");
-    public static final String MC_VERSION = "1.7.10";
-    public static final Pattern pattern = Pattern.compile("(\\w+)[-][\\d\\.]+.*?([\\d\\.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
+    static final String MC_VERSION = "@MCVERSION@";
+    private static final Pattern pattern = Pattern.compile("(\\w+)[-][\\d\\.]+.*?([\\d\\.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
 
-    int totalSize;
+    private int totalSize;
 
     @Override
     public String[] getASMTransformerClass() {
@@ -231,7 +231,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
         private final ProgressMonitor update;
 
-        public DownloadCountingOutputStream(OutputStream out, ProgressMonitor update) {
+        DownloadCountingOutputStream(OutputStream out, ProgressMonitor update) {
             super(out);
             this.update = update;
         }

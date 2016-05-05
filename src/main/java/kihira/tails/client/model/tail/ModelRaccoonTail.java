@@ -13,14 +13,13 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class ModelRaccoonTail extends ModelPartBase {
 
     private final ModelRenderer tailBase;
     private final ModelRenderer tail1;
     private final ModelRenderer tail2;
-    private final ModelRenderer tailTip;
 
     public ModelRaccoonTail() {
         this.tailBase = new ModelRenderer(this, 12, 16);
@@ -37,11 +36,11 @@ public class ModelRaccoonTail extends ModelPartBase {
         this.tail2.setRotationPoint(0F, 0F, 2F);
         this.setRotationDegrees(this.tail2, -30F, 0F, 0F);
 
-        this.tailTip = new ModelRenderer(this, 0, 22);
-        this.tailTip.addBox(-1.5F, -1.5F, 0F, 3, 3, 1);
-        this.tailTip.setRotationPoint(0F, 0F, 12F);
+        ModelRenderer tailTip = new ModelRenderer(this, 0, 22);
+        tailTip.addBox(-1.5F, -1.5F, 0F, 3, 3, 1);
+        tailTip.setRotationPoint(0F, 0F, 12F);
 
-        this.tail2.addChild(this.tailTip);
+        this.tail2.addChild(tailTip);
         this.tail1.addChild(this.tail2);
         this.tailBase.addChild(this.tail1);
     }

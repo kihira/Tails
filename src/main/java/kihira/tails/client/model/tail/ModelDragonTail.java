@@ -13,7 +13,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class ModelDragonTail extends ModelPartBase {
 
@@ -93,7 +93,6 @@ public class ModelDragonTail extends ModelPartBase {
             yAngleMultiplier = 0.25F;
         }
 
-        //TODO if we want to speed up the swing, we can't do so via this method
         float timestep = getAnimationTime(4000D, entity);
         setRotationRadians(tailBase, Math.toRadians(-40F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
         setRotationRadians(tail1, Math.toRadians(-8F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 2) / 5F) * yAngleMultiplier, 0F);

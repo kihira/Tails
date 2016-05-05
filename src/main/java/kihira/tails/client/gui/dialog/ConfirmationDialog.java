@@ -1,10 +1,9 @@
 package kihira.tails.client.gui.dialog;
 
-import cpw.mods.fml.client.config.GuiButtonExt;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 import kihira.tails.client.gui.GuiBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -13,9 +12,9 @@ public class ConfirmationDialog<T extends GuiBase & IDialogCallback> extends Dia
     private final List<String> messageList;
 
     @SuppressWarnings("unchecked")
-    public ConfirmationDialog(@NotNull T parent, String title, final String messageList) {
+    public ConfirmationDialog(T parent, String title, final String messageList) {
         super(parent, title, parent.width / 4, parent.height / 4, parent.width / 2, 100);
-        this.messageList = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageList, (parent.width / 2) - 10);
+        this.messageList = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageList, (parent.width / 2) - 10);
     }
 
     @Override

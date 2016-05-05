@@ -1,71 +1,58 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
+apply plugin: 'net.minecraftforge.gradle.forge'
 
-repositories {
-    mavenCentral()
-    maven {
-        name = 'Kihira Repo'
-        url = 'http://maven.kihirakreations.co.uk'
-    }
-}
-
-apply plugin: 'forge'
-
-project.ext {
+ext {
     massive = "1"
-    major = "4"
-    minor = "1a"
-    mcVersion = "1.7.10"
-    forgeVersion = "10.13.3.1401-1710ls"
-    foxlibDevVersion = "1.7.10-0.6.0.develop.22"
-    foxlibVersion = "1.7.10-0.7.0"
-    buildVersion = System.getenv("BUILD_NUMBER")
+    major = "6"
+    minor = "1"
+    mcVersion = "1.9"
+    forgeVersion = "12.16.1.1888"
+    foxlibVersion = "1.9-0.9"
 }
 
+group= "kihira"
+archivesBaseName = "Tails"
+version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
+
+minecraft {
+    version = "${project.mcVersion}-${project.forgeVersion}"
+    runDir = "run"
+    mappings = "snapshot_20160312"
+
+    replace '@VERSION@', project.version
+    replace '@MCVERSION@', project.mcVersion
+    replace '@FOXLIBVERSION@', project.foxlibVersion
+}
+
+//noinspection GroovyAssignabilityCheck
 configurations {
     deployerJars
+    //noinspection GroovyAssignabilityCheck
     all {
         resolutionStrategy.cacheChangingModulesFor 1, 'seconds'
     }
 }
 
-dependencies {
-    deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
-    compile "kihira:FoxLib:"+project.foxlibDevVersion+":dev"
-    compile 'com.intellij:annotations:+@jar'
-}
-
-project.version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}"
-if (project.hasProperty("teamcity") && project.ext.buildVersion != null && teamcity["maven_release"] == null) {
-    version = version + ".${System.getenv("BUILD_NUMBER")}"
-}
-
-group= "kihira"
-archivesBaseName = "Tails"
-
-minecraft {
-    version = "${project.ext.mcVersion}-${project.ext.forgeVersion}"
-    replace '@VERSION@', project.version
-    replace '@FOXLIBVERSION@', project.foxlibVersion
-}
+//noinspection GroovyAssignabilityCheck
 processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
-        include '**/*.info'
+        include 'mcmod.info'
 
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
@@ -73,81 +60,14 @@ processResources {
 
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
-        exclude '**/*.info'
+        exclude 'mcmod.info'
     }
 }
 
+//noinspection GroovyAssignabilityCheck
 jar {
     manifest {
         attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
                 'FMLCorePluginContainsFMLMod': 'true'
-    }
-}
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    from sourceSets.api.allSource
-    classifier = 'src'
-}
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    from sourceSets.api.output
-    classifier = 'dev'
-}
-
-artifacts {
-    archives sourceJar
-    archives deobfJar
-}
-
-uploadArchives {
-    dependsOn 'reobf'
-
-    if (project.hasProperty("teamcity")) {
-        repositories.mavenDeployer {
-            configuration = configurations.deployerJars
-            repository(url: teamcity["maven_url"]) {
-                authentication(userName: teamcity["maven_username"], password: teamcity["maven_password"])
-            }
-            pom {
-                groupId = project.group
-                version = project.version
-                artifactId = project.archivesBaseName
-                project {
-                    name project.archivesBaseName
-                    packaging 'jar'
-                    description 'Tails'
-                    url 'http://kihirakreations.co.uk'
-
-                    scm {
-                        url 'https://github.com/kihira/Tails'
-                        connection 'scm:git:git://github.com/kihira/Tails.git'
-                        developerConnection 'scm:git:git@github.com:kihira/Tails.git'
-                    }
-
-                    issueManagement {
-                        system 'github'
-                        url 'https://github.com/kihira/Tails/issues'
-                    }
-
-                    licenses {
-                        license {
-                            name 'MIT'
-                            url 'https://github.com/kihira/Tails/blob/master/LICENSE'
-                            distribution 'repo'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id 'Kihira'
-                            name 'Kihira'
-                            roles { role 'developer' }
-                        }
-                    }
-                }
-            }
-        }
     }
 }

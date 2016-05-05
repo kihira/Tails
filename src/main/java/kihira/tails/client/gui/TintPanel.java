@@ -56,7 +56,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
 
         //Tint edit pane
-        hexText = new GuiTextField(fontRendererObj, 30, editPaneTop + 20, 73, 10);
+        hexText = new GuiTextField(-1, fontRendererObj, 30, editPaneTop + 20, 73, 10);
         hexText.setMaxStringLength(6);
         hexText.setText(Integer.toHexString(currTintColour));
 
@@ -168,7 +168,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (selectingColour && mouseButton == 0) {
             currTintColour = getColourAtPoint(Mouse.getEventX(), mc.displayHeight - Mouse.getEventY()) & 0xFFFFFF; //Ignore alpha
             setSelectingColour(false);

@@ -1,15 +1,12 @@
 package kihira.tails.client.render;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import kihira.tails.client.FakeEntity;
-import kihira.tails.client.PartRegistry;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
-import org.lwjgl.opengl.GL11;
-import vazkii.botania.api.item.TinyPotatoRenderEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+//import vazkii.botania.api.item.TinyPotatoRenderEvent;
 
 public class FoxtatoRender {
 
@@ -25,7 +22,7 @@ public class FoxtatoRender {
         }
     }
 
-    @SubscribeEvent
+/*    @SubscribeEvent
     public void onPotatoRender(TinyPotatoRenderEvent e) {
         if (e.name.equalsIgnoreCase("foxtato")) {
             if (fakeEntity == null) {
@@ -38,7 +35,7 @@ public class FoxtatoRender {
             foxEarRender.render(fakeEntity, earPartInfo, e.x, e.y, e.z, e.partTicks);
             GL11.glColor3f(1f, 0f, 1f);
         }
-    }
+    }*/
 
     public static class FoxtatoFakeEntity extends FakeEntity {
         public FoxtatoFakeEntity(World world) {
