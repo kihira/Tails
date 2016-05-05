@@ -12,14 +12,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import org.lwjgl.opengl.GL11;
 
-public class PreviewPanel extends Panel<GuiEditor> {
+class PreviewPanel extends Panel<GuiEditor> {
 
     private float yaw = 0F;
     private float pitch = 10F;
     private int prevMouseX = -1;
     private ScaledResolution scaledRes;
 
-    public PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom) {
+    PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);
     }
 
@@ -65,11 +65,11 @@ public class PreviewPanel extends Panel<GuiEditor> {
         }
     }
 
-/*    @Override
-    TODO public void mouseMovedOrUp(int mouseX, int mouseY, int mouseEvent) {
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
         prevMouseX = -1;
-        super.mouseMovedOrUp(mouseX, mouseY, mouseEvent);
-    }*/
+        super.mouseReleased(mouseX, mouseY, mouseButton);
+    }
 
     private void drawEntity(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
         float prevHeadYaw = entity.rotationYawHead;

@@ -85,7 +85,7 @@ public class TextureHelper {
 
                 PartInfo tailInfo;
                 if (scol1 == switch1Colour && scol2 == switch2Colour) {
-                    tailInfo = buildPartInfoFromSkin(partType, image);
+                    tailInfo = buildPartInfoFromSkin(partType, image, player.getUniqueID());
                 }
                 else {
                     tailInfo = new PartInfo(false, 0, 0, 0, 0, 0, 0, null, partType);
@@ -139,7 +139,7 @@ public class TextureHelper {
         return image;
     }
 
-	static PartInfo buildPartInfoFromSkin(PartsData.PartType partType, BufferedImage skin) {
+	private static PartInfo buildPartInfoFromSkin(PartsData.PartType partType, BufferedImage skin, UUID uuid) {
         int ordinal = partType.ordinal();
 		int data = skin.getRGB(dataPoints[ordinal].getX(), dataPoints[ordinal].getY());
 		int typeid = (data >> 16) & 0xFF;
@@ -153,33 +153,34 @@ public class TextureHelper {
 		int tint2 = skin.getRGB(tintPoints[ordinal][1].getX(), tintPoints[ordinal][1].getY());
 		int tint3 = skin.getRGB(tintPoints[ordinal][2].getX(), tintPoints[ordinal][2].getY());
 		
-		ResourceLocation tailTexture = generateTexture(partType, typeid, subtype, textureid, new int[] {tint1, tint2, tint3});
+		ResourceLocation tailTexture = generateTexture(uuid, partType, typeid, subtype, textureid, new int[] {tint1, tint2, tint3});
 		
 		return new PartInfo(true, typeid, subtype, 0, tint1, tint2, tint3, tailTexture, partType);
 	}
 
     /**
      * Creates and loads the tail texture into memory based upon the provided params
+     * @param uuid
      * @param partType
      * @param typeid The type ID
      * @param subid The subtype ID
      * @param textureID The texture ID
      * @param tints An array of int[3]     @return A resource location for the generated texture
      */
-    static ResourceLocation generateTexture(PartsData.PartType partType, int typeid, int subid, int textureID, int[] tints) {
+    private static ResourceLocation generateTexture(UUID uuid, PartsData.PartType partType, int typeid, int subid, int textureID, int[] tints) {
         String[] textures = PartRegistry.getRenderPart(partType, typeid).getTextureNames(subid);
         textureID = textureID >= textures.length ? 0 : textureID;
         String texturePath = "texture/" + partType.name().toLowerCase() + "/"+textures[textureID]+".png";
 
-        //Add UUID to prevent deleting similar textures. todo use player uuid?
-        ResourceLocation tailtexture = new ResourceLocation("tails_"+UUID.randomUUID()+"_"+partType.name()+"_"+typeid+"_"+subid+"_"+textureID+"_"+tints[0]+"_"+tints[1]+"_"+tints[2]);
-        Minecraft.getMinecraft().getTextureManager().loadTexture(tailtexture, new TripleTintTexture("tails", texturePath, tints[0], tints[1], tints[2]));
+        //Add UUID to prevent deleting similar textures.
+        ResourceLocation tailTexture = new ResourceLocation("tails_"+uuid+"_"+partType.name()+"_"+typeid+"_"+subid+"_"+textureID+"_"+tints[0]+"_"+tints[1]+"_"+tints[2]);
+        Minecraft.getMinecraft().getTextureManager().loadTexture(tailTexture, new TripleTintTexture("tails", texturePath, tints[0], tints[1], tints[2]));
 
-        return tailtexture;
+        return tailTexture;
     }
 
-    public static ResourceLocation generateTexture(PartInfo partInfo) {
-        return generateTexture(partInfo.partType, partInfo.typeid, partInfo.subid, partInfo.textureID, partInfo.tints);
+    public static ResourceLocation generateTexture(UUID uuid, PartInfo partInfo) {
+        return generateTexture(uuid, partInfo.partType, partInfo.typeid, partInfo.subid, partInfo.textureID, partInfo.tints);
     }
 	
 	public static boolean needsBuild(EntityPlayer player) {

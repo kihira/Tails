@@ -44,7 +44,7 @@ public class RenderPart {
 
     public void render(EntityLivingBase entity, PartInfo info, double x, double y, double z, float partialTicks) {
         if (info.needsTextureCompile || info.getTexture() == null) {
-            info.setTexture(TextureHelper.generateTexture(info));
+            info.setTexture(TextureHelper.generateTexture(entity.getUniqueID(), info));
             info.needsTextureCompile = false;
         }
 

@@ -104,7 +104,6 @@ public class Tails {
         }
 
         proxy.registerRenderers();
-        // TODO fake entity rendering
     }
 
     @SubscribeEvent

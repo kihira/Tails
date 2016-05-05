@@ -45,6 +45,7 @@ class GuiExport extends GuiBaseScreen {
     private ScaledResolution scaledRes;
     private String exportMessage = "";
     private URI exportLoc;
+    private GuiButton openFolderButton;
 
     GuiExport(GuiEditor parent, PartsData partsData) {
         this.parent = parent;
@@ -65,9 +66,9 @@ class GuiExport extends GuiBaseScreen {
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.export.custom.tooltip")));
 
         //Right
-        this.buttonList.add(new GuiButtonTooltip(3, this.width - 150, this.height - 65, 130, 20, I18n.format("gui.button.openfolder"),
+        this.buttonList.add(openFolderButton = new GuiButtonTooltip(3, this.width - 150, this.height - 65, 130, 20, I18n.format("gui.button.openfolder"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.openfolder.tooltip")));
-        // TODO this.openFolderButton.visible = !Strings.isNullOrEmpty(this.exportMessage);
+        this.openFolderButton.visible = !Strings.isNullOrEmpty(this.exportMessage);
 
         this.buttonList.add(new GuiButtonTooltip(10, this.width - 150, this.height - 40, 130, 20, I18n.format("gui.button.upload"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("tails.upload.tooltip")));
@@ -84,6 +85,7 @@ class GuiExport extends GuiBaseScreen {
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     protected void actionPerformed(GuiButton button) {
         //Export to file
@@ -134,7 +136,7 @@ class GuiExport extends GuiBaseScreen {
 
             if (Strings.isNullOrEmpty(this.exportMessage)) {
                 savePartsData();
-                // TODO this.openFolderButton.visible = true;
+                this.openFolderButton.visible = true;
                 setExportMessage(TextFormatting.GREEN + I18n.format("tails.export.success", file));
             }
         }
@@ -182,10 +184,10 @@ class GuiExport extends GuiBaseScreen {
         Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), partsData, false));
     }
 
-    public class ImgurUpload {
-        public static final String CLIENT_ID = "ceb9fca19ef9a31";
+    private class ImgurUpload {
+        static final String CLIENT_ID = "ceb9fca19ef9a31";
 
-        public void uploadImage(BufferedImage image) {
+        void uploadImage(BufferedImage image) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             BufferedReader in = null;
 
@@ -220,7 +222,7 @@ class GuiExport extends GuiBaseScreen {
 
                         setExportMessage(TextFormatting.GREEN + I18n.format("tails.upload.success"));
                         exportLoc = URI.create(skinURL + imgurURL);
-                        // TODO openFolderButton.visible = true;
+                        openFolderButton.visible = true;
                         savePartsData();
 
                         Desktop.getDesktop().browse(exportLoc);
