@@ -163,14 +163,15 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
                     RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
                     if (renderPart.getModelAuthor() != null) {
                         //Yeah its not nice but eh, works
-                        GL11.glPushMatrix();
-                        GL11.glTranslatef(5, y + 27, 0);
-                        GL11.glScalef(0.6F, 0.6F, 1F);
+                        GlStateManager.pushMatrix();
+                        GlStateManager.translate(5, y + 27, 0);
+                        GlStateManager.scale(0.6F, 0.6F, 1F);
+                        zLevel = 100;
                         fontRendererObj.drawString(I18n.format("gui.createdby") + ":", 0, 0, 0xFFFFFF);
-                        GL11.glTranslatef(0, 10, 0);
+                        GlStateManager.translate(0, 10, 0);
                         fontRendererObj.drawString(TextFormatting.AQUA + renderPart.getModelAuthor(), 0, 0, 0xFFFFFF);
-                        GL11.glColor4f(1F, 1F, 1F, 1F);
-                        GL11.glPopMatrix();
+                        GlStateManager.color(1F, 1F, 1F, 1F);
+                        GlStateManager.popMatrix();
                     }
                 }
             }
@@ -184,7 +185,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
         @Override
         public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
-            RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
+/*            RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
             if (partList.getCurrrentIndex() == index && renderPart.hasAuthor(partInfo.subid, partInfo.textureID)) {
                 String author = renderPart.getAuthor(partInfo.subid, partInfo.textureID);
                 if (author.startsWith("@")) {
@@ -197,7 +198,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
                         }
                     }
                 }
-            }
+            }*/
             return true;
         }
 
