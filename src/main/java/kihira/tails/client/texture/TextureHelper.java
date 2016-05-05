@@ -139,7 +139,7 @@ public class TextureHelper {
         return image;
     }
 
-	public static PartInfo buildPartInfoFromSkin(PartsData.PartType partType, BufferedImage skin) {
+	static PartInfo buildPartInfoFromSkin(PartsData.PartType partType, BufferedImage skin) {
         int ordinal = partType.ordinal();
 		int data = skin.getRGB(dataPoints[ordinal].getX(), dataPoints[ordinal].getY());
 		int typeid = (data >> 16) & 0xFF;
@@ -153,9 +153,9 @@ public class TextureHelper {
 		int tint2 = skin.getRGB(tintPoints[ordinal][1].getX(), tintPoints[ordinal][1].getY());
 		int tint3 = skin.getRGB(tintPoints[ordinal][2].getX(), tintPoints[ordinal][2].getY());
 		
-		ResourceLocation tailtexture = generateTexture(partType, typeid, subtype, textureid, new int[] {tint1, tint2, tint3});
+		ResourceLocation tailTexture = generateTexture(partType, typeid, subtype, textureid, new int[] {tint1, tint2, tint3});
 		
-		return new PartInfo(true, typeid, subtype, 0, tint1, tint2, tint3, tailtexture, partType);
+		return new PartInfo(true, typeid, subtype, 0, tint1, tint2, tint3, tailTexture, partType);
 	}
 
     /**
@@ -166,7 +166,7 @@ public class TextureHelper {
      * @param textureID The texture ID
      * @param tints An array of int[3]     @return A resource location for the generated texture
      */
-    public static ResourceLocation generateTexture(PartsData.PartType partType, int typeid, int subid, int textureID, int[] tints) {
+    static ResourceLocation generateTexture(PartsData.PartType partType, int typeid, int subid, int textureID, int[] tints) {
         String[] textures = PartRegistry.getRenderPart(partType, typeid).getTextureNames(subid);
         textureID = textureID >= textures.length ? 0 : textureID;
         String texturePath = "texture/" + partType.name().toLowerCase() + "/"+textures[textureID]+".png";

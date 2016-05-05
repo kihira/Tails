@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -60,17 +61,6 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
 
         GL11.glColor4f(0F, 0F, 0F, 0F);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        VertexBuffer renderer = Tessellator.getInstance().getBuffer();
-        // TODO Port to 1.8.8
-/*        renderer.startDrawingQuads();
-        renderer.setColorOpaque_I(8421504);
-        renderer.addVertexWithUV(2, height - 2, -10D, 0.0D, 1.0D);
-        renderer.addVertexWithUV(width - 2, height - 2, -10D, 1.0D, 1.0D);
-        renderer.addVertexWithUV(width - 2, 2, -10D, 1.0D, 0.0D);
-        renderer.addVertexWithUV(2, 2, -10D, 0.0D, 0.0D);
-        renderer.finishDrawing();*/
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
 
         zLevel = 10;
         drawGradientRect(3, 3, width - 3, height - 3, 0xFF000000, 0xFF000000);

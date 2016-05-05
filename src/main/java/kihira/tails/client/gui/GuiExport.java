@@ -12,7 +12,6 @@ import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import kihira.foxlib.client.gui.GuiBaseScreen;
 import kihira.foxlib.client.toast.ToastManager;
 import kihira.tails.client.texture.TextureHelper;
@@ -38,17 +37,16 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
-public class GuiExport extends GuiBaseScreen {
+class GuiExport extends GuiBaseScreen {
 
     private final GuiEditor parent;
     private final PartsData partsData;
 
     private ScaledResolution scaledRes;
     private String exportMessage = "";
-    private GuiButtonTooltip openFolderButton;
     private URI exportLoc;
 
-    public GuiExport(GuiEditor parent, PartsData partsData) {
+    GuiExport(GuiEditor parent, PartsData partsData) {
         this.parent = parent;
         this.partsData = partsData;
     }
@@ -67,7 +65,7 @@ public class GuiExport extends GuiBaseScreen {
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.export.custom.tooltip")));
 
         //Right
-        this.buttonList.add(this.openFolderButton = new GuiButtonTooltip(3, this.width - 150, this.height - 65, 130, 20, I18n.format("gui.button.openfolder"),
+        this.buttonList.add(new GuiButtonTooltip(3, this.width - 150, this.height - 65, 130, 20, I18n.format("gui.button.openfolder"),
                 this.scaledRes.getScaledWidth() / 2, I18n.format("gui.button.openfolder.tooltip")));
         // TODO this.openFolderButton.visible = !Strings.isNullOrEmpty(this.exportMessage);
 
@@ -129,7 +127,7 @@ public class GuiExport extends GuiBaseScreen {
                     }
                 }
                 else {
-                    setExportMessage(TextFormatting.DARK_RED + String.format("Failed to export skin, image was null!"));
+                    setExportMessage(TextFormatting.DARK_RED + "Failed to export skin, image was null!");
                     file.delete();
                 }
             }
@@ -216,7 +214,6 @@ public class GuiExport extends GuiBaseScreen {
                     if (jsonElement.get("status").getAsInt() == 200) {
                         JsonObject dataJson = jsonElement.get("data").getAsJsonObject();
                         String id = dataJson.get("id").getAsString();
-                        String deleteHash = dataJson.get("deletehash").getAsString();
 
                         String imgurURL = "http://imgur.com/" + id + ".png";
                         String skinURL = "https://minecraft.net/profile/skin/remote?url=";

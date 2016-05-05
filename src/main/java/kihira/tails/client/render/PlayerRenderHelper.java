@@ -14,7 +14,6 @@ import kihira.tails.client.model.tail.ModelDevilTail;
 import kihira.tails.client.model.tail.ModelDragonTail;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 

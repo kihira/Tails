@@ -60,7 +60,7 @@ public class PartsData {
 
     @Override
     public int hashCode() {
-        return partInfos != null ? Arrays.hashCode(partInfos) : 0;
+        return Arrays.hashCode(partInfos);
     }
 
     @Override

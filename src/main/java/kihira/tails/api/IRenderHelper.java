@@ -14,6 +14,6 @@ import net.minecraft.entity.EntityLivingBase;
 
 public interface IRenderHelper {
 
-    public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z);
+    void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z);
 
 }

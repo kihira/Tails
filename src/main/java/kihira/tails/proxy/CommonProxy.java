@@ -49,7 +49,7 @@ public class CommonProxy {
     public void addPartsData(UUID uuid, PartsData partsData) {
         if (uuid != null) {
             this.partsData.put(uuid, partsData);
-            Tails.logger.info(String.format("Added part data for %s %s", uuid.toString(), partsData));
+            Tails.logger.debug(String.format("Added part data for %s: %s", uuid.toString(), partsData));
         }
         else Tails.logger.warn(String.format("Attempted to add part data with null UUID! %s", partsData));
     }

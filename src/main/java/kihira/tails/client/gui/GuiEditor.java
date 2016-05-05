@@ -12,7 +12,6 @@ import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
-import kihira.tails.common.network.LibraryRequestMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 

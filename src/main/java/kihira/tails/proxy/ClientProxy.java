@@ -17,7 +17,6 @@ import kihira.tails.common.network.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -38,7 +37,6 @@ public class ClientProxy extends CommonProxy {
     public void addPartsData(UUID uuid, PartsData partsData) {
         if (hasPartsData(uuid)) {
             this.partsData.get(uuid).clearTextures();
-            System.out.println("Clearing textures for " + uuid);
         }
 
         super.addPartsData(uuid, partsData);

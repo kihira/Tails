@@ -78,8 +78,7 @@ public class TripleTintTexture extends AbstractTexture {
         catch (IOException ioexception)
         {
         	LogManager.getLogger().error("Couldn\'t load tripe tint texture image", ioexception);
-            return;
-        }
+		}
 	}
 
     /**

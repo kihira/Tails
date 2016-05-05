@@ -15,8 +15,6 @@ import kihira.tails.api.IRenderHelper;
 import kihira.tails.client.FakeEntity;
 import kihira.tails.client.render.*;
 import kihira.tails.proxy.CommonProxy;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,7 +39,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:foxlib")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:kihira.foxlib")
 public class Tails {
 
     public static final String MOD_ID = "Tails";

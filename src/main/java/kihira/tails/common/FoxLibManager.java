@@ -39,7 +39,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
     public static final String foxlibReqVersion = "[0.8.2,)";
     public static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
     public static final String foxlibDownloadLink = "http://addons-origin.cursecdn.com/files/2263/633/FoxLib-1.8.9-0.8.2.jar";
-    public static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-foxlib/files";
+    public static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-kihira.foxlib/files";
     public static final Logger logger = LogManager.getLogger("FoxLib Manager");
     public static final String MC_VERSION = "1.8.9";
     public static final Pattern pattern = Pattern.compile("(\\w+)[-][\\d\\.]+.*?([\\d\\.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
