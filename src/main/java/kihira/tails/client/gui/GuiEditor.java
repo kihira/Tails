@@ -51,11 +51,11 @@ public class GuiEditor extends GuiBase {
             }
         }
         partInfo = Tails.localPartsData.getPartInfo(partType);
+        playerUUID = EntityPlayer.getUUID(Minecraft.getMinecraft().getSession().getProfile());
 
         originalPartInfo = partInfo.deepCopy();
         setPartsData(Tails.localPartsData.deepCopy());
         this.editingPartInfo = originalPartInfo.deepCopy();
-        playerUUID = EntityPlayer.getUUID(Minecraft.getMinecraft().getSession().getProfile());
     }
 
     @Override

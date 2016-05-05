@@ -58,7 +58,7 @@ public class TexturePanel extends Panel<GuiEditor> {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        PartInfo partInfo = parent.getEditingPartInfo();
+/*        PartInfo partInfo = parent.getEditingPartInfo();
         RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
         if (renderPart.hasAuthor(partInfo.subid, parent.textureID)) {
             String author = renderPart.getAuthor(partInfo.subid, parent.textureID);
@@ -74,7 +74,7 @@ public class TexturePanel extends Panel<GuiEditor> {
                     return;
                 }
             }
-        }
+        }*/
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 

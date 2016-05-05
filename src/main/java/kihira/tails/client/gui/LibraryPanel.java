@@ -1,5 +1,6 @@
 package kihira.tails.client.gui;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.foxlib.client.gui.GuiList;
@@ -42,18 +43,18 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
         zLevel = -100;
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
-        GL11.glColor4f(1, 1, 1, 1);
 
         searchField.drawTextBox();
         list.drawScreen(mouseX, mouseY, p_73863_3_);
 
         zLevel = 0;
         Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.iconsTextures);
-        GL11.glPushMatrix();
-        GL11.glTranslatef(width - 16, height - 32, 0);
-        GL11.glScalef(0.75F, 0.75F, 0F);
+        GlStateManager.pushMatrix();
+        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.translate(width - 16, height - 32, 0);
+        GlStateManager.scale(0.75F, 0.75F, 0F);
         drawTexturedModalRect(0, 0, 160, 0, 16, 16);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }

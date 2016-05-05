@@ -12,84 +12,59 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-project.ext {
+ext {
     massive = "1"
-    major = "5"
+    major = "6"
     minor = "1"
     mcVersion = "1.9"
     forgeVersion = "12.16.1.1888"
-    foxlibDevVersion = "1.7.10-0.6.0.develop.22"
-    foxlibVersion = "1.8.9-0.8.2"
-    buildVersion = System.getenv("BUILD_NUMBER")
+    foxlibVersion = "1.9-0.9"
 }
 
+group= "kihira"
+archivesBaseName = "Tails"
+version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
+
 minecraft {
-    version = "${project.ext.mcVersion}-${project.ext.forgeVersion}"
+    version = "${project.mcVersion}-${project.forgeVersion}"
     runDir = "run"
     mappings = "snapshot_20160312"
 
-    replace '@VERSION@', version
+    replace '@VERSION@', project.version
+    replace '@MCVERSION@', project.mcVersion
     replace '@FOXLIBVERSION@', project.foxlibVersion
 }
 
+//noinspection GroovyAssignabilityCheck
 configurations {
     deployerJars
+    //noinspection GroovyAssignabilityCheck
     all {
         resolutionStrategy.cacheChangingModulesFor 1, 'seconds'
     }
 }
 
-dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
+//noinspection GroovyAssignabilityCheck
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
 
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
 
-    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
 
-    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
-    // except that these dependencies get remapped to your current MCP mappings
-    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
-    deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
-    //compile "kihira:FoxLib:"+project.foxlibDevVersion+":dev"
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
 }
 
-processResources
-        {
-            // this will ensure that this task is redone when the versions change.
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
-
-            // replace stuff in mcmod.info, nothing else
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-
-                // replace version and mcversion
-                expand 'version':project.version, 'mcversion':project.minecraft.version
-            }
-
-            // copy everything else, thats not the mcmod.info
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
-
-project.version = "${project.ext.mcVersion}-${project.ext.massive}.${project.ext.major}.${project.minor}"
-if (project.hasProperty("teamcity") && project.ext.buildVersion != null && teamcity["maven_release"] == null) {
-    version = version + ".${System.getenv("BUILD_NUMBER")}"
-}
-
+//noinspection GroovyAssignabilityCheck
 jar {
     manifest {
         attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
