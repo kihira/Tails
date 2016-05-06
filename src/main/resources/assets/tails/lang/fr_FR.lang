@@ -19,6 +19,20 @@ tail.texture.tabbyTail.name=Chat
 tail.texture.tigerTail.name=Tigre
 tail.texture.birdTail.name=Oiseau
 
+ears.fox.0.name=Oreilles de Renard
+ears.cat.0.name=Oreilles de Chat
+ears.panda.0.name=Oreilles de Panda
+
+ears.texture.foxEars.name=Renard
+ears.texture.catEars.name=Chat
+ears.texture.pandaEars.name=Panda
+
+wings.big.0.name=Grandes Ailes
+wings.big.1.name=Petites Ailes
+
+wings.texture.metalWings.name=Ailes d'Acier
+wings.texture.bigWings.name=Ailes d'Ange
+
 gui.export.title=Options d'Exportation
 gui.export.information=Une des fonctions de Tails est de pouvoir montrer aux autres joueurs votre queue même quand le serveur ne l'a pas installé (les autres joueurs auront cependant besoin d'avoir Tails installé pour la voir). Pour cela, certains pixels inutilisés de votre skin sont utilisés par Tails pour stocker les informations à propos de votre queue. Vous pouvez utiliser cette opition ci-dessous pour choisir où exporter votre queue ou la mettre directement en ligne sur le serveur de skin de Mojang. Survolez les boutons pour voir les emplacements de fichiers.
 
