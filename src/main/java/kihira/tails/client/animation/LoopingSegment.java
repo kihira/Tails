@@ -59,7 +59,6 @@ public class LoopingSegment extends AnimationSegment {
     @Override
     public boolean update() {
         super.update();
-        // TODO add support for gaps between segments?
         if (currSegment.update()) {
             advanceSegment();
         }

@@ -1,5 +1,6 @@
 package kihira.tails.client.animation;
 
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.EntityLivingBase;
 
 import java.util.HashMap;
@@ -60,7 +61,23 @@ public class AnimationStateMachine {
     }
 
     public void animate(float partialRenderTick) {
-        // TODO motion affect animation
         currState.getClip().animate(entity, partialRenderTick);
+    }
+
+    protected static float[] calculateMotionAngles(AbstractClientPlayer player) {
+//        double xMotion = (player.chasingPosX - player.prevChasingPosX);
+//        double yMotion = (player.chasingPosY - player.prevChasingPosY); //Positive when falling, negative when climbing
+//        double zMotion = (player.chasingPosZ - player.prevChasingPosZ);
+        double xMotion = (player.prevPosX - player.posX);
+        double yMotion = (player.prevPosY - player.posY);
+        double zMotion = (player.prevPosZ - player.posZ);
+        float bodyYaw = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset); // Actual direction body is pointing
+        double bodyYawSin = Math.sin(bodyYaw * Math.PI / 180F);
+        double bodyYawCos = -Math.cos(bodyYaw * Math.PI / 180F);
+        float xAngle = (float) ((-xMotion * bodyYawSin + zMotion * bodyYawCos) * 100F);
+        float yAngle = (float) (yMotion * 100f);
+        float zAngle = (float) ((-xMotion * bodyYawCos - zMotion * bodyYawSin) * 100F);
+
+        return new float[] {xAngle, yAngle, zAngle};
     }
 }

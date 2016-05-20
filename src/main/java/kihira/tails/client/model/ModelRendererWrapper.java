@@ -87,7 +87,9 @@ public class ModelRendererWrapper extends ModelRenderer {
                     map.put(((ModelFluffyTail) PartRegistry.getRenderPart(PartsData.PartType.TAIL, 0).modelPart).tail5, animationSegments5);
 
                     info.animation = new AnimationStateMachine(ClientEventHandler.currentEvent.entityLiving,
-                            new HashMap<String, AnimationState>() {{ put("idle", new AnimationState(new AnimationClip(map, true))); }},
+                            new HashMap<String, AnimationState>() {{
+                                put("idle", new AnimationState(new AnimationClip(map, true)));
+                            }},
                             new HashMap<AnimationState, List<Transition>>(),
                             "idle");
                 }
