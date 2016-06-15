@@ -33,10 +33,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @IFMLLoadingPlugin.MCVersion(value = FoxLibManager.MC_VERSION)
-class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
+public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
     private static final String foxlibVersion = "@FOXLIBVERSION@";
-    private static final String foxlibReqVersion = "[0.9.0,)";
+    private static final String foxlibReqVersion = "[0.10.0,)";
     private static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
     private static final String foxlibDownloadLink = "http://addons-origin.cursecdn.com/files/2263/633/FoxLib-"+foxlibVersion+".jar";
     private static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-kihira.foxlib/files";
@@ -112,7 +112,7 @@ class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
         }
         //We have one, check it is the correct version
         else {
-            if (!VersionParser.parseRange(foxlibReqVersion).containsVersion(new DefaultArtifactVersion("1.7.10-" + foxLibs.firstKey().toString()))) {
+            if (!VersionParser.parseRange(foxlibReqVersion).containsVersion(new DefaultArtifactVersion(FoxLibManager.MC_VERSION + "-" + foxLibs.firstKey().toString()))) {
                 if (!GraphicsEnvironment.isHeadless()) {
                     showDownloadOptionDialog("FoxLib is not the required version! Would you like to update it?");
                     checkFoxLib();

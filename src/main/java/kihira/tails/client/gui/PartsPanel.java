@@ -23,9 +23,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,8 +168,8 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
                         fontRendererObj.drawString(I18n.format("gui.createdby") + ":", 0, 0, 0xFFFFFF);
                         GlStateManager.translate(0, 10, 0);
                         fontRendererObj.drawString(TextFormatting.AQUA + renderPart.getModelAuthor(), 0, 0, 0xFFFFFF);
-                        GlStateManager.color(1F, 1F, 1F, 1F);
                         GlStateManager.popMatrix();
+                        zLevel = 0;
                     }
                 }
             }

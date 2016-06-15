@@ -14,11 +14,11 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 ext {
     massive = "1"
-    major = "6"
-    minor = "1"
+    major = "7"
+    minor = "0"
     mcVersion = "1.9.4"
     forgeVersion = "12.17.0.1953"
-    foxlibVersion = "1.9-0.9"
+    foxlibVersion = "1.9.4-0.10"
 }
 
 group= "kihira"
@@ -33,15 +33,6 @@ minecraft {
     replace '@VERSION@', project.version
     replace '@MCVERSION@', project.mcVersion
     replace '@FOXLIBVERSION@', project.foxlibVersion
-}
-
-//noinspection GroovyAssignabilityCheck
-configurations {
-    deployerJars
-    //noinspection GroovyAssignabilityCheck
-    all {
-        resolutionStrategy.cacheChangingModulesFor 1, 'seconds'
-    }
 }
 
 //noinspection GroovyAssignabilityCheck
