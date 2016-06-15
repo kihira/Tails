@@ -22,8 +22,10 @@ public class FakeEntity extends EntityLiving {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound p_70109_1_) {}
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+        return tagCompound;
+    }
 
     @Override
-    public void readFromNBT(NBTTagCompound p_70037_1_) {}
+    public void readFromNBT(NBTTagCompound tagCompound) {}
 }

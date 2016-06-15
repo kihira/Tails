@@ -1,7 +1,5 @@
 package kihira.tails.client.gui;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
 import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.foxlib.client.gui.GuiList;
 import kihira.foxlib.client.gui.IListCallback;
@@ -10,8 +8,9 @@ import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.text.translation.I18n;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public void initGui() {
         initList();
 
-        buttonList.add(new GuiButtonExt(0, 3, height - 18, width - 6, 15, I18n.translateToLocal("gui.button.all")));
+        buttonList.add(new GuiButtonExt(0, 3, height - 18, width - 6, 15, I18n.format("gui.button.all")));
         searchField = new GuiTextField(1, fontRendererObj, 5, height - 31, width - 10, 10);
         super.initGui();
     }
