@@ -38,7 +38,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
     private static final String foxlibVersion = "@FOXLIBVERSION@";
     private static final String foxlibReqVersion = "[0.10.0,)";
     private static final String foxlibFileName = "FoxLib-"+foxlibVersion+".jar";
-    private static final String foxlibDownloadLink = "http://addons-origin.cursecdn.com/files/2263/633/FoxLib-"+foxlibVersion+".jar";
+    private static final String foxlibDownloadLink = "http://addons-origin.cursecdn.com/files/2307/728/FoxLib-1.9.4-0.10.0.jar"; // todo use own cdn
     private static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-kihira.foxlib/files";
     public static final Logger logger = LogManager.getLogger("FoxLib Manager");
     static final String MC_VERSION = "@MCVERSION@";

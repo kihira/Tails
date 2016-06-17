@@ -18,7 +18,7 @@ ext {
     minor = "0"
     mcVersion = "1.9.4"
     forgeVersion = "12.17.0.1953"
-    foxlibVersion = "1.9.4-0.10"
+    foxlibVersion = "1.9.4-0.10.0"
 }
 
 group= "kihira"
