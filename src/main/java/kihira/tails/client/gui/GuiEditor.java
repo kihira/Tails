@@ -64,13 +64,14 @@ public class GuiEditor extends GuiBase {
         int previewWindowEdgeOffset = 110;
         int previewWindowRight = width - previewWindowEdgeOffset;
         int previewWindowBottom = height - 30;
+        int texSelectHeight = 35;
 
         //Not an ideal solution but keeps everything from resetting on resize
         if (tintPanel == null) {
             getLayer(0).add(previewPanel = new PreviewPanel(this, previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom));
-            getLayer(1).add(partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - 43));
+            getLayer(1).add(partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - texSelectHeight));
             getLayer(1).add(libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height));
-            getLayer(1).add(texturePanel = new TexturePanel(this, 0, height - 43, previewWindowEdgeOffset, 43));
+            getLayer(1).add(texturePanel = new TexturePanel(this, 0, height - texSelectHeight, previewWindowEdgeOffset, 43));
             getLayer(1).add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
             getLayer(1).add(libraryImportPanel = new LibraryImportPanel(this, previewWindowRight, height - 60, width - previewWindowRight, 60));
             getLayer(1).add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 60));
@@ -83,10 +84,10 @@ public class GuiEditor extends GuiBase {
         else {
             tintPanel.resize(previewWindowRight, 0, width - previewWindowRight, height);
             libraryInfoPanel.resize(previewWindowRight, 0, width - previewWindowRight, height - 60);
-            partsPanel.resize(0, 0, previewWindowEdgeOffset, height - 43);
+            partsPanel.resize(0, 0, previewWindowEdgeOffset, height - texSelectHeight);
             libraryPanel.resize(0, 0, previewWindowEdgeOffset, height);
             previewPanel.resize(previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
-            texturePanel.resize(0, height - 43, previewWindowEdgeOffset, 43);
+            texturePanel.resize(0, height - texSelectHeight, previewWindowEdgeOffset, 43);
             libraryImportPanel.resize(previewWindowRight, height - 60, width - previewWindowRight, 60);
             controlsPanel.resize(previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom);
         }

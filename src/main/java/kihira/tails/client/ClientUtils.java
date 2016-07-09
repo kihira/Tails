@@ -19,4 +19,9 @@ public class ClientUtils {
             fontRenderer.drawString(line, x, y + (fontRenderer.FONT_HEIGHT * i), color);
         }
     }
+
+    public static void drawCenteredString(FontRenderer fontRenderer, String string, int x, int y, int color) {
+        int width = fontRenderer.getStringWidth(string);
+        fontRenderer.drawString(string, x - fontRenderer.getStringWidth(string)/2, y, color);
+    }
 }

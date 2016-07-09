@@ -1,19 +1,17 @@
 package kihira.tails.client.gui;
 
-import net.minecraftforge.fml.client.config.GuiButtonExt;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.client.render.RenderPart;
 import kihira.tails.common.PartInfo;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.URI;
 
 public class TexturePanel extends Panel<GuiEditor> {
+
+    private final int texSelectX = 17;
 
     public TexturePanel(GuiEditor parent, int left, int top, int width, int height) {
         super(parent, left, top, width, height);
@@ -23,8 +21,8 @@ public class TexturePanel extends Panel<GuiEditor> {
     @SuppressWarnings("unchecked")
     public void initGui() {
         //Texture select
-        buttonList.add(new GuiButtonExt(18, 5, height - 27, 15, 15, "<"));
-        buttonList.add(new GuiButtonExt(19, width - 20, height - 27, 15, 15, ">"));
+        buttonList.add(new GuiButtonExt(18, 5, texSelectX, 15, 15, "<"));
+        buttonList.add(new GuiButtonExt(19, width - 20, texSelectX, 15, 15, ">"));
         parent.textureID = parent.getEditingPartInfo().textureID;
         super.initGui();
     }
@@ -37,22 +35,22 @@ public class TexturePanel extends Panel<GuiEditor> {
         zLevel = -10;
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
         zLevel = -5;
-        drawGradientRect(7, 16, width - 15, height - 12, 0x55000000, 0x55000000); //Use gradientRect so it actually takes into account zlevel
+        drawGradientRect(7, texSelectX, width - 15, texSelectX + 15, 0x55000000, 0x55000000); //Use gradientRect so it actually takes into account zlevel
 
         //Texture select
-        fontRendererObj.drawString(I18n.format("gui.texture") + ":", 7, height - 37, 0xFFFFFF);
+        drawCenteredString(fontRendererObj, I18n.format("gui.texture"), width/2, texSelectX - 12, 0xFFFFFF);
         fontRendererObj.drawString(I18n.format(parent.getPartType().name().toLowerCase() + ".texture." + PartRegistry.getRenderPart(parent.getPartType(),
-                partInfo.typeid).getTextureNames(partInfo.subid)[parent.textureID] + ".name"), 25, height - 23, 0xFFFFFF);
+                partInfo.typeid).getTextureNames(partInfo.subid)[parent.textureID] + ".name"), 25, texSelectX + 4, 0xFFFFFF);
 
-        if (renderPart.hasAuthor(partInfo.subid, partInfo.textureID)) {
-            //Yeah its not nice but eh, works
-            GL11.glPushMatrix();
-            GL11.glTranslatef(7, this.height - 10, 0);
-            GL11.glScalef(0.6F, 0.6F, 1F);
-            fontRendererObj.drawString(I18n.format("gui.createdby") + ": " + TextFormatting.AQUA + renderPart.getAuthor(partInfo.subid, partInfo.textureID), 0, 0, 0xFFFFFF);
-            GL11.glColor4f(1F, 1F, 1F, 1F);
-            GL11.glPopMatrix();
-        }
+//        if (renderPart.hasAuthor(partInfo.subid, partInfo.textureID)) {
+//            //Yeah its not nice but eh, works
+//            GL11.glPushMatrix();
+//            GL11.glTranslatef(7, height - 10, 0);
+//            GL11.glScalef(0.6F, 0.6F, 1F);
+//            fontRendererObj.drawString(I18n.format("gui.createdby") + ": " + TextFormatting.AQUA + renderPart.getAuthor(partInfo.subid, partInfo.textureID), 0, 0, 0xFFFFFF);
+//            GL11.glColor4f(1F, 1F, 1F, 1F);
+//            GL11.glPopMatrix();
+//        }
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
 

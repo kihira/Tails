@@ -120,8 +120,9 @@ gui.library.import.toast.invalid.parts=Unable to import, parts data may be corru
 gui.tint=Tint %s
 gui.tint.edit=Editing Tint %s
 gui.hex=Hex
-gui.texture=Texture
+gui.texture=Texture Select
 gui.createdby=Created by
+gui.partselect=Part Select
 
 tails.export.success=Successfully saved skin to %s
 tails.upload.unavailable=This feature is not yet functional!

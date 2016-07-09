@@ -16,12 +16,14 @@ import kihira.tails.client.render.RenderPart;
 import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
@@ -31,7 +33,10 @@ import java.util.List;
 public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsPanel.PartEntry> {
 
     private GuiList<PartEntry> partList;
+    private GuiButton partTypeButton;
+
     private final FakeEntity fakeEntity;
+    private final int listTop = 35;
 
     public PartsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);
@@ -43,38 +48,35 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     @Override
     public void initGui() {
         initPartList();
-        super.initGui();
+
+        buttonList.add(partTypeButton = new GuiButtonExt(0, width/2 - 25, 16, 50, 16, parent.getPartType().name()));
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
         //zLevel = -100;
-        drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
+        drawGradientRect(0, 0, width, listTop, 0xEA000000, 0xEA000000);
+        drawGradientRect(0, listTop, width, height, 0xCC000000, 0xCC000000);
         zLevel = 0;
-        GlStateManager.color(1, 1, 1, 1);
+        drawCenteredString(fontRendererObj, I18n.format("gui.partselect"), width/2, 5, 0xFFFFFF);
         //Tails list
         partList.drawScreen(mouseX, mouseY, p_73863_3_);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
 
-    void initPartList() {
-        //Part List
-        List<PartEntry> partList = new ArrayList<PartEntry>();
-        PartsData.PartType partType = parent.getPartType();
-        partList.add(new PartEntry(new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType))); //No tail
-        //Generate tail preview textures and add to list
-        List<RenderPart> parts = PartRegistry.getParts(partType);
-        for (int type = 0; type < parts.size(); type++) {
-            for (int subType = 0; subType <= parts.get(type).getAvailableSubTypes(); subType++) {
-                PartInfo partInfo = new PartInfo(true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
-                partList.add(new PartEntry(partInfo));
+    @Override
+    protected void actionPerformed(GuiButton button) {
+        if (button.id == 0) {
+            if (parent.getPartType().ordinal() + 1 >= PartsData.PartType.values().length) {
+                parent.setPartType(PartsData.PartType.values()[0]);
             }
-        }
+            else {
+                parent.setPartType(PartsData.PartType.values()[parent.getPartType().ordinal() + 1]);
+            }
 
-        this.partList = new GuiList<PartEntry>(this, width, height, 0, height, 55, partList);
-        this.partList.width = width;
-        selectDefaultListEntry();
+            partTypeButton.displayString = parent.getPartType().name();
+        }
     }
 
     @Override
@@ -113,6 +115,25 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         return true;
     }
 
+    void initPartList() {
+        //Part List
+        List<PartEntry> partList = new ArrayList<PartEntry>();
+        PartsData.PartType partType = parent.getPartType();
+        partList.add(new PartEntry(new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType))); //No tail
+        //Generate tail preview textures and add to list
+        List<RenderPart> parts = PartRegistry.getParts(partType);
+        for (int type = 0; type < parts.size(); type++) {
+            for (int subType = 0; subType <= parts.get(type).getAvailableSubTypes(); subType++) {
+                PartInfo partInfo = new PartInfo(true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
+                partList.add(new PartEntry(partInfo));
+            }
+        }
+
+        this.partList = new GuiList<PartEntry>(this, width, height - listTop, listTop, height, 55, partList);
+        this.partList.width = width;
+        selectDefaultListEntry();
+    }
+
     void selectDefaultListEntry() {
         //Default selection
         for (GuiListExtended.IGuiListEntry entry : partList.getEntries()) {
@@ -142,11 +163,11 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         GL11.glPopMatrix();
     }
 
-    public class PartEntry implements GuiListExtended.IGuiListEntry {
+    class PartEntry implements GuiListExtended.IGuiListEntry {
 
-        public final PartInfo partInfo;
+        final PartInfo partInfo;
 
-        public PartEntry(PartInfo partInfo) {
+        PartEntry(PartInfo partInfo) {
             this.partInfo = partInfo;
         }
 
@@ -184,26 +205,10 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
         @Override
         public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
-/*            RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
-            if (partList.getCurrrentIndex() == index && renderPart.hasAuthor(partInfo.subid, partInfo.textureID)) {
-                String author = renderPart.getAuthor(partInfo.subid, partInfo.textureID);
-                if (author.startsWith("@")) {
-                    float authorNameWidth = fontRendererObj.getStringWidth(author) * 0.6F;
-                    if (mouseSlotX > 5 && mouseSlotX < 5 + authorNameWidth && mouseSlotY > 30 && mouseSlotY < 38) {
-                        try {
-                            Desktop.getDesktop().browse(URI.create("https://twitter.com/" + author.replace("@", "")));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }*/
             return true;
         }
 
         @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
-            //System.out.println(partList.getListEntry(index));
-        }
+        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {}
     }
 }
