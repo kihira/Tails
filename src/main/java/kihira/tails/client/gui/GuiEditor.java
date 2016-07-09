@@ -111,6 +111,8 @@ public class GuiEditor extends GuiBase {
 
         partsData.setPartInfo(partType, editingPartInfo);
         setPartsData(partsData);
+
+        texturePanel.updateButtons();
     }
 
     PartInfo getEditingPartInfo() {
@@ -141,6 +143,7 @@ public class GuiEditor extends GuiBase {
         partsPanel.initPartList();
         refreshTintPane();
         textureID = partInfo.textureID;
+        texturePanel.updateButtons();
     }
 
     public PartsData.PartType getPartType() {
