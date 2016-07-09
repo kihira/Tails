@@ -47,6 +47,7 @@ public class Tails {
     public static final SimpleNetworkWrapper networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
     public static final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
+            .registerTypeAdapter(PartsData.class, new PartsDataDeserializer())
             .create();
 
     public static Configuration configuration;

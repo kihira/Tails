@@ -9,6 +9,7 @@
 package kihira.tails.client;
 
 import com.google.common.collect.ArrayListMultimap;
+import kihira.tails.client.model.ModelSizableMuzzle;
 import kihira.tails.client.model.ears.ModelCatEars;
 import kihira.tails.client.model.ears.ModelCatSmallEars;
 import kihira.tails.client.model.ears.ModelFoxEars;
@@ -30,23 +31,29 @@ public class PartRegistry {
 
     static {
         //Tails
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.fluffy", 2, null, new ModelFluffyTail(), "foxTail"));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.dragon", 1, null, new ModelDragonTail(), "dragonTail", "dragonTailStriped").setAuthor("@TTFTCUTS", 0, 0).setAuthor("@TTFTCUTS", 1, 0));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.raccoon", 0, null, new ModelRaccoonTail(), "racoonTail"));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.devil", 1, null, new ModelDevilTail(), "devilTail"));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.cat", 0, null, new ModelCatTail(), "tabbyTail", "tigerTail"));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.bird", 0, null, new ModelBirdTail(), "birdTail").setAuthor("@blusunrize", 0, 0));
-        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.shark", 0, "access_denied", new ModelSharkTail(), "sharkTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.fluffy", 2, new ModelFluffyTail(), null, "foxTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.dragon", 1, new ModelDragonTail(), null, "dragonTail", "dragonTailStriped").setAuthor("@TTFTCUTS", 0, 0).setAuthor("@TTFTCUTS", 1, 0));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.raccoon", 0, new ModelRaccoonTail(), null, "racoonTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.devil", 1, new ModelDevilTail(), null, "devilTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.cat", 0, new ModelCatTail(), null, "tabbyTail", "tigerTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.bird", 0, new ModelBirdTail(), null, "birdTail").setAuthor("@blusunrize", 0, 0));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.shark", 0, new ModelSharkTail(), "access_denied", "sharkTail"));
 
         //Ears
-        registerPart(PartsData.PartType.EARS, new RenderPart("ears.fox", 1, "@Adeon", new ModelFoxEars(), "foxEars"));
-        registerPart(PartsData.PartType.EARS, new RenderPart("ears.cat", 0, null, new ModelCatEars(), "catEars"));
-        registerPart(PartsData.PartType.EARS, new RenderPart("ears.panda", 0, null, new ModelPandaEars(), "pandaEars"));
-        registerPart(PartsData.PartType.EARS, new RenderPart("ears.catSmall", 0, null, new ModelCatSmallEars(), "catSmallEars"));
+        registerPart(PartsData.PartType.EARS, new RenderPart("ears.fox", 1, new ModelFoxEars(), "@Adeon", "foxEars"));
+        registerPart(PartsData.PartType.EARS, new RenderPart("ears.cat", 0, new ModelCatEars(), null, "catEars"));
+        registerPart(PartsData.PartType.EARS, new RenderPart("ears.panda", 0, new ModelPandaEars(), null, "pandaEars"));
+        registerPart(PartsData.PartType.EARS, new RenderPart("ears.catSmall", 0, new ModelCatSmallEars(), null, "catSmallEars"));
 
         //Wings
         registerPart(PartsData.PartType.WINGS, new RenderWings("wings.big", 1, null, null, "bigWings", "metalWings", "dragonWings", "dragonBonelessWings")
                 .setAuthor("@littlechippie").setAuthor("Dracyoshi", 0, 2).setAuthor("Dracyoshi", 0, 3).setAuthor("Dracyoshi", 1, 2).setAuthor("Dracyoshi", 1, 3));
+
+        // Muzzle
+        registerPart(PartsData.PartType.MUZZLE, new RenderPart("muzzle.standard", 4, new ModelSizableMuzzle(-2f, -3f, -9f, 4, 3, 5), null, "standardMuzzle", "altMuzzle"));
+        registerPart(PartsData.PartType.MUZZLE, new RenderPart("muzzle.slim", 4, new ModelSizableMuzzle(-2f, -2f, -9f, 4, 2, 5), null, "standardMuzzle", "altMuzzle"));
+        registerPart(PartsData.PartType.MUZZLE, new RenderPart("muzzle.thin", 4, new ModelSizableMuzzle(-1.5f, -2f, -9f, 3, 2, 5, 0, 9), null, "standardMuzzle", "altMuzzle"));
+
     }
 
     public static void registerPart(PartsData.PartType partType, RenderPart renderPart) {

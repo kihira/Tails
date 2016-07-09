@@ -10,9 +10,7 @@ package kihira.tails.proxy;
 
 import kihira.tails.client.ClientEventHandler;
 import kihira.tails.client.render.LayerPart;
-import kihira.tails.client.texture.TextureHelper;
 import kihira.tails.common.LibraryManager;
-import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.*;
@@ -86,10 +84,12 @@ public class ClientProxy extends CommonProxy {
         renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
         renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
         renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
+        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.MUZZLE));
         // Slim
         renderPlayer = skinMap.get("slim");
         renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
         renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
         renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
+        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.MUZZLE));
     }
 }

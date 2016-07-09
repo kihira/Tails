@@ -30,11 +30,11 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
         UUID uuid = EntityPlayer.getUUID(entity.getGameProfile());
         if (Tails.proxy.hasPartsData(uuid)) {
             PartsData partsData = Tails.proxy.getPartsData(uuid);
-            if (partsData.hasPartInfo(partType) && partsData.getPartInfo(partType).hasPart) {
+            if (partsData.hasPartInfo(partType)) {
                 PartInfo tailInfo = partsData.getPartInfo(partType);
 
                 GlStateManager.pushMatrix();
-                if (partType == PartsData.PartType.EARS && entity.isSneaking()) GlStateManager.translate(0f, 0.2F, 0f);
+                if ((partType == PartsData.PartType.EARS || partType == PartsData.PartType.MUZZLE) && entity.isSneaking()) GlStateManager.translate(0f, 0.2F, 0f);
                 modelRenderer.postRender(0.0625F);
 
                 PartRegistry.getRenderPart(tailInfo.partType, tailInfo.typeid).render(entity, tailInfo, 0, 0, 0, partialTicks);

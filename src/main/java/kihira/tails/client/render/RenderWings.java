@@ -21,7 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 public class RenderWings extends RenderPart {
 
     public RenderWings(String name, int subTypes, String modelAuthor, ModelPartBase modelPart, String... textureNames) {
-        super(name, subTypes, modelAuthor, modelPart, textureNames);
+        super(name, subTypes, modelPart, modelAuthor, textureNames);
     }
 
     @Override

@@ -9,6 +9,7 @@ package kihira.tails.client.gui;
 
 import kihira.foxlib.client.gui.GuiList;
 import kihira.foxlib.client.gui.IListCallback;
+import kihira.tails.client.ClientUtils;
 import kihira.tails.client.FakeEntity;
 import kihira.tails.client.PartRegistry;
 import kihira.tails.client.render.RenderPart;
@@ -154,7 +155,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
             if (partInfo.hasPart) {
                 boolean currentPart = partList.getCurrrentIndex() == slotIndex;
                 renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, partInfo);
-                fontRendererObj.drawString(I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid)
+                ClientUtils.drawStringMultiLine(fontRendererObj, I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid)
                         .getUnlocalisedName(partInfo.subid)), 5, y + 17, 0xFFFFFF);
 
                 if (currentPart) {

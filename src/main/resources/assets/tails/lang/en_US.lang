@@ -40,6 +40,27 @@ wings.texture.bigWings.name=Angel Wings
 wings.texture.dragonWings.name=Dragon Wings
 wings.texture.dragonBonelessWings.name=Dragon Wings Alt
 
+muzzle.standard.0.name=Muzzle\nVery Short
+muzzle.standard.1.name=Muzzle\nShort
+muzzle.standard.2.name=Muzzle\nStandard
+muzzle.standard.3.name=Muzzle\nLong
+muzzle.standard.4.name=Muzzle\nVery Long
+
+muzzle.slim.0.name=Slim Muzzle\nVery Short
+muzzle.slim.1.name=Slim Muzzle\nShort
+muzzle.slim.2.name=Slim Muzzle\nStandard
+muzzle.slim.3.name=Slim Muzzle\nLong
+muzzle.slim.4.name=Slim Muzzle\nVery Long
+
+muzzle.thin.0.name=Thin Muzzle\nVery Short
+muzzle.thin.1.name=Thin Muzzle\nShort
+muzzle.thin.2.name=Thin Muzzle\nStandard
+muzzle.thin.3.name=Thin Muzzle\nLong
+muzzle.thin.4.name=Thin Muzzle\nVery Long
+
+muzzle.texture.standardMuzzle.name=Standard
+muzzle.texture.altMuzzle.name=Alt
+
 gui.export.title=Export Options
 gui.export.information=A feature of Tails is the ability to allow other players to see your tail even if the server doesn't have the mod installed (The other player still needs Tails installed though). To do this, some unused pixels in your skin are used by Tails instead to store information about your tail. You can use the options below to choose where to export or whether to upload it straight to Minecraft skin servers. Hover over the buttons to see the file locations.
 

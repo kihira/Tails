@@ -11,31 +11,30 @@ package kihira.tails.common;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PartsData {
 
-    @Expose private final PartInfo[] partInfos = new PartInfo[PartType.values().length];
+    @Expose
+    public Map<PartType, PartInfo> partInfoMap = new HashMap<PartType, PartInfo>(PartType.values().length);
 
-    public PartsData() {
-
-    }
+    public PartsData() {}
 
     public void setPartInfo(PartType partType, PartInfo partInfo) {
-        partInfos[partType.ordinal()] = partInfo;
+        partInfoMap.put(partType, partInfo);
     }
 
     public PartInfo getPartInfo(PartType partType) {
-        return partInfos[partType.ordinal()];
+        return partInfoMap.get(partType);
     }
 
     public boolean hasPartInfo(PartType partType) {
-        PartInfo partInfo = partInfos[partType.ordinal()];
-        return partInfo != null && partInfo.hasPart;
+        return partInfoMap.containsKey(partType) && partInfoMap.get(partType).hasPart;
     }
 
     public void clearTextures() {
-        for (PartInfo partInfo : partInfos) {
+        for (PartInfo partInfo : partInfoMap.values()) {
             if (partInfo != null) partInfo.setTexture(null);
         }
     }
@@ -45,7 +44,6 @@ public class PartsData {
         return gson.fromJson(gson.toJson(this), PartsData.class);
     }
 
-    @SuppressWarnings("RedundantIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,27 +51,27 @@ public class PartsData {
 
         PartsData partsData = (PartsData) o;
 
-        if (!Arrays.equals(partInfos, partsData.partInfos)) return false;
+        return partInfoMap != null ? partInfoMap.equals(partsData.partInfoMap) : partsData.partInfoMap == null;
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(partInfos);
+        return partInfoMap != null ? partInfoMap.hashCode() : 0;
     }
 
     @Override
     public String toString() {
         return "PartsData{" +
-                "partInfos=" + Arrays.toString(partInfos) +
+                "partInfoMap=" + partInfoMap +
                 '}';
     }
 
-    //NOTE: We rely on the order of this, don't re-arrange, only append!
+    //NOTE: We rely on the order of this, don't re-arrange, only append! Order is for legacy reasons
     public enum PartType {
         TAIL,
         EARS,
-        WINGS
+        WINGS,
+        MUZZLE
     }
 }

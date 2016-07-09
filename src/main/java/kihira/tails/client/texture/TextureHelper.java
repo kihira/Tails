@@ -36,7 +36,8 @@ public class TextureHelper {
     private static final Point[][] switchPoints = new Point[][]{
             new Point[]{new Point(56,16), new Point(57,16)},
             new Point[]{new Point(56,17), new Point(57,17)},
-            new Point[]{new Point(56,18), new Point(57,18)}
+            new Point[]{new Point(56,18), new Point(57,18)},
+            new Point[]{new Point(56,19), new Point(57,19)} // Not serializing muzzle, just here to prevent a crash
     };
     private static final Point[][] tintPoints = new Point[][] {
             new Point[] {new Point(59,16), new Point(60,16), new Point(61,16)},

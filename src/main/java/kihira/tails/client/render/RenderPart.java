@@ -19,6 +19,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 
 @SideOnly(Side.CLIENT)
@@ -33,7 +34,7 @@ public class RenderPart {
     protected final String modelAuthor;
     public final ModelPartBase modelPart;
 
-    public RenderPart(String name, int subTypes, String modelAuthor, ModelPartBase modelPart, String... textureNames) {
+    public RenderPart(String name, int subTypes, ModelPartBase modelPart, @Nullable String modelAuthor, String... textureNames) {
         this.name = name;
         this.subTypes = subTypes;
         this.modelAuthor = modelAuthor;

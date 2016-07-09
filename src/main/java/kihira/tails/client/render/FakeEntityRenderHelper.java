@@ -27,6 +27,13 @@ public class FakeEntityRenderHelper implements IRenderHelper {
                 GL11.glScalef(0.9F, 0.9F, 0.9F);
                 break;
             }
+            // todo fake head using players skin?
+            case MUZZLE:
+                GL11.glTranslatef(0.2F, 1.25F, 0F);
+                GL11.glRotatef(180F, 0F, 1F, 0F);
+                GL11.glRotatef(-45F, 0F, 1F, 0F);
+                GL11.glRotatef(25F, 1F, 0F, 0F);
+                break;
             case EARS: {
                 GL11.glRotatef(180F, 0F, 1F, 0F);
                 GL11.glTranslatef(0F, 1.4F, 0F);
