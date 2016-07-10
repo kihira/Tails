@@ -9,12 +9,15 @@
 package kihira.tails.proxy;
 
 import kihira.tails.client.ClientEventHandler;
+import kihira.tails.client.model.ModelRendererWrapper;
 import kihira.tails.client.render.LayerPart;
+import kihira.tails.client.render.RenderingHandler;
 import kihira.tails.common.LibraryManager;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
@@ -77,19 +80,38 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void registerRenderers() {
-        Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
-        // Default
-        RenderPlayer renderPlayer = skinMap.get("default");
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.MUZZLE));
-        // Slim
-        renderPlayer = skinMap.get("slim");
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
-        renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.MUZZLE));
+    public void registerRenderers(boolean legacyRenderer) {
+        if (legacyRenderer) {
+            MinecraftForge.EVENT_BUS.register(new RenderingHandler());
+
+            Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
+            // Default
+            ModelPlayer model = skinMap.get("default").getMainModel();
+            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.TAIL));
+            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.WINGS));
+            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.EARS));
+            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.MUZZLE));
+            // Slim
+            model = skinMap.get("slim").getMainModel();
+            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.TAIL));
+            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.WINGS));
+            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.EARS));
+            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.MUZZLE));
+        }
+        else {
+            Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
+            // Default
+            RenderPlayer renderPlayer = skinMap.get("default");
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.MUZZLE));
+            // Slim
+            renderPlayer = skinMap.get("slim");
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.MUZZLE));
+        }
     }
 }

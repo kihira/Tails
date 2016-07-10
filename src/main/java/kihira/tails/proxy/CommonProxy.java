@@ -44,7 +44,7 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
     }
 
-    public void registerRenderers() {}
+    public void registerRenderers(boolean registerRenderers) {}
 
     public void addPartsData(UUID uuid, PartsData partsData) {
         if (uuid != null) {

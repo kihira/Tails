@@ -104,7 +104,7 @@ public class Tails {
             logger.debug("Valid Botania not found, skipping Foxtato renderer");
         }
 
-        proxy.registerRenderers();
+        proxy.registerRenderers(Loader.isModLoaded("SmartMoving"));
     }
 
     @SubscribeEvent

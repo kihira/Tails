@@ -10,7 +10,6 @@ package kihira.tails.client;
 
 import kihira.tails.client.gui.GuiEditor;
 import kihira.tails.client.texture.TextureHelper;
-import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import kihira.tails.common.network.PlayerDataMessage;
 import net.minecraft.client.Minecraft;
@@ -18,9 +17,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -32,11 +29,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ClientEventHandler {
     private boolean sentPartInfoToServer = false;
     private boolean clearAllPartInfo = false;
-
-    public static RenderPlayerEvent.Pre currentEvent = null;
-    public static PartsData currentPartsData = null;
-    public static ResourceLocation currentPlayerTexture = null;
-    boolean flag = false;
 
     /*
         *** Tails Editor Button ***
