@@ -12,6 +12,8 @@ import kihira.foxlib.client.gui.GuiIconButton;
 import kihira.tails.client.gui.controls.GuiHSBSlider;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -170,7 +172,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (selectingColour && mouseButton == 0) {
-            currTintColour = getColourAtPoint(Mouse.getEventX(), mc.displayHeight - Mouse.getEventY()) & 0xFFFFFF; //Ignore alpha
+            currTintColour = getColourAtPoint(Mouse.getEventX(), Mouse.getEventY()); //Ignore alpha
             setSelectingColour(false);
             refreshTintPane();
         }
@@ -207,10 +209,12 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
         pixelBuffer.clear();
 
-        GL11.glReadPixels(x, mc.displayHeight - y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);
+        GlStateManager.glReadPixels(x, y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);
 
         pixelBuffer.get(pixelData);
-        return pixelData[0];
+        TextureUtil.processPixelValues(pixelData, 1, 1);
+
+        return pixelData[0] & 0xFFFFFF;
     }
 
     private void setSelectingColour(boolean selectingColour) {

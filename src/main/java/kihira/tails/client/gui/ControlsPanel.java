@@ -53,7 +53,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
         if (button.id == 0) {
             //>.> You see nothing!
             //TODO change parts data when switching? clear libraryinfo panel?
-            boolean libraryMode = button.displayString.equals(net.minecraft.util.text.translation.I18n.translateToLocal("gui.button.mode.library"));
+            boolean libraryMode = button.displayString.equals(I18n.format("gui.button.mode.library"));
             parent.partsPanel.enabled = !libraryMode;
             parent.texturePanel.enabled = !libraryMode;
             parent.tintPanel.enabled = !libraryMode;
@@ -73,8 +73,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
             }
             parent.setPartsData(Tails.localPartsData);
 
-            button.displayString = (libraryMode ? net.minecraft.util.text.translation.I18n.translateToLocal("gui.button.mode.editor") : net.minecraft.util.text.translation.I18n.translateToLocal("gui.button.mode.library"));
-
+            button.displayString = (libraryMode ? I18n.format("gui.button.mode.editor") : I18n.format("gui.button.mode.library"));
         }
         //Reset All
         else if (button.id == 1) {
