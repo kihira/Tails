@@ -55,6 +55,7 @@ class GuiExport extends GuiBaseScreen {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
+        // todo this screws up when switching back to editor
         this.scaledRes = new ScaledResolution(this.mc);
 
         //Left

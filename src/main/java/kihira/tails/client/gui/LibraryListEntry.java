@@ -42,8 +42,8 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
 
         fontRendererObj.setUnicodeFlag(true);
         for (PartsData.PartType type : PartsData.PartType.values()) {
-            PartInfo partInfo = data.partsData.getPartInfo(type);
-            if (partInfo.hasPart) {
+            if (data.partsData.hasPartInfo(type)) {
+                PartInfo partInfo = data.partsData.getPartInfo(type);
                 fontRendererObj.drawString(I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).getUnlocalisedName(partInfo.subid)), x + 5, y + 12 + (8 * type.ordinal()), 0xFFFFFF);
                 for (int i = 1; i < 4; i++) {
                     Gui.drawRect(listWidth - (8 * i), y + 13 + (type.ordinal() * 8), listWidth + 7 - (8 * i), y + 20 + (type.ordinal() * 8), partInfo.tints[i - 1]);

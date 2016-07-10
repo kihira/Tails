@@ -27,14 +27,15 @@ public class ControlsPanel extends Panel<GuiEditor> {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
+        int spacing = (width - 51) / 3;
         //Mode Switch
-        buttonList.add(new GuiButton(0, 3, height - 25, 45, 20, net.minecraft.util.text.translation.I18n.translateToLocal("gui.button.mode.library")));
+        buttonList.add(new GuiButton(0, 3, height - 25, 46, 20, I18n.format("gui.button.mode.library")));
         //Reset/Save
-        buttonList.add(new GuiButton(1, 143, height - 25, 45, 20, I18n.format("gui.button.reset")));
-        buttonList.add(new GuiButton(2, 213, height - 25, 45, 20, I18n.format("gui.done")));
+        buttonList.add(new GuiButton(1, 3 + spacing * 2, height - 25, 46, 20, I18n.format("gui.button.reset")));
+        buttonList.add(new GuiButton(2, 3 + spacing * 3, height - 25, 46, 20, I18n.format("gui.done")));
 
         //Export
-        buttonList.add(new GuiBaseScreen.GuiButtonTooltip(3, 73, height - 25, 45, 20, I18n.format("gui.button.export"),
+        buttonList.add(new GuiBaseScreen.GuiButtonTooltip(3, 3 + spacing, height - 25, 46, 20, I18n.format("gui.button.export"),
                 (width / 2) - 20, I18n.format("gui.button.export.0.tooltip")));
     }
 

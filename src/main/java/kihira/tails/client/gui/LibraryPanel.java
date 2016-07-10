@@ -115,7 +115,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
 
         Collections.sort(libraryEntries, sorter);
 
-        list = new GuiList<LibraryListEntry>(this, width, height - 34, 0, height - 34, 40, libraryEntries);
+        list = new GuiList<LibraryListEntry>(this, width, height - 34, 0, height - 34, 50, libraryEntries);
     }
 
     public void addSelectedEntry(LibraryListEntry entry) {

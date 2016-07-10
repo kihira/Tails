@@ -28,6 +28,7 @@ public abstract class GuiBase extends GuiBaseScreen {
         super.setWorldAndResolution(mc, width, height);
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
+                //todo switch over to using scaled resolution to allow for cramming more stuff on screen
                 // Gotta cache displayWidth/Height as it can't be passed in as params anymore
                 int displayWidth = mc.displayWidth;
                 int displayHeight = mc.displayHeight;

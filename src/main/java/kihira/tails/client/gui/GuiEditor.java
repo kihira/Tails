@@ -13,6 +13,7 @@ import kihira.tails.common.PartInfo;
 import kihira.tails.common.PartsData;
 import kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.UUID;
@@ -25,6 +26,8 @@ public class GuiEditor extends GuiBase {
     private PartInfo editingPartInfo;
     PartInfo originalPartInfo;
     private UUID playerUUID;
+
+    private int guiScale;
 
     TintPanel tintPanel;
     PartsPanel partsPanel;
@@ -55,7 +58,10 @@ public class GuiEditor extends GuiBase {
 
         originalPartInfo = partInfo.deepCopy();
         setPartsData(Tails.localPartsData.deepCopy());
-        this.editingPartInfo = originalPartInfo.deepCopy();
+        editingPartInfo = originalPartInfo.deepCopy();
+
+        //guiScale = Minecraft.getMinecraft().gameSettings.guiScale;
+        //setScale(4);
     }
 
     @Override
@@ -97,6 +103,7 @@ public class GuiEditor extends GuiBase {
     @Override
     public void onGuiClosed() {
         Tails.proxy.addPartsData(playerUUID, Tails.localPartsData);
+        //setScale(guiScale);
         super.onGuiClosed();
     }
 
@@ -152,5 +159,13 @@ public class GuiEditor extends GuiBase {
 
     void clearCurrTintEdit() {
         tintPanel.currTintEdit = 0;
+    }
+
+    private void setScale(int scale) {
+        Minecraft.getMinecraft().gameSettings.guiScale = scale;
+        ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
+        int j = scaledresolution.getScaledWidth();
+        int k = scaledresolution.getScaledHeight();
+        this.setWorldAndResolution(Minecraft.getMinecraft(), j, k);
     }
 }
