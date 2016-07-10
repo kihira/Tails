@@ -161,7 +161,7 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
     }
 
     @Override
-    public List<String> getTooltip(int i, int i1) {
+    public List<String> getTooltip(int mouseX, int mouseY) {
         return tooltips;
     }
 
