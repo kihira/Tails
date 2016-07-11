@@ -39,7 +39,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:foxlib")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "required-after:foxlib")
 public class Tails {
 
     public static final String MOD_ID = "Tails";

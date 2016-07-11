@@ -34,7 +34,7 @@ configurations {
 
 ext {
     massive = "1"
-    major = "7"
+    major = "8"
     minor = "0"
     mcVersion = "1.10.2"
     forgeVersion = "12.18.0.2007-1.10.0"
@@ -82,10 +82,10 @@ processResources {
 
 //noinspection GroovyAssignabilityCheck
 jar {
-    manifest {
-        attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
-                'FMLCorePluginContainsFMLMod': 'true'
-    }
+//    manifest {
+//        attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
+//                'FMLCorePluginContainsFMLMod': 'true'
+//    }
     classifier = "nonshaded"
 }
 

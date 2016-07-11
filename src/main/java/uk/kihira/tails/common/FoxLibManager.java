@@ -32,7 +32,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@IFMLLoadingPlugin.MCVersion(value = FoxLibManager.MC_VERSION)
+//@IFMLLoadingPlugin.MCVersion(value = FoxLibManager.MC_VERSION)
 public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
 
     private static final String foxlibVersion = "@FOXLIBVERSION@";
