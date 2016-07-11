@@ -9,15 +9,21 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
 
 repositories {
+    mavenCentral()
     maven {
         name = 'Kihira Maven'
         url = 'http://maven.foxes.rocks'
     }
 }
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 configurations {
     deployerJars
@@ -26,8 +32,6 @@ configurations {
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'maven'
 
 ext {
     massive = "1"
@@ -41,10 +45,11 @@ ext {
 group= "uk.kihira.tails"
 archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
+// todo set classifier for non shaded builds
 
 dependencies {
-    deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
     deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}+" // todo this requires running setupDecompWorkspace to refresh
+    deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
 }
 
 minecraft {
@@ -85,6 +90,10 @@ jar {
     }
 }
 
+shadowJar {
+    classifier = null
+}
+
 /**
  * Maven uploading
  */
@@ -92,7 +101,8 @@ jar {
 uploadArchives {
     repositories.mavenDeployer {
         if (project.hasProperty("maven_url")) {
-            repository(url: project.getProperty("maven_url")) {
+            repository(url: project.properties.maven_url) {
+                configuration = configurations.deployerJars
                 authentication(userName: project.properties.maven_username ?: "", password: project.properties.maven_password ?: "")
             }
         }

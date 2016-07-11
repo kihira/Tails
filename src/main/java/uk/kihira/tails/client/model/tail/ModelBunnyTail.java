@@ -1,9 +1,9 @@
-package kihira.tails.client.model.tail;
+package uk.kihira.tails.client.model.tail;
 
-import kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import uk.kihira.tails.client.model.ModelPartBase;
 
 public class ModelBunnyTail extends ModelPartBase {
     private final ModelRenderer tailBase;

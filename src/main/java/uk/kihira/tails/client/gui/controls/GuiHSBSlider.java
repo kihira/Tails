@@ -161,14 +161,14 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
     }
 
     @Override
-    public List<String> getTooltip(int mouseX, int mouseY) {
+    public List<String> getTooltip(int mouseX, int mouseY, float mouseIdleTime) {
         return tooltips;
     }
 
     public enum HSBSliderType {
         HUE, SATURATION, BRIGHTNESS
     }
-    
+
     public interface IHSBSliderCallback {
         void onValueChangeHSBSlider(GuiHSBSlider source, double sliderValue);
     }
