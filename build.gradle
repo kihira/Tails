@@ -62,3 +62,11 @@ jar {
                 'FMLCorePluginContainsFMLMod': 'true'
     }
 }
+
+dependencies {
+    compile files('libs/*.jar')
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14'
+}

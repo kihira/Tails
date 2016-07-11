@@ -10,6 +10,7 @@ tail.devil.1.name=Devil Tail (No Tip)
 tail.cat.0.name=Cat Tail
 tail.bird.0.name=Bird Tail
 tail.shark.0.name=Shark Tail
+tail.bunny.0.name=Bunny Tail
 
 tail.texture.foxTail.name=Fox
 tail.texture.devilTail.name=Devil
@@ -20,6 +21,7 @@ tail.texture.tabbyTail.name=Cat
 tail.texture.tigerTail.name=Tiger
 tail.texture.birdTail.name=Bird
 tail.texture.sharkTail.name=Shark
+tail.texture.bunnyTail.name=Bunny
 
 ears.fox.0.name=Fox Ears
 ears.fox.1.name=Fox Ears Alt
