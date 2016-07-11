@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
         maven {
             name = "forge"
@@ -10,7 +11,23 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
+
+repositories {
+    maven {
+        name = 'Kihira Maven'
+        url = 'http://maven.foxes.rocks'
+    }
+}
+
+configurations {
+    deployerJars
+    all {
+        resolutionStrategy.cacheChangingModulesFor 1, 'seconds'
+    }
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven'
 
 ext {
     massive = "1"
@@ -21,9 +38,14 @@ ext {
     foxlibVersion = "1.9.4-0.10.0"
 }
 
-group= "kihira"
+group= "uk.kihira.tails"
 archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
+
+dependencies {
+    deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
+    deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}+" // todo this requires running setupDecompWorkspace to refresh
+}
 
 minecraft {
     version = "${project.mcVersion}-${project.forgeVersion}"
@@ -32,7 +54,7 @@ minecraft {
 
     replace '@VERSION@', project.version
     replace '@MCVERSION@', project.mcVersion
-    replace '@FOXLIBVERSION@', project.foxlibVersion
+    replace '@FOXLIBVERSION@', project.foxlibVersion // todo auto calculate current version?
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -60,5 +82,61 @@ jar {
     manifest {
         attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
                 'FMLCorePluginContainsFMLMod': 'true'
+    }
+}
+
+/**
+ * Maven uploading
+ */
+//noinspection GroovyAssignabilityCheck
+uploadArchives {
+    repositories.mavenDeployer {
+        if (project.hasProperty("maven_url")) {
+            repository(url: project.getProperty("maven_url")) {
+                authentication(userName: project.properties.maven_username ?: "", password: project.properties.maven_password ?: "")
+            }
+        }
+
+        pom {
+            groupId = project.group
+            version = project.version
+            artifactId = project.archivesBaseName
+        }
+
+        pom.project {
+            name project.archivesBaseName
+            packaging 'jar'
+            description 'Tails'
+            url 'https://github.com/kihira/Tails/'
+
+            scm {
+                url 'https://github.com/kihira/Tails/'
+                connection 'scm:git:git://github.com/kihira/Tails.git'
+                developerConnection 'scm:git:git@github.com/kihira/Tails.git'
+            }
+
+            issueManagement {
+                system 'github'
+                url 'https://github.com/kihira/Tails/issues'
+            }
+
+            licenses {
+                license {
+                    name 'The MIT License (MIT)'
+                    url 'https://opensource.org/licenses/MIT'
+                    distribution 'repo'
+                }
+            }
+
+            developers {
+                developer {
+                    id 'Kihira'
+                    name 'Kihira'
+                    roles {
+                        role 'developer'
+                    }
+                }
+            }
+        }
     }
 }
