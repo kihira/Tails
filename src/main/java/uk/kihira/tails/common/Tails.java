@@ -39,7 +39,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "required-after:foxlib")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:foxlib")
 public class Tails {
 
     public static final String MOD_ID = "Tails";
@@ -56,7 +56,7 @@ public class Tails {
 
     @SidedProxy(clientSide = "uk.kihira.tails.proxy.ClientProxy", serverSide = "uk.kihira.tails.proxy.CommonProxy")
     public static CommonProxy proxy;
-    @Mod.Instance
+    @Mod.Instance(value = "uk.kihira.tails.common.Tails")
     public static Tails instance;
 
     /**

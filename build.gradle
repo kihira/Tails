@@ -9,7 +9,6 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
 
@@ -23,10 +22,11 @@ repositories {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
-apply plugin: 'com.github.johnrengelman.shadow'
 
 configurations {
     deployerJars
+    shade
+    compile.extendsFrom shade
     all {
         resolutionStrategy.cacheChangingModulesFor 1, 'seconds'
     }
@@ -39,6 +39,8 @@ ext {
     mcVersion = "1.10.2"
     forgeVersion = "12.18.0.2007-1.10.0"
     foxlibVersion = "1.9.4-0.10.0"
+    shade = project.properties.shouldShade ?: false
+    // todo experiment to see if can get shadow plugin to work instead, should be nicer to just have it as a task
 }
 
 group= "uk.kihira.tails"
@@ -46,7 +48,8 @@ archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
 
 dependencies {
-    deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}+" // This requires setupDecompWorkspace to refresh
+    if (project.shade) shade "uk.kihira.foxlib:FoxLib:${project.mcVersion}+" // This requires setupDecompWorkspace to refresh
+    else deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}+"
     deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
 }
 
@@ -82,15 +85,12 @@ processResources {
 
 //noinspection GroovyAssignabilityCheck
 jar {
-//    manifest {
-//        attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
-//                'FMLCorePluginContainsFMLMod': 'true'
-//    }
-    classifier = "nonshaded"
-}
-
-shadowJar {
-    classifier = null
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)){
+            exclude 'META-INF', 'META-INF/**', 'dummyThing', 'mcmod.info'
+        }
+    }
+    classifier = shade == true ? "" : "nonshaded"
 }
 
 /**
