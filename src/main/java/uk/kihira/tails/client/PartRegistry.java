@@ -38,6 +38,7 @@ public class PartRegistry {
         registerPart(PartsData.PartType.TAIL, new RenderPart("tail.cat", 0, new ModelCatTail(), null, "tabbyTail", "tigerTail"));
         registerPart(PartsData.PartType.TAIL, new RenderPart("tail.bird", 0, new ModelBirdTail(), null, "birdTail").setAuthor("@blusunrize", 0, 0));
         registerPart(PartsData.PartType.TAIL, new RenderPart("tail.shark", 0, new ModelSharkTail(), "access_denied", "sharkTail"));
+        registerPart(PartsData.PartType.TAIL, new RenderPart("tail.bunny", 0, new ModelBunnyTail(), "@carrotcodes", "bunnyTail"));
 
         //Ears
         registerPart(PartsData.PartType.EARS, new RenderPart("ears.fox", 1, new ModelFoxEars(), "@Adeon", "foxEars"));
