@@ -48,8 +48,8 @@ archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
 
 dependencies {
-    if (project.shade) shade "uk.kihira.foxlib:FoxLib:${project.mcVersion}+" // This requires setupDecompWorkspace to refresh
-    else deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}+"
+    if (project.shade) shade "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11.0" // This requires setupDecompWorkspace to refresh
+    else deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11.0"
     deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
 }
 
@@ -90,7 +90,7 @@ jar {
             exclude 'META-INF', 'META-INF/**', 'dummyThing', 'mcmod.info'
         }
     }
-    classifier = shade == true ? "" : "nonshaded"
+    classifier = (project.shade ? "" : "nonshaded")
 }
 
 /**
@@ -147,12 +147,4 @@ def deployer = {
 
 uploadArchives {
     repositories.mavenDeployer(deployer) // This took faaaaaaar too long to figure out how to do it
-}
-
-uploadShadow {
-    repositories.mavenDeployer(deployer)
-}
-
-task uploadAll {
-    dependsOn 'uploadArchive', 'uploadShadow'
 }
