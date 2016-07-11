@@ -32,7 +32,6 @@ configurations {
     }
 }
 
-
 ext {
     massive = "1"
     major = "7"
@@ -45,10 +44,9 @@ ext {
 group= "uk.kihira.tails"
 archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
-// todo set classifier for non shaded builds
 
 dependencies {
-    deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}+" // todo this requires running setupDecompWorkspace to refresh
+    deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}+" // This requires setupDecompWorkspace to refresh
     deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
 }
 
@@ -88,6 +86,7 @@ jar {
         attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
                 'FMLCorePluginContainsFMLMod': 'true'
     }
+    classifier = "nonshaded"
 }
 
 shadowJar {
@@ -97,23 +96,18 @@ shadowJar {
 /**
  * Maven uploading
  */
-//noinspection GroovyAssignabilityCheck
-uploadArchives {
-    repositories.mavenDeployer {
-        if (project.hasProperty("maven_url")) {
-            repository(url: project.properties.maven_url) {
-                configuration = configurations.deployerJars
-                authentication(userName: project.properties.maven_username ?: "", password: project.properties.maven_password ?: "")
-            }
-        }
+def deployer = {
+    repository(url: project.properties.maven_url) {
+        configuration = configurations.deployerJars
+        authentication(userName: project.properties.maven_username ?: "", password: project.properties.maven_password ?: "")
+    }
 
-        pom {
-            groupId = project.group
-            version = project.version
-            artifactId = project.archivesBaseName
-        }
+    pom {
+        groupId = project.group
+        version = project.version
+        artifactId = project.archivesBaseName
 
-        pom.project {
+        project {
             name project.archivesBaseName
             packaging 'jar'
             description 'Tails'
@@ -149,4 +143,16 @@ uploadArchives {
             }
         }
     }
+}
+
+uploadArchives {
+    repositories.mavenDeployer(deployer) // This took faaaaaaar too long to figure out how to do it
+}
+
+uploadShadow {
+    repositories.mavenDeployer(deployer)
+}
+
+task uploadAll {
+    dependsOn 'uploadArchive', 'uploadShadow'
 }

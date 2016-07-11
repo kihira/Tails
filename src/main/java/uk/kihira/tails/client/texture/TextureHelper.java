@@ -51,7 +51,7 @@ public class TextureHelper {
      * @return Has part info(s).
      */
     public static boolean hasSkinData(AbstractClientPlayer player) {
-        BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
+        BufferedImage image = uk.kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
         if (image != null) {
             for (PartsData.PartType partType : PartsData.PartType.values()) {
                 int ordinal = partType.ordinal();
@@ -70,7 +70,7 @@ public class TextureHelper {
 	public static void buildPlayerPartsData(AbstractClientPlayer player) {
 		GameProfile profile = player.getGameProfile();
 		UUID uuid = profile.getId();
-        BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
+        BufferedImage image = uk.kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
         if (image != null) {
             //Players part data
             PartsData partsData = Tails.proxy.getPartsData(uuid);
@@ -105,7 +105,7 @@ public class TextureHelper {
 	}
 
     public static BufferedImage writePartsDataToSkin(PartsData partsData, AbstractClientPlayer player) {
-        BufferedImage image = kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
+        BufferedImage image = uk.kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
 
         //Check we have the players skin
         if (image != null) {
