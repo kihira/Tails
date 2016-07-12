@@ -13,9 +13,10 @@ To setup a workspace for CI building, run `gradle setupCIWorkspace`
 
 ### Building
 The standard build can be run by running `gradle build` which will output a shaded and nonshaded jar including sources.
-To only generate a `nonshaded` jar, run `gradle reobfJar`
-To generate only a `sources` jar, run `gradle sourcejar`
-To generate only a `shaded` jar, run `gradle reobfShadowJar`
+
+To only generate a `nonshaded` jar, run `gradle reobfJar`  
+To generate only a `sources` jar, run `gradle sourcejar`  
+To generate only a `shaded` jar, run `gradle reobfShadowJar`  
 
 # Maven 
 A maven repository is available at http://maven.foxes.rocks/
