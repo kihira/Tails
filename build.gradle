@@ -9,6 +9,7 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
 
@@ -21,6 +22,7 @@ repositories {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'maven'
 
 sourceCompatibility='1.8'
@@ -28,8 +30,6 @@ targetCompatibility='1.8'
 
 configurations {
     deployerJars
-    shade
-    compile.extendsFrom shade
     all {
         resolutionStrategy.cacheChangingModulesFor 1, 'seconds'
     }
@@ -38,13 +38,10 @@ configurations {
 ext {
     massive = "1"
     major = "8"
-    minor = "0"
+    minor = "1"
     mcVersion = "1.10.2"
     forgeVersion = "12.18.0.2007-1.10.0"
-    foxlibVersion = "1.9.4-0.10.0"
-    shade = project.properties.shouldShade ?: false
-    // todo experiment to see if can get shadow plugin to work instead, should be nicer to just have it as a task
-    // todo maybe just had it shade the compiled foxlib jar in (add it as a file dependency
+    foxlibVersion = "${project.mcVersion}-0.11.0"
 }
 
 group= "uk.kihira.tails"
@@ -52,8 +49,7 @@ archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
 
 dependencies {
-    if (project.shade) shade "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11.0" // This requires setupDecompWorkspace to refresh
-    else deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11.0"
+    deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11.0" // This requires setupDecompWorkspace to refresh
     deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
 }
 
@@ -89,13 +85,19 @@ processResources {
 
 //noinspection GroovyAssignabilityCheck
 jar {
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)){
-            exclude 'META-INF', 'META-INF/**', 'dummyThing', 'mcmod.info'
-        }
-    }
-    classifier = (project.shade ? "" : "nonshaded")
+    classifier = "nonshaded"
 }
+
+// provides the task reobfShadowJar
+reobf {
+    shadowJar {}
+}
+
+shadowJar {
+    classifier = ""
+}
+
+build.dependsOn 'reobfShadowJar' // standard build should create a shadow jar
 
 /**
  * Maven uploading
@@ -151,4 +153,9 @@ def deployer = {
 
 uploadArchives {
     repositories.mavenDeployer(deployer) // This took faaaaaaar too long to figure out how to do it
+}
+
+uploadShadow {
+    dependsOn 'reobfShadowJar'
+    repositories.mavenDeployer(deployer)
 }

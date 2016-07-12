@@ -56,7 +56,7 @@ public class Tails {
 
     @SidedProxy(clientSide = "uk.kihira.tails.proxy.ClientProxy", serverSide = "uk.kihira.tails.proxy.CommonProxy")
     public static CommonProxy proxy;
-    @Mod.Instance(value = "uk.kihira.tails.common.Tails")
+    @Mod.Instance(value = "Tails")
     public static Tails instance;
 
     /**
