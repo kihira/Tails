@@ -7,15 +7,14 @@
  */
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.foxlib.client.gui.GuiBaseScreen;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.TextFormatting;
 import uk.kihira.foxlib.client.toast.ToastManager;
 import uk.kihira.tails.common.PartInfo;
 import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextFormatting;
 
 public class ControlsPanel extends Panel<GuiEditor> {
 
@@ -27,16 +26,11 @@ public class ControlsPanel extends Panel<GuiEditor> {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        int spacing = (width - 51) / 3;
         //Mode Switch
         buttonList.add(new GuiButton(0, 3, height - 25, 46, 20, I18n.format("gui.button.mode.library")));
         //Reset/Save
-        buttonList.add(new GuiButton(1, 3 + spacing * 2, height - 25, 46, 20, I18n.format("gui.button.reset")));
-        buttonList.add(new GuiButton(2, 3 + spacing * 3, height - 25, 46, 20, I18n.format("gui.done")));
-
-        //Export
-        buttonList.add(new GuiBaseScreen.GuiButtonTooltip(3, 3 + spacing, height - 25, 46, 20, I18n.format("gui.button.export"),
-                (width / 2) - 20, I18n.format("gui.button.export.0.tooltip")));
+        buttonList.add(new GuiButton(1, width/2 - 23, height - 25, 46, 20, I18n.format("gui.button.reset")));
+        buttonList.add(new GuiButton(2, width - 49, height - 25, 46, 20, I18n.format("gui.done")));
     }
 
     @Override
@@ -93,10 +87,6 @@ public class ControlsPanel extends Panel<GuiEditor> {
             Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), partsData, false));
             ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, TextFormatting.GREEN + "Saved!");
             this.mc.displayGuiScreen(null);
-        }
-        //Export
-        else if (button.id == 3) {
-            mc.displayGuiScreen(new GuiExport(parent, partsData));
         }
     }
 }
