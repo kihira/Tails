@@ -23,6 +23,9 @@ repositories {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
+sourceCompatibility='1.8'
+targetCompatibility='1.8'
+
 configurations {
     deployerJars
     shade
@@ -41,6 +44,7 @@ ext {
     foxlibVersion = "1.9.4-0.10.0"
     shade = project.properties.shouldShade ?: false
     // todo experiment to see if can get shadow plugin to work instead, should be nicer to just have it as a task
+    // todo maybe just had it shade the compiled foxlib jar in (add it as a file dependency
 }
 
 group= "uk.kihira.tails"

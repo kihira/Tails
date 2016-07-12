@@ -54,10 +54,11 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
-        //zLevel = -100;
+        zLevel = -100;
         drawGradientRect(0, 0, width, listTop, 0xEA000000, 0xEA000000);
         drawGradientRect(0, listTop, width, height, 0xCC000000, 0xCC000000);
         zLevel = 0;
+        GlStateManager.color(1, 1, 1, 1);
         drawCenteredString(fontRendererObj, I18n.format("gui.partselect"), width/2, 5, 0xFFFFFF);
         //Tails list
         partList.drawScreen(mouseX, mouseY, p_73863_3_);
@@ -173,6 +174,8 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
         @Override
         public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+            GlStateManager.color(1, 1, 1, 1);
+            zLevel = 0;
             if (partInfo.hasPart) {
                 boolean currentPart = partList.getCurrrentIndex() == slotIndex;
                 renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, partInfo);
