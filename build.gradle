@@ -41,7 +41,7 @@ ext {
     minor = "1"
     mcVersion = "1.10.2"
     forgeVersion = "12.18.0.2007-1.10.0"
-    foxlibVersion = "${project.mcVersion}-0.11.0"
+    foxlibVersion = "${project.mcVersion}-0.11.1"
 }
 
 group= "uk.kihira.tails"
@@ -49,7 +49,7 @@ archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
 
 dependencies {
-    deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11.0" // This requires setupDecompWorkspace to refresh
+    deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11+" // This requires setupDecompWorkspace to refresh
     deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
 }
 
