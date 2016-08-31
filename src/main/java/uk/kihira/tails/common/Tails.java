@@ -164,7 +164,8 @@ public class Tails {
                 setLocalPartsData(localPartsData);
             }
         } catch (JsonSyntaxException e) {
-            e.printStackTrace();
+            Tails.configuration.getCategory(Configuration.CATEGORY_GENERAL).remove("Local Player Data");
+            Tails.logger.error("Failed to load local player data: Invalid JSON syntax! Invalid data being removed");
         }
 
         libraryEnabled = configuration.getBoolean("Enable Library", Configuration.CATEGORY_GENERAL, true, "Whether to enable the library system for sharing tails. This mostly matters on servers.");
