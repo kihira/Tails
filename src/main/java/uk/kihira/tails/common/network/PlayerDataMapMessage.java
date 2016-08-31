@@ -11,14 +11,12 @@ package uk.kihira.tails.common.network;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonSyntaxException;
 import io.netty.buffer.ByteBuf;
-import uk.kihira.tails.common.PartsData;
-import uk.kihira.tails.common.Tails;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import uk.kihira.tails.common.PartsData;
+import uk.kihira.tails.common.Tails;
 
 import java.util.Map;
 import java.util.UUID;
@@ -55,10 +53,7 @@ public class PlayerDataMapMessage implements IMessage {
         @Override
         public IMessage onMessage(PlayerDataMapMessage message, MessageContext ctx) {
             for (Map.Entry<UUID, PartsData> entry : message.partsDataMap.entrySet()) {
-                //Ignore local player
-                if (EntityPlayer.getUUID(Minecraft.getMinecraft().getSession().getProfile()) != entry.getKey()) {
-                    Tails.proxy.addPartsData(entry.getKey(), entry.getValue());
-                }
+                Tails.proxy.addPartsData(entry.getKey(), entry.getValue());
             }
             return null;
         }
