@@ -134,7 +134,7 @@ public class Tails {
         try {
             //Load Player Data
             localPartsData = gson.fromJson(Tails.configuration.getString("Local Player Data",
-                    Configuration.CATEGORY_GENERAL, "Local Players data. Delete to remove all customisation data. Do not try to edit manually", ""), PartsData.class);
+                    Configuration.CATEGORY_GENERAL, "{}", "Local Players data. Delete to remove all customisation data. Do not try to edit manually"), PartsData.class);
 
             //Load old tail info if exists
             PartInfo tailInfo = null;
