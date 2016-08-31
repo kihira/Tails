@@ -40,7 +40,7 @@ ext {
     major = "8"
     minor = "1"
     mcVersion = "1.10.2"
-    forgeVersion = "12.18.0.2007-1.10.0"
+    forgeVersion = "12.18.1.2076"
     foxlibVersion = "${project.mcVersion}-0.11.1"
 }
 
