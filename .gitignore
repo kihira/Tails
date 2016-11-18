@@ -20,4 +20,5 @@
 /bin
 .idea/
 classes/
-libs/FoxLib-1.8.9-0.8.2.jar
+
+/libs

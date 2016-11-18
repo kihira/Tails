@@ -1,0 +1,92 @@
+tail.none.name=Ninguna
+tail.dragon.0.name=Cola de Lagarto
+tail.dragon.1.name=Cola de Dragon
+tail.fluffy.0.name=Cola Esponjosa
+tail.fluffy.1.name=Colas Gemelas
+tail.fluffy.2.name=Nueve Colas
+tail.raccoon.0.name=Cola de Mapache
+tail.devil.0.name=Cola de Demonio
+tail.devil.1.name=Cola de Demonio (Sin Punta)
+tail.cat.0.name=Cola de Gato
+tail.bird.0.name=Cola de Ave
+
+tail.texture.foxTail.name=Zorro
+tail.texture.devilTail.name=Demonio
+tail.texture.racoonTail.name=Mapache
+tail.texture.dragonTail.name=Estándar
+tail.texture.dragonTailStriped.name=Con Rayas
+tail.texture.tabbyTail.name=Gato
+tail.texture.tigerTail.name=Tigre
+tail.texture.birdTail.name=Ave
+
+ears.fox.0.name=Orejas de Zorro
+ears.cat.0.name=Orejas de Gato
+ears.panda.0.name=Orejas de Panda
+
+ears.texture.foxEars.name=Zorro
+ears.texture.catEars.name=Gato
+ears.texture.pandaEars.name=Panda
+
+wings.big.0.name=Alas Grandes
+wings.big.1.name=Alas Pequeñas
+
+wings.texture.metalWings.name=Alas de Metal
+wings.texture.bigWings.name=Alas de Angel
+
+gui.export.title=Exportar Opciones
+gui.export.information=Una característica de Tails es la habilidad de que permite que otros jugadores vean tu cola aunque el servidor no tenga el mod instalado (Los otros jugadores siguen necesitando el mod instalado para que ellos puedan ver tu cola). Para hacer esto, unos pixeles no usados en tu skin son usados por el mod (Tails) para guardar información acerca de tu cola. Puedes usar las opciones debajo para escoger donde exportar o si quieres subirlo directo a los servidores de skins de Minecraft. Pon el mouse encima de los botones para ver la localización de los archivos.
+
+gui.button.livepreview=Vista Previa en directo
+gui.button.livepreview.0.tooltip=Muestra una vista previa en directo de tu cola mientras editas los valores
+gui.button.export=Exportar
+gui.button.export.0.tooltip=Exporta una version modificada de tu skin que tiene unos pixeles sin usar cambiados para que otros jugadores puedan ver tu cola sin necesidad de tener el mod (Tails) instalado en el servidor.
+gui.button.export.tooltip=Exporta una version modificada de tu skin a %s
+gui.button.export.userdir=Exportar al Hogar del Usuario
+gui.button.export.minecraftdir=Exportar al directorio de Minecraft
+gui.button.upload=Subir a Mojang
+gui.button.upload.tooltip=Sube tu skin. PRECAUCIÓN: Abre tu navegador!
+gui.button.export.custom=Exportar a...
+gui.button.export.custom.tooltip=Exportar a una carpeta personalizada
+gui.button.openfolder.tooltip=Abre la carpeta a la que exportaste tu skin
+gui.button.openfolder=Abrir la carpeta de la exportación
+gui.button.editor=Editor de colas
+gui.button.reset=Reiniciar
+gui.button.save=Guardar
+gui.button.edit=Editar
+gui.button.help.camera.0=Has clic y arrastra en la ventana de vista previa
+gui.button.help.camera.1=para rotar tu personaje
+gui.button.reset.camera=Reiniciar cámara
+gui.button.picker.0=Selector de Color
+gui.button.picker.1=Selecciona un punto en la pantalla para usar ese color
+
+gui.slider.red.tooltip=Rojo
+gui.slider.green.tooltip=Verde
+gui.slider.blue.tooltip=Azul
+gui.slider.hue.tooltip=Matiz
+gui.slider.saturation.tooltip=Saturación
+gui.slider.brightness.tooltip=Brillo
+
+gui.tint=Tinte %s
+gui.tint.edit=Editando Tinte %s
+gui.hex=Hex
+gui.texture=Textura
+
+tails.export.success=La skin a sido guardada exitosamente en %s
+tails.upload.unavailable=Esta característica no es funcional todavia!
+tails.upload.tooltip=Sube tu skin a los servidores de skins de Minecraft (Necesitaras iniciar sesión en la página de Minecraft)
+tails.uploading=Subiendo...
+tails.upload.success=Subida exitosamente! Revisa tu navegador
+tails.upload.failed=Subida fallida! Esta imgur o el sitio de Minecraft caído?
+tails.upload.ratelimit=Subida fallida! Se ha llegado a la tasa limite, estas subiendo muy frecuentemente?
+
+foxlib.downloader.missing=Necesitas FoxLib para usar %s! Puedes descargarlo aquí: %s
+foxlib.downloader.0=FoxLib no ha sido encontrado, y es necesario para usar %s!
+foxlib.downloader.1=Quieres descargar automaticamente FoxLib? (Requiere reiniciar el juego)
+foxlib.downloader.downloading=Descargando FoxLib
+foxlib.downloader.success=FoxLib ha sido descargado!
+foxlib.downloader.restart=Por favor reinicia tu juego para acabar
+foxlib.downloader.failed.0=La descarga de FoxLib ha fallado
+foxlib.downloader.failed.1=Por favor descarga FoxLib manualmente a través de CurseForge (%s)
+foxlib.downloader.outofdate=No estas utilizando la version de FoxLib correcta, por favor actualiza la version (%s)
+foxlib.downloader.2=FoxLib esta desactualizado y es una version mas reciente es NECESARIA para usar %s!
+foxlib.downloader.3=Quieres actualizar automaticamente FoxLib? (Necesitara reiniciar el juego)

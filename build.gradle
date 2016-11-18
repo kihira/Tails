@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
         maven {
             name = "forge"
@@ -7,41 +8,59 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'Kihira Maven'
+        url = 'http://maven.foxes.rocks'
+    }
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'maven'
+
+sourceCompatibility='1.8'
+targetCompatibility='1.8'
+
+configurations {
+    deployerJars
+    all {
+        resolutionStrategy.cacheChangingModulesFor 1, 'seconds'
+    }
+}
 
 ext {
     massive = "1"
-    major = "6"
-    minor = "1"
-    mcVersion = "1.9"
-    forgeVersion = "12.16.1.1888"
-    foxlibVersion = "1.9-0.9"
+    major = "8"
+    minor = "3"
+    mcVersion = "1.10.2"
+    forgeVersion = "12.18.1.2076"
+    foxlibVersion = "${project.mcVersion}-0.11.1"
 }
 
-group= "kihira"
+group= "uk.kihira.tails"
 archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
+
+dependencies {
+    deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11+" // This requires setupDecompWorkspace to refresh
+    deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
+}
 
 minecraft {
     version = "${project.mcVersion}-${project.forgeVersion}"
     runDir = "run"
-    mappings = "snapshot_20160312"
+    mappings = "snapshot_20160518"
 
     replace '@VERSION@', project.version
     replace '@MCVERSION@', project.mcVersion
-    replace '@FOXLIBVERSION@', project.foxlibVersion
-}
-
-//noinspection GroovyAssignabilityCheck
-configurations {
-    deployerJars
-    //noinspection GroovyAssignabilityCheck
-    all {
-        resolutionStrategy.cacheChangingModulesFor 1, 'seconds'
-    }
+    replace '@FOXLIBVERSION@', project.foxlibVersion // todo auto calculate current version?
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -66,8 +85,77 @@ processResources {
 
 //noinspection GroovyAssignabilityCheck
 jar {
-    manifest {
-        attributes 'FMLCorePlugin': 'kihira.tails.common.FoxLibManager',
-                'FMLCorePluginContainsFMLMod': 'true'
+    classifier = "nonshaded"
+}
+
+// provides the task reobfShadowJar
+reobf {
+    shadowJar {}
+}
+
+shadowJar {
+    classifier = ""
+}
+
+build.dependsOn 'reobfShadowJar' // standard build should create a shadow jar
+
+/**
+ * Maven uploading
+ */
+def deployer = {
+    repository(url: project.properties.maven_url) {
+        configuration = configurations.deployerJars
+        authentication(userName: project.properties.maven_username ?: "", password: project.properties.maven_password ?: "")
     }
+
+    pom {
+        groupId = project.group
+        version = project.version
+        artifactId = project.archivesBaseName
+
+        project {
+            name project.archivesBaseName
+            packaging 'jar'
+            description 'Tails'
+            url 'https://github.com/kihira/Tails/'
+
+            scm {
+                url 'https://github.com/kihira/Tails/'
+                connection 'scm:git:git://github.com/kihira/Tails.git'
+                developerConnection 'scm:git:git@github.com/kihira/Tails.git'
+            }
+
+            issueManagement {
+                system 'github'
+                url 'https://github.com/kihira/Tails/issues'
+            }
+
+            licenses {
+                license {
+                    name 'The MIT License (MIT)'
+                    url 'https://opensource.org/licenses/MIT'
+                    distribution 'repo'
+                }
+            }
+
+            developers {
+                developer {
+                    id 'Kihira'
+                    name 'Kihira'
+                    roles {
+                        role 'developer'
+                    }
+                }
+            }
+        }
+    }
+}
+
+uploadArchives {
+    repositories.mavenDeployer(deployer) // This took faaaaaaar too long to figure out how to do it
+}
+
+uploadShadow {
+    dependsOn 'reobfShadowJar'
+    repositories.mavenDeployer(deployer)
 }
