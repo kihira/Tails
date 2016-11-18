@@ -38,7 +38,7 @@ configurations {
 ext {
     massive = "1"
     major = "8"
-    minor = "2"
+    minor = "3"
     mcVersion = "1.10.2"
     forgeVersion = "12.18.1.2076"
     foxlibVersion = "${project.mcVersion}-0.11.1"
