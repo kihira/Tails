@@ -1,8 +1,5 @@
 package uk.kihira.tails.client.gui;
 
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.entity.Entity;
-import uk.kihira.foxlib.client.gui.GuiIconButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
@@ -11,6 +8,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
+import uk.kihira.foxlib.client.gui.GuiIconButton;
 
 class PreviewPanel extends Panel<GuiEditor> {
 
@@ -18,6 +16,7 @@ class PreviewPanel extends Panel<GuiEditor> {
     private float pitch = 10F;
     private int prevMouseX = -1;
     private ScaledResolution scaledRes;
+    private boolean doRender;
 
     PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);
@@ -26,6 +25,9 @@ class PreviewPanel extends Panel<GuiEditor> {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
+        doRender = Minecraft.getMinecraft().gameSettings.thirdPersonView == 0;
+        if (!doRender)
+            return;
         scaledRes = new ScaledResolution(this.mc);
         //Reset Camera
         buttonList.add(new GuiIconButton(0, width - 18, 22, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset.camera")));
@@ -35,6 +37,8 @@ class PreviewPanel extends Panel<GuiEditor> {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        if (!doRender)
+            return;
         zLevel = -1000;
         //Background
         drawGradientRect(0, 0, width, height, 0xEE000000, 0xEE000000);
@@ -71,7 +75,7 @@ class PreviewPanel extends Panel<GuiEditor> {
         super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
-    private void drawEntity(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
+    private static void drawEntity(int x, int y, int scale, float yaw, float pitch, EntityLivingBase entity) {
         float prevHeadYaw = entity.rotationYawHead;
         float prevRotYaw = entity.rotationYaw;
         float prevRotPitch = entity.rotationPitch;
