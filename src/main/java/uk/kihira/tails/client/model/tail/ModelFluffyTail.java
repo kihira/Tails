@@ -8,13 +8,14 @@
 
 package uk.kihira.tails.client.model.tail;
 
+import net.minecraft.client.renderer.GlStateManager;
 import uk.kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.opengl.GL11;
+
 
 public class ModelFluffyTail extends ModelPartBase {
     private final ModelRenderer tailBase;
@@ -130,12 +131,12 @@ public class ModelFluffyTail extends ModelPartBase {
 
         if (subtype == 0) {
             this.setRotationAngles(0, timestep, 1F, 1F, 0, 0, partialTicks, theEntity);
-            GL11.glRotatef(-20F, 1F, 0F, 0F);
+            GlStateManager.rotate(-20F, 1F, 0F, 0F);
             this.tailBase.render(0.0625F);
         }
         else if (subtype == 1) {
             this.setRotationAngles(1, timestep, 1F, 1F, 0F, (float) Math.toRadians(40F), partialTicks, theEntity);
-            GL11.glRotatef(-20F, 1F, 0F, 0F);
+            GlStateManager.rotate(-20F, 1F, 0F, 0F);
             this.tailBase.render(0.0625F);
 
             this.setRotationAngles(1, timestep, 1.4F, 0F, 0F, (float) Math.toRadians(-40F), partialTicks, theEntity);

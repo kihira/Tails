@@ -8,13 +8,13 @@
 
 package uk.kihira.tails.client.gui;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.entity.player.EntityPlayer;
 import uk.kihira.tails.client.texture.TextureHelper;
 import uk.kihira.tails.common.PartInfo;
 import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.UUID;
 

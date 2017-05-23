@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import org.lwjgl.opengl.GL11;
+
 
 public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
 
@@ -55,11 +55,11 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         if (data.favourite) {
             Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.iconsTextures);
             GuiIconButton.Icons icon = GuiIconButton.Icons.STAR;
-            GL11.glPushMatrix();
-            GL11.glTranslatef(x + listWidth - 16, y, 0F);
-            GL11.glScalef(0.8F, 0.8F, 1F);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x + listWidth - 16, y, 0F);
+            GlStateManager.scale(0.8F, 0.8F, 1F);
             GuiUtils.drawTexturedModalRect(0, 0, icon.u, icon.v + 32, 16, 16, 10);
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
         }
     }
 

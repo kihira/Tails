@@ -11,6 +11,7 @@ package uk.kihira.tails.common;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import net.minecraft.client.renderer.GlStateManager;
 import uk.kihira.tails.api.IRenderHelper;
 import uk.kihira.tails.client.FakeEntity;
 import uk.kihira.tails.client.render.*;
@@ -35,7 +36,7 @@ import net.minecraftforge.fml.common.versioning.VersionParser;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.GL11;
+
 
 import java.util.Map;
 
@@ -87,13 +88,13 @@ public class Tails {
                 public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z) {
                     switch (info.partType) {
                         case TAIL: {
-                            GL11.glTranslatef(0F, 1.325F, 0.125F);
-                            GL11.glScalef(0.25F, 0.25F, 0.25F);
+                            GlStateManager.translate(0F, 1.325F, 0.125F);
+                            GlStateManager.scale(0.25F, 0.25F, 0.25F);
                             break;
                         }
                         case EARS: {
-                            GL11.glTranslatef(0F, 1.375F, -0.1F);
-                            GL11.glScalef(0.5F, 0.5F, 0.5F);
+                            GlStateManager.translate(0F, 1.375F, -0.1F);
+                            GlStateManager.scale(0.5F, 0.5F, 0.5F);
                             break;
                         }
                     }

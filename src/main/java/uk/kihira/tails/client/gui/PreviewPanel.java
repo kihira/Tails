@@ -1,5 +1,7 @@
 package uk.kihira.tails.client.gui;
 
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.Entity;
 import uk.kihira.foxlib.client.gui.GuiIconButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

@@ -8,6 +8,7 @@
 package uk.kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
+import org.lwjgl.opengl.GL11;
 import uk.kihira.foxlib.client.gui.GuiIconButton;
 import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
 import net.minecraft.client.gui.GuiButton;
@@ -19,7 +20,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
+
 import org.lwjgl.opengl.GL12;
 
 import javax.imageio.ImageIO;
@@ -205,8 +206,8 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         pixelData = new int[pixels];
 
-        GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
-        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        GlStateManager.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+        GlStateManager.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
         pixelBuffer.clear();
 
         GlStateManager.glReadPixels(x, y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);

@@ -1,5 +1,6 @@
 package uk.kihira.tails.client.gui;
 
+import net.minecraft.client.renderer.GlStateManager;
 import uk.kihira.foxlib.client.gui.GuiIconButton;
 import uk.kihira.foxlib.client.toast.ToastManager;
 import uk.kihira.tails.common.LibraryEntryData;
@@ -12,7 +13,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
+
 
 import java.io.IOException;
 import java.sql.Date;
@@ -57,7 +58,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         zLevel = 0;
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
 
-        GL11.glColor4f(0F, 0F, 0F, 0F);
+        GlStateManager.color(0F, 0F, 0F, 0F);
 
         zLevel = 10;
         drawGradientRect(3, 3, width - 3, height - 3, 0xFF000000, 0xFF000000);

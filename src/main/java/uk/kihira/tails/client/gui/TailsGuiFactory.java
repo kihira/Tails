@@ -33,6 +33,7 @@ public class TailsGuiFactory implements IModGuiFactory {
     }
 
     @Override
+    @Deprecated
     public Class<? extends GuiScreen> mainConfigGuiClass() {
         return null;
     }
@@ -43,6 +44,7 @@ public class TailsGuiFactory implements IModGuiFactory {
     }
 
     @Override
+    @Deprecated
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
         return null;
     }

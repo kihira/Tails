@@ -33,7 +33,7 @@ public class FoxtatoRender {
 
             fox_tailRender.render(fakeEntity, tailPartInfo, e.x, e.y, e.z, e.partTicks);
             foxEarRender.render(fakeEntity, earPartInfo, e.x, e.y, e.z, e.partTicks);
-            GL11.glColor3f(1f, 0f, 1f);
+            GlStateManager.glColor3f(1f, 0f, 1f);
         }
     }*/
 

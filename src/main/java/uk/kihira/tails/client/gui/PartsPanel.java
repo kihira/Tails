@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
-import org.lwjgl.opengl.GL11;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -149,19 +149,19 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     private void renderPart(int x, int y, int z, int scale, PartInfo partInfo) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, z);
-        GL11.glScalef(-scale, scale, 1F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, z);
+        GlStateManager.scale(-scale, scale, 1F);
 
         RenderHelper.enableStandardItemLighting();
         Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
         PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).render(fakeEntity, partInfo, 0, 0, 0, 0);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        //GlStateManager.disableTexture2D(); //Why was this needed? It produces graphical issues when enabled...
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     class PartEntry implements GuiListExtended.IGuiListEntry {
