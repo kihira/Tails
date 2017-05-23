@@ -34,7 +34,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
         initList();
 
         buttonList.add(new GuiButtonExt(0, 3, height - 18, width - 6, 15, I18n.format("gui.button.all")));
-        searchField = new GuiTextField(1, fontRendererObj, 5, height - 31, width - 10, 10);
+        searchField = new GuiTextField(1, fontRenderer, 5, height - 31, width - 10, 10);
         super.initGui();
     }
 

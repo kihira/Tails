@@ -23,8 +23,18 @@ public class TailsGuiFactory implements IModGuiFactory {
     public void initialize(Minecraft minecraftInstance) {}
 
     @Override
+    public boolean hasConfigGui() {
+        return true;
+    }
+
+    @Override
+    public GuiScreen createConfigGui(GuiScreen parentScreen) {
+        return new TailsConfigGUI(parentScreen);
+    }
+
+    @Override
     public Class<? extends GuiScreen> mainConfigGuiClass() {
-        return TailsConfigGUI.class;
+        return null;
     }
 
     @Override

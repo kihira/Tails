@@ -18,7 +18,7 @@ import java.util.List;
 
 public class GuiHSBSlider extends GuiSlider implements ITooltip {
 
-    private static final ResourceLocation sliderTexture = new ResourceLocation(Tails.MOD_ID, "texture/gui/controls/sliderHue.png");
+    private static final ResourceLocation sliderTexture = new ResourceLocation(Tails.MOD_ID, "texture/gui/controls/slider_hue.png");
     
     private final HSBSliderType type;
     private final IHSBSliderCallback callback;

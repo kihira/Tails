@@ -38,8 +38,8 @@ public class TexturePanel extends Panel<GuiEditor> {
         drawGradientRect(7, texSelectX, width - 15, texSelectX + 15, 0x55000000, 0x55000000); //Use gradientRect so it actually takes into account zlevel
 
         //Texture select
-        drawCenteredString(fontRendererObj, I18n.format("gui.texture"), width/2, texSelectX - 12, 0xFFFFFF);
-        fontRendererObj.drawString(I18n.format(parent.getPartType().name().toLowerCase() + ".texture." + PartRegistry.getRenderPart(parent.getPartType(),
+        drawCenteredString(fontRenderer, I18n.format("gui.texture"), width/2, texSelectX - 12, 0xFFFFFF);
+        fontRenderer.drawString(I18n.format(parent.getPartType().name().toLowerCase() + ".texture." + PartRegistry.getRenderPart(parent.getPartType(),
                 partInfo.typeid).getTextureNames(partInfo.subid)[parent.textureID] + ".name"), 25, texSelectX + 4, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);

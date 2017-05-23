@@ -10,28 +10,28 @@ tail.devil.1.name=Queue de Diable (Pas de Bout)
 tail.cat.0.name=Queue de Chat
 tail.bird.0.name=Queue d'Oiseau
 
-tail.texture.foxTail.name=Renard
-tail.texture.devilTail.name=Diable
-tail.texture.racoonTail.name=Raton-Laveur
-tail.texture.dragonTail.name=Standard
-tail.texture.dragonTailStriped.name=Rayé
-tail.texture.tabbyTail.name=Chat
-tail.texture.tigerTail.name=Tigre
-tail.texture.birdTail.name=Oiseau
+tail.texture.fox_tail.name=Renard
+tail.texture.devil_tail.name=Diable
+tail.texture.racoon_tail.name=Raton-Laveur
+tail.texture.dragon_tail.name=Standard
+tail.texture.dragon_tailStriped.name=Rayé
+tail.texture.dragon_tail.name=Chat
+tail.texture.tiger_tail.name=Tigre
+tail.texture.bird_tail.name=Oiseau
 
 ears.fox.0.name=Oreilles de Renard
 ears.cat.0.name=Oreilles de Chat
 ears.panda.0.name=Oreilles de Panda
 
-ears.texture.foxEars.name=Renard
-ears.texture.catEars.name=Chat
-ears.texture.pandaEars.name=Panda
+ears.texture.fox_ears.name=Renard
+ears.texture.cat_ears.name=Chat
+ears.texture.panda_ears.name=Panda
 
 wings.big.0.name=Grandes Ailes
 wings.big.1.name=Petites Ailes
 
-wings.texture.metalWings.name=Ailes d'Acier
-wings.texture.bigWings.name=Ailes d'Ange
+wings.texture.metal_wings.name=Ailes d'Acier
+wings.texture.big_wings.name=Ailes d'Ange
 
 gui.export.title=Options d'Exportation
 gui.export.information=Une des fonctions de Tails est de pouvoir montrer aux autres joueurs votre queue même quand le serveur ne l'a pas installé (les autres joueurs auront cependant besoin d'avoir Tails installé pour la voir). Pour cela, certains pixels inutilisés de votre skin sont utilisés par Tails pour stocker les informations à propos de votre queue. Vous pouvez utiliser cette opition ci-dessous pour choisir où exporter votre queue ou la mettre directement en ligne sur le serveur de skin de Mojang. Survolez les boutons pour voir les emplacements de fichiers.

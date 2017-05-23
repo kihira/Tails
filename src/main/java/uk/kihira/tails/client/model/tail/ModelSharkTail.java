@@ -102,7 +102,7 @@ public class ModelSharkTail extends ModelPartBase {
             if (entity instanceof EntityPlayer) {
                 double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
 
-                xAngleOffset = MathHelper.clamp_double(angles[0] / 5F, -1D, 0.45D);
+                xAngleOffset = MathHelper.clamp(angles[0] / 5F, -1D, 0.45D);
                 yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
             }
         }

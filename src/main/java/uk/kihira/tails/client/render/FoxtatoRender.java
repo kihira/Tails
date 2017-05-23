@@ -26,12 +26,12 @@ public class FoxtatoRender {
     public void onPotatoRender(TinyPotatoRenderEvent e) {
         if (e.name.equalsIgnoreCase("foxtato")) {
             if (fakeEntity == null) {
-                fakeEntity = new FoxtatoFakeEntity(Minecraft.getMinecraft().theWorld);
+                fakeEntity = new FoxtatoFakeEntity(Minecraft.getMinecraft().world);
             }
-            RenderPart foxTailRender = PartRegistry.getRenderPart(PartsData.PartType.TAIL, 0);
+            RenderPart fox_tailRender = PartRegistry.getRenderPart(PartsData.PartType.TAIL, 0);
             RenderPart foxEarRender = PartRegistry.getRenderPart(PartsData.PartType.EARS, 0);
 
-            foxTailRender.render(fakeEntity, tailPartInfo, e.x, e.y, e.z, e.partTicks);
+            fox_tailRender.render(fakeEntity, tailPartInfo, e.x, e.y, e.z, e.partTicks);
             foxEarRender.render(fakeEntity, earPartInfo, e.x, e.y, e.z, e.partTicks);
             GL11.glColor3f(1f, 0f, 1f);
         }

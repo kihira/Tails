@@ -31,19 +31,19 @@ public class LibraryImportPanel extends Panel<GuiEditor> {
 
         //Import Skin
         button = new GuiButtonExt(0, 3, 3, width - 6, 18, I18n.format("gui.library.import.skin"));
-        button.enabled = TextureHelper.hasSkinData(mc.thePlayer);
+        button.enabled = TextureHelper.hasSkinData(mc.player);
         buttonList.add(button);
 
         buttonList.add(new GuiButtonExt(1, 3, 21, width - 6, 18, I18n.format("gui.library.import.string")));
 
-        inputField = new GuiTextField(2, fontRendererObj, 3, 41, width - 6, 15);
+        inputField = new GuiTextField(2, fontRenderer, 3, 41, width - 6, 15);
         inputField.setMaxStringLength(5000);
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.id == 0) {
-            TextureHelper.buildPlayerPartsData(mc.thePlayer);
+            TextureHelper.buildPlayerPartsData(mc.player);
             ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 50, parent.width / 2, TextFormatting.GREEN + I18n.format("gui.library.import.toast.skin"));
         }
         //Import from string

@@ -83,7 +83,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
         else if (button.id == 2) {
             //Update part info, set local and send it to the server
             Tails.setLocalPartsData(partsData);
-            Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
+            Tails.proxy.addPartsData(mc.player.getPersistentID(), partsData);
             Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), partsData, false));
             ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, TextFormatting.GREEN + "Saved!");
             this.mc.displayGuiScreen(null);

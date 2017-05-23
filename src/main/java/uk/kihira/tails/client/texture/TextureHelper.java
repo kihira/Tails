@@ -97,7 +97,7 @@ public class TextureHelper {
             Tails.proxy.addPartsData(uuid, partsData);
 
             //If local player, send our skin info the server.
-            if (player == Minecraft.getMinecraft().thePlayer) {
+            if (player == Minecraft.getMinecraft().player) {
                 Tails.setLocalPartsData(partsData);
                 Tails.networkWrapper.sendToServer(new PlayerDataMessage(UUIDTypeAdapter.fromString(Minecraft.getMinecraft().getSession().getPlayerID()), partsData, false));
             }

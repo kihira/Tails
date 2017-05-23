@@ -68,7 +68,7 @@ public abstract class ModelPartBase extends ModelBase {
         //In degrees, not bound 0-360, be warned!
         double bodyYawSin = Math.sin(bodyYaw * (float) Math.PI / 180F);
         double bodyYawCos = -Math.cos(bodyYaw * (float) Math.PI / 180F);
-        float xOffset = MathHelper.clamp_float((float) yMotion * 10F, -6F, 32F);
+        float xOffset = MathHelper.clamp((float) yMotion * 10F, -6F, 32F);
         float f1 = (float)(xMotion * bodyYawSin + zMotion * bodyYawCos) * 100F;
         float f2 = (float)(xMotion * bodyYawCos - zMotion * bodyYawSin) * 100F;
 

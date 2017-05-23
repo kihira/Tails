@@ -38,7 +38,7 @@ class PreviewPanel extends Panel<GuiEditor> {
         drawGradientRect(0, 0, width, height, 0xEE000000, 0xEE000000);
 
         //Player
-        drawEntity((width / 2), (height / 2) + (scaledRes.getScaledHeight() / 4), scaledRes.getScaledHeight() / 4, yaw, pitch, mc.thePlayer);
+        drawEntity((width / 2), (height / 2) + (scaledRes.getScaledHeight() / 4), scaledRes.getScaledHeight() / 4, yaw, pitch, mc.player);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

@@ -77,18 +77,18 @@ public class ModelFluffyTail extends ModelPartBase {
                 switch (subtype) {
                     //Fox Tail
                     case 0:
-                        xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
-                        zAngleOffset = MathHelper.clamp_double(zAngleOffset, -0.5D, 0.5D);
+                        xAngleOffset = MathHelper.clamp(xAngleOffset * 0.6D, -1D, 0.45D);
+                        zAngleOffset = MathHelper.clamp(zAngleOffset, -0.5D, 0.5D);
                         break;
                     //Twin Tails
                     case 1:
-                        xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
-                        zAngleOffset = MathHelper.clamp_double(zAngleOffset, -0.5D, 0.5D);
+                        xAngleOffset = MathHelper.clamp(xAngleOffset * 0.6D, -1D, 0.45D);
+                        zAngleOffset = MathHelper.clamp(zAngleOffset, -0.5D, 0.5D);
                         break;
                     //Nine tails
                     case 2:
-                        zAngleOffset = MathHelper.clamp_double(zAngleOffset * 0.5D, -1D, 0.5D);
-                        xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.25D, -1D, 0.2D);
+                        zAngleOffset = MathHelper.clamp(zAngleOffset * 0.5D, -1D, 0.5D);
+                        xAngleOffset = MathHelper.clamp(xAngleOffset * 0.25D, -1D, 0.2D);
                         xAngleOffset += (Math.cos(timestep + xOffset) / 30F);
                         break;
                 }

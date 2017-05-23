@@ -58,7 +58,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
 
         //Tint edit pane
-        hexText = new GuiTextField(-1, fontRendererObj, 30, editPaneTop + 20, 73, 10);
+        hexText = new GuiTextField(-1, fontRenderer, 30, editPaneTop + 20, 73, 10);
         hexText.setMaxStringLength(6);
         hexText.setText(Integer.toHexString(currTintColour));
 
@@ -106,7 +106,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         int topOffset = 10;
         for (int tint = 1; tint <= 3; tint++) {
             String s = I18n.format("gui.tint", tint);
-            fontRendererObj.drawString(s, 5, topOffset, 0xFFFFFF);
+            fontRenderer.drawString(s, 5, topOffset, 0xFFFFFF);
             int colour = parent.getEditingPartInfo().tints[tint - 1] | 0xFF << 24;
             drawGradientRect(5, topOffset + 10, 25, topOffset + 30, colour, colour);
             topOffset += 35;
@@ -115,9 +115,9 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         //Editing tint pane
         if (this.currTintEdit > 0) {
             drawHorizontalLine(0, this.width, editPaneTop, 0xFF000000);
-            fontRendererObj.drawString(I18n.format("gui.tint.edit", this.currTintEdit), 5, editPaneTop + 5, 0xFFFFFF);
+            fontRenderer.drawString(I18n.format("gui.tint.edit", this.currTintEdit), 5, editPaneTop + 5, 0xFFFFFF);
 
-            fontRendererObj.drawString(I18n.format("gui.hex") + ":", 5, editPaneTop + 21, 0xFFFFFF);
+            fontRenderer.drawString(I18n.format("gui.hex") + ":", 5, editPaneTop + 21, 0xFFFFFF);
             hexText.drawTextBox();
         }
 

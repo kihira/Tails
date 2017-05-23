@@ -37,11 +37,11 @@ configurations {
 
 ext {
     massive = "1"
-    major = "8"
-    minor = "3"
-    mcVersion = "1.10.2"
-    forgeVersion = "12.18.1.2076"
-    foxlibVersion = "${project.mcVersion}-0.11.1"
+    major = "9"
+    minor = "0"
+    mcVersion = "1.11.2"
+    forgeVersion = "13.20.0.2304"
+    foxlibVersion = "${project.mcVersion}-0.12.0"
 }
 
 group= "uk.kihira.tails"
@@ -49,14 +49,14 @@ archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
 
 dependencies {
-    deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11+" // This requires setupDecompWorkspace to refresh
+    //deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11+" // This requires setupDecompWorkspace to refresh
     deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
 }
 
 minecraft {
     version = "${project.mcVersion}-${project.forgeVersion}"
     runDir = "run"
-    mappings = "snapshot_20160518"
+    mappings = "snapshot_20170522"
 
     replace '@VERSION@', project.version
     replace '@MCVERSION@', project.mcVersion
