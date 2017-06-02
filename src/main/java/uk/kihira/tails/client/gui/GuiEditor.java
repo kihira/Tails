@@ -50,7 +50,7 @@ public class GuiEditor extends GuiBase {
         partType = PartsData.PartType.TAIL;
         for (PartsData.PartType partType : PartsData.PartType.values()) {
             if (!Tails.localPartsData.hasPartInfo(partType)) {
-                Tails.localPartsData.setPartInfo(partType, new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType));
+                Tails.localPartsData.setPartInfo(partType, PartInfo.none(partType));
             }
         }
         partInfo = Tails.localPartsData.getPartInfo(partType);
@@ -140,7 +140,7 @@ public class GuiEditor extends GuiBase {
 
         PartInfo newPartInfo = partsData.getPartInfo(partType);
         if (newPartInfo == null) {
-            newPartInfo = new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
+            newPartInfo = PartInfo.none(partType);
         }
         originalPartInfo = newPartInfo.deepCopy();
         PartInfo partInfo = originalPartInfo.deepCopy();

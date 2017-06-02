@@ -12,11 +12,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.client.renderer.GlStateManager;
-import uk.kihira.tails.api.IRenderHelper;
 import uk.kihira.tails.client.FakeEntity;
 import uk.kihira.tails.client.render.*;
 import uk.kihira.tails.proxy.CommonProxy;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -157,7 +155,7 @@ public class Tails {
             if (localPartsData == null) {
                 localPartsData = new PartsData();
                 for (PartsData.PartType partType : PartsData.PartType.values()) {
-                    localPartsData.setPartInfo(partType, new PartInfo(false, 0, 0, 0, 0, 0, 0, null, partType));
+                    localPartsData.setPartInfo(partType, PartInfo.none(partType));
                 }
                 setLocalPartsData(localPartsData);
             }

@@ -109,7 +109,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         parent.textureID = 0;
         //Need to keep tints from original part
         PartInfo partInfo = new PartInfo(entry.partInfo.hasPart, entry.partInfo.typeid, entry.partInfo.subid, entry.partInfo.textureID,
-                parent.getEditingPartInfo().tints.clone(), entry.partInfo.partType, null);
+                parent.getEditingPartInfo().tints.clone(), entry.partInfo.partType, entry.partInfo.scale, null);
         parent.setPartsInfo(partInfo);
         return true;
     }
@@ -118,12 +118,12 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         //Part List
         List<PartEntry> partList = new ArrayList<>();
         PartsData.PartType partType = parent.getPartType();
-        partList.add(new PartEntry(new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType))); //No tail
+        partList.add(new PartEntry(PartInfo.none(partType))); //No tail
         //Generate tail preview textures and add to list
         List<RenderPart> parts = PartRegistry.getParts(partType);
         for (int type = 0; type < parts.size(); type++) {
             for (int subType = 0; subType <= parts.get(type).getAvailableSubTypes(); subType++) {
-                PartInfo partInfo = new PartInfo(true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
+                PartInfo partInfo = new PartInfo(true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 1, null, partType);
                 partList.add(new PartEntry(partInfo));
             }
         }

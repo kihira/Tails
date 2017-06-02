@@ -67,7 +67,7 @@ public class TexturePanel extends Panel<GuiEditor> {
             }
         }
         PartInfo partInfo = new PartInfo(true, originalPartInfo.typeid, originalPartInfo.subid, parent.textureID,
-                originalPartInfo.tints, originalPartInfo.partType, null);
+                originalPartInfo.tints, originalPartInfo.partType, originalPartInfo.scale, null);
         parent.setPartsInfo(partInfo);
     }
 

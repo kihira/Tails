@@ -28,10 +28,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
 
-public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback {
+public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback, IControlCallback<GuiSlider,Float> {
 
     int currTintEdit = 0;
     int currTintColour = 0xFFFFFF;
+    private GuiSlider sizeSlider;
     private GuiTextField hexText;
     private GuiHSBSlider[] hsbSliders;
     private GuiHSBSlider[] rgbSliders;
@@ -47,7 +48,6 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void initGui() {
         editPaneTop = height - 107;
         //Edit tint buttons
@@ -56,6 +56,10 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             buttonList.add(new GuiButton(i, 30, topOffset, 40, 20, I18n.format("gui.button.edit")));
             topOffset += 35;
         }
+
+        // Size Slider
+        sizeSlider = new GuiSlider(this, 6, 10, topOffset+35, width, 0.5f, 1.5f, 1.f);
+        buttonList.add(sizeSlider);
 
         //Tint edit pane
         hexText = new GuiTextField(-1, fontRenderer, 30, editPaneTop + 20, 73, 10);
@@ -278,5 +282,10 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
         if (currTintEdit > 0) parent.getEditingPartInfo().tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
         parent.setPartsInfo(parent.getEditingPartInfo());
+    }
+
+    @Override
+    public boolean onValueChange(GuiSlider slider, Float oldValue, Float newValue) {
+        return true;
     }
 }
