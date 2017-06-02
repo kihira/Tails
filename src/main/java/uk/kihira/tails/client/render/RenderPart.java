@@ -8,6 +8,7 @@
 
 package uk.kihira.tails.client.render;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import uk.kihira.tails.api.IRenderHelper;
@@ -17,7 +18,7 @@ import uk.kihira.tails.common.PartInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import org.lwjgl.opengl.GL11;
+
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public class RenderPart {
             info.needsTextureCompile = false;
         }
 
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
 
         IRenderHelper helper;
         //Support for Galacticraft as it adds its own EntityPlayer
@@ -60,7 +61,7 @@ public class RenderPart {
         }
 
         this.doRender(entity, info, partialTicks);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     protected void doRender(EntityLivingBase entity, PartInfo info, float partialTicks) {

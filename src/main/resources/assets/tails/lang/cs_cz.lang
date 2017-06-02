@@ -10,28 +10,28 @@ tail.devil.1.name=Ďábelský ohon (bez konečku)
 tail.cat.0.name=Kočičí ohon
 tail.bird.0.name=Ptačí ohon
 
-tail.texture.foxTail.name=Liška
-tail.texture.devilTail.name=Ďábel
-tail.texture.racoonTail.name=Mýval
-tail.texture.dragonTail.name=Obyčejný
-tail.texture.dragonTailStriped.name=Pruhovaný
-tail.texture.tabbyTail.name=Kočka
-tail.texture.tigerTail.name=Tygr
-tail.texture.birdTail.name=Pták
+tail.texture.fox_tail.name=Liška
+tail.texture.devil_tail.name=Ďábel
+tail.texture.racoon_tail.name=Mýval
+tail.texture.dragon_tail.name=Obyčejný
+tail.texture.dragon_tailStriped.name=Pruhovaný
+tail.texture.dragon_tail.name=Kočka
+tail.texture.tiger_tail.name=Tygr
+tail.texture.bird_tail.name=Pták
 
 ears.fox.0.name=Liščí uši
 ears.cat.0.name=Kočičí uši
 ears.panda.0.name=Pandí uši
 
-ears.texture.foxEars.name=Liška
-ears.texture.catEars.name=Kočka
-ears.texture.pandaEars.name=Panda
+ears.texture.fox_ears.name=Liška
+ears.texture.cat_ears.name=Kočka
+ears.texture.panda_ears.name=Panda
 
 wings.big.0.name=Velké křídla
 wings.big.1.name=Malé křídla
 
-wings.texture.metalWings.name=Železné křídla
-wings.texture.bigWings.name=Andělské křídla
+wings.texture.metal_wings.name=Železné křídla
+wings.texture.big_wings.name=Andělské křídla
 
 gui.export.title=Exportovat nastavení
 gui.export.information=Tails umožňuje, že ostatní hráči uvidí Váš ocas i když tento mod není na serveru nainstalován. (Ostatní hráči jej musí mít samozřejmě nainstalovaný.) K této funkci jsou použita prázdná místa na Vašem skinu hráče. Můžete si vybrat zda-li chcete exportovat tento nový skin k vám na disk anebo přímo na Minecraft server.

@@ -10,28 +10,28 @@ tail.devil.1.name=Duivelsstaart (Geen punt)
 tail.cat.0.name=Kattenstaart
 tail.bird.0.name=Vogelsstaart
 
-tail.texture.foxTail.name=Vos
-tail.texture.devilTail.name=Duivel
-tail.texture.racoonTail.name=Wasbeer
-tail.texture.dragonTail.name=Standaard
-tail.texture.dragonTailStriped.name=Gestreept
-tail.texture.tabbyTail.name=Kat
-tail.texture.tigerTail.name=Tijger
-tail.texture.birdTail.name=Vogel
+tail.texture.fox_tail.name=Vos
+tail.texture.devil_tail.name=Duivel
+tail.texture.racoon_tail.name=Wasbeer
+tail.texture.dragon_tail.name=Standaard
+tail.texture.dragon_tailStriped.name=Gestreept
+tail.texture.dragon_tail.name=Kat
+tail.texture.tiger_tail.name=Tijger
+tail.texture.bird_tail.name=Vogel
 
 ears.fox.0.name=Vossenoren
 ears.cat.0.name=Kattenoren
 ears.panda.0.name=Pandaoren
 
-ears.texture.foxEars.name=Vos
-ears.texture.catEars.name=Kat
-ears.texture.pandaEars.name=Panda
+ears.texture.fox_ears.name=Vos
+ears.texture.cat_ears.name=Kat
+ears.texture.panda_ears.name=Panda
 
 wings.big.0.name=Grote Vleugels
 wings.big.1.name=Kleine Vleugels
 
-wings.texture.metalWings.name=Metalen Vleugels
-wings.texture.bigWings.name=Engelenvleugels
+wings.texture.metal_wings.name=Metalen Vleugels
+wings.texture.big_wings.name=Engelenvleugels
 
 gui.export.title=Exporteer Opties
 gui.export.information=A feature of Tails is the ability to allow other players to see your tail even if the server doesn't have the mod installed (The other player still needs Tails installed though). To do this, some unused pixels in your skin are used by Tails instead to store information about your tail. You can use the options below to choose where to export or whether to upload it straight to Minecraft skin servers. Hover over the buttons to see the file locations.

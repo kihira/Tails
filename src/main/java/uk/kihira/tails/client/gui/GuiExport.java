@@ -79,9 +79,9 @@ class GuiExport extends GuiBaseScreen {
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
         this.drawDefaultBackground();
 
-        this.drawCenteredString(this.fontRendererObj, I18n.format("gui.export.title"), this.width / 2, 25, 0xFFFFFF);
-        this.fontRendererObj.drawSplitString(I18n.format("gui.export.information"), this.width / 6, 50, (int) (this.scaledRes.getScaledWidth() / 1.5F), 0xFFFFFF);
-        if (!Strings.isNullOrEmpty(this.exportMessage)) this.fontRendererObj.drawSplitString(this.exportMessage, 160, this.height - 88, this.width - 160, 0xFFFFFF);
+        this.drawCenteredString(this.fontRenderer, I18n.format("gui.export.title"), this.width / 2, 25, 0xFFFFFF);
+        this.fontRenderer.drawSplitString(I18n.format("gui.export.information"), this.width / 6, 50, (int) (this.scaledRes.getScaledWidth() / 1.5F), 0xFFFFFF);
+        if (!Strings.isNullOrEmpty(this.exportMessage)) this.fontRenderer.drawSplitString(this.exportMessage, 160, this.height - 88, this.width - 160, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
@@ -91,7 +91,7 @@ class GuiExport extends GuiBaseScreen {
     protected void actionPerformed(GuiButton button) {
         //Export to file
         if (button.id == 0 || button.id == 1 || button.id == 2) {
-            AbstractClientPlayer player = this.mc.thePlayer;
+            AbstractClientPlayer player = this.mc.player;
             File file;
 
             this.exportMessage = "";
@@ -152,7 +152,7 @@ class GuiExport extends GuiBaseScreen {
 
         //Upload
         if (button.id == 10) {
-            final BufferedImage image = TextureHelper.writePartsDataToSkin(this.partsData, this.mc.thePlayer);
+            final BufferedImage image = TextureHelper.writePartsDataToSkin(this.partsData, this.mc.player);
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -181,7 +181,7 @@ class GuiExport extends GuiBaseScreen {
 
     private void savePartsData() {
         Tails.setLocalPartsData(partsData);
-        Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
+        Tails.proxy.addPartsData(mc.player.getPersistentID(), partsData);
         Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), partsData, false));
     }
 

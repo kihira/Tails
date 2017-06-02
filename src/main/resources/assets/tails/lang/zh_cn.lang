@@ -10,28 +10,28 @@ tail.devil.1.name=恶魔尾巴 (无尖角)
 tail.cat.0.name=猫尾巴
 tail.bird.0.name=鸟尾巴
 
-tail.texture.foxTail.name=狐狸
-tail.texture.devilTail.name=恶魔
-tail.texture.racoonTail.name=浣熊
-tail.texture.dragonTail.name=普通龙尾
-tail.texture.dragonTailStriped.name=条纹龙尾
-tail.texture.tabbyTail.name=猫咪
-tail.texture.tigerTail.name=老虎
-tail.texture.birdTail.name=小鸟
+tail.texture.fox_tail.name=狐狸
+tail.texture.devil_tail.name=恶魔
+tail.texture.racoon_tail.name=浣熊
+tail.texture.dragon_tail.name=普通龙尾
+tail.texture.dragon_tailStriped.name=条纹龙尾
+tail.texture.dragon_tail.name=猫咪
+tail.texture.tiger_tail.name=老虎
+tail.texture.bird_tail.name=小鸟
 
 ears.fox.0.name=狐狸耳朵
 ears.cat.0.name=猫耳朵
 ears.panda.0.name=熊猫耳朵
 
-ears.texture.foxEars.name=狐狸
-ears.texture.catEars.name=猫咪
-ears.texture.pandaEars.name=熊猫
+ears.texture.fox_ears.name=狐狸
+ears.texture.cat_ears.name=猫咪
+ears.texture.panda_ears.name=熊猫
 
 wings.big.0.name=大型翅膀
 wings.big.1.name=小型翅膀
 
-wings.texture.metalWings.name=金属翅膀
-wings.texture.bigWings.name=天使翅膀
+wings.texture.metal_wings.name=金属翅膀
+wings.texture.big_wings.name=天使翅膀
 
 gui.export.title=导出设定
 gui.export.information=使用在此导出的皮肤可以让其他玩家看到你带着尾巴的形象,即便是那个服务端没有安装本模组(当然其他玩家仍需在客户端安装才能看到).这个功能把皮肤中的一些闲置的像素替换成尾巴的图形.你可以使用下方的按钮来选择要将皮肤导出到哪里,或是直接上传至Minecraft的皮肤服务器.将鼠标悬浮在下方按钮上来查看详细导出位置

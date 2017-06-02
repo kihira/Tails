@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
-import org.lwjgl.opengl.GL11;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         super(parent, left, top, right, bottom);
         alwaysReceiveMouse = true;
 
-        fakeEntity = new FakeEntity(Minecraft.getMinecraft().theWorld);
+        fakeEntity = new FakeEntity(Minecraft.getMinecraft().world);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         drawGradientRect(0, listTop, width, height, 0xCC000000, 0xCC000000);
         zLevel = 0;
         GlStateManager.color(1, 1, 1, 1);
-        drawCenteredString(fontRendererObj, I18n.format("gui.partselect"), width/2, 5, 0xFFFFFF);
+        drawCenteredString(fontRenderer, I18n.format("gui.partselect"), width/2, 5, 0xFFFFFF);
         //Tails list
         partList.drawScreen(mouseX, mouseY, p_73863_3_);
 
@@ -149,19 +149,19 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     private void renderPart(int x, int y, int z, int scale, PartInfo partInfo) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, z);
-        GL11.glScalef(-scale, scale, 1F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, z);
+        GlStateManager.scale(-scale, scale, 1F);
 
         RenderHelper.enableStandardItemLighting();
         Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
         PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).render(fakeEntity, partInfo, 0, 0, 0, 0);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        //GlStateManager.disableTexture2D(); //Why was this needed? It produces graphical issues when enabled...
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     class PartEntry implements GuiListExtended.IGuiListEntry {
@@ -179,7 +179,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
             if (partInfo.hasPart) {
                 boolean currentPart = partList.getCurrrentIndex() == slotIndex;
                 renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, partInfo);
-                ClientUtils.drawStringMultiLine(fontRendererObj, I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid)
+                ClientUtils.drawStringMultiLine(fontRenderer, I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid)
                         .getUnlocalisedName(partInfo.subid)), 5, y + 17, 0xFFFFFF);
 
                 if (currentPart) {
@@ -190,16 +190,16 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
                         GlStateManager.translate(5, y + 27, 0);
                         GlStateManager.scale(0.6F, 0.6F, 1F);
                         zLevel = 100;
-                        fontRendererObj.drawString(I18n.format("gui.createdby") + ":", 0, 0, 0xFFFFFF);
+                        fontRenderer.drawString(I18n.format("gui.createdby") + ":", 0, 0, 0xFFFFFF);
                         GlStateManager.translate(0, 10, 0);
-                        fontRendererObj.drawString(TextFormatting.AQUA + renderPart.getModelAuthor(), 0, 0, 0xFFFFFF);
+                        fontRenderer.drawString(TextFormatting.AQUA + renderPart.getModelAuthor(), 0, 0, 0xFFFFFF);
                         GlStateManager.popMatrix();
                         zLevel = 0;
                     }
                 }
             }
             else {
-                fontRendererObj.drawString(I18n.format("tail.none.name"), 5, y + (partList.slotHeight / 2) - 5, 0xFFFFFF);
+                fontRenderer.drawString(I18n.format("tail.none.name"), 5, y + (partList.slotHeight / 2) - 5, 0xFFFFFF);
             }
         }
 

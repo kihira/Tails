@@ -10,28 +10,28 @@ tail.devil.1.name=Klabautermann Tail (No Tip)
 tail.cat.0.name=Cat Tail
 tail.bird.0.name=Gull Tail
 
-tail.texture.foxTail.name=Fox
-tail.texture.devilTail.name=Klabautermann
-tail.texture.racoonTail.name=Raccoon
-tail.texture.dragonTail.name=Standard
-tail.texture.dragonTailStriped.name=Striped
-tail.texture.tabbyTail.name=Cat
-tail.texture.tigerTail.name=Tiger
-tail.texture.birdTail.name=Gull
+tail.texture.fox_tail.name=Fox
+tail.texture.devil_tail.name=Klabautermann
+tail.texture.racoon_tail.name=Raccoon
+tail.texture.dragon_tail.name=Standard
+tail.texture.dragon_tailStriped.name=Striped
+tail.texture.dragon_tail.name=Cat
+tail.texture.tiger_tail.name=Tiger
+tail.texture.bird_tail.name=Gull
 
 ears.fox.0.name=Fox Ears
 ears.cat.0.name=Cat Ears
 ears.panda.0.name=Panda Ears
 
-ears.texture.foxEars.name=Fox
-ears.texture.catEars.name=Cat
-ears.texture.pandaEars.name=Panda
+ears.texture.fox_ears.name=Fox
+ears.texture.cat_ears.name=Cat
+ears.texture.panda_ears.name=Panda
 
 wings.big.0.name=Large Wings
 wings.big.1.name=Small Wings
 
-wings.texture.metalWings.name=Irrron Wings
-wings.texture.bigWings.name=Angel Wings
+wings.texture.metal_wings.name=Irrron Wings
+wings.texture.big_wings.name=Angel Wings
 
 gui.export.title=Export Options
 gui.export.information=A feature o' Tails be t' ability t' allow other players t' see yer tail even if t' haven doesn't have t' mod installed (Ye other shipmates still needs Tails installed though). For this, some unused pixels in ye skin be used instead t' store information about yer tail. Ye can use t' options below t' choose where t' export or whether t' upload it straight t' Minecraft skin haven. Hover over t' buttons t' see t' file locations.

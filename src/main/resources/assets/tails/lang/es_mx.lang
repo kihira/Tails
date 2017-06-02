@@ -10,28 +10,28 @@ tail.devil.1.name=Cola de Demonio (Sin Punta)
 tail.cat.0.name=Cola de Gato
 tail.bird.0.name=Cola de Ave
 
-tail.texture.foxTail.name=Zorro
-tail.texture.devilTail.name=Demonio
-tail.texture.racoonTail.name=Mapache
-tail.texture.dragonTail.name=Estándar
-tail.texture.dragonTailStriped.name=Con Rayas
-tail.texture.tabbyTail.name=Gato
-tail.texture.tigerTail.name=Tigre
-tail.texture.birdTail.name=Ave
+tail.texture.fox_tail.name=Zorro
+tail.texture.devil_tail.name=Demonio
+tail.texture.racoon_tail.name=Mapache
+tail.texture.dragon_tail.name=Estándar
+tail.texture.dragon_tailStriped.name=Con Rayas
+tail.texture.dragon_tail.name=Gato
+tail.texture.tiger_tail.name=Tigre
+tail.texture.bird_tail.name=Ave
 
 ears.fox.0.name=Orejas de Zorro
 ears.cat.0.name=Orejas de Gato
 ears.panda.0.name=Orejas de Panda
 
-ears.texture.foxEars.name=Zorro
-ears.texture.catEars.name=Gato
-ears.texture.pandaEars.name=Panda
+ears.texture.fox_ears.name=Zorro
+ears.texture.cat_ears.name=Gato
+ears.texture.panda_ears.name=Panda
 
 wings.big.0.name=Alas Grandes
 wings.big.1.name=Alas Pequeñas
 
-wings.texture.metalWings.name=Alas de Metal
-wings.texture.bigWings.name=Alas de Angel
+wings.texture.metal_wings.name=Alas de Metal
+wings.texture.big_wings.name=Alas de Angel
 
 gui.export.title=Exportar Opciones
 gui.export.information=Una característica de Tails es la habilidad de que permite que otros jugadores vean tu cola aunque el servidor no tenga el mod instalado (Los otros jugadores siguen necesitando el mod instalado para que ellos puedan ver tu cola). Para hacer esto, unos pixeles no usados en tu skin son usados por el mod (Tails) para guardar información acerca de tu cola. Puedes usar las opciones debajo para escoger donde exportar o si quieres subirlo directo a los servidores de skins de Minecraft. Pon el mouse encima de los botones para ver la localización de los archivos.
