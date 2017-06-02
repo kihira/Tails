@@ -42,7 +42,7 @@ public class FoxLibManager implements IFMLCallHook, IFMLLoadingPlugin {
     private static final String foxlibDownloadFallback = "http://minecraft.curseforge.com/mc-mods/223291-kihira.foxlib/files";
     public static final Logger logger = LogManager.getLogger("FoxLib Manager");
     static final String MC_VERSION = "@MCVERSION@";
-    private static final Pattern pattern = Pattern.compile("(\\w+)[-][\\d\\.]+.*?([\\d\\.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
+    private static final Pattern pattern = Pattern.compile("(\\w+)[-][\\d.]+.*?([\\d.]{5,})[\\w]*.*?\\.jar", Pattern.CASE_INSENSITIVE);
 
     private int totalSize;
 
