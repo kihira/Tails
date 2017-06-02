@@ -10,7 +10,7 @@ package uk.kihira.tails.client.gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
-import uk.kihira.foxlib.client.toast.ToastManager;
+import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.common.PartInfo;
 import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;

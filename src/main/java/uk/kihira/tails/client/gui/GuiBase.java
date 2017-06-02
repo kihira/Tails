@@ -1,7 +1,6 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.renderer.GlStateManager;
-import uk.kihira.foxlib.client.gui.GuiBaseScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 

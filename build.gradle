@@ -9,7 +9,6 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
 
@@ -22,7 +21,6 @@ repositories {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'maven'
 
 sourceCompatibility='1.8'
@@ -45,7 +43,6 @@ ext {
     minor = "0"
     mcVersion = "1.11.2"
     forgeVersion = "13.20.0.2304"
-    foxlibVersion = "${project.mcVersion}-0.12.0"
 }
 
 group= "uk.kihira.tails"
@@ -53,7 +50,6 @@ archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
 
 dependencies {
-    //deobfCompile "uk.kihira.foxlib:FoxLib:${project.mcVersion}-0.11+" // This requires setupDecompWorkspace to refresh
     deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
 }
 
@@ -64,7 +60,6 @@ minecraft {
 
     replace '@VERSION@', project.version
     replace '@MCVERSION@', project.mcVersion
-    //replace '@FOXLIBVERSION@', project.foxlibVersion // todo auto calculate current version?
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -86,22 +81,6 @@ processResources {
         exclude 'mcmod.info'
     }
 }
-
-//noinspection GroovyAssignabilityCheck
-jar {
-    classifier = "nonshaded"
-}
-
-// provides the task reobfShadowJar
-reobf {
-    shadowJar {}
-}
-
-shadowJar {
-    classifier = ""
-}
-
-build.dependsOn 'reobfShadowJar' // standard build should create a shadow jar
 
 /**
  * Maven uploading
@@ -156,10 +135,5 @@ def deployer = {
 }
 
 uploadArchives {
-    repositories.mavenDeployer(deployer) // This took faaaaaaar too long to figure out how to do it
-}
-
-uploadShadow {
-    dependsOn 'reobfShadowJar'
     repositories.mavenDeployer(deployer)
 }

@@ -62,14 +62,3 @@ gui.hex=Hex
 
 tails.export.success=Skin correctement sauvegarder sous %s
 tails.upload.unavailable=Cette fonction n'est pas encore ajoutée!
-
-
-foxlib.downloader.missing=Vous avez besoin de FoxLib pour utiliser %s! Vous pouvez le télécharger ici: %s
-foxlib.downloader.0=FoxLib est manquant et en A BESOIN pour fonctionner %s!
-foxlib.downloader.1=Voulez-vous téléchargez FoxLib automatiquement? (Aura besoin d'un redémarrage du jeu)
-foxlib.downloader.downloading=FoxLib en téléchargement
-foxlib.downloader.success=FoxLib à été téléchargé!
-foxlib.downloader.restart=S'il vous plait, redémarrez le jeu pour compléter l'installation
-foxlib.downloader.failed.0=FoxLib a échoué à se télécharger automatiquement
-foxlib.downloader.failed.1=S'il vous plait, téléchargez FoxLib depuis CurseForge (%s)
-foxlib.downloader.outofdate=FoxLib n'est pas à la version adéquate, merci de mettre à jour (%s)

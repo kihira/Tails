@@ -78,15 +78,3 @@ tails.uploading=Subiendo...
 tails.upload.success=Subida exitosamente! Revisa tu navegador
 tails.upload.failed=Subida fallida! Esta imgur o el sitio de Minecraft caído?
 tails.upload.ratelimit=Subida fallida! Se ha llegado a la tasa limite, estas subiendo muy frecuentemente?
-
-foxlib.downloader.missing=Necesitas FoxLib para usar %s! Puedes descargarlo aquí: %s
-foxlib.downloader.0=FoxLib no ha sido encontrado, y es necesario para usar %s!
-foxlib.downloader.1=Quieres descargar automaticamente FoxLib? (Requiere reiniciar el juego)
-foxlib.downloader.downloading=Descargando FoxLib
-foxlib.downloader.success=FoxLib ha sido descargado!
-foxlib.downloader.restart=Por favor reinicia tu juego para acabar
-foxlib.downloader.failed.0=La descarga de FoxLib ha fallado
-foxlib.downloader.failed.1=Por favor descarga FoxLib manualmente a través de CurseForge (%s)
-foxlib.downloader.outofdate=No estas utilizando la version de FoxLib correcta, por favor actualiza la version (%s)
-foxlib.downloader.2=FoxLib esta desactualizado y es una version mas reciente es NECESARIA para usar %s!
-foxlib.downloader.3=Quieres actualizar automaticamente FoxLib? (Necesitara reiniciar el juego)

@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
-import uk.kihira.foxlib.client.gui.GuiIconButton;
 
 class PreviewPanel extends Panel<GuiEditor> {
 

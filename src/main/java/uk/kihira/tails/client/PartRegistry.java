@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-//Yeah using side only isn't nice but as this is static, it means it only gets constructed on the client
+//Yeah using side only isn't nice but as this is static, it means it only gets constructed on the uk.kihira.tails.client
 @SideOnly(Side.CLIENT)
 public class PartRegistry {
 

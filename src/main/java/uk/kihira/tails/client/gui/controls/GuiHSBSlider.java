@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import uk.kihira.foxlib.client.gui.ITooltip;
+import uk.kihira.tails.client.gui.ITooltip;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;

@@ -7,8 +7,6 @@
  */
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.foxlib.client.gui.GuiList;
-import uk.kihira.foxlib.client.gui.IListCallback;
 import uk.kihira.tails.client.ClientUtils;
 import uk.kihira.tails.client.FakeEntity;
 import uk.kihira.tails.client.PartRegistry;

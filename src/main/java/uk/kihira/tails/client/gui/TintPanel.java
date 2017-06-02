@@ -9,7 +9,6 @@ package uk.kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
 import org.lwjgl.opengl.GL11;
-import uk.kihira.foxlib.client.gui.GuiIconButton;
 import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;

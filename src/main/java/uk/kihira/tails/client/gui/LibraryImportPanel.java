@@ -2,7 +2,7 @@ package uk.kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
 import com.google.gson.JsonSyntaxException;
-import uk.kihira.foxlib.client.toast.ToastManager;
+import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.client.texture.TextureHelper;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.PartsData;

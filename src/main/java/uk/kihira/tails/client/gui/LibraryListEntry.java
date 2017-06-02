@@ -1,7 +1,6 @@
 package uk.kihira.tails.client.gui;
 
 import com.mojang.authlib.GameProfile;
-import uk.kihira.foxlib.client.gui.GuiIconButton;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.PartInfo;

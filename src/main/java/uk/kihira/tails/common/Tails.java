@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:foxlib")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@")
 public class Tails {
 
     public static final String MOD_ID = "tails";

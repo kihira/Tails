@@ -1,8 +1,5 @@
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.foxlib.client.gui.GuiIconButton;
-import uk.kihira.foxlib.client.gui.GuiList;
-import uk.kihira.foxlib.client.gui.IListCallback;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;

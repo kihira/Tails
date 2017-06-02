@@ -78,13 +78,3 @@ tails.uploading=Загрузка...
 tails.upload.success=Успех! Продолжите в браузере
 tails.upload.failed=Ошибка! Сайты Imgur или Minecraft недоступны?
 tails.upload.ratelimit=Ошибка! Превышен лимит обращений, вы пытаетесь загружать скин слишком часто?
-
-foxlib.downloader.missing=FoxLib необходима для использования %s! Доступна для загрузки здесь: %s
-foxlib.downloader.0=Необходимая для использования %s библиотека FoxLib отсутствует!
-foxlib.downloader.1=Скачать FoxLib автоматически? (Потребуется перезапуск)
-foxlib.downloader.downloading=Скачивание FoxLib
-foxlib.downloader.success=FoxLib была скачана!
-foxlib.downloader.restart=Пожалуйста перезапустите Minecraft для завершения
-foxlib.downloader.failed.0=При загрузке FoxLib произошла ошибка
-foxlib.downloader.failed.1=Пожалуйста загрузите FoxLib вручную с CurseForge (%s)
-foxlib.downloader.outofdate=FoxLib имеет некорректную версию, пожалуйста, обновите FoxLib (%s)

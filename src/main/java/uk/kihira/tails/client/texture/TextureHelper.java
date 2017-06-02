@@ -9,7 +9,15 @@
 package uk.kihira.tails.client.texture;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.util.UUIDTypeAdapter;
+import net.minecraft.client.renderer.ThreadDownloadImageData;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import org.apache.commons.io.IOUtils;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.common.PartInfo;
 import uk.kihira.tails.common.PartsData;
@@ -23,7 +31,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.util.Point;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
@@ -51,7 +63,7 @@ public class TextureHelper {
      * @return Has part info(s).
      */
     public static boolean hasSkinData(AbstractClientPlayer player) {
-        BufferedImage image = uk.kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
+        BufferedImage image = getPlayerSkinAsBufferedImage(player);
         if (image != null) {
             for (PartsData.PartType partType : PartsData.PartType.values()) {
                 int ordinal = partType.ordinal();
@@ -70,7 +82,7 @@ public class TextureHelper {
 	public static void buildPlayerPartsData(AbstractClientPlayer player) {
 		GameProfile profile = player.getGameProfile();
 		UUID uuid = profile.getId();
-        BufferedImage image = uk.kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
+        BufferedImage image = getPlayerSkinAsBufferedImage(player);
         if (image != null) {
             //Players part data
             PartsData partsData = Tails.proxy.getPartsData(uuid);
@@ -105,7 +117,7 @@ public class TextureHelper {
 	}
 
     public static BufferedImage writePartsDataToSkin(PartsData partsData, AbstractClientPlayer player) {
-        BufferedImage image = uk.kihira.foxlib.client.TextureHelper.getPlayerSkinAsBufferedImage(player);
+        BufferedImage image = getPlayerSkinAsBufferedImage(player);
 
         //Check we have the players skin
         if (image != null) {
@@ -187,4 +199,52 @@ public class TextureHelper {
 	public static boolean needsBuild(EntityPlayer player) {
 		return !Tails.proxy.hasPartsData(player.getPersistentID()) && player.getGameProfile().getProperties().containsKey("textures");
 	}
+
+    private static BufferedImage getPlayerSkinAsBufferedImage(AbstractClientPlayer player) {
+        BufferedImage bufferedImage = null;
+        InputStream inputStream = null;
+        Minecraft mc = Minecraft.getMinecraft();
+        Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = mc.getSkinManager().loadSkinFromCache(player.getGameProfile());
+        ITextureObject skintex;
+        String playerName = player.getDisplayNameString();
+
+        try {
+            if (map.containsKey(MinecraftProfileTexture.Type.SKIN)) {
+                skintex = mc.getTextureManager().getTexture(mc.getSkinManager().loadSkin(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN));
+            }
+            else {
+                skintex = mc.getTextureManager().getTexture(player.getLocationSkin());
+            }
+
+            if (skintex instanceof ThreadDownloadImageData) {
+                ThreadDownloadImageData imagedata = (ThreadDownloadImageData) skintex;
+                Tails.logger.debug("Loading "+playerName+" skin");
+                bufferedImage = ObfuscationReflectionHelper.getPrivateValue(ThreadDownloadImageData.class, imagedata, "field_110560_d", "bufferedImage");
+            }
+            else if (skintex instanceof DynamicTexture) {
+                Tails.logger.warn(playerName+" skin is a DynamicTexture! Attempting to load anyway");
+                DynamicTexture imagedata = (DynamicTexture) skintex;
+                int width = ObfuscationReflectionHelper.getPrivateValue(DynamicTexture.class, imagedata, "field_94233_j", "width");
+                int height = ObfuscationReflectionHelper.getPrivateValue(DynamicTexture.class, imagedata, "field_94234_k", "height");
+                bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                bufferedImage.setRGB(0, 0, width, height, imagedata.getTextureData(), 0, width);
+            }
+            else {
+                Tails.logger.warn("Could not fetch "+playerName+" skin, loading default skin");
+                inputStream = Minecraft.getMinecraft().getResourceManager().getResource(DefaultPlayerSkin.getDefaultSkinLegacy()).getInputStream();
+                bufferedImage = ImageIO.read(inputStream);
+            }
+        }
+        catch (IOException e) {
+            Tails.logger.error("Failed to read "+playerName+" skin texture", e);
+        }
+        finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+        return bufferedImage;
+    }
+
+    private static void uploadTexture(ITextureObject textureObject, BufferedImage bufferedImage) {
+        TextureUtil.uploadTextureImage(textureObject.getGlTextureId(), bufferedImage);
+    }
 }

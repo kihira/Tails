@@ -78,13 +78,3 @@ tails.uploading=Lädt hoch...
 tails.upload.success=Erfolgreich hochgeladen! Schau in deinen Browser
 tails.upload.failed=Upload fehlgeschlagen! Ist imgur oder die Minecraft-Website nicht verfügbar?
 tails.upload.ratelimit=Upload fehlgeschlagen! Das Raten-Limit wurde erreicht, lädst du zu oft hoch?
-
-foxlib.downloader.missing=Du brauchst FoxLib um %s zu benutzen! Du kannst es hier herunterladen: %s
-foxlib.downloader.0=FoxLib fehlt und es ist BENÖTIGT um %s zu nutzen!
-foxlib.downloader.1=Willst du FoxLib automatisch herunterladen? (Erfordert Spiel-Neustart)
-foxlib.downloader.downloading=FoxLib wird heruntergeladen...
-foxlib.downloader.success=FoxLib wurde heruntergeladen!
-foxlib.downloader.restart=Bitte starte dein Spiel neu, um die Installation fertigzustellen
-foxlib.downloader.failed.0=FoxLib konnte nicht heruntergeladen werden
-foxlib.downloader.failed.1=Bitte lade FoxLib manuell von CurseForge herunter (%s)
-foxlib.downloader.outofdate=Die Version von FoxLib ist nicht korrekt, bitte updaten (%s)

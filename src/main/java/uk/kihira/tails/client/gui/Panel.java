@@ -1,6 +1,5 @@
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.foxlib.client.gui.GuiBaseScreen;
 import org.apache.commons.lang3.Validate;
 
 import java.io.IOException;

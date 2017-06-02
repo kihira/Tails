@@ -1,8 +1,7 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.renderer.GlStateManager;
-import uk.kihira.foxlib.client.gui.GuiIconButton;
-import uk.kihira.foxlib.client.toast.ToastManager;
+import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.LibraryEntriesMessage;
