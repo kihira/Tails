@@ -83,20 +83,17 @@ public class Tails {
         if (e.getSide() == Side.CLIENT && Loader.isModLoaded("Botania") && VersionParser.parseRange("[r1.7-205,)").containsVersion(Loader.instance().getIndexedModList().get("Botania").getProcessedVersion())) {
             logger.debug(String.format("Botania (%s) found, loading Foxtato renderer", Loader.instance().getIndexedModList().get("Botania").getProcessedVersion().getVersionString()));
             MinecraftForge.EVENT_BUS.register(new FoxtatoRender());
-            RenderPart.registerRenderHelper(FoxtatoRender.FoxtatoFakeEntity.class, new IRenderHelper() {
-                @Override
-                public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z) {
-                    switch (info.partType) {
-                        case TAIL: {
-                            GlStateManager.translate(0F, 1.325F, 0.125F);
-                            GlStateManager.scale(0.25F, 0.25F, 0.25F);
-                            break;
-                        }
-                        case EARS: {
-                            GlStateManager.translate(0F, 1.375F, -0.1F);
-                            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-                            break;
-                        }
+            RenderPart.registerRenderHelper(FoxtatoRender.FoxtatoFakeEntity.class, (entity, tail, info, x, y, z) -> {
+                switch (info.partType) {
+                    case TAIL: {
+                        GlStateManager.translate(0F, 1.325F, 0.125F);
+                        GlStateManager.scale(0.25F, 0.25F, 0.25F);
+                        break;
+                    }
+                    case EARS: {
+                        GlStateManager.translate(0F, 1.375F, -0.1F);
+                        GlStateManager.scale(0.5F, 0.5F, 0.5F);
+                        break;
                     }
                 }
             });

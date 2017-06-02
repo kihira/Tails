@@ -10,11 +10,11 @@ import java.util.ArrayList;
 public abstract class GuiBase extends GuiBaseScreen {
 
     //0 is bottom layer
-    private final ArrayList<ArrayList<Panel>> layers = new ArrayList<ArrayList<Panel>>();
+    private final ArrayList<ArrayList<Panel>> layers = new ArrayList<>();
 
     public GuiBase(int layerCount) {
         for (int i = 0; i < layerCount; i++) {
-            layers.add(new ArrayList<Panel>());
+            layers.add(new ArrayList<>());
         }
     }
 

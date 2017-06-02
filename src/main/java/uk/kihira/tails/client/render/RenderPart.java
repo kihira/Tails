@@ -26,7 +26,7 @@ import java.util.HashMap;
 @SideOnly(Side.CLIENT)
 public class RenderPart {
 
-    private static final HashMap<Class<? extends EntityLivingBase>, IRenderHelper> renderHelpers = new HashMap<Class<? extends EntityLivingBase>, IRenderHelper>();
+    private static final HashMap<Class<? extends EntityLivingBase>, IRenderHelper> renderHelpers = new HashMap<>();
 
     protected final String name;
     protected final String[] textureNames;
@@ -132,9 +132,6 @@ public class RenderPart {
     }
 
     public static IRenderHelper getRenderHelper(Class<? extends EntityLivingBase> clazz) {
-        if (renderHelpers.containsKey(clazz)) {
-            return renderHelpers.get(clazz);
-        }
-        else return null;
+        return renderHelpers.getOrDefault(clazz, null);
     }
 }

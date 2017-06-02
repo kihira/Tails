@@ -231,9 +231,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
                 Mouse.setNativeCursor(cursor);
 
-            } catch (LWJGLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (LWJGLException | IOException e) {
                 e.printStackTrace();
             }
         }

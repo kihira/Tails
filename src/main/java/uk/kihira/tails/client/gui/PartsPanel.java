@@ -116,7 +116,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     void initPartList() {
         //Part List
-        List<PartEntry> partList = new ArrayList<PartEntry>();
+        List<PartEntry> partList = new ArrayList<>();
         PartsData.PartType partType = parent.getPartType();
         partList.add(new PartEntry(new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType))); //No tail
         //Generate tail preview textures and add to list
@@ -128,7 +128,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
             }
         }
 
-        this.partList = new GuiList<PartEntry>(this, width, height - listTop, listTop, height, 55, partList);
+        this.partList = new GuiList<>(this, width, height - listTop, listTop, height, 55, partList);
         this.partList.width = width;
         selectDefaultListEntry();
     }

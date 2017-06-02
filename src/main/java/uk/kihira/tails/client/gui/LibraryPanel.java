@@ -102,7 +102,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     public void initList() {
-        List<LibraryListEntry> libraryEntries = new ArrayList<LibraryListEntry>();
+        List<LibraryListEntry> libraryEntries = new ArrayList<>();
         for (LibraryEntryData data : Tails.proxy.getLibraryManager().libraryEntries) {
             libraryEntries.add(new LibraryListEntry(data));
         }
@@ -110,9 +110,9 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
         //Add in new entry creation
         libraryEntries.add(0, new LibraryListEntry.NewLibraryListEntry(this, null));
 
-        Collections.sort(libraryEntries, sorter);
+        libraryEntries.sort(sorter);
 
-        list = new GuiList<LibraryListEntry>(this, width, height - 34, 0, height - 34, 50, libraryEntries);
+        list = new GuiList<>(this, width, height - 34, 0, height - 34, 50, libraryEntries);
     }
 
     public void addSelectedEntry(LibraryListEntry entry) {
@@ -127,8 +127,8 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     private List<LibraryListEntry> filterListEntries(String filter) {
-        ArrayList<LibraryListEntry> filteredEntries = new ArrayList<LibraryListEntry>();
-        List<LibraryListEntry> entries = new ArrayList<LibraryListEntry>();
+        ArrayList<LibraryListEntry> filteredEntries = new ArrayList<>();
+        List<LibraryListEntry> entries = new ArrayList<>();
 
         for (LibraryEntryData data : Tails.proxy.getLibraryManager().libraryEntries) {
             entries.add(new LibraryListEntry(data));

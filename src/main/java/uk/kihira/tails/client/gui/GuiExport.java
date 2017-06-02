@@ -152,12 +152,9 @@ class GuiExport extends GuiBaseScreen {
         //Upload
         if (button.id == 10) {
             final BufferedImage image = TextureHelper.writePartsDataToSkin(this.partsData, this.mc.player);
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    exportMessage = I18n.format("tails.uploading");
-                    new ImgurUpload().uploadImage(image);
-                }
+            Runnable runnable = () -> {
+                exportMessage = I18n.format("tails.uploading");
+                new ImgurUpload().uploadImage(image);
             };
             runnable.run();
         }
@@ -240,9 +237,7 @@ class GuiExport extends GuiBaseScreen {
                     else setExportMessage(TextFormatting.DARK_RED + I18n.format("tails.upload.failed"));
                 }
 
-            } catch (IOException e) {
-                Tails.logger.catching(e);
-            } catch (JsonParseException e) {
+            } catch (IOException | JsonParseException e) {
                 Tails.logger.catching(e);
             } finally {
                 IOUtils.closeQuietly(baos);
