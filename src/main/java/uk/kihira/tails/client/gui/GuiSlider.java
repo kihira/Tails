@@ -15,8 +15,8 @@ import net.minecraft.util.math.MathHelper;
 public class GuiSlider extends GuiButton implements IControl<Float> {
 
     public float currentValue;
-    private float minValue;
-    private float maxValue;
+    private final float minValue;
+    private final float maxValue;
     private float sliderValue;
     private boolean dragging = false;
     private IControlCallback<GuiSlider, Float> parent;

@@ -100,7 +100,9 @@ public class LibraryManager {
 
         if (!libraryFile.exists()) {
             try {
-                libraryFile.createNewFile();
+                if (!libraryFile.createNewFile()) {
+                    Tails.logger.error("Failed to create a library file!");
+                }
             } catch (IOException e) {
                 Tails.logger.error("Failed to create a library file!", e);
             }
