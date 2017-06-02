@@ -28,6 +28,10 @@ apply plugin: 'maven'
 sourceCompatibility='1.8'
 targetCompatibility='1.8'
 
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
 configurations {
     deployerJars
     all {
@@ -60,7 +64,7 @@ minecraft {
 
     replace '@VERSION@', project.version
     replace '@MCVERSION@', project.mcVersion
-    replace '@FOXLIBVERSION@', project.foxlibVersion // todo auto calculate current version?
+    //replace '@FOXLIBVERSION@', project.foxlibVersion // todo auto calculate current version?
 }
 
 //noinspection GroovyAssignabilityCheck
