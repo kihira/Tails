@@ -2,8 +2,10 @@ package uk.kihira.tails.client;
 
 import net.minecraft.util.Session;
 import org.apache.commons.io.IOUtils;
+import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -12,7 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class CloudManager {
-    private static final String BASE_URL = "https://tails.foxes.rocks";
+    private static final String BASE_URL = "https://api.tails.foxes.rocks";
     private static final String JOIN_URL = "https://sessionserver.mojang.com/session/minecraft/join";
 
     private final Session session;
@@ -29,8 +31,13 @@ public class CloudManager {
         // todo submit data to remote server
         HttpURLConnection conn;
 
+        if (key.equals("active")) {
+            // todo this is their "default"/active setup
+            //URL url = new URL(BASE_URL+"/player/"+session.getProfile().getId()+"/active");
+        }
+
         try {
-            URL url = new URL(BASE_URL+"/submit");
+            URL url = new URL(BASE_URL+"/player/"+session.getProfile().getId()+"/library/"+key);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
@@ -46,6 +53,7 @@ public class CloudManager {
                 return false;
             }
             SubmitResponse response = Tails.gson.fromJson(IOUtils.toString(conn.getInputStream()), SubmitResponse.class);
+            // todo store id
 
             return true;
 
@@ -56,12 +64,37 @@ public class CloudManager {
         return true;
     }
 
-    public String fetchData(final String key) {
-        // todo
-        return "";
+    @Nullable
+    public PartsData fetchPartsData(final String key) {
+        HttpURLConnection conn = null;
+
+        try {
+            URL url = new URL(BASE_URL+"/player/"+session.getProfile().getId()+"/library/"+key);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            switch (conn.getResponseCode()) {
+                case 200:
+                    // todo add data to local cache
+                    return Tails.gson.fromJson(IOUtils.toString(conn.getInputStream()), PartsData.class);
+                case 404:
+                    Tails.logger.error("Failed to load parts data for ID "); // todo
+                    break;
+                default:
+                    Tails.logger.error("Unhandled response code in fetching parts data: "+conn.getResponseCode());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.close(conn);
+        }
+
+        return null;
     }
 
     public ArrayList<String> multiFetchData(final String ... keys) {
+
         // todo
         return new ArrayList<>();
     }
