@@ -16,7 +16,6 @@ import net.minecraft.util.ResourceLocation;
 import java.util.Arrays;
 
 public class PartInfo implements Cloneable {
-
     @Expose public final boolean hasPart;
     @Expose public final int typeid;
     @Expose public final int subid;
@@ -91,19 +90,6 @@ public class PartInfo implements Cloneable {
         result = 31 * result + textureID;
         result = 31 * result + partType.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "PartInfo{" +
-                "hasPart=" + hasPart +
-                ", typeid=" + typeid +
-                ", subid=" + subid +
-                ", tints=" + Arrays.toString(tints) +
-                ", textureID=" + textureID +
-                ", partType=" + partType +
-                ", texture=" + texture +
-                '}';
     }
 
     public PartInfo deepCopy() {
