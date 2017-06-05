@@ -58,8 +58,8 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
 
         // Size Slider
-        sizeSlider = new GuiSlider(this, 6, 10, topOffset+35, width, 0.5f, 1.5f, 1.f);
-        buttonList.add(sizeSlider);
+//        sizeSlider = new GuiSlider(this, 6, 10, topOffset+35, width, 0.5f, 1.5f, 1.f);
+//        buttonList.add(sizeSlider);
 
         //Tint edit pane
         hexText = new GuiTextField(-1, fontRenderer, 30, editPaneTop + 20, 73, 10);
