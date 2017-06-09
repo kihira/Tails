@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.render;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -27,12 +19,9 @@ import java.util.HashMap;
 
 @SideOnly(Side.CLIENT)
 public class LegacyPartRenderer {
-
-    private final Part part;
     public final ModelPartBase modelPart;
 
-    public LegacyPartRenderer(Part part, ModelPartBase modelPart) {
-        this.part = part;
+    public LegacyPartRenderer(ModelPartBase modelPart) {
         this.modelPart = modelPart;
     }
 
@@ -49,16 +38,16 @@ public class LegacyPartRenderer {
         if (entity instanceof EntityPlayer) helper = getRenderHelper(EntityPlayer.class);
         else helper = getRenderHelper(entity.getClass());
         if (helper != null) {
-            helper.onPreRenderTail(entity, this, outfitPart);
+            helper.onPreRenderTail(entity, outfitPart);
         }
 
-        this.doRender(entity, info, partialTicks);
+        this.doRender(entity, outfitPart, partialTicks);
         GlStateManager.popMatrix();
     }
 
-    protected void doRender(EntityLivingBase entity, PartInfo info, float partialTicks) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
-        this.modelPart.render(entity, info.subid, partialTicks);
+    protected void doRender(EntityLivingBase entity, OutfitPart outfitPart, float partialTicks) {
+        Minecraft.getMinecraft().renderEngine.bindTexture(outfitPart.compiledTexture);
+        this.modelPart.render(entity, partialTicks);
     }
 
     // todo move below to somewhere else

@@ -1,5 +1,7 @@
 package uk.kihira.tails.client;
 
+import net.minecraft.util.ResourceLocation;
+
 import java.util.UUID;
 
 /**
@@ -12,6 +14,9 @@ public class OutfitPart {
     public float[] rotation;
     public float[] scale;
     public int[] tints;
+
+    // Client only fields
+    public transient ResourceLocation compiledTexture;
 
     public OutfitPart(UUID basePart) {
         this.basePart = basePart;

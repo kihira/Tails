@@ -39,7 +39,7 @@ public class TexturePanel extends Panel<GuiEditor> {
 
         //Texture select
         drawCenteredString(fontRenderer, I18n.format("gui.texture"), width/2, texSelectX - 12, 0xFFFFFF);
-        fontRenderer.drawString(I18n.format(parent.getPartType().name().toLowerCase() + ".texture." + PartRegistry.getRenderPart(parent.getPartType(),
+        fontRenderer.drawString(I18n.format(parent.getPartType().name().toLowerCase() + ".texture." + PartRegistry.getRenderer(parent.getPartType(),
                 partInfo.typeid).getTextureNames(partInfo.subid)[parent.textureID] + ".name"), 25, texSelectX + 4, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
@@ -48,7 +48,7 @@ public class TexturePanel extends Panel<GuiEditor> {
     @Override
     protected void actionPerformed(GuiButton button) {
         PartInfo originalPartInfo = parent.getEditingPartInfo();
-        LegacyPartRenderer part = PartRegistry.getRenderPart(parent.getPartType(), originalPartInfo.typeid);
+        LegacyPartRenderer part = PartRegistry.getRenderer(parent.getPartType(), originalPartInfo.typeid);
         //Texture select
         if (button.id == 18) {
             if (parent.textureID - 1 >= 0) {
@@ -73,7 +73,7 @@ public class TexturePanel extends Panel<GuiEditor> {
 
     void updateButtons() {
         PartInfo originalPartInfo = parent.getEditingPartInfo();
-        LegacyPartRenderer part = PartRegistry.getRenderPart(parent.getPartType(), originalPartInfo.typeid);
+        LegacyPartRenderer part = PartRegistry.getRenderer(parent.getPartType(), originalPartInfo.typeid);
 
         int texCount = part.getTextureNames(originalPartInfo.subid).length;
         leftBtn.enabled = rightBtn.enabled = texCount > 1;

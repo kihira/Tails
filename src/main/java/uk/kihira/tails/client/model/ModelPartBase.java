@@ -16,19 +16,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
 
 /**
- * A base class that all tails extend
+ * A base class that all parts extend
  */
 public abstract class ModelPartBase extends ModelBase {
 
     public static final float SCALE = 0.0625F;
 
-    /**
-     * Renders the tail with the optional parts list provided
-     * @param theEntity The owner of the tail
-     * @param subtype The subtype
-     * @param partialTicks
-     */
-    public abstract void render(EntityLivingBase theEntity, int subtype, float partialTicks);
+    public abstract void render(EntityLivingBase theEntity, float partialTicks);
 
     /**
      * Sets the rotation on a model where the provided params are in radians

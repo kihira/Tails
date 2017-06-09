@@ -158,7 +158,7 @@ public class TextureHelper {
 		int typeid = (data >> 16) & 0xFF;
         int subtype = (data >> 8) & 0xFF;
         int textureid = (data) & 0xFF;
-		String[] textures = PartRegistry.getRenderPart(partType, typeid).getTextureNames(subtype);
+		String[] textures = PartRegistry.getRenderer(partType, typeid).getTextureNames(subtype);
 
 		textureid = textureid >= textures.length ? 0 : textureid;
 		
@@ -181,7 +181,7 @@ public class TextureHelper {
      * @param tints An array of int[3]     @return A resource location for the generated texture
      */
     private static ResourceLocation generateTexture(UUID uuid, PartsData.PartType partType, int typeid, int subid, int textureID, int[] tints) {
-        String[] textures = PartRegistry.getRenderPart(partType, typeid).getTextureNames(subid);
+        String[] textures = PartRegistry.getRenderer(partType, typeid).getTextureNames(subid);
         textureID = textureID >= textures.length ? 0 : textureID;
         String texturePath = "texture/" + partType.name().toLowerCase() + "/"+textures[textureID]+".png";
 

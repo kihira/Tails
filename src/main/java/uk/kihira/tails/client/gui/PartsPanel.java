@@ -153,7 +153,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
         RenderHelper.enableStandardItemLighting();
         Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
-        PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).render(fakeEntity, partInfo, 0, 0, 0, 0);
+        PartRegistry.getRenderer(partInfo.partType, partInfo.typeid).render(fakeEntity, partInfo, 0, 0, 0, 0);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         //GlStateManager.disableTexture2D(); //Why was this needed? It produces graphical issues when enabled...
@@ -177,11 +177,11 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
             if (partInfo.hasPart) {
                 boolean currentPart = partList.getCurrrentIndex() == slotIndex;
                 renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, partInfo);
-                ClientUtils.drawStringMultiLine(fontRenderer, I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid)
+                ClientUtils.drawStringMultiLine(fontRenderer, I18n.format(PartRegistry.getRenderer(partInfo.partType, partInfo.typeid)
                         .getUnlocalisedName(partInfo.subid)), 5, y + 17, 0xFFFFFF);
 
                 if (currentPart) {
-                    LegacyPartRenderer renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
+                    LegacyPartRenderer renderPart = PartRegistry.getRenderer(parent.getPartType(), partInfo.typeid);
                     if (renderPart.getModelAuthor() != null) {
                         //Yeah its not nice but eh, works
                         GlStateManager.pushMatrix();
