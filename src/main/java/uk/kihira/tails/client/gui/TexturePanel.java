@@ -1,7 +1,7 @@
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.tails.client.PartRegistry;
-import uk.kihira.tails.client.render.RenderPart;
+import uk.kihira.tails.client.render.LegacyPartRenderer;
+import uk.kihira.tails.common.PartRegistry;
 import uk.kihira.tails.common.PartInfo;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
@@ -48,7 +48,7 @@ public class TexturePanel extends Panel<GuiEditor> {
     @Override
     protected void actionPerformed(GuiButton button) {
         PartInfo originalPartInfo = parent.getEditingPartInfo();
-        RenderPart part = PartRegistry.getRenderPart(parent.getPartType(), originalPartInfo.typeid);
+        LegacyPartRenderer part = PartRegistry.getRenderPart(parent.getPartType(), originalPartInfo.typeid);
         //Texture select
         if (button.id == 18) {
             if (parent.textureID - 1 >= 0) {
@@ -73,7 +73,7 @@ public class TexturePanel extends Panel<GuiEditor> {
 
     void updateButtons() {
         PartInfo originalPartInfo = parent.getEditingPartInfo();
-        RenderPart part = PartRegistry.getRenderPart(parent.getPartType(), originalPartInfo.typeid);
+        LegacyPartRenderer part = PartRegistry.getRenderPart(parent.getPartType(), originalPartInfo.typeid);
 
         int texCount = part.getTextureNames(originalPartInfo.subid).length;
         leftBtn.enabled = rightBtn.enabled = texCount > 1;

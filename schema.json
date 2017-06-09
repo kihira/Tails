@@ -1,0 +1,21 @@
+{
+  "parts": [{
+    "resource_id": 0,
+    "model_id": 0,
+    "texture_id": 0,
+    "tints": [
+      0, 0, 0
+    ],
+    "rotation": [
+      0, 0, 0
+    ],
+    "scale": [
+      0, 0, 0
+    ],
+    "mount_point": 0,
+    "mount_offset": [
+      0, 0, 0
+    ]
+  }
+  ]
+}

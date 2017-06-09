@@ -10,6 +10,7 @@ package uk.kihira.tails.client.render;
 
 import net.minecraft.client.renderer.GlStateManager;
 import uk.kihira.tails.api.IRenderHelper;
+import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.client.model.tail.ModelCatTail;
 import uk.kihira.tails.client.model.tail.ModelDevilTail;
 import uk.kihira.tails.client.model.tail.ModelDragonTail;
@@ -21,7 +22,7 @@ import net.minecraft.entity.EntityLivingBase;
 public class PlayerRenderHelper implements IRenderHelper {
 
     @Override
-    public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z) {
+    public void onPreRenderTail(EntityLivingBase entity, OutfitPart outfitPart) {
         if (info.partType == PartsData.PartType.EARS || info.partType == PartsData.PartType.MUZZLE || info.partType == PartsData.PartType.WINGS) return;
         if (tail.modelPart instanceof ModelDragonTail) {
             GlStateManager.translate(0F, 0.68F, 0.1F);

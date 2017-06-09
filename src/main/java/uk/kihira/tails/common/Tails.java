@@ -71,8 +71,8 @@ public class Tails {
             Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
             loadConfig();
 
-            RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
-            RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
+            LegacyPartRenderer.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
+            LegacyPartRenderer.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
         }
     }
 
@@ -81,7 +81,7 @@ public class Tails {
         if (e.getSide() == Side.CLIENT && Loader.isModLoaded("Botania") && VersionParser.parseRange("[r1.7-205,)").containsVersion(Loader.instance().getIndexedModList().get("Botania").getProcessedVersion())) {
             logger.debug(String.format("Botania (%s) found, loading Foxtato renderer", Loader.instance().getIndexedModList().get("Botania").getProcessedVersion().getVersionString()));
             MinecraftForge.EVENT_BUS.register(new FoxtatoRender());
-            RenderPart.registerRenderHelper(FoxtatoRender.FoxtatoFakeEntity.class, (entity, tail, info, x, y, z) -> {
+            LegacyPartRenderer.registerRenderHelper(FoxtatoRender.FoxtatoFakeEntity.class, (entity, tail, info, x, y, z) -> {
                 switch (info.partType) {
                     case TAIL: {
                         GlStateManager.translate(0F, 1.325F, 0.125F);

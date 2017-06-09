@@ -1,7 +1,7 @@
 package uk.kihira.tails.client.gui;
 
 import com.mojang.authlib.GameProfile;
-import uk.kihira.tails.client.PartRegistry;
+import uk.kihira.tails.common.PartRegistry;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.PartInfo;
 import uk.kihira.tails.common.PartsData;

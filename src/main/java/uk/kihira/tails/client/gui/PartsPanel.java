@@ -9,8 +9,8 @@ package uk.kihira.tails.client.gui;
 
 import uk.kihira.tails.client.ClientUtils;
 import uk.kihira.tails.client.FakeEntity;
-import uk.kihira.tails.client.PartRegistry;
-import uk.kihira.tails.client.render.RenderPart;
+import uk.kihira.tails.client.render.LegacyPartRenderer;
+import uk.kihira.tails.common.PartRegistry;
 import uk.kihira.tails.common.PartInfo;
 import uk.kihira.tails.common.PartsData;
 import net.minecraft.client.Minecraft;
@@ -120,7 +120,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         PartsData.PartType partType = parent.getPartType();
         partList.add(new PartEntry(PartInfo.none(partType))); //No tail
         //Generate tail preview textures and add to list
-        List<RenderPart> parts = PartRegistry.getParts(partType);
+        List<LegacyPartRenderer> parts = PartRegistry.getParts(partType);
         for (int type = 0; type < parts.size(); type++) {
             for (int subType = 0; subType <= parts.get(type).getAvailableSubTypes(); subType++) {
                 PartInfo partInfo = new PartInfo(true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 1, null, partType);
@@ -181,7 +181,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
                         .getUnlocalisedName(partInfo.subid)), 5, y + 17, 0xFFFFFF);
 
                 if (currentPart) {
-                    RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
+                    LegacyPartRenderer renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
                     if (renderPart.getModelAuthor() != null) {
                         //Yeah its not nice but eh, works
                         GlStateManager.pushMatrix();

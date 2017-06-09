@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class RenderWings extends RenderPart {
+public class RenderWings extends LegacyPartRenderer {
 
     public RenderWings(String name, int subTypes, String modelAuthor, ModelPartBase modelPart, String... textureNames) {
         super(name, subTypes, modelPart, modelAuthor, textureNames);

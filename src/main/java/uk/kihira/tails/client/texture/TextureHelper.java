@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.io.IOUtils;
-import uk.kihira.tails.client.PartRegistry;
+import uk.kihira.tails.common.PartRegistry;
 import uk.kihira.tails.common.PartInfo;
 import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;

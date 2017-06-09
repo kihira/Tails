@@ -1,6 +1,6 @@
 package uk.kihira.tails.client.model;
 
-import uk.kihira.tails.client.PartRegistry;
+import uk.kihira.tails.common.PartRegistry;
 import uk.kihira.tails.client.render.RenderingHandler;
 import uk.kihira.tails.common.PartInfo;
 import uk.kihira.tails.common.PartsData;

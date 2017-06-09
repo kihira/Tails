@@ -28,8 +28,8 @@ public class FoxtatoRender {
             if (fakeEntity == null) {
                 fakeEntity = new FoxtatoFakeEntity(Minecraft.getMinecraft().world);
             }
-            RenderPart fox_tailRender = PartRegistry.getRenderPart(PartsData.PartType.TAIL, 0);
-            RenderPart foxEarRender = PartRegistry.getRenderPart(PartsData.PartType.EARS, 0);
+            LegacyPartRenderer fox_tailRender = PartRegistry.getRenderPart(PartsData.PartType.TAIL, 0);
+            LegacyPartRenderer foxEarRender = PartRegistry.getRenderPart(PartsData.PartType.EARS, 0);
 
             fox_tailRender.render(fakeEntity, tailPartInfo, e.x, e.y, e.z, e.partTicks);
             foxEarRender.render(fakeEntity, earPartInfo, e.x, e.y, e.z, e.partTicks);
