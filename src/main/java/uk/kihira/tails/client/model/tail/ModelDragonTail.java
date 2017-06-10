@@ -109,7 +109,7 @@ public class ModelDragonTail extends ModelPartBase {
 
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+    public void render(EntityLivingBase theEntity, float partialTicks) {
         this.setRotationAngles(0, 0, 0, 0, subtype, partialTicks, theEntity);
 
         this.tailBase.render(0.0625F);

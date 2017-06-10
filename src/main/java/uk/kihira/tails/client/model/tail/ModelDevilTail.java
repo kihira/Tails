@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014 Zoe Lee (Kihira)
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.model.tail;
 
 import uk.kihira.tails.client.model.ModelPartBase;
@@ -99,7 +91,7 @@ public class ModelDevilTail extends ModelPartBase {
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+    public void render(EntityLivingBase theEntity, float partialTicks) {
         this.setRotationAngles(0, 0, 0, 0, 0, partialTicks, theEntity);
 
         if (subtype == 1) {

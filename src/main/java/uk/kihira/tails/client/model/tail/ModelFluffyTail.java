@@ -126,7 +126,7 @@ public class ModelFluffyTail extends ModelPartBase {
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+    public void render(EntityLivingBase theEntity, float partialTicks) {
         float timestep = getAnimationTime(4000F, theEntity);
 
         if (subtype == 0) {

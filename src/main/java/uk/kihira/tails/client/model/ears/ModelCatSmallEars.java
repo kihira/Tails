@@ -60,7 +60,7 @@ public class ModelCatSmallEars extends ModelPartBase {
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+    public void render(EntityLivingBase theEntity, float partialTicks) {
         this.rightEarRearLayer1.render(0.0625f);
         this.leftEarRearLayer1.render(0.0625f);
         this.rightEarRearBottom.render(0.0625f);

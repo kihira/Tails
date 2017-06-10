@@ -95,7 +95,7 @@ public class ModelSharkTail extends ModelPartBase {
     }
 
     @Override
-    public void render(EntityLivingBase entity, int subtype, float partialTicks) {
+    public void render(EntityLivingBase entity, float partialTicks) {
         double xAngleOffset = 0;
         double yAngleMultiplier = 1; //Used to suppress sway when running
         if (!entity.isRiding()) {

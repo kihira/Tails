@@ -16,7 +16,7 @@ public class ModelBunnyTail extends ModelPartBase {
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+    public void render(EntityLivingBase theEntity, float partialTicks) {
         float timestep = getAnimationTime(4000F, theEntity);
 
         this.setRotationAngles(0, timestep, 1F, 1F, 0, 0, partialTicks, theEntity);
