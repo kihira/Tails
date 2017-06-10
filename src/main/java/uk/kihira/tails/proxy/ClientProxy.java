@@ -1,12 +1,11 @@
 package uk.kihira.tails.proxy;
 
 import uk.kihira.tails.client.ClientEventHandler;
-import uk.kihira.tails.client.model.ModelRendererWrapper;
+import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.render.LayerPart;
-import uk.kihira.tails.client.render.RenderingHandler;
+import uk.kihira.tails.client.render.FallbackRenderHandler;
 import uk.kihira.tails.common.LibraryManager;
 import uk.kihira.tails.common.Outfit;
-import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.*;
 import net.minecraft.client.Minecraft;
@@ -75,36 +74,45 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerRenderers(boolean legacyRenderer) {
         if (legacyRenderer) {
-            MinecraftForge.EVENT_BUS.register(new RenderingHandler());
+            MinecraftForge.EVENT_BUS.register(new FallbackRenderHandler());
 
             Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
             // Default
             ModelPlayer model = skinMap.get("default").getMainModel();
-            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.TAIL));
-            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.WINGS));
-            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.EARS));
-            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.MUZZLE));
+            model.bipedHead.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.HEAD));
+            model.bipedBody.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.CHEST));
+            model.bipedLeftArm.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.LEFT_ARM));
+            model.bipedRightArm.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.RIGHT_ARM));
+            model.bipedLeftLeg.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.LEFT_LEG));
+            model.bipedRightLeg.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.RIGHT_LEG));
             // Slim
             model = skinMap.get("slim").getMainModel();
-            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.TAIL));
-            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.WINGS));
-            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.EARS));
-            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.MUZZLE));
+            model.bipedHead.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.HEAD));
+            model.bipedBody.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.CHEST));
+            model.bipedLeftArm.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.LEFT_ARM));
+            model.bipedRightArm.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.RIGHT_ARM));
+            model.bipedLeftLeg.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.LEFT_LEG));
+            model.bipedRightLeg.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.RIGHT_LEG));
         }
         else {
             Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
             // Default
             RenderPlayer renderPlayer = skinMap.get("default");
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.MUZZLE));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, MountPoint.HEAD));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, MountPoint.CHEST));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedLeftArm, MountPoint.LEFT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedRightArm, MountPoint.RIGHT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedLeftLeg, MountPoint.LEFT_LEG));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedRightLeg, MountPoint.RIGHT_LEG));
+
             // Slim
             renderPlayer = skinMap.get("slim");
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.MUZZLE));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, MountPoint.HEAD));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, MountPoint.CHEST));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedLeftArm, MountPoint.LEFT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedRightArm, MountPoint.RIGHT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedLeftLeg, MountPoint.LEFT_LEG));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedRightLeg, MountPoint.RIGHT_LEG));
         }
     }
 }
