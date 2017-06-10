@@ -23,8 +23,8 @@ public class ModelRendererWrapper extends ModelRenderer {
 
     @Override
     public void render(float scale) {
-        if (RenderingHandler.currentEvent != null && RenderingHandler.currentPartsData != null && RenderingHandler.currentPlayerTexture != null) {
-            PartInfo info = RenderingHandler.currentPartsData.getPartInfo(partType);
+        if (RenderingHandler.currentEvent != null && RenderingHandler.currentOutfit != null && RenderingHandler.currentPlayerTexture != null) {
+            PartInfo info = RenderingHandler.currentOutfit.getPartInfo(partType);
             if (info != null && info.hasPart) {
                 PartRegistry.getRenderer(info.partType, info.typeid).render(RenderingHandler.currentEvent.getEntityPlayer(),
                         info, 0, 0, 0, RenderingHandler.currentEvent.getPartialRenderTick());

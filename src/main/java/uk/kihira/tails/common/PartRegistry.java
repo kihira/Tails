@@ -60,9 +60,7 @@ public class PartRegistry {
         return parts.get(uuid);
     }
 
-    public static LegacyPartRenderer getRenderer(PartsData.PartType partType, int index) {
-        List<LegacyPartRenderer> parts = PartRegistry.getParts(partType);
-        index = index >= parts.size() ? 0 : index;
-        return parts.get(index);
+    public static LegacyPartRenderer getRenderer(UUID uuid) {
+        return partRenderers.get(uuid);
     }
 }

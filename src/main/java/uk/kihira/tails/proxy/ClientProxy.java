@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.proxy;
 
 import uk.kihira.tails.client.ClientEventHandler;
@@ -13,6 +5,7 @@ import uk.kihira.tails.client.model.ModelRendererWrapper;
 import uk.kihira.tails.client.render.LayerPart;
 import uk.kihira.tails.client.render.RenderingHandler;
 import uk.kihira.tails.common.LibraryManager;
+import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.*;
@@ -37,26 +30,26 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void addPartsData(UUID uuid, PartsData partsData) {
-        if (hasPartsData(uuid)) {
-            this.partsData.get(uuid).clearTextures();
+    public void setActiveOutfit(UUID uuid, Outfit outfit) {
+        if (hasActiveOutfit(uuid)) {
+            this.activeOutfits.get(uuid).clearTextures();
         }
 
-        super.addPartsData(uuid, partsData);
+        super.setActiveOutfit(uuid, outfit);
     }
 
     @Override
-    public void removePartsData(UUID uuid) {
-        if (hasPartsData(uuid)) {
-            this.partsData.get(uuid).clearTextures();
+    public void removeActiveOutfit(UUID uuid) {
+        if (hasActiveOutfit(uuid)) {
+            this.activeOutfits.get(uuid).clearTextures();
         }
-        super.removePartsData(uuid);
+        super.removeActiveOutfit(uuid);
     }
 
     @Override
     public void clearAllPartsData() {
-        for (PartsData partInfo : this.partsData.values()) {
-            partInfo.clearTextures();
+        for (Outfit outfit : this.activeOutfits.values()) {
+            outfit.clearTextures();
         }
         super.clearAllPartsData();
     }

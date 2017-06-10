@@ -1,6 +1,6 @@
 package uk.kihira.tails.client.render;
 
-import uk.kihira.tails.common.PartsData;
+import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -13,14 +13,14 @@ import java.util.UUID;
 public class RenderingHandler {
 
     public static RenderPlayerEvent.Pre currentEvent = null;
-    public static PartsData currentPartsData = null;
+    public static Outfit currentOutfit = null;
     public static ResourceLocation currentPlayerTexture = null;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerRenderTick(RenderPlayerEvent.Pre e) {
         UUID uuid = e.getEntityPlayer().getGameProfile().getId();
-        if (Tails.proxy.hasPartsData(uuid) && !e.getEntityPlayer().isInvisible()) {
-            currentPartsData = Tails.proxy.getPartsData(uuid);
+        if (Tails.proxy.hasActiveOutfit(uuid) && !e.getEntityPlayer().isInvisible()) {
+            currentOutfit = Tails.proxy.getActiveOutfit(uuid);
             currentPlayerTexture = ((AbstractClientPlayer) e.getEntityPlayer()).getLocationSkin();
             currentEvent = e;
         }
@@ -29,7 +29,7 @@ public class RenderingHandler {
     @SubscribeEvent()
     public void onPlayerRenderTickPost(RenderPlayerEvent.Post e) {
         //Reset to null after rendering the current tail
-        currentPartsData = null;
+        currentOutfit = null;
         currentPlayerTexture = null;
         currentEvent = null;
     }

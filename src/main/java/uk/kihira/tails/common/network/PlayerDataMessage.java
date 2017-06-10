@@ -59,7 +59,7 @@ public class PlayerDataMessage implements IMessage {
 
         @Override
         public IMessage onMessage(PlayerDataMessage message, MessageContext ctx) {
-            if (message.shouldRemove) Tails.proxy.removePartsData(message.uuid);
+            if (message.shouldRemove) Tails.proxy.removeActiveOutfit(message.uuid);
             else if (message.partsData != null) {
                 Tails.proxy.addPartsData(message.uuid, message.partsData);
                 //Tell other clients about the change

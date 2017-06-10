@@ -85,7 +85,7 @@ public class TextureHelper {
         BufferedImage image = getPlayerSkinAsBufferedImage(player);
         if (image != null) {
             //Players part data
-            PartsData partsData = Tails.proxy.getPartsData(uuid);
+            PartsData partsData = Tails.proxy.getActiveOutfit(uuid);
             if (partsData == null) {
                 partsData = new PartsData();
             }
@@ -197,7 +197,7 @@ public class TextureHelper {
     }
 	
 	public static boolean needsBuild(EntityPlayer player) {
-		return !Tails.proxy.hasPartsData(player.getPersistentID()) && player.getGameProfile().getProperties().containsKey("textures");
+		return !Tails.proxy.hasActiveOutfit(player.getPersistentID()) && player.getGameProfile().getProperties().containsKey("textures");
 	}
 
     private static BufferedImage getPlayerSkinAsBufferedImage(AbstractClientPlayer player) {

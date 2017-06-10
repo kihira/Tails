@@ -9,6 +9,7 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'org.jetbrains:annotations:15.0'
     }
 }
 
