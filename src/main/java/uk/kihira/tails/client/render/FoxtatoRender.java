@@ -11,8 +11,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class FoxtatoRender {
 
     private FoxtatoFakeEntity fakeEntity;
-    private PartInfo tailPartInfo = new PartInfo(true, 0, 0, 0, new int[]{-5480951, -6594259, -5197647}, PartsData.PartType.TAIL, null);
-    private PartInfo earPartInfo = new PartInfo(true, 0, 0, 0, new int[]{-5480951, 0xFF000000, -5197647}, PartsData.PartType.EARS, null);
+    private PartInfo tailPartInfo = new PartInfo(true, 0, 0, 0, new int[]{-5480951, -6594259, -5197647}, PartsData.PartType.TAIL, 1.f, null);
+    private PartInfo earPartInfo = new PartInfo(true, 0, 0, 0, new int[]{-5480951, 0xFF000000, -5197647}, PartsData.PartType.EARS, 1.f, null);
 
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload e) {
@@ -26,14 +26,14 @@ public class FoxtatoRender {
     public void onPotatoRender(TinyPotatoRenderEvent e) {
         if (e.name.equalsIgnoreCase("foxtato")) {
             if (fakeEntity == null) {
-                fakeEntity = new FoxtatoFakeEntity(Minecraft.getMinecraft().theWorld);
+                fakeEntity = new FoxtatoFakeEntity(Minecraft.getMinecraft().world);
             }
-            RenderPart foxTailRender = PartRegistry.getRenderPart(PartsData.PartType.TAIL, 0);
+            RenderPart fox_tailRender = PartRegistry.getRenderPart(PartsData.PartType.TAIL, 0);
             RenderPart foxEarRender = PartRegistry.getRenderPart(PartsData.PartType.EARS, 0);
 
-            foxTailRender.render(fakeEntity, tailPartInfo, e.x, e.y, e.z, e.partTicks);
+            fox_tailRender.render(fakeEntity, tailPartInfo, e.x, e.y, e.z, e.partTicks);
             foxEarRender.render(fakeEntity, earPartInfo, e.x, e.y, e.z, e.partTicks);
-            GL11.glColor3f(1f, 0f, 1f);
+            GlStateManager.glColor3f(1f, 0f, 1f);
         }
     }*/
 

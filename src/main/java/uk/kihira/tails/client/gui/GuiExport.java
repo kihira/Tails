@@ -12,8 +12,7 @@ import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import uk.kihira.foxlib.client.gui.GuiBaseScreen;
-import uk.kihira.foxlib.client.toast.ToastManager;
+import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.client.texture.TextureHelper;
 import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
@@ -79,9 +78,9 @@ class GuiExport extends GuiBaseScreen {
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
         this.drawDefaultBackground();
 
-        this.drawCenteredString(this.fontRendererObj, I18n.format("gui.export.title"), this.width / 2, 25, 0xFFFFFF);
-        this.fontRendererObj.drawSplitString(I18n.format("gui.export.information"), this.width / 6, 50, (int) (this.scaledRes.getScaledWidth() / 1.5F), 0xFFFFFF);
-        if (!Strings.isNullOrEmpty(this.exportMessage)) this.fontRendererObj.drawSplitString(this.exportMessage, 160, this.height - 88, this.width - 160, 0xFFFFFF);
+        this.drawCenteredString(this.fontRenderer, I18n.format("gui.export.title"), this.width / 2, 25, 0xFFFFFF);
+        this.fontRenderer.drawSplitString(I18n.format("gui.export.information"), this.width / 6, 50, (int) (this.scaledRes.getScaledWidth() / 1.5F), 0xFFFFFF);
+        if (!Strings.isNullOrEmpty(this.exportMessage)) this.fontRenderer.drawSplitString(this.exportMessage, 160, this.height - 88, this.width - 160, 0xFFFFFF);
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
@@ -91,7 +90,7 @@ class GuiExport extends GuiBaseScreen {
     protected void actionPerformed(GuiButton button) {
         //Export to file
         if (button.id == 0 || button.id == 1 || button.id == 2) {
-            AbstractClientPlayer player = this.mc.thePlayer;
+            AbstractClientPlayer player = this.mc.player;
             File file;
 
             this.exportMessage = "";
@@ -152,13 +151,10 @@ class GuiExport extends GuiBaseScreen {
 
         //Upload
         if (button.id == 10) {
-            final BufferedImage image = TextureHelper.writePartsDataToSkin(this.partsData, this.mc.thePlayer);
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    exportMessage = I18n.format("tails.uploading");
-                    new ImgurUpload().uploadImage(image);
-                }
+            final BufferedImage image = TextureHelper.writePartsDataToSkin(this.partsData, this.mc.player);
+            Runnable runnable = () -> {
+                exportMessage = I18n.format("tails.uploading");
+                new ImgurUpload().uploadImage(image);
             };
             runnable.run();
         }
@@ -181,7 +177,7 @@ class GuiExport extends GuiBaseScreen {
 
     private void savePartsData() {
         Tails.setLocalPartsData(partsData);
-        Tails.proxy.addPartsData(mc.thePlayer.getPersistentID(), partsData);
+        Tails.proxy.addPartsData(mc.player.getPersistentID(), partsData);
         Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), partsData, false));
     }
 
@@ -241,9 +237,7 @@ class GuiExport extends GuiBaseScreen {
                     else setExportMessage(TextFormatting.DARK_RED + I18n.format("tails.upload.failed"));
                 }
 
-            } catch (IOException e) {
-                Tails.logger.catching(e);
-            } catch (JsonParseException e) {
+            } catch (IOException | JsonParseException e) {
                 Tails.logger.catching(e);
             } finally {
                 IOUtils.closeQuietly(baos);

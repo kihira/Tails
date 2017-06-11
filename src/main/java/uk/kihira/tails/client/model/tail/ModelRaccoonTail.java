@@ -62,8 +62,8 @@ public class ModelRaccoonTail extends ModelPartBase {
                 zAngleOffset = angles[2];
                 yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
 
-                xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
-                zAngleOffset = MathHelper.clamp_double(zAngleOffset * 0.5D, -0.5D, 0.5D);
+                xAngleOffset = MathHelper.clamp(xAngleOffset * 0.6D, -1D, 0.45D);
+                zAngleOffset = MathHelper.clamp(zAngleOffset * 0.5D, -0.5D, 0.5D);
             }
         }
         //Mounted

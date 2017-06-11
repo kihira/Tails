@@ -11,11 +11,10 @@ package uk.kihira.tails.common;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import uk.kihira.tails.api.IRenderHelper;
+import net.minecraft.client.renderer.GlStateManager;
 import uk.kihira.tails.client.FakeEntity;
 import uk.kihira.tails.client.render.*;
 import uk.kihira.tails.proxy.CommonProxy;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -35,11 +34,11 @@ import net.minecraftforge.fml.common.versioning.VersionParser;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.GL11;
+
 
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:foxlib")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@")
 public class Tails {
 
     public static final String MOD_ID = "tails";
@@ -82,20 +81,17 @@ public class Tails {
         if (e.getSide() == Side.CLIENT && Loader.isModLoaded("Botania") && VersionParser.parseRange("[r1.7-205,)").containsVersion(Loader.instance().getIndexedModList().get("Botania").getProcessedVersion())) {
             logger.debug(String.format("Botania (%s) found, loading Foxtato renderer", Loader.instance().getIndexedModList().get("Botania").getProcessedVersion().getVersionString()));
             MinecraftForge.EVENT_BUS.register(new FoxtatoRender());
-            RenderPart.registerRenderHelper(FoxtatoRender.FoxtatoFakeEntity.class, new IRenderHelper() {
-                @Override
-                public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z) {
-                    switch (info.partType) {
-                        case TAIL: {
-                            GL11.glTranslatef(0F, 1.325F, 0.125F);
-                            GL11.glScalef(0.25F, 0.25F, 0.25F);
-                            break;
-                        }
-                        case EARS: {
-                            GL11.glTranslatef(0F, 1.375F, -0.1F);
-                            GL11.glScalef(0.5F, 0.5F, 0.5F);
-                            break;
-                        }
+            RenderPart.registerRenderHelper(FoxtatoRender.FoxtatoFakeEntity.class, (entity, tail, info, x, y, z) -> {
+                switch (info.partType) {
+                    case TAIL: {
+                        GlStateManager.translate(0F, 1.325F, 0.125F);
+                        GlStateManager.scale(0.25F, 0.25F, 0.25F);
+                        break;
+                    }
+                    case EARS: {
+                        GlStateManager.translate(0F, 1.375F, -0.1F);
+                        GlStateManager.scale(0.5F, 0.5F, 0.5F);
+                        break;
                     }
                 }
             });
@@ -159,7 +155,7 @@ public class Tails {
             if (localPartsData == null) {
                 localPartsData = new PartsData();
                 for (PartsData.PartType partType : PartsData.PartType.values()) {
-                    localPartsData.setPartInfo(partType, new PartInfo(false, 0, 0, 0, 0, 0, 0, null, partType));
+                    localPartsData.setPartInfo(partType, PartInfo.none(partType));
                 }
                 setLocalPartsData(localPartsData);
             }

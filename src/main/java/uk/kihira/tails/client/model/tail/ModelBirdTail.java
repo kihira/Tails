@@ -82,8 +82,8 @@ public class ModelBirdTail extends ModelPartBase {
 
                 xAngleOffset -= Math.cos(timestep - 1) / 15F;
                 zAngleOffset -= Math.cos(timestep - 1) / 25F;
-                xAngleOffset = MathHelper.clamp_double(xAngleOffset * 0.6D, -1D, 0.45D);
-                zAngleOffset = MathHelper.clamp_double(zAngleOffset * 0.5D, -0.5D, 0.5D);
+                xAngleOffset = MathHelper.clamp(xAngleOffset * 0.6D, -1D, 0.45D);
+                zAngleOffset = MathHelper.clamp(zAngleOffset * 0.5D, -0.5D, 0.5D);
             }
         }
         //Mounted

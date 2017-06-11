@@ -51,7 +51,7 @@ public class LibraryEntriesMessage implements IMessage {
                     entry.remoteEntry = true;
                 }
 
-                //We add server entries to the client
+                //We add server entries to the uk.kihira.tails.client
                 Tails.proxy.getLibraryManager().removeRemoteEntries();
                 Tails.proxy.getLibraryManager().addEntries(message.entries);
             }

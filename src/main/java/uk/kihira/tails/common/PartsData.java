@@ -17,7 +17,7 @@ import java.util.Map;
 public class PartsData {
 
     @Expose
-    public Map<PartType, PartInfo> partInfoMap = new HashMap<PartType, PartInfo>(PartType.values().length);
+    public Map<PartType, PartInfo> partInfoMap = new HashMap<>(PartType.values().length);
 
     public PartsData() {}
 

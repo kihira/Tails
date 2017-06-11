@@ -1,8 +1,5 @@
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.foxlib.client.gui.GuiIconButton;
-import uk.kihira.foxlib.client.gui.GuiList;
-import uk.kihira.foxlib.client.gui.IListCallback;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
@@ -34,7 +31,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
         initList();
 
         buttonList.add(new GuiButtonExt(0, 3, height - 18, width - 6, 15, I18n.format("gui.button.all")));
-        searchField = new GuiTextField(1, fontRendererObj, 5, height - 31, width - 10, 10);
+        searchField = new GuiTextField(1, fontRenderer, 5, height - 31, width - 10, 10);
         super.initGui();
     }
 
@@ -61,7 +58,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.id == 0) {
-
+            // todo?
         }
     }
 
@@ -105,7 +102,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     public void initList() {
-        List<LibraryListEntry> libraryEntries = new ArrayList<LibraryListEntry>();
+        List<LibraryListEntry> libraryEntries = new ArrayList<>();
         for (LibraryEntryData data : Tails.proxy.getLibraryManager().libraryEntries) {
             libraryEntries.add(new LibraryListEntry(data));
         }
@@ -113,9 +110,9 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
         //Add in new entry creation
         libraryEntries.add(0, new LibraryListEntry.NewLibraryListEntry(this, null));
 
-        Collections.sort(libraryEntries, sorter);
+        libraryEntries.sort(sorter);
 
-        list = new GuiList<LibraryListEntry>(this, width, height - 34, 0, height - 34, 50, libraryEntries);
+        list = new GuiList<>(this, width, height - 34, 0, height - 34, 50, libraryEntries);
     }
 
     public void addSelectedEntry(LibraryListEntry entry) {
@@ -130,8 +127,8 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     private List<LibraryListEntry> filterListEntries(String filter) {
-        ArrayList<LibraryListEntry> filteredEntries = new ArrayList<LibraryListEntry>();
-        List<LibraryListEntry> entries = new ArrayList<LibraryListEntry>();
+        ArrayList<LibraryListEntry> filteredEntries = new ArrayList<>();
+        List<LibraryListEntry> entries = new ArrayList<>();
 
         for (LibraryEntryData data : Tails.proxy.getLibraryManager().libraryEntries) {
             entries.add(new LibraryListEntry(data));

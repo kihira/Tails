@@ -1,9 +1,8 @@
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.foxlib.client.gui.GuiBaseScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,11 +10,11 @@ import java.util.ArrayList;
 public abstract class GuiBase extends GuiBaseScreen {
 
     //0 is bottom layer
-    private final ArrayList<ArrayList<Panel>> layers = new ArrayList<ArrayList<Panel>>();
+    private final ArrayList<ArrayList<Panel>> layers = new ArrayList<>();
 
     public GuiBase(int layerCount) {
         for (int i = 0; i < layerCount; i++) {
-            layers.add(new ArrayList<Panel>());
+            layers.add(new ArrayList<>());
         }
     }
 
@@ -47,16 +46,16 @@ public abstract class GuiBase extends GuiBaseScreen {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
                 if (panel.enabled) {
-                    GL11.glPushMatrix();
-                    GL11.glTranslatef(panel.left, panel.top, 0);
-                    GL11.glColor4f(1, 1, 1, 1);
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(panel.left, panel.top, 0);
+                    GlStateManager.color(1, 1, 1, 1);
                     panel.drawScreen(mouseX - panel.left, mouseY - panel.top, p_73863_3_);
-                    GL11.glDisable(GL11.GL_LIGHTING);
-                    GL11.glPopMatrix();
+                    GlStateManager.disableLighting();
+                    GlStateManager.popMatrix();
                 }
             }
         }
-        GL11.glColor4f(1, 1, 1, 1);
+        GlStateManager.color(1, 1, 1, 1);
         super.drawScreen(mouseX, mouseY, p_73863_3_);
     }
 

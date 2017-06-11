@@ -8,7 +8,7 @@
 package uk.kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
-import uk.kihira.foxlib.client.gui.GuiIconButton;
+import org.lwjgl.opengl.GL11;
 import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -19,7 +19,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
+
 import org.lwjgl.opengl.GL12;
 
 import javax.imageio.ImageIO;
@@ -28,10 +28,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
 
-public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback {
+public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback, IControlCallback<GuiSlider,Float> {
 
     int currTintEdit = 0;
     int currTintColour = 0xFFFFFF;
+    private GuiSlider sizeSlider;
     private GuiTextField hexText;
     private GuiHSBSlider[] hsbSliders;
     private GuiHSBSlider[] rgbSliders;
@@ -47,7 +48,6 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void initGui() {
         editPaneTop = height - 107;
         //Edit tint buttons
@@ -57,8 +57,12 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             topOffset += 35;
         }
 
+        // Size Slider
+//        sizeSlider = new GuiSlider(this, 6, 10, topOffset+35, width, 0.5f, 1.5f, 1.f);
+//        buttonList.add(sizeSlider);
+
         //Tint edit pane
-        hexText = new GuiTextField(-1, fontRendererObj, 30, editPaneTop + 20, 73, 10);
+        hexText = new GuiTextField(-1, fontRenderer, 30, editPaneTop + 20, 73, 10);
         hexText.setMaxStringLength(6);
         hexText.setText(Integer.toHexString(currTintColour));
 
@@ -106,7 +110,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         int topOffset = 10;
         for (int tint = 1; tint <= 3; tint++) {
             String s = I18n.format("gui.tint", tint);
-            fontRendererObj.drawString(s, 5, topOffset, 0xFFFFFF);
+            fontRenderer.drawString(s, 5, topOffset, 0xFFFFFF);
             int colour = parent.getEditingPartInfo().tints[tint - 1] | 0xFF << 24;
             drawGradientRect(5, topOffset + 10, 25, topOffset + 30, colour, colour);
             topOffset += 35;
@@ -115,9 +119,9 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         //Editing tint pane
         if (this.currTintEdit > 0) {
             drawHorizontalLine(0, this.width, editPaneTop, 0xFF000000);
-            fontRendererObj.drawString(I18n.format("gui.tint.edit", this.currTintEdit), 5, editPaneTop + 5, 0xFFFFFF);
+            fontRenderer.drawString(I18n.format("gui.tint.edit", this.currTintEdit), 5, editPaneTop + 5, 0xFFFFFF);
 
-            fontRendererObj.drawString(I18n.format("gui.hex") + ":", 5, editPaneTop + 21, 0xFFFFFF);
+            fontRenderer.drawString(I18n.format("gui.hex") + ":", 5, editPaneTop + 21, 0xFFFFFF);
             hexText.drawTextBox();
         }
 
@@ -205,8 +209,8 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         pixelData = new int[pixels];
 
-        GL11.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
-        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        GlStateManager.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+        GlStateManager.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
         pixelBuffer.clear();
 
         GlStateManager.glReadPixels(x, y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);
@@ -231,9 +235,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
                 Mouse.setNativeCursor(cursor);
 
-            } catch (LWJGLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (LWJGLException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -280,5 +282,10 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
         if (currTintEdit > 0) parent.getEditingPartInfo().tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
         parent.setPartsInfo(parent.getEditingPartInfo());
+    }
+
+    @Override
+    public boolean onValueChange(GuiSlider slider, Float oldValue, Float newValue) {
+        return true;
     }
 }

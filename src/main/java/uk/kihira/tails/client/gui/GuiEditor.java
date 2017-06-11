@@ -8,13 +8,13 @@
 
 package uk.kihira.tails.client.gui;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.entity.player.EntityPlayer;
 import uk.kihira.tails.client.texture.TextureHelper;
 import uk.kihira.tails.common.PartInfo;
 import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.UUID;
 
@@ -50,7 +50,7 @@ public class GuiEditor extends GuiBase {
         partType = PartsData.PartType.TAIL;
         for (PartsData.PartType partType : PartsData.PartType.values()) {
             if (!Tails.localPartsData.hasPartInfo(partType)) {
-                Tails.localPartsData.setPartInfo(partType, new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType));
+                Tails.localPartsData.setPartInfo(partType, PartInfo.none(partType));
             }
         }
         partInfo = Tails.localPartsData.getPartInfo(partType);
@@ -140,7 +140,7 @@ public class GuiEditor extends GuiBase {
 
         PartInfo newPartInfo = partsData.getPartInfo(partType);
         if (newPartInfo == null) {
-            newPartInfo = new PartInfo(false, 0, 0, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, null, partType);
+            newPartInfo = PartInfo.none(partType);
         }
         originalPartInfo = newPartInfo.deepCopy();
         PartInfo partInfo = originalPartInfo.deepCopy();

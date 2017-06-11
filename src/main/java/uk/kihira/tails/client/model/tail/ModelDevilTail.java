@@ -79,7 +79,7 @@ public class ModelDevilTail extends ModelPartBase {
             if (entity instanceof EntityPlayer) {
                 double[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
 
-                xAngleOffset = MathHelper.clamp_double(angles[0] / 3.5F, -1F, 0.275D);
+                xAngleOffset = MathHelper.clamp(angles[0] / 3.5F, -1F, 0.275D);
                 yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
             }
         }

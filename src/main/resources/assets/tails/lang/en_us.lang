@@ -12,35 +12,35 @@ tail.bird.0.name=Bird Tail
 tail.shark.0.name=Shark Tail
 tail.bunny.0.name=Bunny Tail
 
-tail.texture.foxTail.name=Fox
-tail.texture.devilTail.name=Devil
-tail.texture.racoonTail.name=Raccoon
-tail.texture.dragonTail.name=Standard
-tail.texture.dragonTailStriped.name=Striped
-tail.texture.tabbyTail.name=Cat
-tail.texture.tigerTail.name=Tiger
-tail.texture.birdTail.name=Bird
-tail.texture.sharkTail.name=Shark
-tail.texture.bunnyTail.name=Bunny
+tail.texture.fox_tail.name=Fox
+tail.texture.devil_tail.name=Devil
+tail.texture.racoon_tail.name=Raccoon
+tail.texture.dragon_tail.name=Standard
+tail.texture.dragon_tailStriped.name=Striped
+tail.texture.dragon_tail.name=Cat
+tail.texture.tiger_tail.name=Tiger
+tail.texture.bird_tail.name=Bird
+tail.texture.shark_tail.name=Shark
+tail.texture.bunny_tail.name=Bunny
 
 ears.fox.0.name=Fox Ears
 ears.fox.1.name=Fox Ears Alt
 ears.cat.0.name=Cat Ears
-ears.catSmall.0.name=Small Cat Ears
+ears.cat_small.0.name=Small Cat Ears
 ears.panda.0.name=Panda Ears
 
-ears.texture.foxEars.name=Fox
-ears.texture.catEars.name=Cat
-ears.texture.catSmallEars.name=Cat
-ears.texture.pandaEars.name=Panda
+ears.texture.fox_ears.name=Fox
+ears.texture.cat_ears.name=Cat
+ears.texture.cat_small_ears.name=Cat
+ears.texture.panda_ears.name=Panda
 
 wings.big.0.name=Large Wings
 wings.big.1.name=Small Wings
 
-wings.texture.metalWings.name=Metal Wings
-wings.texture.bigWings.name=Angel Wings
-wings.texture.dragonWings.name=Dragon Wings
-wings.texture.dragonBonelessWings.name=Dragon Wings Alt
+wings.texture.metal_wings.name=Metal Wings
+wings.texture.big_wings.name=Angel Wings
+wings.texture.dragon_wings.name=Dragon Wings
+wings.texture.dragon_boneless_wings.name=Dragon Wings Alt
 
 muzzle.standard.0.name=Muzzle\nVery Short
 muzzle.standard.1.name=Muzzle\nShort
@@ -60,8 +60,8 @@ muzzle.thin.2.name=Thin Muzzle\nStandard
 muzzle.thin.3.name=Thin Muzzle\nLong
 muzzle.thin.4.name=Thin Muzzle\nVery Long
 
-muzzle.texture.standardMuzzle.name=Standard
-muzzle.texture.altMuzzle.name=Alt
+muzzle.texture.standard_muzzle.name=Standard
+muzzle.texture.alt_muzzle.name=Alt
 
 gui.export.title=Export Options
 gui.export.information=THIS FEATURE WILL BE REMOVED IN A FUTURE VERSION. A feature of Tails is the ability to allow other players to see your tail even if the server doesn't have the mod installed (The other player still needs Tails installed though). To do this, some unused pixels in your skin are used by Tails instead to store information about your tail. You can use the options below to choose where to export or whether to upload it straight to Minecraft skin servers. Hover over the buttons to see the file locations.

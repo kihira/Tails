@@ -8,10 +8,11 @@
 
 package uk.kihira.tails.client.model.ears;
 
+import net.minecraft.client.renderer.GlStateManager;
 import uk.kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import org.lwjgl.opengl.GL11;
+
 
 public class ModelFoxEars extends ModelPartBase {
     private final ModelRenderer leftEarInnerSmall;
@@ -121,10 +122,10 @@ public class ModelFoxEars extends ModelPartBase {
 
     @Override
     public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         if (subtype == 1) {
-            GL11.glTranslatef(0f, 0f, -0.0625f);
-            GL11.glTranslatef(-0.4375f, 0f, 0f);
+            GlStateManager.translate(0f, 0f, -0.0625f);
+            GlStateManager.translate(-0.4375f, 0f, 0f);
         }
         leftEarInnerSmall.render(0.0625F);
         leftEarInnerBig.render(0.0625F);
@@ -136,7 +137,7 @@ public class ModelFoxEars extends ModelPartBase {
         leftEarBackBig.render(0.0625F);
         leftEarBackSmall.render(0.0625F);
         if (subtype == 1) {
-            GL11.glTranslatef(0.875f, 0f, 0f);
+            GlStateManager.translate(0.875f, 0f, 0f);
         }
         rightEarInnerSmall.render(0.0625F);
         rightEarInnerBig.render(0.0625F);
@@ -148,9 +149,9 @@ public class ModelFoxEars extends ModelPartBase {
         rightEarBackBig.render(0.0625F);
         lightEarBackSmall.render(0.0625F);
         if (subtype == 1) {
-            GL11.glTranslatef(-0.4375f, 0f, 0f);
-            GL11.glTranslatef(0f, 0f, 0.0625f);
+            GlStateManager.translate(-0.4375f, 0f, 0f);
+            GlStateManager.translate(0f, 0f, 0.0625f);
         }
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 }

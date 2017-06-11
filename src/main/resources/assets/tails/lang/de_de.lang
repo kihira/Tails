@@ -10,28 +10,28 @@ tail.devil.1.name=Teufelsschweif (Ohne Spitze)
 tail.cat.0.name=Katzenschweif
 tail.bird.0.name=Vogelschweif
 
-tail.texture.foxTail.name=Fuchs
-tail.texture.devilTail.name=Teufel
-tail.texture.racoonTail.name=Waschbär
-tail.texture.dragonTail.name=Standard
-tail.texture.dragonTailStriped.name=Gestreift
-tail.texture.tabbyTail.name=Katze
-tail.texture.tigerTail.name=Tiger
-tail.texture.birdTail.name=Vogel
+tail.texture.fox_tail.name=Fuchs
+tail.texture.devil_tail.name=Teufel
+tail.texture.racoon_tail.name=Waschbär
+tail.texture.dragon_tail.name=Standard
+tail.texture.dragon_tailStriped.name=Gestreift
+tail.texture.dragon_tail.name=Katze
+tail.texture.tiger_tail.name=Tiger
+tail.texture.bird_tail.name=Vogel
 
 ears.fox.0.name=Fuchsohren
 ears.cat.0.name=katzenohren
 ears.panda.0.name=Pandaohren
 
-ears.texture.foxEars.name=Fuchs
-ears.texture.catEars.name=Katze
-ears.texture.pandaEars.name=Panda
+ears.texture.fox_ears.name=Fuchs
+ears.texture.cat_ears.name=Katze
+ears.texture.panda_ears.name=Panda
 
 wings.big.0.name=Große Flügel
 wings.big.1.name=Kleine Flügel
 
-wings.texture.metalWings.name=Metallflügel
-wings.texture.bigWings.name=Engelsflügel
+wings.texture.metal_wings.name=Metallflügel
+wings.texture.big_wings.name=Engelsflügel
 
 gui.export.title=Export-Optionen
 gui.export.information=Ein Feature von Tails ist die Möglichkeit, andere Spieler deinen Schweif sehen zu lassen, ohne dass Tails auf dem Server installiert ist (Andere Spieler müssen die Mod jedoch installiet haben). Um das hinzukriegen, werden ein paar unbenutzte Pixel deines Skins von Tails benutzt, um Informationen über deinen Schweif zu speichern. Du kannst die Optionen unten benutzen, um festzulegen, wohin dein Skin exportiert werden soll, oder ob er direkt auf die Minecraft-Skin-Server hochgeladen werden soll. Zeige auf die Knöpfe unten, um die Speicherorte zu sehen.
@@ -78,13 +78,3 @@ tails.uploading=Lädt hoch...
 tails.upload.success=Erfolgreich hochgeladen! Schau in deinen Browser
 tails.upload.failed=Upload fehlgeschlagen! Ist imgur oder die Minecraft-Website nicht verfügbar?
 tails.upload.ratelimit=Upload fehlgeschlagen! Das Raten-Limit wurde erreicht, lädst du zu oft hoch?
-
-foxlib.downloader.missing=Du brauchst FoxLib um %s zu benutzen! Du kannst es hier herunterladen: %s
-foxlib.downloader.0=FoxLib fehlt und es ist BENÖTIGT um %s zu nutzen!
-foxlib.downloader.1=Willst du FoxLib automatisch herunterladen? (Erfordert Spiel-Neustart)
-foxlib.downloader.downloading=FoxLib wird heruntergeladen...
-foxlib.downloader.success=FoxLib wurde heruntergeladen!
-foxlib.downloader.restart=Bitte starte dein Spiel neu, um die Installation fertigzustellen
-foxlib.downloader.failed.0=FoxLib konnte nicht heruntergeladen werden
-foxlib.downloader.failed.1=Bitte lade FoxLib manuell von CurseForge herunter (%s)
-foxlib.downloader.outofdate=Die Version von FoxLib ist nicht korrekt, bitte updaten (%s)

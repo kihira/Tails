@@ -34,7 +34,14 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
                 PartInfo tailInfo = partsData.getPartInfo(partType);
 
                 GlStateManager.pushMatrix();
-                if ((partType == PartsData.PartType.EARS || partType == PartsData.PartType.MUZZLE) && entity.isSneaking()) GlStateManager.translate(0f, 0.2F, 0f);
+                if (partType == PartsData.PartType.EARS || partType == PartsData.PartType.MUZZLE) {
+                    if (entity.isSneaking()) {
+                        GlStateManager.translate(0f, 0.2F, 0f);
+                    }
+
+                    GlStateManager.rotate(headPitch * 0.017453292F, 1f, 0f, 0f);
+                    GlStateManager.rotate(netHeadYaw * 0.017453292F, 0f, 1f, 0f);
+                }
                 modelRenderer.postRender(0.0625F);
 
                 PartRegistry.getRenderPart(tailInfo.partType, tailInfo.typeid).render(entity, tailInfo, 0, 0, 0, partialTicks);

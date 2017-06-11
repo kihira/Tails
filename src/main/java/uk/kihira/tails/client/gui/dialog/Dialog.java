@@ -37,7 +37,7 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T> {
         drawGradientRect(1, 12, width - 1, height - 1, 0xFF000000, 0xFF000000);
 
         if (!Strings.isNullOrEmpty(title)) {
-            drawString(fontRendererObj, title, 2, 2, 0xFFFFFFFF);
+            drawString(fontRenderer, title, 2, 2, 0xFFFFFFFF);
         }
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);

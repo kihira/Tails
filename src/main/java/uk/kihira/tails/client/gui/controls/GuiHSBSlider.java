@@ -1,16 +1,17 @@
 package uk.kihira.tails.client.gui.controls;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import uk.kihira.foxlib.client.gui.ITooltip;
+import uk.kihira.tails.client.gui.ITooltip;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+
 
 import java.awt.*;
 import java.util.Arrays;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class GuiHSBSlider extends GuiSlider implements ITooltip {
 
-    private static final ResourceLocation sliderTexture = new ResourceLocation(Tails.MOD_ID, "texture/gui/controls/sliderHue.png");
+    private static final ResourceLocation sliderTexture = new ResourceLocation(Tails.MOD_ID, "texture/gui/controls/slider_hue.png");
     
     private final HSBSliderType type;
     private final IHSBSliderCallback callback;
@@ -52,7 +53,7 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
                 float red = (float) hueColour.getRed() / 255;
                 float green = (float) hueColour.getGreen() / 255;
                 float blue = (float) hueColour.getBlue() / 255;
-                GL11.glColor4f(red, green, blue, 1.0F);
+                GlStateManager.color(red, green, blue, 1.0F);
                 drawTexturedModalRectScaled(xPosition + 1, yPosition + 1, 0, 176, 256, 20, this.width - 2, this.height - 2);
             }
             
@@ -69,11 +70,11 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
                 float red = (float) hueColour.getRed() / 255;
                 float green = (float) hueColour.getGreen() / 255;
                 float blue = (float) hueColour.getBlue() / 255;
-                GL11.glColor4f(red, green, blue, 1.0F);
+                GlStateManager.color(red, green, blue, 1.0F);
                 drawTexturedModalRectScaled(xPosition + 1, yPosition + 1, 0, srcY, 231, 20, this.width - 2, this.height - 2);
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             } else {
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 drawTexturedModalRectScaled(xPosition + 1, yPosition + 1, 0, srcY, 256, 20, this.width - 2, this.height - 2);
             }
             
@@ -92,7 +93,7 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
                 }
             }
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             //RenderHelper.startGlScissor(xPosition, yPosition, width, height);
             mc.renderEngine.bindTexture(sliderTexture);
             this.drawTexturedModalRect(this.xPosition + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.yPosition, 0, 0, 7, 4);

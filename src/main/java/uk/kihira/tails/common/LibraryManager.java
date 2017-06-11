@@ -41,13 +41,7 @@ public class LibraryManager {
      * Removes remote entries from the list
      */
     public void removeRemoteEntries() {
-        Iterator<LibraryEntryData> iterator = libraryEntries.iterator();
-        while (iterator.hasNext()) {
-            LibraryEntryData entry = iterator.next();
-            if (entry.remoteEntry) {
-                iterator.remove();
-            }
-        }
+        libraryEntries.removeIf(entry -> entry.remoteEntry);
     }
 
     /**
@@ -55,7 +49,7 @@ public class LibraryManager {
      */
     private List<LibraryEntryData> loadLibrary() {
         Gson gson = Tails.gson;
-        ArrayList<LibraryEntryData> libraryEntries = new ArrayList<LibraryEntryData>();
+        ArrayList<LibraryEntryData> libraryEntries = new ArrayList<>();
         FileReader fileReader = null;
 
         try {
@@ -81,7 +75,7 @@ public class LibraryManager {
      * Saves the library to disk
      */
     public void saveLibrary() {
-        List<LibraryEntryData> entries = new ArrayList<LibraryEntryData>();
+        List<LibraryEntryData> entries = new ArrayList<>();
         FileWriter fileWriter = null;
 
         //Remove remote entries before saving
@@ -106,7 +100,9 @@ public class LibraryManager {
 
         if (!libraryFile.exists()) {
             try {
-                libraryFile.createNewFile();
+                if (!libraryFile.createNewFile()) {
+                    Tails.logger.error("Failed to create a library file!");
+                }
             } catch (IOException e) {
                 Tails.logger.error("Failed to create a library file!", e);
             }

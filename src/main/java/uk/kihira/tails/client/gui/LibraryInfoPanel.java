@@ -1,7 +1,7 @@
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.foxlib.client.gui.GuiIconButton;
-import uk.kihira.foxlib.client.toast.ToastManager;
+import net.minecraft.client.renderer.GlStateManager;
+import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.LibraryEntriesMessage;
@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
+
 
 import java.io.IOException;
 import java.sql.Date;
@@ -34,7 +34,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        textField = new GuiTextField(-1, fontRendererObj, 6, 6, width - 12, 15);
+        textField = new GuiTextField(-1, fontRenderer, 6, 6, width - 12, 15);
         textField.setMaxStringLength(16);
 
         buttonList.add(favButton = new GuiIconButton.GuiIconToggleButton(0, 5, height - 20, GuiIconButton.Icons.STAR, I18n.format("gui.button.favourite")));
@@ -57,7 +57,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         zLevel = 0;
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
 
-        GL11.glColor4f(0F, 0F, 0F, 0F);
+        GlStateManager.color(0F, 0F, 0F, 0F);
 
         zLevel = 10;
         drawGradientRect(3, 3, width - 3, height - 3, 0xFF000000, 0xFF000000);
@@ -65,14 +65,14 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         if (entry != null) {
             textField.drawTextBox();
 
-            fontRendererObj.setUnicodeFlag(true);
-            fontRendererObj.drawString(I18n.format("gui.library.info.created") + ":", 5, height - 40, 0xAAAAAA);
-            fontRendererObj.drawString(entry.data.creatorName, width - 5 - fontRendererObj.getStringWidth(entry.data.creatorName), height - 40, 0xAAAAAA);
-            fontRendererObj.drawString(I18n.format("gui.library.info.createdate") + ":", 5, height - 32, 0xAAAAAA);
+            fontRenderer.setUnicodeFlag(true);
+            fontRenderer.drawString(I18n.format("gui.library.info.created") + ":", 5, height - 40, 0xAAAAAA);
+            fontRenderer.drawString(entry.data.creatorName, width - 5 - fontRenderer.getStringWidth(entry.data.creatorName), height - 40, 0xAAAAAA);
+            fontRenderer.drawString(I18n.format("gui.library.info.createdate") + ":", 5, height - 32, 0xAAAAAA);
             String date = new SimpleDateFormat("dd/MM/YY").format(new Date(entry.data.creationDate));
-            fontRendererObj.drawString(date, width - 5 - fontRendererObj.getStringWidth(date), height - 32, 0xAAAAAA);
-            //fontRendererObj.drawSplitString(EnumChatFormatting.ITALIC + entry.data.comment, 5, 40, width, 0xFFFFFF);
-            fontRendererObj.setUnicodeFlag(false);
+            fontRenderer.drawString(date, width - 5 - fontRenderer.getStringWidth(date), height - 32, 0xAAAAAA);
+            //fontRenderer.drawSplitString(EnumChatFormatting.ITALIC + entry.data.comment, 5, 40, width, 0xFFFFFF);
+            fontRenderer.setUnicodeFlag(false);
         }
 
         super.drawScreen(mouseX, mouseY, p_73863_3_);
@@ -88,7 +88,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         else if (button.id == 1) {
             if (entry.data.remoteEntry) {
                 //Only allow removing if player owns the entry
-                if (!entry.data.creatorUUID.equals(mc.thePlayer.getUniqueID())) {
+                if (!entry.data.creatorUUID.equals(mc.player.getUniqueID())) {
                     return;
                 }
             }
@@ -159,7 +159,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
                 GuiButton button = (GuiButton) obj;
                 button.visible = true;
 
-                if (button.id == 1 && entry.data.remoteEntry && !entry.data.creatorUUID.equals(mc.thePlayer.getUniqueID())) {
+                if (button.id == 1 && entry.data.remoteEntry && !entry.data.creatorUUID.equals(mc.player.getUniqueID())) {
                     button.visible = false;
                 }
                 //Download

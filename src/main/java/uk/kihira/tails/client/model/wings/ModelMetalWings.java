@@ -8,11 +8,12 @@
 
 package uk.kihira.tails.client.model.wings;
 
+import net.minecraft.client.renderer.GlStateManager;
 import uk.kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import org.lwjgl.opengl.GL11;
+
 
 public class ModelMetalWings extends ModelPartBase {
 
@@ -30,30 +31,30 @@ public class ModelMetalWings extends ModelPartBase {
 
     @Override
     public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
-        GL11.glTranslatef(0, -7F * SCALE, 1F * SCALE * 2);
+        GlStateManager.translate(0, -7F * SCALE, 1F * SCALE * 2);
 
-        GL11.glRotatef(90, 0, 1, 0);
-        GL11.glRotatef(90, 0, 0, 1);
+        GlStateManager.rotate(90, 0, 1, 0);
+        GlStateManager.rotate(90, 0, 0, 1);
 
         boolean isFlying = theEntity instanceof EntityPlayer && ((EntityPlayer) theEntity).capabilities.isFlying && theEntity.isAirBorne || theEntity.fallDistance > 0F;
         float timestep = getAnimationTime(isFlying ? 500 : 6000, theEntity);
         float angle = (float) Math.sin(timestep) * (isFlying ? 20F : 6F);
 
-        GL11.glTranslatef(0F, -0.5F * SCALE, 0F);
+        GlStateManager.translate(0F, -0.5F * SCALE, 0F);
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(0F, 0F, 2F * SCALE);
-        GL11.glRotatef(30F - angle, 1F, 0F, 0F);
-        GL11.glTranslatef(0F, 0F, -1F * SCALE);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0F, 0F, 2F * SCALE);
+        GlStateManager.rotate(30F - angle, 1F, 0F, 0F);
+        GlStateManager.translate(0F, 0F, -1F * SCALE);
         wing.render(SCALE);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
-        GL11.glPushMatrix();
-        GL11.glTranslatef(0F, 0F, -2F * SCALE);
-        GL11.glRotatef(-30F + angle, 1F, 0F, 0F);
-        GL11.glTranslatef(0F, 0F, -1F * SCALE);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0F, 0F, -2F * SCALE);
+        GlStateManager.rotate(-30F + angle, 1F, 0F, 0F);
+        GlStateManager.translate(0F, 0F, -1F * SCALE);
         wing.render(SCALE);
-        GL11.glTranslatef(0F, 0F, 1F * SCALE);
-        GL11.glPopMatrix();
+        GlStateManager.translate(0F, 0F, 1F * SCALE);
+        GlStateManager.popMatrix();
     }
 }
