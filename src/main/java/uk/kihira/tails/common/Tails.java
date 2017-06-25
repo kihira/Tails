@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@")
+@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:moreplayermodels")
 public class Tails {
 
     public static final String MOD_ID = "tails";
@@ -100,7 +100,14 @@ public class Tails {
             logger.debug("Valid Botania not found, skipping Foxtato renderer");
         }
 
-        proxy.registerRenderers(Loader.isModLoaded("SmartMoving"));
+        boolean legacyRenderer = configuration.getBoolean(Configuration.CATEGORY_CLIENT, "ForceLegacyRendering", false, "Forces the legacy renderer which may have better compatibility with other mods");
+        if (legacyRenderer) logger.info("Legacy Renderer has been forced enabled");
+        else if (Loader.isModLoaded("SmartMoving")) {
+            logger.info("Legacy Renderer enabled automatically for mod compatibility");
+            legacyRenderer = true;
+        }
+
+        proxy.registerRenderers(legacyRenderer);
     }
 
     @SubscribeEvent

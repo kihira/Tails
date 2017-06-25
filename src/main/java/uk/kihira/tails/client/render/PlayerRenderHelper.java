@@ -9,6 +9,7 @@
 package uk.kihira.tails.client.render;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.common.Loader;
 import uk.kihira.tails.api.IRenderHelper;
 import uk.kihira.tails.client.model.tail.ModelCatTail;
 import uk.kihira.tails.client.model.tail.ModelDevilTail;
@@ -20,9 +21,18 @@ import net.minecraft.entity.EntityLivingBase;
 
 public class PlayerRenderHelper implements IRenderHelper {
 
+    private boolean mpmCompat;
+
+    public PlayerRenderHelper() {
+        mpmCompat = Loader.isModLoaded("moreplayermodels");
+    }
+
     @Override
     public void onPreRenderTail(EntityLivingBase entity, RenderPart tail, PartInfo info, double x, double y, double z) {
         if (info.partType == PartsData.PartType.EARS || info.partType == PartsData.PartType.MUZZLE || info.partType == PartsData.PartType.WINGS) return;
+        if (mpmCompat && entity.isSneaking()) {
+            GlStateManager.translate(0f, -0.1f, 0.4f);
+        }
         if (tail.modelPart instanceof ModelDragonTail) {
             if (entity.isSneaking()) GlStateManager.translate(0f, 0.82f, 0f);
             else GlStateManager.translate(0F, 0.68F, 0.1F);
