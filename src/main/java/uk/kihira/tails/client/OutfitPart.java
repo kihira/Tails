@@ -22,6 +22,16 @@ public class OutfitPart {
 
     public OutfitPart(UUID basePart) {
         this.basePart = basePart;
+        // todo copy base part data
+    }
+
+    public OutfitPart(Part part) {
+        this.basePart = part.id;
+        this.mountPoint = part.mountPoint;
+        this.mountOffset = part.defaultMountOffset;
+        this.rotation = part.defaultRotation;
+        this.scale = part.defaultScale;
+        this.tints = part.defaultTints;
     }
 
     public void setCompiledTexture(@Nonnull ResourceLocation texture) {

@@ -37,7 +37,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         }
 
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        fontRenderer.drawString((data.partsData.equals(Tails.localPartsData) ? TextFormatting.GREEN + "" + TextFormatting.ITALIC : "") + data.entryName, 5, y + 3, 0xFFFFFF);
+        fontRenderer.drawString((data.partsData.equals(Tails.localOutfit) ? TextFormatting.GREEN + "" + TextFormatting.ITALIC : "") + data.entryName, 5, y + 3, 0xFFFFFF);
 
         fontRenderer.setUnicodeFlag(true);
         for (PartsData.PartType type : PartsData.PartType.values()) {
@@ -91,7 +91,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
             //Create entry and add to library
             GameProfile profile = Minecraft.getMinecraft().player.getGameProfile();
-            LibraryEntryData data = new LibraryEntryData(profile.getId(), profile.getName(), I18n.format("gui.library.entry.default"), Tails.localPartsData);
+            LibraryEntryData data = new LibraryEntryData(profile.getId(), profile.getName(), I18n.format("gui.library.entry.default"), Tails.localOutfit);
             Tails.proxy.getLibraryManager().addEntry(data);
             panel.addSelectedEntry(new LibraryListEntry(data));
             return false;

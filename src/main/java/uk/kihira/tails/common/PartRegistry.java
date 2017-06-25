@@ -16,6 +16,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 //Yeah using side only isn't nice but as this is static, it means it only gets constructed on the client
 @SideOnly(Side.CLIENT)
@@ -26,6 +28,7 @@ public class PartRegistry {
 
     static {
         // Tails
+        // todo add in parts for twin and nine tails? might be best as animation system probably won't be in for a while
         addPart(new Part(UUID.fromString("9d3aee5c-82c0-4474-90a2-301435b4ddc3"), "Fluffy Tail", "Kihira", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelFluffyTail()));
         addPart(new Part(UUID.fromString("820fff32-e420-45f0-a626-8dfef2d0a2c4"), "Dragon Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelDragonTail()));
         addPart(new Part(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe"), "Raccoon Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelRaccoonTail()));
@@ -60,6 +63,10 @@ public class PartRegistry {
 
     public static Part getPart(UUID uuid) {
         return parts.get(uuid);
+    }
+
+    public static List<Part> getPartsByMountPoint(MountPoint mountPoint) {
+        return parts.values().stream().filter(part -> part.mountPoint == mountPoint).collect(Collectors.toList());
     }
 
     public static LegacyPartRenderer getRenderer(UUID uuid) {

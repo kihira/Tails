@@ -1,5 +1,6 @@
 package uk.kihira.tails.client.gui;
 
+import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.client.render.LegacyPartRenderer;
 import uk.kihira.tails.common.PartRegistry;
 import uk.kihira.tails.common.PartInfo;
@@ -23,14 +24,14 @@ public class TexturePanel extends Panel<GuiEditor> {
         //Texture select
         buttonList.add(leftBtn = new GuiButtonExt(18, 5, texSelectX, 15, 15, "<"));
         buttonList.add(rightBtn = new GuiButtonExt(19, width - 20, texSelectX, 15, 15, ">"));
-        parent.textureID = parent.getEditingPartInfo().textureID;
+        parent.textureID = parent.getCurrentOutfitPart().textureID;
 
         updateButtons();
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
-        PartInfo partInfo = parent.getEditingPartInfo();
+        OutfitPart outfitPart = parent.getCurrentOutfitPart();
 
         zLevel = -10;
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
@@ -47,7 +48,7 @@ public class TexturePanel extends Panel<GuiEditor> {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        PartInfo originalPartInfo = parent.getEditingPartInfo();
+        PartInfo originalPartInfo = parent.getCurrentOutfitPart();
         LegacyPartRenderer part = PartRegistry.getRenderer(parent.getPartType(), originalPartInfo.typeid);
         //Texture select
         if (button.id == 18) {
@@ -68,11 +69,11 @@ public class TexturePanel extends Panel<GuiEditor> {
         }
         PartInfo partInfo = new PartInfo(true, originalPartInfo.typeid, originalPartInfo.subid, parent.textureID,
                 originalPartInfo.tints, originalPartInfo.partType, originalPartInfo.scale, null);
-        parent.setPartsInfo(partInfo);
+        parent.setOutfitPart(partInfo);
     }
 
     void updateButtons() {
-        PartInfo originalPartInfo = parent.getEditingPartInfo();
+        PartInfo originalPartInfo = parent.getCurrentOutfitPart();
         LegacyPartRenderer part = PartRegistry.getRenderer(parent.getPartType(), originalPartInfo.typeid);
 
         int texCount = part.getTextureNames(originalPartInfo.subid).length;
