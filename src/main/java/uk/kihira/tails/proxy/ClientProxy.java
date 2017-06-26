@@ -1,17 +1,12 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.proxy;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
 import uk.kihira.tails.client.ClientEventHandler;
+import uk.kihira.tails.client.FakeEntity;
 import uk.kihira.tails.client.model.ModelRendererWrapper;
-import uk.kihira.tails.client.render.LayerPart;
-import uk.kihira.tails.client.render.RenderingHandler;
+import uk.kihira.tails.client.render.*;
 import uk.kihira.tails.common.LibraryManager;
 import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
@@ -34,6 +29,9 @@ public class ClientProxy extends CommonProxy {
         registerMessages();
         registerHandlers();
         libraryManager = new LibraryManager.ClientLibraryManager();
+
+        RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
+        RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
     }
 
     @Override
@@ -80,7 +78,14 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void registerRenderers(boolean legacyRenderer) {
+    public void registerRenderers() {
+        boolean legacyRenderer = Tails.configuration.getBoolean(Configuration.CATEGORY_CLIENT, "ForceLegacyRendering", false, "Forces the legacy renderer which may have better compatibility with other mods");
+        if (legacyRenderer) Tails.logger.info("Legacy Renderer has been forced enabled");
+        else if (Loader.isModLoaded("SmartMoving")) {
+            Tails.logger.info("Legacy Renderer enabled automatically for mod compatibility");
+            legacyRenderer = true;
+        }
+
         if (legacyRenderer) {
             MinecraftForge.EVENT_BUS.register(new RenderingHandler());
 

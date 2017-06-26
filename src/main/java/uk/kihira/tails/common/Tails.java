@@ -11,12 +11,6 @@ package uk.kihira.tails.common;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.client.renderer.GlStateManager;
-import uk.kihira.tails.client.FakeEntity;
-import uk.kihira.tails.client.render.*;
-import uk.kihira.tails.proxy.CommonProxy;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -34,7 +28,7 @@ import net.minecraftforge.fml.common.versioning.VersionParser;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import uk.kihira.tails.proxy.CommonProxy;
 
 import java.util.Map;
 
@@ -70,44 +64,12 @@ public class Tails {
         if (e.getSide().isClient()) {
             Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
             loadConfig();
-
-            RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
-            RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
         }
     }
 
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent e) {
-        if (e.getSide() == Side.CLIENT && Loader.isModLoaded("Botania") && VersionParser.parseRange("[r1.7-205,)").containsVersion(Loader.instance().getIndexedModList().get("Botania").getProcessedVersion())) {
-            logger.debug(String.format("Botania (%s) found, loading Foxtato renderer", Loader.instance().getIndexedModList().get("Botania").getProcessedVersion().getVersionString()));
-            MinecraftForge.EVENT_BUS.register(new FoxtatoRender());
-            RenderPart.registerRenderHelper(FoxtatoRender.FoxtatoFakeEntity.class, (entity, tail, info, x, y, z) -> {
-                switch (info.partType) {
-                    case TAIL: {
-                        GlStateManager.translate(0F, 1.325F, 0.125F);
-                        GlStateManager.scale(0.25F, 0.25F, 0.25F);
-                        break;
-                    }
-                    case EARS: {
-                        GlStateManager.translate(0F, 1.375F, -0.1F);
-                        GlStateManager.scale(0.5F, 0.5F, 0.5F);
-                        break;
-                    }
-                }
-            });
-        }
-        else {
-            logger.debug("Valid Botania not found, skipping Foxtato renderer");
-        }
-
-        boolean legacyRenderer = configuration.getBoolean(Configuration.CATEGORY_CLIENT, "ForceLegacyRendering", false, "Forces the legacy renderer which may have better compatibility with other mods");
-        if (legacyRenderer) logger.info("Legacy Renderer has been forced enabled");
-        else if (Loader.isModLoaded("SmartMoving")) {
-            logger.info("Legacy Renderer enabled automatically for mod compatibility");
-            legacyRenderer = true;
-        }
-
-        proxy.registerRenderers(legacyRenderer);
+        proxy.registerRenderers();
     }
 
     @SubscribeEvent
