@@ -25,7 +25,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
     }
 
     @Override
-    public void drawEntry(int slowIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+    public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
         if (data.remoteEntry) {
             Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.iconsTextures);
             GuiIconButton.Icons icon = GuiIconButton.Icons.SERVER;
@@ -63,7 +63,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
     }
 
     @Override
-    public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_) {}
+    public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {}
 
     @Override
     public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
@@ -83,7 +83,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         }
 
         @Override
-        public void drawEntry(int slowIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
             Minecraft.getMinecraft().fontRenderer.drawString(I18n.format("gui.library.create"), x + 3, y + (slotHeight / 2) - 4, 0xFFFFFF);
         }
 

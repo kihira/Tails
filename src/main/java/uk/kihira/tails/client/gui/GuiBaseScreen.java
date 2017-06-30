@@ -68,7 +68,7 @@ public abstract class GuiBaseScreen extends GuiScreen {
 
         @Override
         public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY) {
-            if (this.visible && GuiBaseScreen.isMouseOver(mouseX, mouseY, xPosition, yPosition, width, height)) {
+            if (this.visible && GuiBaseScreen.isMouseOver(mouseX, mouseY, x, y, width, height)) {
                 this.enabled = !this.enabled;
                 return true;
             }
