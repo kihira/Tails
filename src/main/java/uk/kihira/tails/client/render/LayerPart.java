@@ -40,7 +40,6 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
                 PartInfo tailInfo = partsData.getPartInfo(partType);
 
                 GlStateManager.pushMatrix();
-                modelRenderer.postRender(0.0625F);
 
                 if (partType == PartsData.PartType.EARS || partType == PartsData.PartType.MUZZLE) {
                     if (entity.isSneaking()) {
@@ -58,6 +57,7 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
                     }
                 }
 
+                modelRenderer.postRender(0.0625F);
                 PartRegistry.getRenderPart(tailInfo.partType, tailInfo.typeid).render(entity, tailInfo, 0, 0, 0, partialTicks);
                 GlStateManager.popMatrix();
             }

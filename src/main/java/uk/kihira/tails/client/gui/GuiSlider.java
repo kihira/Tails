@@ -42,8 +42,8 @@ public class GuiSlider extends GuiButton implements IControl<Float> {
             }
 
             minecraft.renderEngine.bindTexture(BUTTON_TEXTURES);
-            this.drawTexturedModalRect((int) (this.xPosition + (this.sliderValue * (this.width - 8))), this.yPosition, 0, 66, 4, 20);
-            this.drawTexturedModalRect((int) (this.xPosition + (this.sliderValue * (this.width - 8)) + 4), this.yPosition, 196, 66, 4, 20);
+            this.drawTexturedModalRect((int) (this.x + (this.sliderValue * (this.width - 8))), this.y, 0, 66, 4, 20);
+            this.drawTexturedModalRect((int) (this.x + (this.sliderValue * (this.width - 8)) + 4), this.y, 196, 66, 4, 20);
         }
     }
 
@@ -84,7 +84,7 @@ public class GuiSlider extends GuiButton implements IControl<Float> {
     private void updateValues(int xPos, int yPos) {
         float prevValue = this.currentValue;
 
-        this.sliderValue = MathHelper.clamp((xPos - (this.xPosition + 4F)) / (this.width - 8F), 0F, 1F);
+        this.sliderValue = MathHelper.clamp((xPos - (this.x + 4F)) / (this.width - 8F), 0F, 1F);
         this.currentValue = (int) (this.sliderValue * (this.maxValue - this.minValue) + this.minValue);
 
         if (this.parent != null && !this.parent.onValueChange(this, prevValue, this.currentValue)) {
