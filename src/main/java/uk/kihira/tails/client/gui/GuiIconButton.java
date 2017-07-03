@@ -31,7 +31,7 @@ public class GuiIconButton extends GuiButton implements ITooltip {
     }
 
     @Override
-    public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
+    public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partial) {
         if (visible) {
             minecraft.getTextureManager().bindTexture(iconsTextures);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -39,10 +39,10 @@ public class GuiIconButton extends GuiButton implements ITooltip {
             OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
             //Check mouse over
-            hovered = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + width && mouseY < yPosition + height;
+            hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
             int textureOffset = getHoverState(hovered);
 
-            drawTexturedModalRect(xPosition, yPosition, icon.u, icon.v + (textureOffset * 16), 16, 16);
+            drawTexturedModalRect(x, y, icon.u, icon.v + (textureOffset * 16), 16, 16);
         }
     }
 
@@ -65,7 +65,7 @@ public class GuiIconButton extends GuiButton implements ITooltip {
 
         @Override
         public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY) {
-            if (this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height) {
+            if (this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
                 this.toggled = !this.toggled;
                 return true;
             }
@@ -73,18 +73,18 @@ public class GuiIconButton extends GuiButton implements ITooltip {
         }
 
         @Override
-        public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
+        public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partial) {
             if (visible && toggled) {
                 minecraft.getTextureManager().bindTexture(iconsTextures);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 GlStateManager.enableBlend();
                 OpenGlHelper.glBlendFunc(770, 771, 1, 0);
                 //Check mouse over
-                hovered = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + width && mouseY < yPosition + height;
-                drawTexturedModalRect(xPosition, yPosition, icon.u, icon.v + 32, 16, 16);
+                hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+                drawTexturedModalRect(x, y, icon.u, icon.v + 32, 16, 16);
             }
             else {
-                super.drawButton(minecraft, mouseX, mouseY);
+                super.drawButton(minecraft, mouseX, mouseY, partial);
             }
         }
     }

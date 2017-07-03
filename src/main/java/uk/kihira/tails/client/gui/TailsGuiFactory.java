@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014 Zoe Lee (Kihira)
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.gui;
 
 import net.minecraftforge.fml.client.IModGuiFactory;
@@ -33,19 +25,7 @@ public class TailsGuiFactory implements IModGuiFactory {
     }
 
     @Override
-    @Deprecated
-    public Class<? extends GuiScreen> mainConfigGuiClass() {
-        return null;
-    }
-
-    @Override
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-        return null;
-    }
-
-    @Override
-    @Deprecated
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
         return null;
     }
 
