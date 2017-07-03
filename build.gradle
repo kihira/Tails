@@ -38,8 +38,8 @@ configurations {
 
 ext {
     massive = "1"
-    major = "9"
-    minor = "2"
+    major = "10"
+    minor = "0"
     mcVersion = "1.12"
     forgeVersion = "14.21.1.2387"
 }
