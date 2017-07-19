@@ -43,7 +43,6 @@ public class LibraryImportPanel extends Panel<GuiEditor> {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.id == 0) {
-            TextureHelper.buildPlayerPartsData(mc.player);
             ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 50, parent.width / 2, TextFormatting.GREEN + I18n.format("gui.library.import.toast.skin"));
         }
         //Import from string

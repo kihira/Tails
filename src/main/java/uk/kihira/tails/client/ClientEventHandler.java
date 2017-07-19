@@ -72,15 +72,6 @@ public class ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent e) {
-        if (e.phase == TickEvent.Phase.START) {
-            if (TextureHelper.needsBuild(e.player) && e.player instanceof AbstractClientPlayer) {
-                TextureHelper.buildPlayerPartsData((AbstractClientPlayer) e.player);
-            }
-        }
-    }
-
-    @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent e) {
         if (e.phase == TickEvent.Phase.START) {
             if (clearAllPartInfo) {
