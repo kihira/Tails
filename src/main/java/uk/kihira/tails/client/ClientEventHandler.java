@@ -58,7 +58,7 @@ public class ClientEventHandler {
     public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         //Add local player texture to map
         if (Tails.localOutfit != null) {
-            Tails.proxy.addPartsData(Minecraft.getMinecraft().getSession().getProfile().getId(), Tails.localOutfit);
+            Tails.proxy.setActiveOutfit(Minecraft.getMinecraft().getSession().getProfile().getId(), Tails.localOutfit);
         }
     }
 

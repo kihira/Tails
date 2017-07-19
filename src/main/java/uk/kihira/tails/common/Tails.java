@@ -58,7 +58,6 @@ public class Tails {
             Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
             loadConfig();
 
-            LegacyPartRenderer.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
             LegacyPartRenderer.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
         }
     }

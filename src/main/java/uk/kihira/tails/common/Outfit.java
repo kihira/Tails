@@ -1,5 +1,7 @@
 package uk.kihira.tails.common;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import uk.kihira.tails.client.OutfitPart;
 
 import java.util.ArrayList;
@@ -16,4 +18,9 @@ public class Outfit {
     }
 
     // todo make a client only multimap of mountpoint <-> outfitpart?
+
+    @SideOnly(Side.CLIENT)
+    public void clearTextures() {
+        // todo
+    }
 }
