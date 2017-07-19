@@ -1,6 +1,7 @@
 package uk.kihira.tails.client.gui;
 
 import uk.kihira.tails.client.*;
+import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.PartRegistry;
 import uk.kihira.tails.common.PartInfo;
 import net.minecraft.client.Minecraft;
@@ -88,9 +89,9 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     @Override
     public void onGuiClosed() {
-        //Delete textures on close
+        // Delete textures on close
         for (PartEntry entry : this.partList.getEntries()) {
-            entry.partInfo.setTexture(null);
+            // todo entry.part.setTexture(null);
         }
     }
 
@@ -110,17 +111,16 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         partList.setCurrrentIndex(0);
     }
 
-    private void renderPart(int x, int y, int z, int scale, Part part) {
+    private void renderPart(int x, int y, int z, int scale, OutfitPart part) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         GlStateManager.scale(-scale, scale, 1F);
 
         RenderHelper.enableStandardItemLighting();
         Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
-        PartRegistry.getRenderer(part.id).render(fakeEntity, part, 0);
+        PartRegistry.getRenderer(part.basePart).render(fakeEntity, part, 0);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        //GlStateManager.disableTexture2D(); //Why was this needed? It produces graphical issues when enabled...
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
         GlStateManager.popMatrix();
