@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
 
@@ -23,12 +24,12 @@ import java.util.UUID;
 
 public class PlayerDataMapMessage implements IMessage {
 
-    private Map<UUID, PartsData> partsDataMap;
+    private Map<UUID, Outfit> outfitMap;
 
     public PlayerDataMapMessage() {}
     @SuppressWarnings("unchecked")
-    public PlayerDataMapMessage(Map partsDataMap) {
-        this.partsDataMap = partsDataMap;
+    public PlayerDataMapMessage(Map outfitMap) {
+        this.outfitMap = outfitMap;
     }
 
     @Override
@@ -36,7 +37,7 @@ public class PlayerDataMapMessage implements IMessage {
     public void fromBytes(ByteBuf buf) {
         String tailInfoJson = ByteBufUtils.readUTF8String(buf);
         try {
-            this.partsDataMap = Tails.gson.fromJson(tailInfoJson, new TypeToken<Map<UUID, PartsData>>() {}.getType());
+            this.outfitMap = Tails.gson.fromJson(tailInfoJson, new TypeToken<Map<UUID, PartsData>>() {}.getType());
         } catch (JsonSyntaxException e) {
             Tails.logger.catching(e);
         }
@@ -44,7 +45,7 @@ public class PlayerDataMapMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        String tailInfoJson = Tails.gson.toJson(this.partsDataMap);
+        String tailInfoJson = Tails.gson.toJson(this.outfitMap);
         ByteBufUtils.writeUTF8String(buf, tailInfoJson);
     }
 
@@ -52,8 +53,8 @@ public class PlayerDataMapMessage implements IMessage {
 
         @Override
         public IMessage onMessage(PlayerDataMapMessage message, MessageContext ctx) {
-            for (Map.Entry<UUID, PartsData> entry : message.partsDataMap.entrySet()) {
-                Tails.proxy.addPartsData(entry.getKey(), entry.getValue());
+            for (Map.Entry<UUID, Outfit> entry : message.outfitMap.entrySet()) {
+                Tails.proxy.setActiveOutfit(entry.getKey(), entry.getValue());
             }
             return null;
         }

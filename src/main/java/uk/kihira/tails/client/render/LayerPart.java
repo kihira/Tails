@@ -1,6 +1,5 @@
 package uk.kihira.tails.client.render;
 
-import org.jetbrains.annotations.NotNull;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.common.*;
@@ -12,9 +11,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
+@ParametersAreNonnullByDefault
 public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
 
     private final ModelRenderer modelRenderer;
@@ -26,7 +27,7 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
     }
 
     @Override
-    public void doRenderLayer(@NotNull AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void doRenderLayer(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         UUID uuid = EntityPlayer.getUUID(entity.getGameProfile());
         if (Tails.proxy.hasActiveOutfit(uuid)) {
             Outfit outfit = Tails.proxy.getActiveOutfit(uuid);

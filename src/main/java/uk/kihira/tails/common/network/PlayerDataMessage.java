@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014 Zoe Lee (Kihira)
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.common.network;
 
 import com.google.common.base.Strings;
@@ -16,6 +8,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
 
@@ -24,13 +17,13 @@ import java.util.UUID;
 public class PlayerDataMessage implements IMessage {
 
     private UUID uuid;
-    private PartsData partsData;
+    private Outfit outfit;
     private boolean shouldRemove;
 
     public PlayerDataMessage() {}
-    public PlayerDataMessage(UUID uuid, PartsData partsData, boolean shouldRemove) {
+    public PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) {
         this.uuid = uuid;
-        this.partsData = partsData;
+        this.outfit = outfit;
         this.shouldRemove = shouldRemove;
     }
 
@@ -40,18 +33,18 @@ public class PlayerDataMessage implements IMessage {
         String tailInfoJson = ByteBufUtils.readUTF8String(buf);
         if (!Strings.isNullOrEmpty(tailInfoJson)) {
             try {
-                partsData = Tails.gson.fromJson(tailInfoJson, PartsData.class);
+                outfit = Tails.gson.fromJson(tailInfoJson, Outfit.class);
             } catch (JsonSyntaxException e) {
                 Tails.logger.warn(e);
             }
         }
-        else partsData = null;
+        else outfit = null;
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
         ByteBufUtils.writeUTF8String(buf, UUIDTypeAdapter.fromUUID(uuid));
-        String tailInfoJson = partsData == null ? "" : Tails.gson.toJson(this.partsData);
+        String tailInfoJson = outfit == null ? "" : Tails.gson.toJson(this.outfit);
         ByteBufUtils.writeUTF8String(buf, tailInfoJson);
     }
 
@@ -60,11 +53,11 @@ public class PlayerDataMessage implements IMessage {
         @Override
         public IMessage onMessage(PlayerDataMessage message, MessageContext ctx) {
             if (message.shouldRemove) Tails.proxy.removeActiveOutfit(message.uuid);
-            else if (message.partsData != null) {
-                Tails.proxy.addPartsData(message.uuid, message.partsData);
+            else if (message.outfit != null) {
+                Tails.proxy.setActiveOutfit(message.uuid, message.outfit);
                 //Tell other clients about the change
                 if (ctx.side.isServer()) {
-                    Tails.networkWrapper.sendToAll(new PlayerDataMessage(message.uuid, message.partsData, false));
+                    Tails.networkWrapper.sendToAll(new PlayerDataMessage(message.uuid, message.outfit, false));
                 }
             }
             return null;
