@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.common;
 
 import com.google.gson.Gson;
@@ -73,29 +65,6 @@ public class Tails {
 
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent e) {
-        // todo
-/*        if (e.getSide() == Side.CLIENT && Loader.isModLoaded("Botania") && VersionParser.parseRange("[r1.7-205,)").containsVersion(Loader.instance().getIndexedModList().get("Botania").getProcessedVersion())) {
-            logger.debug(String.format("Botania (%s) found, loading Foxtato renderer", Loader.instance().getIndexedModList().get("Botania").getProcessedVersion().getVersionString()));
-            MinecraftForge.EVENT_BUS.register(new FoxtatoRender());
-            LegacyPartRenderer.registerRenderHelper(FoxtatoRender.FoxtatoFakeEntity.class, (entity, tail, info, x, y, z) -> {
-                switch (info.partType) {
-                    case TAIL: {
-                        GlStateManager.translate(0F, 1.325F, 0.125F);
-                        GlStateManager.scale(0.25F, 0.25F, 0.25F);
-                        break;
-                    }
-                    case EARS: {
-                        GlStateManager.translate(0F, 1.375F, -0.1F);
-                        GlStateManager.scale(0.5F, 0.5F, 0.5F);
-                        break;
-                    }
-                }
-            });
-        }
-        else {
-            logger.debug("Valid Botania not found, skipping Foxtato renderer");
-        }*/
-
         proxy.registerRenderers(Loader.isModLoaded("SmartMoving"));
     }
 
@@ -125,35 +94,12 @@ public class Tails {
         //Load local player info
         try {
             //Load Player Data
-            localOutfit = gson.fromJson(Tails.configuration.getString("Local Player Data",
-                    Configuration.CATEGORY_GENERAL, "{}", "Local Players data. Delete to remove all customisation data. Do not try to edit manually"), PartsData.class);
-
-            //Load old tail info if exists
-            PartInfo tailInfo = null;
-            if (Tails.configuration.hasKey(Configuration.CATEGORY_GENERAL, "Local Tail Info")) {
-                tailInfo = gson.fromJson(Tails.configuration.getString("Local Tail Info",
-                        Configuration.CATEGORY_GENERAL, "DEPRECIATED. CAN SAFELY REMOVE", ""), PartInfo.class);
-            }
-            if (tailInfo != null) {
-                if (localOutfit == null) localOutfit = new PartsData();
-                tailInfo.partType = PartsData.PartType.TAIL;
-                localOutfit.setPartInfo(PartsData.PartType.TAIL, tailInfo);
-
-                //Delete old info
-                Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Tail Info", "");
-                prop.set("");
-
-                //Force save
-                setLocalOutfit(localOutfit);
-            }
+            localOutfit = gson.fromJson(Tails.configuration.getString("Local Player Outfit",
+                    Configuration.CATEGORY_GENERAL, "{}", "Local Players outfit. Delete to remove all customisation data. Do not try to edit manually"), Outfit.class);
 
             //Load default if none exists
             if (localOutfit == null) {
-                localOutfit = new PartsData();
-                for (PartsData.PartType partType : PartsData.PartType.values()) {
-                    localOutfit.setPartInfo(partType, PartInfo.none(partType));
-                }
-                setLocalOutfit(localOutfit);
+                setLocalOutfit(localOutfit = new Outfit());
             }
         } catch (JsonSyntaxException e) {
             Tails.configuration.getCategory(Configuration.CATEGORY_GENERAL).remove("Local Player Data");
@@ -167,8 +113,8 @@ public class Tails {
         }
     }
 
-    public static void setLocalOutfit(PartsData partsData) {
-        localOutfit = partsData;
+    public static void setLocalOutfit(Outfit outfit) {
+        localOutfit = outfit;
 
         Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Player Data", "");
         prop.set(gson.toJson(localOutfit));
