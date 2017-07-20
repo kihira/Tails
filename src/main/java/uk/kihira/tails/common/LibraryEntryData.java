@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.UUID;
 
 public class LibraryEntryData {
-    @Expose public final PartsData partsData;
+    @Expose public final Outfit outfit;
     @Expose public String entryName = "";
     @Expose public final String comment = "";
     @Expose public boolean favourite;
@@ -18,9 +18,9 @@ public class LibraryEntryData {
     @Expose public String creatorName;
     public boolean remoteEntry = false;
 
-    public LibraryEntryData(UUID creatorUUID, String creatorName, String name, PartsData partsData) {
+    public LibraryEntryData(UUID creatorUUID, String creatorName, String name, Outfit outfit) {
         this.entryName = name;
-        this.partsData = partsData;
+        this.outfit = outfit;
         this.creationDate = Calendar.getInstance().getTimeInMillis();
         this.creatorUUID = creatorUUID;
         this.creatorName = creatorName;
@@ -39,14 +39,14 @@ public class LibraryEntryData {
         if (!comment.equals(data.comment)) return false;
         if (!creatorUUID.equals(data.creatorUUID)) return false;
         if (entryName != null ? !entryName.equals(data.entryName) : data.entryName != null) return false;
-        if (partsData != null ? !partsData.equals(data.partsData) : data.partsData != null) return false;
+        if (outfit != null ? !outfit.equals(data.outfit) : data.outfit != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = partsData != null ? partsData.hashCode() : 0;
+        int result = outfit != null ? outfit.hashCode() : 0;
         result = 31 * result + (entryName != null ? entryName.hashCode() : 0);
         result = 31 * result + comment.hashCode();
         result = 31 * result + creatorUUID.hashCode();

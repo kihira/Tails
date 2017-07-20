@@ -18,7 +18,7 @@ import java.util.UUID;
 public class GuiEditor extends GuiBase {
 
     @Nullable
-    private Outfit originalOutfit; // The outfit from before the GUI was opened. Is updated when player saves new outfit
+    public Outfit originalOutfit; // The outfit from before the GUI was opened. Is updated when player saves new outfit
     private Outfit outfit;
     @Nullable
     private OutfitPart currentOutfitPart;
@@ -27,7 +27,6 @@ public class GuiEditor extends GuiBase {
     TintPanel tintPanel;
     PartsPanel partsPanel;
     private PreviewPanel previewPanel;
-    TexturePanel texturePanel;
     private ControlsPanel controlsPanel;
     public LibraryPanel libraryPanel;
     public LibraryInfoPanel libraryInfoPanel;
@@ -62,7 +61,6 @@ public class GuiEditor extends GuiBase {
             getLayer(0).add(previewPanel = new PreviewPanel(this, previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom));
             getLayer(1).add(partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - texSelectHeight));
             getLayer(1).add(libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height));
-            getLayer(1).add(texturePanel = new TexturePanel(this, 0, height - texSelectHeight, previewWindowEdgeOffset, 43));
             getLayer(1).add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
             getLayer(1).add(libraryImportPanel = new LibraryImportPanel(this, previewWindowRight, height - 60, width - previewWindowRight, 60));
             getLayer(1).add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 60));
@@ -78,7 +76,6 @@ public class GuiEditor extends GuiBase {
             partsPanel.resize(0, 0, previewWindowEdgeOffset, height - texSelectHeight);
             libraryPanel.resize(0, 0, previewWindowEdgeOffset, height);
             previewPanel.resize(previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
-            texturePanel.resize(0, height - texSelectHeight, previewWindowEdgeOffset, 43);
             libraryImportPanel.resize(previewWindowRight, height - 60, width - previewWindowRight, 60);
             controlsPanel.resize(previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom);
         }
@@ -102,7 +99,6 @@ public class GuiEditor extends GuiBase {
 
         setOutfit(outfit); // todo still needed?
 
-        texturePanel.updateButtons();
     }
 
     void addOutfitPart(OutfitPart outfitPart) {
@@ -122,24 +118,6 @@ public class GuiEditor extends GuiBase {
 
     public Outfit getOutfit() {
         return outfit;
-    }
-
-    public void setPartType(PartsData.PartType partType) {
-        this.partType = partType;
-
-        PartInfo newPartInfo = outfit.getPartInfo(partType);
-        if (newPartInfo == null) {
-            newPartInfo = PartInfo.none(partType);
-        }
-        originalPartInfo = newPartInfo.deepCopy();
-        PartInfo partInfo = originalPartInfo.deepCopy();
-
-        clearCurrTintEdit();
-        setOutfitPart(partInfo);
-        partsPanel.initPartList();
-        refreshTintPane();
-        textureID = partInfo.textureID;
-        texturePanel.updateButtons();
     }
 
     void clearCurrTintEdit() {

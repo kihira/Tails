@@ -1,10 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
 package uk.kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
@@ -141,7 +134,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         //Reset Tint
         else if (button.id == 8) {
-            currTintColour = parent.originalPartInfo.tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            //todo currTintColour = parent.originalOutfit.[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;

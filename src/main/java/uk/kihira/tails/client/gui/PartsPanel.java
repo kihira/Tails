@@ -1,9 +1,7 @@
 package uk.kihira.tails.client.gui;
 
 import uk.kihira.tails.client.*;
-import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.PartRegistry;
-import uk.kihira.tails.common.PartInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended;
@@ -140,7 +138,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
             zLevel = 0;
 
             boolean currentPart = partList.getCurrrentIndex() == slotIndex;
-            renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, part);
+            // todo renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, part);
             ClientUtils.drawStringMultiLine(fontRenderer, part.name, 5, y + 17, 0xFFFFFF);
 
             if (currentPart) {

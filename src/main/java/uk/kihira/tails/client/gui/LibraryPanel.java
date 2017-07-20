@@ -95,7 +95,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public boolean onEntrySelected(GuiList guiList, int index, LibraryListEntry entry) {
         if (!(entry instanceof LibraryListEntry.NewLibraryListEntry)) {
             parent.libraryInfoPanel.setEntry(entry);
-            parent.setOutfit(entry.data.partsData.deepCopy());
+            parent.setOutfit(entry.data.outfit);
         }
         return true;
     }

@@ -1,6 +1,7 @@
 package uk.kihira.tails.client.gui;
 
 import com.mojang.authlib.GameProfile;
+import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.common.PartRegistry;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.PartInfo;
@@ -37,17 +38,16 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         }
 
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        fontRenderer.drawString((data.partsData.equals(Tails.localOutfit) ? TextFormatting.GREEN + "" + TextFormatting.ITALIC : "") + data.entryName, 5, y + 3, 0xFFFFFF);
+        fontRenderer.drawString((data.outfit.equals(Tails.localOutfit) ? TextFormatting.GREEN + "" + TextFormatting.ITALIC : "") + data.entryName, 5, y + 3, 0xFFFFFF);
 
         fontRenderer.setUnicodeFlag(true);
-        for (PartsData.PartType type : PartsData.PartType.values()) {
-            if (data.partsData.hasPartInfo(type)) {
-                PartInfo partInfo = data.partsData.getPartInfo(type);
-                fontRenderer.drawString(I18n.format(PartRegistry.getRenderer(partInfo.partType, partInfo.typeid).getUnlocalisedName(partInfo.subid)), x + 5, y + 12 + (8 * type.ordinal()), 0xFFFFFF);
-                for (int i = 1; i < 4; i++) {
-                    Gui.drawRect(listWidth - (8 * i), y + 13 + (type.ordinal() * 8), listWidth + 7 - (8 * i), y + 20 + (type.ordinal() * 8), partInfo.tints[i - 1]);
-                }
+        int offset = 0;
+        for (OutfitPart part : data.outfit.parts) {
+            fontRenderer.drawString(I18n.format(PartRegistry.getPart(part.basePart).name), x + 5, y + 12 + (8 * offset), 0xFFFFFF);
+            for (int i = 1; i < 4; i++) {
+                Gui.drawRect(listWidth - (8 * i), y + 13 + (offset * 8), listWidth + 7 - (8 * i), y + 20 + (offset * 8), part.tints[i - 1]);
             }
+            offset++;
         }
         fontRenderer.setUnicodeFlag(false);
 

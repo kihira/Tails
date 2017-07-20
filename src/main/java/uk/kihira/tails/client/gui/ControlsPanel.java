@@ -1,10 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
@@ -70,13 +63,12 @@ public class ControlsPanel extends Panel<GuiEditor> {
         }
         //Reset All
         else if (button.id == 1) {
-            PartInfo partInfo = parent.originalPartInfo.deepCopy();
             parent.partsPanel.selectDefaultListEntry();
             parent.libraryPanel.initList();
             parent.libraryInfoPanel.setEntry(null);
             parent.clearCurrTintEdit();
             parent.refreshTintPane();
-            parent.setOutfitPart(partInfo);
+            parent.setOutfitPart(null);
         }
         //Save All
         else if (button.id == 2) {
