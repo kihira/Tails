@@ -41,7 +41,6 @@ public class ControlsPanel extends Panel<GuiEditor> {
             //TODO change parts data when switching? clear libraryinfo panel?
             boolean libraryMode = button.displayString.equals(I18n.format("gui.button.mode.library"));
             parent.partsPanel.enabled = !libraryMode;
-            parent.texturePanel.enabled = !libraryMode;
             parent.tintPanel.enabled = !libraryMode;
 
             parent.libraryInfoPanel.enabled = libraryMode;
