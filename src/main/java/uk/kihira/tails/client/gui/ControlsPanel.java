@@ -5,7 +5,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.common.Outfit;
-import uk.kihira.tails.common.PartInfo;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
 

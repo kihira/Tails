@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.model.wings;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,7 +5,6 @@ import uk.kihira.tails.client.model.ModelPartBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-
 
 public class ModelMetalWings extends ModelPartBase {
 
@@ -30,7 +21,7 @@ public class ModelMetalWings extends ModelPartBase {
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+    public void render(EntityLivingBase theEntity, float partialTicks) {
         GlStateManager.translate(0, -7F * SCALE, 1F * SCALE * 2);
 
         GlStateManager.rotate(90, 0, 1, 0);

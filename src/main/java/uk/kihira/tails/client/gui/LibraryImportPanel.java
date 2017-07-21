@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.google.gson.JsonSyntaxException;
 import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.common.LibraryEntryData;
-import uk.kihira.tails.common.PartsData;
+import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -43,7 +43,7 @@ public class LibraryImportPanel extends Panel<GuiEditor> {
             else {
                 String[] strings = inputField.getText().split(":", 4);
                 try {
-                    LibraryEntryData entryData = new LibraryEntryData(UUID.fromString(strings[1]), strings[2], strings[0], Tails.gson.fromJson(strings[3], PartsData.class));
+                    LibraryEntryData entryData = new LibraryEntryData(UUID.fromString(strings[1]), strings[2], strings[0], Tails.gson.fromJson(strings[3], Outfit.class));
                     Tails.proxy.getLibraryManager().addEntry(entryData);
                     parent.libraryPanel.initList();
 

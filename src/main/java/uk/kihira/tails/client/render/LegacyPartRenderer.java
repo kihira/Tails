@@ -5,16 +5,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import uk.kihira.tails.api.IRenderHelper;
 import uk.kihira.tails.client.OutfitPart;
-import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.model.ModelPartBase;
-import uk.kihira.tails.client.texture.TextureHelper;
-import uk.kihira.tails.common.PartInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 
 @SideOnly(Side.CLIENT)

@@ -16,7 +16,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 //Yeah using side only isn't nice but as this is static, it means it only gets constructed on the client
@@ -49,7 +48,11 @@ public class PartRegistry {
         addPart(new Part(UUID.fromString("ec0fc665-8a23-44bc-8cbe-1189c5a49b85"), "Small Feline Ears", "Kihira", MountPoint.HEAD, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelCatSmallEars()));
 
         //Wings
-        addPart(new Part(UUID.fromString("824d9b80-fbfe-46e7-9cc4-2fcbffe6d923"), "Wings", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new RenderWings()));
+        RenderWings renderWings = new RenderWings();
+        addPart(new Part(UUID.fromString("824d9b80-fbfe-46e7-9cc4-2fcbffe6d923"), "Wings", "", MountPoint.CHEST, new int[]{0, 0, 0}), renderWings);
+        addPart(new Part(UUID.fromString("10f9b4af-ed69-4d10-8ee7-0e45672ccd60"), "Metal Wings", "", MountPoint.CHEST, new int[]{0, 0, 0}), renderWings);
+        addPart(new Part(UUID.fromString("71fb85c5-f406-43f9-99cf-eca88708a970"), "Dragon Wings", "", MountPoint.CHEST, new int[]{0, 0, 0}), renderWings);
+        addPart(new Part(UUID.fromString("9732b227-62cf-426f-9316-23cfdc4abcdb"), "Dragon Boneless Wings", "", MountPoint.CHEST, new int[]{0, 0, 0}), renderWings);
 
         // Muzzle
         // todo add in a part for each length of muzzle or show a tip instead saying the player can adjust the offset?

@@ -3,13 +3,9 @@ package uk.kihira.tails.client.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import uk.kihira.tails.client.OutfitPart;
-import uk.kihira.tails.client.texture.TextureHelper;
 import uk.kihira.tails.common.Outfit;
-import uk.kihira.tails.common.PartInfo;
-import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;

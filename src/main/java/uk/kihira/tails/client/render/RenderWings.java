@@ -1,16 +1,7 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.render;
 
+import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.client.model.ModelPartBase;
-import uk.kihira.tails.common.PartInfo;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -20,20 +11,19 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class RenderWings extends LegacyPartRenderer {
 
-    public RenderWings(String name, int subTypes, String modelAuthor, ModelPartBase modelPart, String... textureNames) {
-        super(name, subTypes, modelPart, modelAuthor, textureNames);
+    public RenderWings() {
+        super(null);
     }
 
     @Override
-    protected void doRender(EntityLivingBase entity, PartInfo info, float partialTicks) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(info.getTexture());
+    protected void doRender(EntityLivingBase entity, OutfitPart outfitPart, float partialTicks) {
         VertexBuffer renderer = Tessellator.getInstance().getBuffer();
         boolean isFlying = entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isFlying && entity.isAirBorne || entity.fallDistance > 0F;
         float timestep = ModelPartBase.getAnimationTime(isFlying ? 500 : 6500, entity);
         float angle = (float) Math.sin(timestep) * (isFlying ? 24F : 4F);
-        float scale = info.subid == 1 ? 1F : 2F;
+        float scale = 2F;
 
-        GlStateManager.translate(0, -(scale * 8F) * ModelPartBase.SCALE + (info.subid == 1 ? 0.1F : 0), 0.1F);
+        GlStateManager.translate(0, -(scale * 8F) * ModelPartBase.SCALE, 0.1F);
         GlStateManager.rotate(90, 0, 1, 0);
         GlStateManager.rotate(90, 0, 0, 1);
         GlStateManager.scale(scale, scale, scale);

@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.common.network;
 
 import com.google.common.reflect.TypeToken;
@@ -16,7 +8,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import uk.kihira.tails.common.Outfit;
-import uk.kihira.tails.common.PartsData;
 import uk.kihira.tails.common.Tails;
 
 import java.util.Map;
@@ -37,7 +28,7 @@ public class PlayerDataMapMessage implements IMessage {
     public void fromBytes(ByteBuf buf) {
         String tailInfoJson = ByteBufUtils.readUTF8String(buf);
         try {
-            this.outfitMap = Tails.gson.fromJson(tailInfoJson, new TypeToken<Map<UUID, PartsData>>() {}.getType());
+            this.outfitMap = Tails.gson.fromJson(tailInfoJson, new TypeToken<Map<UUID, Outfit>>() {}.getType());
         } catch (JsonSyntaxException e) {
             Tails.logger.catching(e);
         }
