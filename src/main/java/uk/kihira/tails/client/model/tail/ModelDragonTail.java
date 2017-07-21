@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014 Zoe Lee (Kihira)
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.model.tail;
 
 import uk.kihira.tails.client.model.ModelPartBase;
@@ -27,7 +19,11 @@ public class ModelDragonTail extends ModelPartBase {
     private final ModelRenderer tailSub2;
     private final ModelRenderer tailSub3;
 
-    public ModelDragonTail() {
+    private final int subtype;
+
+    public ModelDragonTail(int subtype) {
+        this.subtype = subtype;
+
         this.tailBase = new ModelRenderer(this, 22, 0);
         this.tailBase.addBox(-2.5F, -2.5F, -2F, 5, 5, 8);
         this.setRotationDegrees(this.tailBase, -40F, 0F, 0F);

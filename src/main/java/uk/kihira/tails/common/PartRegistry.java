@@ -28,9 +28,12 @@ public class PartRegistry {
 
     static {
         // Tails
-        // todo add in parts for twin and nine tails? might be best as animation system probably won't be in for a while
-        addPart(new Part(UUID.fromString("9d3aee5c-82c0-4474-90a2-301435b4ddc3"), "Fluffy Tail", "Kihira", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelFluffyTail()));
-        addPart(new Part(UUID.fromString("820fff32-e420-45f0-a626-8dfef2d0a2c4"), "Dragon Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelDragonTail()));
+        addPart(new Part(UUID.fromString("9d3aee5c-82c0-4474-90a2-301435b4ddc3"), "Fluffy Tail", "Kihira", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelFluffyTail(0)));
+        addPart(new Part(UUID.fromString("21c3fe75-2c9f-4702-b7e8-26a748f01d8a"), "Twin Tails", "Kihira", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelFluffyTail(1)));
+        addPart(new Part(UUID.fromString("65112ab3-58ce-498b-aa90-8c1f14f60a52"), "Nine Tails", "Kihira", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelFluffyTail(2)));
+
+        addPart(new Part(UUID.fromString("820fff32-e420-45f0-a626-8dfef2d0a2c4"), "Lizard Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelDragonTail(0)));
+        addPart(new Part(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Dragon Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelDragonTail(1)));
         addPart(new Part(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe"), "Raccoon Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelRaccoonTail()));
         addPart(new Part(UUID.fromString("91f5599a-8be5-4faf-bfbb-0b0bc39489f9"), "Devil Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelDevilTail()));
         addPart(new Part(UUID.fromString("2f7994c0-a790-4d57-ad59-ed43f72802ec"), "Cat Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelCatTail()));
