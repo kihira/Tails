@@ -16,8 +16,11 @@ public class ModelDevilTail extends ModelPartBase {
     final ModelRenderer tail4;
     final ModelRenderer tail5;
     final ModelRenderer tailTip;
+    private final int subtype;
 
-    public ModelDevilTail() {
+    public ModelDevilTail(int subtype) {
+        this.subtype = subtype;
+
         tailBase = new ModelRenderer(this, 0, 0);
         tailBase.addBox(-1F, -1F, 0F, 2, 2, 2);
         tailBase.setRotationPoint(0F, 0F, 0F);

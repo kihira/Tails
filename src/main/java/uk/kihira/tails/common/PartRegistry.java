@@ -34,7 +34,8 @@ public class PartRegistry {
         addPart(new Part(UUID.fromString("820fff32-e420-45f0-a626-8dfef2d0a2c4"), "Lizard Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelDragonTail(0)));
         addPart(new Part(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Dragon Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelDragonTail(1)));
         addPart(new Part(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe"), "Raccoon Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelRaccoonTail()));
-        addPart(new Part(UUID.fromString("91f5599a-8be5-4faf-bfbb-0b0bc39489f9"), "Devil Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelDevilTail()));
+        addPart(new Part(UUID.fromString("91f5599a-8be5-4faf-bfbb-0b0bc39489f9"), "Cat Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelDevilTail(0)));
+        addPart(new Part(UUID.fromString("833c8546-79e9-434f-9938-a9b4082fbd22"), "Devil Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelDevilTail(1)));
         addPart(new Part(UUID.fromString("2f7994c0-a790-4d57-ad59-ed43f72802ec"), "Cat Tail", "", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelCatTail()));
         addPart(new Part(UUID.fromString("eb096196-13de-45e1-a2bf-0730882af5a5"), "Bird Tail", "BluSunrize", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelBirdTail()));
         addPart(new Part(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1"), "Shark Tail", "access_denied", MountPoint.CHEST, new int[]{0, 0, 0}), new LegacyPartRenderer(new ModelSharkTail()));
