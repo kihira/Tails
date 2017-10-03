@@ -183,7 +183,6 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
         @Override
         public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
-            // todo add button click
             if (relativeX > addX && relativeX < addX+addWidth && relativeY > addY && relativeY < addY+addHeight) {
                 parent.addOutfitPart(new OutfitPart(part));
                 mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));

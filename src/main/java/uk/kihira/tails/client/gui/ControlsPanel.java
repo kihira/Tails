@@ -66,7 +66,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
             parent.libraryInfoPanel.setEntry(null);
             parent.clearCurrTintEdit();
             parent.refreshTintPane();
-            parent.setOutfitPart(null);
+            parent.setActiveOutfitPart(null);
         }
         //Save All
         else if (button.id == 2) {

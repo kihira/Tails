@@ -90,17 +90,21 @@ public class GuiEditor extends GuiBase {
         tintPanel.refreshTintPane();
     }
 
-    void setOutfitPart(@Nullable OutfitPart outfitPart) {
+    /**
+     * Sets the current OutfitPart that is being edited to the one supplied
+     * @param outfitPart The outfit part
+     */
+    void setActiveOutfitPart(@Nullable OutfitPart outfitPart) {
         currentOutfitPart = outfitPart;
-        // todo currentOutfitPart.setTexture(TextureHelper.generateTexture(playerUUID, currentOutfitPart));
-
-        setOutfit(outfit); // todo still needed?
-
     }
 
+    /**
+     * Adds a new OutfitPart to the Outfit and sets it to the current edited one
+     * @param outfitPart
+     */
     void addOutfitPart(OutfitPart outfitPart) {
         outfit.parts.add(outfitPart);
-        setOutfitPart(outfitPart);
+        setActiveOutfitPart(outfitPart);
     }
 
     @Nullable

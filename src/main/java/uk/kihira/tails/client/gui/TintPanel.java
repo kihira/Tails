@@ -276,7 +276,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         tintReset.enabled = true;
 
         if (currTintEdit > 0) parent.getCurrentOutfitPart().tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
-        parent.setOutfitPart(parent.getCurrentOutfitPart());
+        parent.setActiveOutfitPart(parent.getCurrentOutfitPart());
     }
 
     @Override
