@@ -31,7 +31,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void setActiveOutfit(UUID uuid, Outfit outfit) {
         if (hasActiveOutfit(uuid)) {
-            this.activeOutfits.get(uuid).clearTextures();
+            this.activeOutfits.get(uuid).dispose();
         }
 
         super.setActiveOutfit(uuid, outfit);
@@ -40,7 +40,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void removeActiveOutfit(UUID uuid) {
         if (hasActiveOutfit(uuid)) {
-            this.activeOutfits.get(uuid).clearTextures();
+            this.activeOutfits.get(uuid).dispose();
         }
         super.removeActiveOutfit(uuid);
     }
@@ -48,7 +48,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void clearAllPartsData() {
         for (Outfit outfit : this.activeOutfits.values()) {
-            outfit.clearTextures();
+            outfit.dispose();
         }
         super.clearAllPartsData();
     }

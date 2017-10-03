@@ -3,6 +3,7 @@ package uk.kihira.tails.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import uk.kihira.tails.client.texture.TextureHelper;
+import uk.kihira.tails.common.IDisposable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -12,7 +13,7 @@ import java.util.UUID;
  * Represents a part that is in an outfit
  */
 @ParametersAreNonnullByDefault
-public class OutfitPart {
+public class OutfitPart implements IDisposable {
     public final UUID basePart;
     public MountPoint mountPoint;
     public float[] mountOffset;

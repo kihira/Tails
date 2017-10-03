@@ -1,8 +1,6 @@
 package uk.kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
-import org.lwjgl.opengl.GL11;
-import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
@@ -12,8 +10,10 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
+import uk.kihira.tails.common.PartRegistry;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -125,6 +125,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     protected void actionPerformed(GuiButton button) {
         //Edit buttons
         if (button.id >= 2 && button.id <= 4) {
+            if (parent.getCurrentOutfitPart() == null) return;
             currTintEdit = button.id - 1;
             currTintColour = parent.getCurrentOutfitPart().tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
@@ -134,7 +135,8 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         //Reset Tint
         else if (button.id == 8) {
-            //todo currTintColour = parent.originalOutfit.[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            if (parent.getCurrentOutfitPart() == null) return;
+            currTintColour = PartRegistry.getPart(parent.getCurrentOutfitPart().basePart).defaultTints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;

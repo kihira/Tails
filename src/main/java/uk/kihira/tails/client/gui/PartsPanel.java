@@ -1,14 +1,17 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import uk.kihira.tails.client.*;
 import uk.kihira.tails.common.PartRegistry;
 
@@ -132,6 +135,11 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     class PartEntry implements GuiListExtended.IGuiListEntry {
+        private static final int addX = 1;
+        private static final int addY = 40;
+        private static final int addWidth = 10;
+        private static final int addHeight = 10;
+        private static final int addColour = 0xFF666666;
 
         final OutfitPart outfitPart;
         final Part part;
@@ -156,13 +164,17 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(5, y + 27, 0);
                     GlStateManager.scale(0.6F, 0.6F, 1F);
-                    zLevel = 100;
+                    //zLevel = 100;
                     fontRenderer.drawString(I18n.format("gui.author") + ":", 0, 0, 0xFFFFFF);
                     GlStateManager.translate(0, 10, 0);
                     fontRenderer.drawString(TextFormatting.AQUA + part.author, 0, 0, 0xFFFFFF);
                     GlStateManager.popMatrix();
-                    zLevel = 0;
+                    //zLevel = 0;
                 }
+                // Draw "add" button
+                GuiUtils.drawGradientRect(0, x+addX, y+addY, x+addX+addWidth, y+addY+addHeight, addColour, addColour);
+                fontRenderer.drawString("+", x+addX+(addWidth/4), y+addY+(addHeight/4), 0xFFFFFF);
+                //GuiUtils.drawContinuousTexturedBox(new ResourceLocation("textures/gui/widgets.png"), x+addX, y+addY, 0, 66, addWidth, addHeight, 200, 20, 2, zLevel);
             }
         }
 
@@ -172,8 +184,9 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         @Override
         public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
             // todo add button click
-            if (relativeX > 40 && relativeX < 60 && relativeY > 10 && relativeY < 20) {
+            if (relativeX > addX && relativeX < addX+addWidth && relativeY > addY && relativeY < addY+addHeight) {
                 parent.addOutfitPart(new OutfitPart(part));
+                mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 return true;
             }
             return false;

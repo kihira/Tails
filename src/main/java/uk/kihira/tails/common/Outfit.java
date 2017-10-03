@@ -7,7 +7,7 @@ import uk.kihira.tails.client.OutfitPart;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Outfit {
+public class Outfit implements IDisposable {
     public final UUID id;
     public String name;
     public String description;
@@ -15,12 +15,15 @@ public class Outfit {
 
     public Outfit() {
         id = UUID.randomUUID();
+        parts = new ArrayList<>();
     }
 
     // todo make a client only multimap of mountpoint <-> outfitpart?
 
     @SideOnly(Side.CLIENT)
-    public void clearTextures() {
-        // todo
+    public void dispose() {
+        for (OutfitPart part : parts) {
+            part.dispose();
+        }
     }
 }

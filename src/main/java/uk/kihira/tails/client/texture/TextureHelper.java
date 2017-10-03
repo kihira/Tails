@@ -18,7 +18,7 @@ public class TextureHelper {
 
         // Add UUID to prevent deleting similar textures.
         // todo chance of collision
-        ResourceLocation texture = new ResourceLocation("tails_"+part.basePart+"_"+part.tints[0]+"_"+part.tints[1]+"_"+part.tints[2]+"_"+part.basePart);
+        ResourceLocation texture = new ResourceLocation("tails_"+part.basePart+"_"+part.tints[0]+"_"+part.tints[1]+"_"+part.tints[2]);
         Minecraft.getMinecraft().getTextureManager().loadTexture(texture, new TripleTintTexture("tails", texturePath, part.tints[0], part.tints[1], part.tints[2]));
 
         return texture;
