@@ -42,6 +42,7 @@ public class GuiEditor extends GuiBase {
         // if one isn't generated, won't be able to properly cache data on clients.
         // but then again, we would probably be sent the entire json blob when trying to get the player outfit anyway
         outfit = Tails.gson.fromJson(Tails.gson.toJson(originalOutfit), Outfit.class);
+        if (outfit == null) outfit = new Outfit();
         setOutfit(outfit);
     }
 

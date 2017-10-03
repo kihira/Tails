@@ -1,7 +1,5 @@
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.tails.client.*;
-import uk.kihira.tails.common.PartRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended;
@@ -11,7 +9,8 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
-
+import uk.kihira.tails.client.*;
+import uk.kihira.tails.common.PartRegistry;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -64,6 +63,8 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
                 mountPoint = MountPoint.values()[mountPoint.ordinal() + 1];
             }
 
+            initPartList();
+
             mountPointButton.displayString = mountPoint.name();
         }
     }
@@ -87,10 +88,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     @Override
     public void onGuiClosed() {
-        // Delete textures on close
-        for (PartEntry entry : this.partList.getEntries()) {
-            // todo entry.part.setTexture(null);
-        }
+        dispose();
     }
 
     @Override
@@ -98,7 +96,9 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         return true;
     }
 
-    void initPartList() {
+    private void initPartList() {
+        dispose();
+
         this.partList = new GuiList<>(this, width, height - listTop, listTop, height, 55,
                 PartRegistry.getPartsByMountPoint(mountPoint).stream().map(PartEntry::new).collect(Collectors.toList()));
         this.partList.width = width;
@@ -107,6 +107,13 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     void selectDefaultListEntry() {
         partList.setCurrrentIndex(0);
+    }
+
+    private void dispose() {
+        if (partList == null) return;
+        for (PartEntry entry : partList.getEntries()) {
+            entry.outfitPart.dispose();
+        }
     }
 
     private void renderPart(int x, int y, int z, int scale, OutfitPart part) {
@@ -126,10 +133,12 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     class PartEntry implements GuiListExtended.IGuiListEntry {
 
+        final OutfitPart outfitPart;
         final Part part;
 
         PartEntry(Part part) {
             this.part = part;
+            this.outfitPart = new OutfitPart(part);
         }
 
         @Override
@@ -138,7 +147,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
             zLevel = 0;
 
             boolean currentPart = partList.getCurrrentIndex() == slotIndex;
-            // todo renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, part);
+            renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, outfitPart);
             ClientUtils.drawStringMultiLine(fontRenderer, part.name, 5, y + 17, 0xFFFFFF);
 
             if (currentPart) {

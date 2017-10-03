@@ -13,16 +13,15 @@ import java.awt.image.BufferedImage;
 @SideOnly(Side.CLIENT)
 public class TextureHelper {
 
-    // todo convert
-    private static ResourceLocation generateTexture(OutfitPart part) {
-        String texturePath = "texture/"+part.basePart+".png"; // todo best way to do textures?
+    public static ResourceLocation generateTexture(OutfitPart part) {
+        String texturePath = "texture/parts/"+part.basePart+".png"; // todo best way to do textures?
 
         // Add UUID to prevent deleting similar textures.
         // todo chance of collision
-        ResourceLocation tailTexture = new ResourceLocation("tails_"+part.basePart+"_"+part.tints[0]+"_"+part.tints[1]+"_"+part.tints[2]);
-        Minecraft.getMinecraft().getTextureManager().loadTexture(tailTexture, new TripleTintTexture("tails", texturePath, part.tints[0], part.tints[1], part.tints[2]));
+        ResourceLocation texture = new ResourceLocation("tails_"+part.basePart+"_"+part.tints[0]+"_"+part.tints[1]+"_"+part.tints[2]+"_"+part.basePart);
+        Minecraft.getMinecraft().getTextureManager().loadTexture(texture, new TripleTintTexture("tails", texturePath, part.tints[0], part.tints[1], part.tints[2]));
 
-        return tailTexture;
+        return texture;
     }
 
     private static void uploadTexture(ITextureObject textureObject, BufferedImage bufferedImage) {

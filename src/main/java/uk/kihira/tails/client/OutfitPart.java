@@ -2,13 +2,16 @@ package uk.kihira.tails.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import uk.kihira.tails.client.texture.TextureHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
 
 /**
  * Represents a part that is in an outfit
  */
+@ParametersAreNonnullByDefault
 public class OutfitPart {
     public final UUID basePart;
     public MountPoint mountPoint;
@@ -18,7 +21,7 @@ public class OutfitPart {
     public int[] tints;
 
     // Client only fields
-    public transient ResourceLocation compiledTexture;
+    private transient ResourceLocation compiledTexture;
 
     public OutfitPart(UUID basePart) {
         this.basePart = basePart;
@@ -32,12 +35,23 @@ public class OutfitPart {
         this.rotation = part.defaultRotation;
         this.scale = part.defaultScale;
         this.tints = part.defaultTints;
+
+        setCompiledTexture(TextureHelper.generateTexture(this));
     }
 
-    public void setCompiledTexture(@Nonnull ResourceLocation texture) {
-        if (compiledTexture != null) {
-            Minecraft.getMinecraft().renderEngine.deleteTexture(texture);
-        }
+    @Nonnull
+    public ResourceLocation getCompiledTexture() {
+        return compiledTexture;
+    }
+
+    public void setCompiledTexture(ResourceLocation texture) {
+        dispose();
         compiledTexture = texture;
+    }
+
+    public void dispose() {
+        if (compiledTexture != null) {
+            Minecraft.getMinecraft().renderEngine.deleteTexture(compiledTexture);
+        }
     }
 }

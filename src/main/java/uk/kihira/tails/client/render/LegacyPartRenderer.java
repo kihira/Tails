@@ -1,32 +1,26 @@
 package uk.kihira.tails.client.render;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import uk.kihira.tails.api.IRenderHelper;
 import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.client.model.ModelPartBase;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-
 
 import java.util.HashMap;
 
 @SideOnly(Side.CLIENT)
 public class LegacyPartRenderer {
-    public final ModelPartBase modelPart;
+    private final ModelPartBase modelPart;
 
     public LegacyPartRenderer(ModelPartBase modelPart) {
         this.modelPart = modelPart;
     }
 
     public void render(EntityLivingBase entity, OutfitPart outfitPart, float partialTicks) {
-/*        if (info.needsTextureCompile || info.getTexture() == null) {
-            info.setTexture(TextureHelper.generateTexture(entity.getUniqueID(), info));
-            info.needsTextureCompile = false;
-        }*/
-
         GlStateManager.pushMatrix();
 
         IRenderHelper helper;
@@ -42,7 +36,7 @@ public class LegacyPartRenderer {
     }
 
     protected void doRender(EntityLivingBase entity, OutfitPart outfitPart, float partialTicks) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(outfitPart.compiledTexture);
+        Minecraft.getMinecraft().renderEngine.bindTexture(outfitPart.getCompiledTexture());
         this.modelPart.render(entity, partialTicks);
     }
 
@@ -58,7 +52,7 @@ public class LegacyPartRenderer {
         }
     }
 
-    public static IRenderHelper getRenderHelper(Class<? extends EntityLivingBase> clazz) {
+    private static IRenderHelper getRenderHelper(Class<? extends EntityLivingBase> clazz) {
         return renderHelpers.getOrDefault(clazz, null);
     }
 }
