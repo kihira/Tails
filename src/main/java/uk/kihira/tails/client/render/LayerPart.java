@@ -34,6 +34,8 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
         UUID uuid = EntityPlayer.getUUID(entity.getGameProfile());
         if (Tails.proxy.hasActiveOutfit(uuid)) {
             Outfit outfit = Tails.proxy.getActiveOutfit(uuid);
+            if (outfit == null || outfit.parts == null) return;
+
             for (OutfitPart part : outfit.parts) {
                 if (part.mountPoint == mountPoint) {
                     GlStateManager.pushMatrix();

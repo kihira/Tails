@@ -104,7 +104,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         for (int tint = 1; tint <= 3; tint++) {
             String s = I18n.format("gui.tint", tint);
             fontRenderer.drawString(s, 5, topOffset, 0xFFFFFF);
-            int colour = parent.getCurrentOutfitPart().tints[tint - 1] | 0xFF << 24;
+            int colour = parent.getCurrentOutfitPart() != null ? parent.getCurrentOutfitPart().tints[tint - 1] | 0xFF << 24 : 0xFFFFFF;
             drawGradientRect(5, topOffset + 10, 25, topOffset + 30, colour, colour);
             topOffset += 35;
         }
