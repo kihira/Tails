@@ -1,8 +1,5 @@
 package uk.kihira.tails.client.render;
 
-import uk.kihira.tails.client.MountPoint;
-import uk.kihira.tails.client.OutfitPart;
-import uk.kihira.tails.common.*;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,7 +7,13 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import uk.kihira.tails.client.MountPoint;
+import uk.kihira.tails.client.OutfitPart;
+import uk.kihira.tails.common.Outfit;
+import uk.kihira.tails.common.PartRegistry;
+import uk.kihira.tails.common.Tails;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
 
@@ -27,7 +30,7 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
     }
 
     @Override
-    public void doRenderLayer(AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void doRenderLayer(@Nonnull AbstractClientPlayer entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         UUID uuid = EntityPlayer.getUUID(entity.getGameProfile());
         if (Tails.proxy.hasActiveOutfit(uuid)) {
             Outfit outfit = Tails.proxy.getActiveOutfit(uuid);

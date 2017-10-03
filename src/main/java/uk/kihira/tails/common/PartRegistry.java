@@ -1,8 +1,9 @@
 package uk.kihira.tails.common;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.Part;
-import uk.kihira.tails.client.model.ModelSizableMuzzle;
 import uk.kihira.tails.client.model.ears.ModelCatEars;
 import uk.kihira.tails.client.model.ears.ModelCatSmallEars;
 import uk.kihira.tails.client.model.ears.ModelFoxEars;
@@ -10,8 +11,6 @@ import uk.kihira.tails.client.model.ears.ModelPandaEars;
 import uk.kihira.tails.client.model.tail.*;
 import uk.kihira.tails.client.render.LegacyPartRenderer;
 import uk.kihira.tails.client.render.RenderWings;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,9 +56,9 @@ public class PartRegistry {
 
         // Muzzle
         // todo add in a part for each length of muzzle or show a tip instead saying the player can adjust the offset?
-        addPart(new Part(UUID.fromString("c80c2f56-c8fe-4697-bba8-e32e4070361e")), new LegacyPartRenderer(new ModelSizableMuzzle()));
-        addPart(new Part(UUID.fromString("6ec3bb8d-19b5-457e-af5f-6946ce2c2401")), new LegacyPartRenderer(new ModelSizableMuzzle()));
-        addPart(new Part(UUID.fromString("38676637-4203-49fe-a0b9-b9652dfac40a")), new LegacyPartRenderer(new ModelSizableMuzzle()));
+        //addPart(new Part(UUID.fromString("c80c2f56-c8fe-4697-bba8-e32e4070361e")), new LegacyPartRenderer(new ModelSizableMuzzle()));
+        //addPart(new Part(UUID.fromString("6ec3bb8d-19b5-457e-af5f-6946ce2c2401")), new LegacyPartRenderer(new ModelSizableMuzzle()));
+        //addPart(new Part(UUID.fromString("38676637-4203-49fe-a0b9-b9652dfac40a")), new LegacyPartRenderer(new ModelSizableMuzzle()));
 
     }
 
