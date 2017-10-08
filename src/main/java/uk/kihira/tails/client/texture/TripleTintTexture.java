@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014 Zoe Lee (Kihira)
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.texture;
 
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -26,52 +18,42 @@ import java.io.InputStream;
 @ParametersAreNonnullByDefault
 public class TripleTintTexture extends AbstractTexture {
 
-    private final String namespace;
-    private final String texturename;
+    private final String textureName;
     private final int tint1;
     private final int tint2;
     private final int tint3;
 
-    private static final int MINBRIGHTNESS = 22;
+    private static final int MIN_BRIGHTNESS = 22;
 
-    public TripleTintTexture(String namespace, String texturename, int tint1, int tint2, int tint3) {
-        this.namespace = namespace;
-        this.texturename = texturename;
+    public TripleTintTexture(String textureName, int tint1, int tint2, int tint3) {
+        this.textureName = textureName;
         this.tint1 = tint1;
         this.tint2 = tint2;
         this.tint3 = tint3;
     }
 
     @Override
-    public void loadTexture(IResourceManager resourceManager) throws IOException {
-        this.deleteGlTexture();
+    public void loadTexture(IResourceManager resourceManager) {
+        deleteGlTexture();
         BufferedImage texture;
 
-        try
+        try (InputStream inputstream = resourceManager.getResource(new ResourceLocation(Tails.MOD_ID, textureName)).getInputStream())
         {
-            InputStream inputstream = resourceManager.getResource(new ResourceLocation(namespace, texturename)).getInputStream();
             texture = ImageIO.read(inputstream);
 
             int w = texture.getWidth();
             int h = texture.getHeight();
-            int length = w*h;
-            int[] pixeldata = new int[w*h];
+            int length = w * h;
+            int[] pixelData = new int[length];
 
-            texture.getRGB(0, 0, w, h, pixeldata, 0, w);
+            texture.getRGB(0, 0, w, h, pixelData, 0, w);
 
-            int c,r,g,b,a;
-
-            for (int i=0; i<length; i++) {
-                c = pixeldata[i];
-                a = alpha(c);
-                r = red(c);
-                g = green(c);
-                b = blue(c);
-
-                pixeldata[i] = colourise(r, this.tint1, g, this.tint2, b, this.tint3, a);
+            for (int i = 0; i < length; i++) {
+                int c = pixelData[i];
+                pixelData[i] = colourise(red(c), tint1, green(c), tint2, blue(c), tint3, alpha(c));
             }
 
-            texture.setRGB(0, 0, w, h, pixeldata, 0, w);
+            texture.setRGB(0, 0, w, h, pixelData, 0, w);
             TextureUtil.uploadTextureImage(getGlTextureId(), texture);
         }
         catch (IOException ioexception)
@@ -92,30 +74,28 @@ public class TripleTintTexture extends AbstractTexture {
      * @return The colorised pixel
      */
     private int colourise(int tone, int c1, int weight1, int c2, int weight2, int c3, int a) {
-        double w2 = weight1/255.0;
-        double w3 = weight2/255.0;
+        double w2 = weight1 / 255.f;
+        double w3 = weight2 / 255.f;
 
-        w2 *= (1.0 - (w3));
+        w2 *= (1.f - (w3));
 
-        double w1 = 1.0 - (w2+w3);
+        double w1 = 1.f - (w2+w3);
 
-        double r1 = scale(red(c1), MINBRIGHTNESS) / 255.0;
-        double g1 = scale(green(c1), MINBRIGHTNESS) / 255.0;
-        double b1 = scale(blue(c1), MINBRIGHTNESS) / 255.0;
+        double r1 = scale(red(c1), MIN_BRIGHTNESS) / 255.f;
+        double g1 = scale(green(c1), MIN_BRIGHTNESS) / 255.f;
+        double b1 = scale(blue(c1), MIN_BRIGHTNESS) / 255.f;
 
-        double r2 = scale(red(c2), MINBRIGHTNESS) / 255.0;
-        double g2 = scale(green(c2), MINBRIGHTNESS) / 255.0;
-        double b2 = scale(blue(c2), MINBRIGHTNESS) / 255.0;
+        double r2 = scale(red(c2), MIN_BRIGHTNESS) / 255.f;
+        double g2 = scale(green(c2), MIN_BRIGHTNESS) / 255.f;
+        double b2 = scale(blue(c2), MIN_BRIGHTNESS) / 255.f;
 
-        double r3 = scale(red(c3), MINBRIGHTNESS) / 255.0;
-        double g3 = scale(green(c3), MINBRIGHTNESS) / 255.0;
-        double b3 = scale(blue(c3), MINBRIGHTNESS) / 255.0;
+        double r3 = scale(red(c3), MIN_BRIGHTNESS) / 255.f;
+        double g3 = scale(green(c3), MIN_BRIGHTNESS) / 255.f;
+        double b3 = scale(blue(c3), MIN_BRIGHTNESS) / 255.f;
 
         int rfinal = (int)Math.floor(tone * (r1*w1 + r2*w2 + r3*w3));
         int gfinal = (int)Math.floor(tone * (g1*w1 + g2*w2 + g3*w3));
         int bfinal = (int)Math.floor(tone * (b1*w1 + b2*w2 + b3*w3));
-
-        //System.out.println(rfinal+", "+gfinal+", "+bfinal);
 
         return compose(rfinal, gfinal, bfinal, a);
     }
@@ -173,6 +153,6 @@ public class TripleTintTexture extends AbstractTexture {
     }
 
     private int scale(int c, int min) {
-        return min + (int)Math.floor(c * ((255-min)/255.0));
+        return min + (int)Math.floor(c * ((255-min)/255.f));
     }
 }
