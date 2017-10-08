@@ -13,7 +13,7 @@ import java.util.UUID;
 public class TextureHelper {
 
     public static ResourceLocation generateTexture(OutfitPart part) {
-        String texturePath = "texture/parts/"+part.basePart+".png"; // todo best way to do textures?
+        String texturePath = "texture/parts/"+part.basePart+"/"+part.texture+".png";
 
         // Add UUID to prevent deleting similar textures.
         ResourceLocation texture = new ResourceLocation(Tails.MOD_ID,"part_"+part.basePart+"_"+part.tints[0]+"_"+part.tints[1]+"_"+part.tints[2]+"_"+ UUID.randomUUID());
