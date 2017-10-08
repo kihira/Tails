@@ -1,38 +1,28 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
-import uk.kihira.tails.client.texture.TextureHelper;
-import uk.kihira.tails.common.PartInfo;
-import uk.kihira.tails.common.PartsData;
+import uk.kihira.tails.client.OutfitPart;
+import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class GuiEditor extends GuiBase {
 
-    int textureID;
-    private PartsData.PartType partType;
-    private PartsData partsData;
-    private PartInfo editingPartInfo;
-    PartInfo originalPartInfo;
+    @Nullable
+    public Outfit originalOutfit; // The outfit from before the GUI was opened. Is updated when player saves new outfit
+    private Outfit outfit;
+    @Nullable
+    private OutfitPart currentOutfitPart;
     private UUID playerUUID;
-
-    private int guiScale;
 
     TintPanel tintPanel;
     PartsPanel partsPanel;
     private PreviewPanel previewPanel;
-    TexturePanel texturePanel;
     private ControlsPanel controlsPanel;
     public LibraryPanel libraryPanel;
     public LibraryInfoPanel libraryInfoPanel;
@@ -40,32 +30,23 @@ public class GuiEditor extends GuiBase {
 
     public GuiEditor() {
         super(4);
-        //Backup original PartInfo or create default one
-        PartInfo partInfo;
-        if (Tails.localPartsData == null) {
-            Tails.setLocalPartsData(new PartsData());
-        }
 
-        //Default to Tail
-        partType = PartsData.PartType.TAIL;
-        for (PartsData.PartType partType : PartsData.PartType.values()) {
-            if (!Tails.localPartsData.hasPartInfo(partType)) {
-                Tails.localPartsData.setPartInfo(partType, PartInfo.none(partType));
-            }
-        }
-        partInfo = Tails.localPartsData.getPartInfo(partType);
         playerUUID = EntityPlayer.getUUID(Minecraft.getMinecraft().getSession().getProfile());
 
-        originalPartInfo = partInfo.deepCopy();
-        setPartsData(Tails.localPartsData.deepCopy());
-        editingPartInfo = originalPartInfo.deepCopy();
+        // Load outfit or create empty one
+        if (Tails.localOutfit == null) originalOutfit = new Outfit();
+        else originalOutfit = Tails.localOutfit;
 
-        //guiScale = Minecraft.getMinecraft().gameSettings.guiScale;
-        //setScale(4);
+        // Copy outfit for modifying and set as our current outfit
+        // todo should a new UUID be generated?
+        // if one isn't generated, won't be able to properly cache data on clients.
+        // but then again, we would probably be sent the entire json blob when trying to get the player outfit anyway
+        outfit = Tails.gson.fromJson(Tails.gson.toJson(originalOutfit), Outfit.class);
+        if (outfit == null) outfit = new Outfit();
+        setOutfit(outfit);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void initGui() {
         int previewWindowEdgeOffset = 110;
         int previewWindowRight = width - previewWindowEdgeOffset;
@@ -77,7 +58,6 @@ public class GuiEditor extends GuiBase {
             getLayer(0).add(previewPanel = new PreviewPanel(this, previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom));
             getLayer(1).add(partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - texSelectHeight));
             getLayer(1).add(libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height));
-            getLayer(1).add(texturePanel = new TexturePanel(this, 0, height - texSelectHeight, previewWindowEdgeOffset, 43));
             getLayer(1).add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
             getLayer(1).add(libraryImportPanel = new LibraryImportPanel(this, previewWindowRight, height - 60, width - previewWindowRight, 60));
             getLayer(1).add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 60));
@@ -93,7 +73,6 @@ public class GuiEditor extends GuiBase {
             partsPanel.resize(0, 0, previewWindowEdgeOffset, height - texSelectHeight);
             libraryPanel.resize(0, 0, previewWindowEdgeOffset, height);
             previewPanel.resize(previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
-            texturePanel.resize(0, height - texSelectHeight, previewWindowEdgeOffset, 43);
             libraryImportPanel.resize(previewWindowRight, height - 60, width - previewWindowRight, 60);
             controlsPanel.resize(previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom);
         }
@@ -102,7 +81,7 @@ public class GuiEditor extends GuiBase {
 
     @Override
     public void onGuiClosed() {
-        Tails.proxy.addPartsData(playerUUID, Tails.localPartsData);
+        Tails.proxy.setActiveOutfit(playerUUID, Tails.localOutfit);
         //setScale(guiScale);
         super.onGuiClosed();
     }
@@ -111,61 +90,38 @@ public class GuiEditor extends GuiBase {
         tintPanel.refreshTintPane();
     }
 
-    void setPartsInfo(PartInfo newPartInfo) {
-        //editingPartInfo.setTexture(null); //Clear texture data as we will no longer need it
-        editingPartInfo = newPartInfo;
-        if (editingPartInfo.hasPart) editingPartInfo.setTexture(TextureHelper.generateTexture(playerUUID, editingPartInfo));
-
-        partsData.setPartInfo(partType, editingPartInfo);
-        setPartsData(partsData);
-
-        texturePanel.updateButtons();
+    /**
+     * Sets the current OutfitPart that is being edited to the one supplied
+     * @param outfitPart The outfit part
+     */
+    void setActiveOutfitPart(@Nullable OutfitPart outfitPart) {
+        currentOutfitPart = outfitPart;
     }
 
-    PartInfo getEditingPartInfo() {
-        return editingPartInfo;
+    /**
+     * Adds a new OutfitPart to the Outfit and sets it to the current edited one
+     * @param outfitPart
+     */
+    void addOutfitPart(OutfitPart outfitPart) {
+        outfit.parts.add(outfitPart);
+        setActiveOutfitPart(outfitPart);
     }
 
-    public void setPartsData(PartsData newPartsData) {
-        partsData = newPartsData;
-        Tails.proxy.addPartsData(playerUUID, partsData);
+    @Nullable
+    OutfitPart getCurrentOutfitPart() {
+        return currentOutfitPart;
     }
 
-    public PartsData getPartsData() {
-        return partsData;
+    public void setOutfit(Outfit outfit) {
+        this.outfit = outfit;
+        Tails.proxy.setActiveOutfit(playerUUID, this.outfit);
     }
 
-    public void setPartType(PartsData.PartType partType) {
-        this.partType = partType;
-
-        PartInfo newPartInfo = partsData.getPartInfo(partType);
-        if (newPartInfo == null) {
-            newPartInfo = PartInfo.none(partType);
-        }
-        originalPartInfo = newPartInfo.deepCopy();
-        PartInfo partInfo = originalPartInfo.deepCopy();
-
-        clearCurrTintEdit();
-        setPartsInfo(partInfo);
-        partsPanel.initPartList();
-        refreshTintPane();
-        textureID = partInfo.textureID;
-        texturePanel.updateButtons();
-    }
-
-    public PartsData.PartType getPartType() {
-        return partType;
+    public Outfit getOutfit() {
+        return outfit;
     }
 
     void clearCurrTintEdit() {
         tintPanel.currTintEdit = 0;
-    }
-
-    private void setScale(int scale) {
-        Minecraft.getMinecraft().gameSettings.guiScale = scale;
-        ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
-        int j = scaledresolution.getScaledWidth();
-        int k = scaledresolution.getScaledHeight();
-        this.setWorldAndResolution(Minecraft.getMinecraft(), j, k);
     }
 }

@@ -25,7 +25,11 @@ public class ModelFluffyTail extends ModelPartBase {
     private final ModelRenderer tail4;
     private final ModelRenderer tail5;
 
-    public ModelFluffyTail() {
+    private final int subtype; // todo temp until proper animation system is in place
+
+    public ModelFluffyTail(int subtype) {
+        this.subtype = subtype;
+
         this.tailBase = new ModelRenderer(this);
         this.tailBase.addBox(-1, -1, 0, 2, 2, 3);
         this.tailBase.setRotationPoint(0, 0, 0);
@@ -126,7 +130,7 @@ public class ModelFluffyTail extends ModelPartBase {
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+    public void render(EntityLivingBase theEntity, float partialTicks) {
         float timestep = getAnimationTime(4000F, theEntity);
 
         if (subtype == 0) {

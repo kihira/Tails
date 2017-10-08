@@ -1,22 +1,21 @@
 package uk.kihira.tails.proxy;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.Loader;
-import uk.kihira.tails.client.ClientEventHandler;
-import uk.kihira.tails.client.FakeEntity;
-import uk.kihira.tails.client.model.ModelRendererWrapper;
-import uk.kihira.tails.client.render.*;
-import uk.kihira.tails.common.LibraryManager;
-import uk.kihira.tails.common.PartsData;
-import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.common.network.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import uk.kihira.tails.client.ClientEventHandler;
+import uk.kihira.tails.client.MountPoint;
+import uk.kihira.tails.client.render.FallbackRenderHandler;
+import uk.kihira.tails.client.render.LayerPart;
+import uk.kihira.tails.common.LibraryManager;
+import uk.kihira.tails.common.Outfit;
+import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.common.network.*;
 
 import java.util.Map;
 import java.util.UUID;
@@ -29,32 +28,29 @@ public class ClientProxy extends CommonProxy {
         registerMessages();
         registerHandlers();
         libraryManager = new LibraryManager.ClientLibraryManager();
-
-        RenderPart.registerRenderHelper(EntityPlayer.class, new PlayerRenderHelper());
-        RenderPart.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
     }
 
     @Override
-    public void addPartsData(UUID uuid, PartsData partsData) {
-        if (hasPartsData(uuid)) {
-            this.partsData.get(uuid).clearTextures();
+    public void setActiveOutfit(UUID uuid, Outfit outfit) {
+        if (hasActiveOutfit(uuid)) {
+            this.activeOutfits.get(uuid).dispose();
         }
 
-        super.addPartsData(uuid, partsData);
+        super.setActiveOutfit(uuid, outfit);
     }
 
     @Override
-    public void removePartsData(UUID uuid) {
-        if (hasPartsData(uuid)) {
-            this.partsData.get(uuid).clearTextures();
+    public void removeActiveOutfit(UUID uuid) {
+        if (hasActiveOutfit(uuid)) {
+            this.activeOutfits.get(uuid).dispose();
         }
-        super.removePartsData(uuid);
+        super.removeActiveOutfit(uuid);
     }
 
     @Override
     public void clearAllPartsData() {
-        for (PartsData partInfo : this.partsData.values()) {
-            partInfo.clearTextures();
+        for (Outfit outfit : this.activeOutfits.values()) {
+            outfit.dispose();
         }
         super.clearAllPartsData();
     }
@@ -87,36 +83,45 @@ public class ClientProxy extends CommonProxy {
         }
 
         if (legacyRenderer) {
-            MinecraftForge.EVENT_BUS.register(new RenderingHandler());
+            MinecraftForge.EVENT_BUS.register(new FallbackRenderHandler());
 
             Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
             // Default
             ModelPlayer model = skinMap.get("default").getMainModel();
-            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.TAIL));
-            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.WINGS));
-            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.EARS));
-            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.MUZZLE));
+            model.bipedHead.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.HEAD));
+            model.bipedBody.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.CHEST));
+            model.bipedLeftArm.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.LEFT_ARM));
+            model.bipedRightArm.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.RIGHT_ARM));
+            model.bipedLeftLeg.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.LEFT_LEG));
+            model.bipedRightLeg.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.RIGHT_LEG));
             // Slim
             model = skinMap.get("slim").getMainModel();
-            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.TAIL));
-            model.bipedBody.addChild(new ModelRendererWrapper(model, PartsData.PartType.WINGS));
-            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.EARS));
-            model.bipedHead.addChild(new ModelRendererWrapper(model, PartsData.PartType.MUZZLE));
+            model.bipedHead.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.HEAD));
+            model.bipedBody.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.CHEST));
+            model.bipedLeftArm.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.LEFT_ARM));
+            model.bipedRightArm.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.RIGHT_ARM));
+            model.bipedLeftLeg.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.LEFT_LEG));
+            model.bipedRightLeg.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.RIGHT_LEG));
         }
         else {
             Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
             // Default
             RenderPlayer renderPlayer = skinMap.get("default");
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.MUZZLE));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, MountPoint.HEAD));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, MountPoint.CHEST));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedLeftArm, MountPoint.LEFT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedRightArm, MountPoint.RIGHT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedLeftLeg, MountPoint.LEFT_LEG));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedRightLeg, MountPoint.RIGHT_LEG));
+
             // Slim
             renderPlayer = skinMap.get("slim");
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.TAIL));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, PartsData.PartType.WINGS));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.EARS));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, PartsData.PartType.MUZZLE));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedHead, MountPoint.HEAD));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedBody, MountPoint.CHEST));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedLeftArm, MountPoint.LEFT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedRightArm, MountPoint.RIGHT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedLeftLeg, MountPoint.LEFT_LEG));
+            renderPlayer.addLayer(new LayerPart(renderPlayer.getMainModel().bipedRightLeg, MountPoint.RIGHT_LEG));
         }
     }
 }

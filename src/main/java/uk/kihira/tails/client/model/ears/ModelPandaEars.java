@@ -35,7 +35,7 @@ public class ModelPandaEars extends ModelPartBase {
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+    public void render(EntityLivingBase theEntity, float partialTicks) {
         leftEar.render(0.0625F);
         rightEar.render(0.0625F);
     }

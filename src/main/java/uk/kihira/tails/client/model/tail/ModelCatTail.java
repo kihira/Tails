@@ -93,8 +93,8 @@ public class ModelCatTail extends ModelPartBase {
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
-        setRotationAngles(0, 0, 0, 0, subtype, partialTicks, theEntity);
+    public void render(EntityLivingBase theEntity, float partialTicks) {
+        setRotationAngles(0, 0, 0, 0, 0, partialTicks, theEntity);
         tailBase.render(0.0625F);
     }
 }

@@ -1,18 +1,10 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import uk.kihira.tails.client.toast.ToastManager;
-import uk.kihira.tails.common.PartInfo;
-import uk.kihira.tails.common.PartsData;
+import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
 
@@ -42,14 +34,12 @@ public class ControlsPanel extends Panel<GuiEditor> {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        PartsData partsData = parent.getPartsData();
-        //Mode Switch
+        Outfit outfit = parent.getOutfit();
+        // Mode Switch
         if (button.id == 0) {
-            //>.> You see nothing!
             //TODO change parts data when switching? clear libraryinfo panel?
             boolean libraryMode = button.displayString.equals(I18n.format("gui.button.mode.library"));
             parent.partsPanel.enabled = !libraryMode;
-            parent.texturePanel.enabled = !libraryMode;
             parent.tintPanel.enabled = !libraryMode;
 
             parent.libraryInfoPanel.enabled = libraryMode;
@@ -63,28 +53,27 @@ public class ControlsPanel extends Panel<GuiEditor> {
             parent.refreshTintPane();
 
             if (!libraryMode) {
-                Tails.setLocalPartsData(parent.getPartsData());
+                Tails.setLocalOutfit(outfit);
             }
-            parent.setPartsData(Tails.localPartsData);
+            parent.setOutfit(Tails.localOutfit);
 
             button.displayString = (libraryMode ? I18n.format("gui.button.mode.editor") : I18n.format("gui.button.mode.library"));
         }
         //Reset All
         else if (button.id == 1) {
-            PartInfo partInfo = parent.originalPartInfo.deepCopy();
             parent.partsPanel.selectDefaultListEntry();
             parent.libraryPanel.initList();
             parent.libraryInfoPanel.setEntry(null);
             parent.clearCurrTintEdit();
             parent.refreshTintPane();
-            parent.setPartsInfo(partInfo);
+            parent.setActiveOutfitPart(null);
         }
         //Save All
         else if (button.id == 2) {
             //Update part info, set local and send it to the server
-            Tails.setLocalPartsData(partsData);
-            Tails.proxy.addPartsData(mc.player.getPersistentID(), partsData);
-            Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), partsData, false));
+            Tails.setLocalOutfit(outfit);
+            Tails.proxy.setActiveOutfit(mc.player.getPersistentID(), outfit);
+            Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), outfit, false));
             ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, TextFormatting.GREEN + "Saved!");
             this.mc.displayGuiScreen(null);
         }

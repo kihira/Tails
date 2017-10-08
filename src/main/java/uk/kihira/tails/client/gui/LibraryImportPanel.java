@@ -3,9 +3,8 @@ package uk.kihira.tails.client.gui;
 import com.google.common.base.Strings;
 import com.google.gson.JsonSyntaxException;
 import uk.kihira.tails.client.toast.ToastManager;
-import uk.kihira.tails.client.texture.TextureHelper;
 import uk.kihira.tails.common.LibraryEntryData;
-import uk.kihira.tails.common.PartsData;
+import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -27,13 +26,6 @@ public class LibraryImportPanel extends Panel<GuiEditor> {
     @Override
     @SuppressWarnings("unchecked")
     public void initGui() {
-        GuiButton button;
-
-        //Import Skin
-        button = new GuiButtonExt(0, 3, 3, width - 6, 18, I18n.format("gui.library.import.skin"));
-        button.enabled = TextureHelper.hasSkinData(mc.player);
-        buttonList.add(button);
-
         buttonList.add(new GuiButtonExt(1, 3, 21, width - 6, 18, I18n.format("gui.library.import.string")));
 
         inputField = new GuiTextField(2, fontRenderer, 3, 41, width - 6, 15);
@@ -42,12 +34,8 @@ public class LibraryImportPanel extends Panel<GuiEditor> {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if (button.id == 0) {
-            TextureHelper.buildPlayerPartsData(mc.player);
-            ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 50, parent.width / 2, TextFormatting.GREEN + I18n.format("gui.library.import.toast.skin"));
-        }
         //Import from string
-        else if (button.id == 1) {
+        if (button.id == 1) {
             if (Strings.isNullOrEmpty(inputField.getText()) || inputField.getText().split(":", 3).length != 3) {
                 ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 50, parent.width / 2,
                         TextFormatting.RED + I18n.format("gui.library.import.toast.invalid"));
@@ -55,7 +43,7 @@ public class LibraryImportPanel extends Panel<GuiEditor> {
             else {
                 String[] strings = inputField.getText().split(":", 4);
                 try {
-                    LibraryEntryData entryData = new LibraryEntryData(UUID.fromString(strings[1]), strings[2], strings[0], Tails.gson.fromJson(strings[3], PartsData.class));
+                    LibraryEntryData entryData = new LibraryEntryData(UUID.fromString(strings[1]), strings[2], strings[0], Tails.gson.fromJson(strings[3], Outfit.class));
                     Tails.proxy.getLibraryManager().addEntry(entryData);
                     parent.libraryPanel.initList();
 

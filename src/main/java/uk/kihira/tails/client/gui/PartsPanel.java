@@ -1,44 +1,36 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.tails.client.ClientUtils;
-import uk.kihira.tails.client.FakeEntity;
-import uk.kihira.tails.client.PartRegistry;
-import uk.kihira.tails.client.render.RenderPart;
-import uk.kihira.tails.common.PartInfo;
-import uk.kihira.tails.common.PartsData;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
-
+import net.minecraftforge.fml.client.config.GuiUtils;
+import uk.kihira.tails.client.*;
+import uk.kihira.tails.common.PartRegistry;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
 public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsPanel.PartEntry> {
 
     private GuiList<PartEntry> partList;
-    private GuiButton partTypeButton;
+    private GuiButton mountPointButton;
+    private MountPoint mountPoint; // todo temporary until UI rework. Tabs with search?
 
     private final FakeEntity fakeEntity;
     private final int listTop = 35;
 
-    public PartsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
+    PartsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);
         alwaysReceiveMouse = true;
+        mountPoint = MountPoint.CHEST;
 
         fakeEntity = new FakeEntity(Minecraft.getMinecraft().world);
     }
@@ -47,7 +39,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     public void initGui() {
         initPartList();
 
-        buttonList.add(partTypeButton = new GuiButtonExt(0, width/2 - 25, 16, 50, 16, parent.getPartType().name()));
+        buttonList.add(mountPointButton = new GuiButtonExt(0, width/2 - 25, 16, 50, 16, mountPoint.name()));
     }
 
     @Override
@@ -66,138 +58,123 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if (button.id == 0) {
-            if (parent.getPartType().ordinal() + 1 >= PartsData.PartType.values().length) {
-                parent.setPartType(PartsData.PartType.values()[0]);
+        if (button.id == mountPointButton.id) {
+            if (mountPoint.ordinal() + 1 >= MountPoint.values().length) {
+                mountPoint = MountPoint.values()[0];
             }
             else {
-                parent.setPartType(PartsData.PartType.values()[parent.getPartType().ordinal() + 1]);
+                mountPoint = MountPoint.values()[mountPoint.ordinal() + 1];
             }
 
-            partTypeButton.displayString = parent.getPartType().name();
+            initPartList();
+
+            mountPointButton.displayString = mountPoint.name();
         }
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        this.partList.mouseClicked(mouseX, mouseY, mouseButton);
+        partList.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state) {
         super.mouseReleased(mouseX, mouseY, state);
-        this.partList.mouseReleased(mouseX, mouseY, state);
+        partList.mouseReleased(mouseX, mouseY, state);
     }
 
     @Override
     public void handleMouseInput() throws IOException {
-        this.partList.handleMouseInput();
+        partList.handleMouseInput();
     }
 
     @Override
     public void onGuiClosed() {
-        //Delete textures on close
-        for (PartEntry entry : this.partList.getEntries()) {
-            entry.partInfo.setTexture(null);
-        }
+        dispose();
     }
 
     @Override
     public boolean onEntrySelected(GuiList guiList, int index, PartEntry entry) {
-        //Reset texture ID
-        parent.textureID = 0;
-        //Need to keep tints from original part
-        PartInfo partInfo = new PartInfo(entry.partInfo.hasPart, entry.partInfo.typeid, entry.partInfo.subid, entry.partInfo.textureID,
-                parent.getEditingPartInfo().tints.clone(), entry.partInfo.partType, entry.partInfo.scale, null);
-        parent.setPartsInfo(partInfo);
         return true;
     }
 
-    void initPartList() {
-        //Part List
-        List<PartEntry> partList = new ArrayList<>();
-        PartsData.PartType partType = parent.getPartType();
-        partList.add(new PartEntry(PartInfo.none(partType))); //No tail
-        //Generate tail preview textures and add to list
-        List<RenderPart> parts = PartRegistry.getParts(partType);
-        for (int type = 0; type < parts.size(); type++) {
-            for (int subType = 0; subType <= parts.get(type).getAvailableSubTypes(); subType++) {
-                PartInfo partInfo = new PartInfo(true, type, subType, 0, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 1, null, partType);
-                partList.add(new PartEntry(partInfo));
-            }
-        }
+    private void initPartList() {
+        dispose();
 
-        this.partList = new GuiList<>(this, width, height - listTop, listTop, height, 55, partList);
+        this.partList = new GuiList<>(this, width, height - listTop, listTop, height, 55,
+                PartRegistry.getPartsByMountPoint(mountPoint).stream().map(PartEntry::new).collect(Collectors.toList()));
         this.partList.width = width;
         selectDefaultListEntry();
     }
 
     void selectDefaultListEntry() {
-        //Default selection
-        for (GuiListExtended.IGuiListEntry entry : partList.getEntries()) {
-            PartEntry partEntry = (PartEntry) entry;
-            PartInfo partInfo = parent.getEditingPartInfo();
-            if ((!partEntry.partInfo.hasPart && !partInfo.hasPart) || (partInfo.hasPart && partEntry.partInfo.hasPart
-                    && partEntry.partInfo.typeid == partInfo.typeid && partEntry.partInfo.subid == partInfo.subid)) {
-                partList.setCurrrentIndex(partList.getEntries().indexOf(partEntry));
-                break;
-            }
+        partList.setCurrrentIndex(0);
+    }
+
+    private void dispose() {
+        if (partList == null) return;
+        for (PartEntry entry : partList.getEntries()) {
+            entry.outfitPart.dispose();
         }
     }
 
-    private void renderPart(int x, int y, int z, int scale, PartInfo partInfo) {
+    private void renderPart(int x, int y, int z, int scale, OutfitPart part) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         GlStateManager.scale(-scale, scale, 1F);
 
         RenderHelper.enableStandardItemLighting();
         Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
-        PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid).render(fakeEntity, partInfo, 0, 0, 0, 0);
+        PartRegistry.getRenderer(part.basePart).render(fakeEntity, part, 0);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        //GlStateManager.disableTexture2D(); //Why was this needed? It produces graphical issues when enabled...
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
         GlStateManager.popMatrix();
     }
 
     class PartEntry implements GuiListExtended.IGuiListEntry {
+        private static final int addX = 1;
+        private static final int addY = 40;
+        private static final int addWidth = 10;
+        private static final int addHeight = 10;
+        private static final int addColour = 0xFF666666;
 
-        final PartInfo partInfo;
+        final OutfitPart outfitPart;
+        final Part part;
 
-        PartEntry(PartInfo partInfo) {
-            this.partInfo = partInfo;
+        PartEntry(Part part) {
+            this.part = part;
+            this.outfitPart = new OutfitPart(part);
         }
 
         @Override
         public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
             GlStateManager.color(1, 1, 1, 1);
             zLevel = 0;
-            if (partInfo.hasPart) {
-                boolean currentPart = partList.getCurrrentIndex() == slotIndex;
-                renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, partInfo);
-                ClientUtils.drawStringMultiLine(fontRenderer, I18n.format(PartRegistry.getRenderPart(partInfo.partType, partInfo.typeid)
-                        .getUnlocalisedName(partInfo.subid)), 5, y + 17, 0xFFFFFF);
 
-                if (currentPart) {
-                    RenderPart renderPart = PartRegistry.getRenderPart(parent.getPartType(), partInfo.typeid);
-                    if (renderPart.getModelAuthor() != null) {
-                        //Yeah its not nice but eh, works
-                        GlStateManager.pushMatrix();
-                        GlStateManager.translate(5, y + 27, 0);
-                        GlStateManager.scale(0.6F, 0.6F, 1F);
-                        zLevel = 100;
-                        fontRenderer.drawString(I18n.format("gui.createdby") + ":", 0, 0, 0xFFFFFF);
-                        GlStateManager.translate(0, 10, 0);
-                        fontRenderer.drawString(TextFormatting.AQUA + renderPart.getModelAuthor(), 0, 0, 0xFFFFFF);
-                        GlStateManager.popMatrix();
-                        zLevel = 0;
-                    }
+            boolean currentPart = partList.getCurrrentIndex() == slotIndex;
+            renderPart(right - 25, y - 25, currentPart ? 10 : 1, 50, outfitPart);
+            ClientUtils.drawStringMultiLine(fontRenderer, part.name, 5, y + 17, 0xFFFFFF);
+
+            if (currentPart) {
+                if (part.author != null) {
+                    //Yeah its not nice but eh, works
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(5, y + 27, 0);
+                    GlStateManager.scale(0.6F, 0.6F, 1F);
+                    //zLevel = 100;
+                    fontRenderer.drawString(I18n.format("gui.author") + ":", 0, 0, 0xFFFFFF);
+                    GlStateManager.translate(0, 10, 0);
+                    fontRenderer.drawString(TextFormatting.AQUA + part.author, 0, 0, 0xFFFFFF);
+                    GlStateManager.popMatrix();
+                    //zLevel = 0;
                 }
-            }
-            else {
-                fontRenderer.drawString(I18n.format("tail.none.name"), 5, y + (partList.slotHeight / 2) - 5, 0xFFFFFF);
+                // Draw "add" button
+                GuiUtils.drawGradientRect(0, x+addX, y+addY, x+addX+addWidth, y+addY+addHeight, addColour, addColour);
+                fontRenderer.drawString("+", x+addX+(addWidth/4), y+addY+(addHeight/4), 0xFFFFFF);
+                //GuiUtils.drawContinuousTexturedBox(new ResourceLocation("textures/gui/widgets.png"), x+addX, y+addY, 0, 66, addWidth, addHeight, 200, 20, 2, zLevel);
             }
         }
 
@@ -205,11 +182,16 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {}
 
         @Override
-        public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {
-            return true;
+        public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
+            if (relativeX > addX && relativeX < addX+addWidth && relativeY > addY && relativeY < addY+addHeight) {
+                parent.addOutfitPart(new OutfitPart(part));
+                mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                return true;
+            }
+            return false;
         }
 
         @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int mouseSlotX, int mouseSlotY) {}
+        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {}
     }
 }

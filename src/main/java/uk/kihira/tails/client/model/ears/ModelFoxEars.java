@@ -15,6 +15,8 @@ import net.minecraft.entity.EntityLivingBase;
 
 
 public class ModelFoxEars extends ModelPartBase {
+
+    private final int subtype;
     private final ModelRenderer leftEarInnerSmall;
     private final ModelRenderer leftEarInnerBig;
     private final ModelRenderer rightEarInnerSmall;
@@ -34,7 +36,9 @@ public class ModelFoxEars extends ModelPartBase {
     private final ModelRenderer leftEarBackSmall;
     private final ModelRenderer lightEarBackSmall;
 
-    public ModelFoxEars() {
+    public ModelFoxEars(int subtype) {
+        this.subtype = subtype;
+
         textureWidth = 16;
         textureHeight = 32;
 
@@ -121,7 +125,7 @@ public class ModelFoxEars extends ModelPartBase {
     }
 
     @Override
-    public void render(EntityLivingBase theEntity, int subtype, float partialTicks) {
+    public void render(EntityLivingBase theEntity, float partialTicks) {
         GlStateManager.pushMatrix();
         if (subtype == 1) {
             GlStateManager.translate(0f, 0f, -0.0625f);

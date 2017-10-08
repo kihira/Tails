@@ -112,7 +112,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             LibraryEntryData libData = parent.libraryInfoPanel.getEntry().data;
             sb.append(libData.entryName).append(":");
             sb.append(libData.creatorUUID).append(":");
-            sb.append(Tails.gson.toJson(libData.partsData));
+            sb.append(Tails.gson.toJson(libData.outfit));
 
             ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height / 2, parent.width / 2, I18n.format("gui.library.info.toast.export"));
             GuiScreen.setClipboardString(sb.toString());

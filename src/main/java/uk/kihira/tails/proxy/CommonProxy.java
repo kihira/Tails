@@ -1,21 +1,13 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.proxy;
 
-import uk.kihira.tails.common.LibraryManager;
-import uk.kihira.tails.common.PartsData;
-import uk.kihira.tails.common.ServerEventHandler;
-import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.common.network.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import uk.kihira.tails.common.LibraryManager;
+import uk.kihira.tails.common.Outfit;
+import uk.kihira.tails.common.ServerEventHandler;
+import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.common.network.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +15,7 @@ import java.util.UUID;
 
 public class CommonProxy {
 
-    protected final HashMap<UUID, PartsData> partsData = new HashMap<>();
+    protected final HashMap<UUID, Outfit> activeOutfits = new HashMap<>(); // todo move this out of proxy? Will be removed in cloud save stuff most likely
     protected LibraryManager libraryManager;
 
     public void init() {
@@ -46,40 +38,37 @@ public class CommonProxy {
 
     public void registerRenderers() {}
 
-    public void addPartsData(UUID uuid, PartsData partsData) {
-        if (uuid != null) {
-            this.partsData.put(uuid, partsData);
-            Tails.logger.debug(String.format("Added part data for %s: %s", uuid.toString(), partsData));
-        }
-        else Tails.logger.warn(String.format("Attempted to add part data with null UUID! %s", partsData));
+    public void setActiveOutfit(UUID uuid, Outfit outfit) {
+        this.activeOutfits.put(uuid, outfit);
+        Tails.logger.debug(String.format("Added outfit for %s: %s", uuid.toString(), outfit));
     }
 
-    public void removePartsData(UUID uuid) {
-        if (hasPartsData(uuid)) {
+    public void removeActiveOutfit(UUID uuid) {
+        if (hasActiveOutfit(uuid)) {
             if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-                //todo Tell uk.kihira.tails.client to remove textures
-                //Tails.networkWrapper.sendToAll(new PlayerDataMessage(uuid, this.partsData.get(uuid), true));
+                //todo Tell client to remove textures
+                //Tails.networkWrapper.sendToAll(new PlayerDataMessage(uuid, this.activeOutfits.get(uuid), true));
             }
-            this.partsData.remove(uuid);
+            this.activeOutfits.remove(uuid);
             Tails.logger.debug(String.format("Removed part data for %s", uuid.toString()));
         }
     }
 
     public void clearAllPartsData() {
-        this.partsData.clear();
+        this.activeOutfits.clear();
         Tails.logger.debug("Clearing parts data");
     }
 
-    public boolean hasPartsData(UUID uuid) {
-        return uuid != null && this.partsData.containsKey(uuid);
+    public boolean hasActiveOutfit(UUID uuid) {
+        return this.activeOutfits.containsKey(uuid);
     }
 
-    public PartsData getPartsData(UUID uuid) {
-        return this.partsData.get(uuid);
+    public Outfit getActiveOutfit(UUID uuid) {
+        return this.activeOutfits.get(uuid);
     }
 
-    public Map<UUID, PartsData> getPartsData() {
-        return this.partsData;
+    public Map<UUID, Outfit> getActiveOutfits() {
+        return this.activeOutfits;
     }
 
     public LibraryManager getLibraryManager() {

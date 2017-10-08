@@ -1,0 +1,17 @@
+{
+  "partId": "id-goes-here",
+  "activeTexture": "name",
+  "mountPoint": "CHEST",
+  "mountOffset": [
+    0, 0, 0
+  ],
+  "rotation": [
+    0, 0, 0
+  ],
+  "scale": [
+    0, 0, 0
+  ],
+  "tints": [
+    0, 0, 0
+  ]
+}

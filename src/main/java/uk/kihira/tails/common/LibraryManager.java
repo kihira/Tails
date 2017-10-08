@@ -10,7 +10,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class LibraryManager {
@@ -57,7 +56,7 @@ public class LibraryManager {
             List<LibraryEntryData> loadedEntries = gson.fromJson(fileReader, new TypeToken<List<LibraryEntryData>>() {}.getType());
             if (loadedEntries != null && loadedEntries.size() > 0) {
                 for (LibraryEntryData libEntry : loadedEntries) {
-                    if (libEntry.partsData != null) {
+                    if (libEntry.outfit != null) {
                         libraryEntries.add(libEntry);
                     }
                 }

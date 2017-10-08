@@ -1,0 +1,37 @@
+{
+  "id": "b783d4b9-dd0e-41bb-8aa3-87efac967c19",
+  "author": "Kihira",
+  "name": "Fluffy Tail",
+  "tags": [],
+  "category": 0,
+  "renderer": "legacy",
+  "model": "id-goes-here",
+  "model": {
+    "json": "definition"
+  },
+  "textures": [
+    {
+      "name": "Texture Name",
+      "rMap": "file.png",
+      "gMap": "file.png",
+      "bMap": "file.png"
+    },
+    {
+      "name": "Texture Name",
+      "compiledMap": "file.png"
+    }
+  ],
+  "mountPoint": "CHEST",
+  "defaultMountOffset": [
+    0, 0, 0
+  ],
+  "defaultRotation": [
+    0, 0, 0
+  ],
+  "defaultScale": [
+    0, 0, 0
+  ],
+  "defaultTints": [
+    0, 0, 0
+  ]
+}

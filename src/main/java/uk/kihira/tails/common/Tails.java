@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.common;
 
 import com.google.gson.Gson;
@@ -28,6 +20,9 @@ import net.minecraftforge.fml.common.versioning.VersionParser;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.kihira.tails.client.FakeEntity;
+import uk.kihira.tails.client.render.FakeEntityRenderHelper;
+import uk.kihira.tails.client.render.LegacyPartRenderer;
 import uk.kihira.tails.proxy.CommonProxy;
 
 import java.util.Map;
@@ -40,7 +35,6 @@ public class Tails {
     public static final SimpleNetworkWrapper networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
     public static final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
-            .registerTypeAdapter(PartsData.class, new PartsDataDeserializer())
             .create();
 
     public static Configuration configuration;
@@ -52,10 +46,7 @@ public class Tails {
     @Mod.Instance(value = "tails")
     public static Tails instance;
 
-    /**
-     * This is the {@link PartInfo} for the local player
-     */
-    public static PartsData localPartsData;
+    public static Outfit localOutfit;
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
@@ -64,6 +55,8 @@ public class Tails {
         if (e.getSide().isClient()) {
             Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
             loadConfig();
+
+            LegacyPartRenderer.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
         }
     }
 
@@ -98,35 +91,12 @@ public class Tails {
         //Load local player info
         try {
             //Load Player Data
-            localPartsData = gson.fromJson(Tails.configuration.getString("Local Player Data",
-                    Configuration.CATEGORY_GENERAL, "{}", "Local Players data. Delete to remove all customisation data. Do not try to edit manually"), PartsData.class);
-
-            //Load old tail info if exists
-            PartInfo tailInfo = null;
-            if (Tails.configuration.hasKey(Configuration.CATEGORY_GENERAL, "Local Tail Info")) {
-                tailInfo = gson.fromJson(Tails.configuration.getString("Local Tail Info",
-                        Configuration.CATEGORY_GENERAL, "DEPRECIATED. CAN SAFELY REMOVE", ""), PartInfo.class);
-            }
-            if (tailInfo != null) {
-                if (localPartsData == null) localPartsData = new PartsData();
-                tailInfo.partType = PartsData.PartType.TAIL;
-                localPartsData.setPartInfo(PartsData.PartType.TAIL, tailInfo);
-
-                //Delete old info
-                Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Tail Info", "");
-                prop.set("");
-
-                //Force save
-                setLocalPartsData(localPartsData);
-            }
+            localOutfit = gson.fromJson(Tails.configuration.getString("Local Player Outfit",
+                    Configuration.CATEGORY_GENERAL, "{}", "Local Players outfit. Delete to remove all customisation data. Do not try to edit manually"), Outfit.class);
 
             //Load default if none exists
-            if (localPartsData == null) {
-                localPartsData = new PartsData();
-                for (PartsData.PartType partType : PartsData.PartType.values()) {
-                    localPartsData.setPartInfo(partType, PartInfo.none(partType));
-                }
-                setLocalPartsData(localPartsData);
+            if (localOutfit == null) {
+                setLocalOutfit(localOutfit = new Outfit());
             }
         } catch (JsonSyntaxException e) {
             Tails.configuration.getCategory(Configuration.CATEGORY_GENERAL).remove("Local Player Data");
@@ -140,11 +110,11 @@ public class Tails {
         }
     }
 
-    public static void setLocalPartsData(PartsData partsData) {
-        localPartsData = partsData;
+    public static void setLocalOutfit(Outfit outfit) {
+        localOutfit = outfit;
 
         Property prop = Tails.configuration.get(Configuration.CATEGORY_GENERAL, "Local Player Data", "");
-        prop.set(gson.toJson(localPartsData));
+        prop.set(gson.toJson(localOutfit));
 
         Tails.configuration.save();
     }

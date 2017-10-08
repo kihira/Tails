@@ -1,15 +1,6 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
 package uk.kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
-import org.lwjgl.opengl.GL11;
-import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,8 +10,10 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
+import uk.kihira.tails.common.PartRegistry;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -111,7 +104,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         for (int tint = 1; tint <= 3; tint++) {
             String s = I18n.format("gui.tint", tint);
             fontRenderer.drawString(s, 5, topOffset, 0xFFFFFF);
-            int colour = parent.getEditingPartInfo().tints[tint - 1] | 0xFF << 24;
+            int colour = parent.getCurrentOutfitPart() != null ? parent.getCurrentOutfitPart().tints[tint - 1] | 0xFF << 24 : 0xFFFFFF;
             drawGradientRect(5, topOffset + 10, 25, topOffset + 30, colour, colour);
             topOffset += 35;
         }
@@ -132,8 +125,9 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     protected void actionPerformed(GuiButton button) {
         //Edit buttons
         if (button.id >= 2 && button.id <= 4) {
+            if (parent.getCurrentOutfitPart() == null) return;
             currTintEdit = button.id - 1;
-            currTintColour = parent.getEditingPartInfo().tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            currTintColour = parent.getCurrentOutfitPart().tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;
@@ -141,7 +135,8 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         //Reset Tint
         else if (button.id == 8) {
-            currTintColour = parent.originalPartInfo.tints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            if (parent.getCurrentOutfitPart() == null) return;
+            currTintColour = PartRegistry.getPart(parent.getCurrentOutfitPart().basePart).defaultTints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;
@@ -280,8 +275,8 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
         tintReset.enabled = true;
 
-        if (currTintEdit > 0) parent.getEditingPartInfo().tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
-        parent.setPartsInfo(parent.getEditingPartInfo());
+        if (currTintEdit > 0) parent.getCurrentOutfitPart().tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
+        parent.setActiveOutfitPart(parent.getCurrentOutfitPart());
     }
 
     @Override
