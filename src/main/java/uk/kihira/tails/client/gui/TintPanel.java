@@ -26,7 +26,7 @@ import java.nio.IntBuffer;
 public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback, IControlCallback<GuiSlider,Float> {
 
     private int currTintEdit = 0;
-    int currTintColour = 0xFFFFFF;
+    private int currTintColour = GuiEditor.TEXT_COLOUR;
     private GuiSlider sizeSlider;
     private GuiTextField hexText;
     private GuiHSBSlider[] hsbSliders;
@@ -37,7 +37,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     private boolean selectingColour = false;
     private int editPaneTop;
 
-    public TintPanel(GuiEditor parent, int left, int top, int width, int height) {
+    TintPanel(GuiEditor parent, int left, int top, int width, int height) {
         super(parent, left, top, width, height);
         alwaysReceiveMouse = true;
     }
@@ -47,7 +47,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         editPaneTop = 40;
         //Edit tint buttons
         for (int i = 0; i < 3; i++) {
-            buttonList.add(new TintButton(i, 10 + (i*30), 10, i));
+            buttonList.add(new TintButton(i, 10 + (i*30), 16, i));
         }
 
         // Size Slider
@@ -64,7 +64,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         rgbSliders[0] = new GuiHSBSlider(5, 5, editPaneTop + 70, 100, 10, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.red.tooltip"));
         rgbSliders[1] = new GuiHSBSlider(6, 5, editPaneTop + 80, 100, 10, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.green.tooltip"));
         rgbSliders[2] = new GuiHSBSlider(7, 5, editPaneTop + 90, 100, 10, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.blue.tooltip"));
-        rgbSliders[0].setHue(0);
+        rgbSliders[0].setHue(0f);
         rgbSliders[1].setHue(1f/3f);
         rgbSliders[2].setHue(2f/3f);
 
@@ -95,16 +95,15 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        zLevel = -100;
         drawRect(0, 0, width, height, 0xCC000000);
-        zLevel = 0;
+        drawString(fontRenderer, I18n.format("gui.tints"), 5, 3, GuiEditor.TEXT_COLOUR);
 
         //Editing tint pane
         if (currTintEdit >= 0) {
             drawHorizontalLine(0, width, editPaneTop, 0xFF000000);
-            fontRenderer.drawString(I18n.format("gui.tint.edit", currTintEdit+1), 5, editPaneTop + 5, 0xFFFFFF);
+            fontRenderer.drawString(I18n.format("gui.tint.edit", currTintEdit+1), 5, editPaneTop + 5, GuiEditor.TEXT_COLOUR);
 
-            fontRenderer.drawString(I18n.format("gui.hex") + ":", 5, editPaneTop + 21, 0xFFFFFF);
+            fontRenderer.drawString(I18n.format("gui.hex") + ":", 5, editPaneTop + 21, GuiEditor.TEXT_COLOUR);
             hexText.drawTextBox();
         }
 
@@ -118,7 +117,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         // Tint buttons
         if (button.id >= 0 && button.id < 3) {
             currTintEdit = button.id;
-            currTintColour = parent.getCurrentOutfitPart().tints[currTintEdit] & 0xFFFFFF; //Ignore the alpha bits
+            currTintColour = parent.getCurrentOutfitPart().tints[currTintEdit] & GuiEditor.TEXT_COLOUR; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;
@@ -126,7 +125,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         // Reset Tint
         else if (button.id == 8) {
-            currTintColour = PartRegistry.getPart(parent.getCurrentOutfitPart().basePart).defaultTints[currTintEdit - 1] & 0xFFFFFF; //Ignore the alpha bits
+            currTintColour = PartRegistry.getPart(parent.getCurrentOutfitPart().basePart).defaultTints[currTintEdit - 1] & GuiEditor.TEXT_COLOUR; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;
@@ -203,7 +202,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         pixelBuffer.get(pixelData);
         TextureUtil.processPixelValues(pixelData, 1, 1);
 
-        return pixelData[0] & 0xFFFFFF;
+        return pixelData[0] & GuiEditor.TEXT_COLOUR;
     }
 
     private void setSelectingColour(boolean selectingColour) {
@@ -265,7 +264,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
         tintReset.enabled = true;
 
-        //if (currTintEdit >= 0) parent.getCurrentOutfitPart().tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
+        //todo if (currTintEdit >= 0) parent.getCurrentOutfitPart().tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
         parent.setActiveOutfitPart(parent.getCurrentOutfitPart());
     }
 
@@ -282,7 +281,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
         private final int tintId;
 
-        public TintButton(int buttonId, int x, int y, int tintId) {
+        TintButton(int buttonId, int x, int y, int tintId) {
             super(buttonId, x, y, BTN_SIZE, BTN_SIZE, I18n.format("gui.tint"));
             this.tintId = tintId;
         }

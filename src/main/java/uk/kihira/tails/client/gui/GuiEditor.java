@@ -12,6 +12,7 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 public class GuiEditor extends GuiBase {
+    public static final int TEXT_COLOUR = 0xFFFFFF;
 
     @Nullable
     public Outfit originalOutfit; // The outfit from before the GUI was opened. Is updated when player saves new outfit
@@ -122,6 +123,6 @@ public class GuiEditor extends GuiBase {
     }
 
     void clearCurrTintEdit() {
-        tintPanel.currTintEdit = 0;
+        // todo still needed? tintPanel.currTintEdit = 0;
     }
 }
