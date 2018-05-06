@@ -13,10 +13,6 @@ buildscript {
 
 repositories {
     mavenCentral()
-    maven {
-        name = 'Kihira Maven'
-        url = 'http://maven.foxes.rocks'
-    }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -48,10 +44,6 @@ group= "uk.kihira.tails"
 archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
 
-dependencies {
-    deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
-}
-
 minecraft {
     version = "${project.mcVersion}-${project.forgeVersion}"
     runDir = "run"
@@ -79,60 +71,4 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-/**
- * Maven uploading
- */
-def deployer = {
-    repository(url: project.properties.maven_url) {
-        configuration = configurations.deployerJars
-        authentication(userName: project.properties.maven_username ?: "", password: project.properties.maven_password ?: "")
-    }
-
-    pom {
-        groupId = project.group
-        version = project.version
-        artifactId = project.archivesBaseName
-
-        project {
-            name project.archivesBaseName
-            packaging 'jar'
-            description 'Tails'
-            url 'https://github.com/kihira/Tails/'
-
-            scm {
-                url 'https://github.com/kihira/Tails/'
-                connection 'scm:git:git://github.com/kihira/Tails.git'
-                developerConnection 'scm:git:git@github.com/kihira/Tails.git'
-            }
-
-            issueManagement {
-                system 'github'
-                url 'https://github.com/kihira/Tails/issues'
-            }
-
-            licenses {
-                license {
-                    name 'The MIT License (MIT)'
-                    url 'https://opensource.org/licenses/MIT'
-                    distribution 'repo'
-                }
-            }
-
-            developers {
-                developer {
-                    id 'Kihira'
-                    name 'Kihira'
-                    roles {
-                        role 'developer'
-                    }
-                }
-            }
-        }
-    }
-}
-
-uploadArchives {
-    repositories.mavenDeployer(deployer)
 }

@@ -1,9 +1,0 @@
-{
-  "presets": [{
-    "name": "Default",
-    "tints": [
-      0, 0, 0
-    ],
-    "texture": "texture_name"
-  }]
-}

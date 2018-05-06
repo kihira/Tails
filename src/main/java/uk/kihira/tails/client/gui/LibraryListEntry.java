@@ -43,7 +43,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         for (OutfitPart part : data.outfit.parts) {
             fontRenderer.drawString(I18n.format(PartRegistry.getPart(part.basePart).name), x + 5, y + 12 + (8 * offset), 0xFFFFFF);
             for (int i = 1; i < 4; i++) {
-                Gui.drawRect(listWidth - (8 * i), y + 13 + (offset * 8), listWidth + 7 - (8 * i), y + 20 + (offset * 8), part.tints[i - 1]);
+                Gui.drawRect(listWidth - (8 * i), y + 13 + (offset * 8), listWidth + 7 - (8 * i), y + 20 + (offset * 8), part.tint[i - 1]);
             }
             offset++;
         }

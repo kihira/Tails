@@ -16,8 +16,8 @@ public class TextureHelper {
         String texturePath = "texture/parts/"+part.basePart+"/"+part.texture+".png";
 
         // Add UUID to prevent deleting similar textures.
-        ResourceLocation texture = new ResourceLocation(Tails.MOD_ID,"part_"+part.basePart+"_"+part.tints[0]+"_"+part.tints[1]+"_"+part.tints[2]+"_"+ UUID.randomUUID());
-        Minecraft.getMinecraft().getTextureManager().loadTexture(texture, new TripleTintTexture(texturePath, part.tints[0], part.tints[1], part.tints[2]));
+        ResourceLocation texture = new ResourceLocation(Tails.MOD_ID,"part_"+part.basePart+"_"+part.tint[0]+"_"+part.tint[1]+"_"+part.tint[2]+"_"+ UUID.randomUUID());
+        Minecraft.getMinecraft().getTextureManager().loadTexture(texture, new TripleTintTexture(texturePath, part.tint[0], part.tint[1], part.tint[2]));
 
         return texture;
     }

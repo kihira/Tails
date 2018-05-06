@@ -19,24 +19,24 @@ public class OutfitPart implements IDisposable {
     public float[] mountOffset;
     public float[] rotation;
     public float[] scale;
-    public int[] tints;
+    public int[] tint;
     public UUID texture;
 
     // Client only fields
     private transient ResourceLocation compiledTexture;
 
     public OutfitPart(UUID basePart) {
-        this.basePart = basePart;
+            this.basePart = basePart;
         // todo copy base part data
     }
 
     public OutfitPart(Part part) {
         this.basePart = part.id;
         this.mountPoint = part.mountPoint;
-        this.mountOffset = part.defaultMountOffset;
-        this.rotation = part.defaultRotation;
-        this.scale = part.defaultScale;
-        this.tints = part.defaultTints;
+        this.mountOffset = part.mountOffset;
+        this.rotation = part.rotation;
+        this.scale = part.scale;
+        this.tint = part.tint;
         this.texture = part.textures[0];
 
         setCompiledTexture(TextureHelper.generateTexture(this));

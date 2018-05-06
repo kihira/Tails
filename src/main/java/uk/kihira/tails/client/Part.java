@@ -1,32 +1,34 @@
 package uk.kihira.tails.client;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
  * Represents an immutable part
  */
+@Nullable
 public class Part {
     // Non render details
     public final UUID id; // A UUID for a file that contains the model and texture. Also the UUID for the part
     public final String author;
     public final String name;
-    //public final String[] tags;
-    //public final int category;
+    public final String[] tags = new String[]{};
+    public final int category = 0;
 
     public final MountPoint mountPoint;
-    public final float[] defaultMountOffset;
-    public final float[] defaultRotation;
-    public final float[] defaultScale;
-    public final int[] defaultTints;
+    public final float[] mountOffset;
+    public final float[] rotation;
+    public final float[] scale;
+    public final int[] tint;
     public final UUID[] textures;
 
     public Part(UUID id, String name, String author, MountPoint mountPoint, float[] defaultMountOffset, float[] defaultRotation, float[] defaultScale, int[] defaultTints, UUID[] textures) {
         this.id = id;
         this.mountPoint = mountPoint;
-        this.defaultMountOffset = defaultMountOffset;
-        this.defaultRotation = defaultRotation;
-        this.defaultScale = defaultScale;
-        this.defaultTints = defaultTints;
+        this.mountOffset = defaultMountOffset;
+        this.rotation = defaultRotation;
+        this.scale = defaultScale;
+        this.tint = defaultTints;
         this.author = author;
         this.name = name;
         this.textures = textures;

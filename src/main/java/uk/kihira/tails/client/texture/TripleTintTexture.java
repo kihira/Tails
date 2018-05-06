@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * A tinted texture that has 3 different tints, each tint defined in a different RGB channel
+ * A tinted texture that has 3 different tint, each tint defined in a different RGB channel
  */
 @ParametersAreNonnullByDefault
 public class TripleTintTexture extends AbstractTexture {

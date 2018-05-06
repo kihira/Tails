@@ -96,7 +96,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawRect(0, 0, width, height, 0xCC000000);
-        drawString(fontRenderer, I18n.format("gui.tints"), 5, 3, GuiEditor.TEXT_COLOUR);
+        drawString(fontRenderer, I18n.format("gui.tint"), 5, 3, GuiEditor.TEXT_COLOUR);
 
         //Editing tint pane
         if (currTintEdit >= 0) {
@@ -117,7 +117,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         // Tint buttons
         if (button.id >= 0 && button.id < 3) {
             currTintEdit = button.id;
-            currTintColour = parent.getCurrentOutfitPart().tints[currTintEdit] & GuiEditor.TEXT_COLOUR; //Ignore the alpha bits
+            currTintColour = parent.getCurrentOutfitPart().tint[currTintEdit] & GuiEditor.TEXT_COLOUR; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;
@@ -264,7 +264,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
         tintReset.enabled = true;
 
-        //todo if (currTintEdit >= 0) parent.getCurrentOutfitPart().tints[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
+        //todo if (currTintEdit >= 0) parent.getCurrentOutfitPart().tint[currTintEdit -1] = currTintColour | 0xFF << 24; //Add the alpha manually
         parent.setActiveOutfitPart(parent.getCurrentOutfitPart());
     }
 
@@ -299,7 +299,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
                 drawRect(x-1, y-1, x+width+1, y+height+1, HIGHLIGHT);
             }
 
-            drawRect(x, y, x + width, y + height, parent.getCurrentOutfitPart().tints[tintId]);
+            drawRect(x, y, x + width, y + height, parent.getCurrentOutfitPart().tint[tintId]);
 
         }
     }
