@@ -18,20 +18,6 @@ repositories {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
-sourceCompatibility='1.8'
-targetCompatibility='1.8'
-
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
-}
-
-configurations {
-    deployerJars
-    all {
-        resolutionStrategy.cacheChangingModulesFor 1, 'seconds'
-    }
-}
-
 ext {
     massive = "1"
     major = "10"
@@ -39,6 +25,9 @@ ext {
     mcVersion = "1.12"
     forgeVersion = "14.21.1.2387"
 }
+
+sourceCompatibility='1.8'
+targetCompatibility='1.8'
 
 group= "uk.kihira.tails"
 archivesBaseName = "Tails"
