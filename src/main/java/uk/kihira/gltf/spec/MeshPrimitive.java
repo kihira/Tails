@@ -1,10 +1,10 @@
-package uk.kihira.gltf;
+package uk.kihira.gltf.spec;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
-class MeshPrimitive {
+public class MeshPrimitive {
     /**
      * A dictionary object, where each key corresponds to mesh attribute semantic and each value is the index of the accessor containing attribute's data.
      */

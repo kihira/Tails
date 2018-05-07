@@ -1,11 +1,11 @@
-package uk.kihira.gltf;
+package uk.kihira.gltf.spec;
 
 import javax.annotation.Nullable;
 
 /**
  * A view into a buffer generally representing a subset of the buffer.
  */
-class BufferView {
+public class BufferView {
     /**
      * The index of the buffer
      */

@@ -125,7 +125,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         // Reset Tint
         else if (button.id == 8) {
-            currTintColour = PartRegistry.getPart(parent.getCurrentOutfitPart().basePart).defaultTints[currTintEdit - 1] & GuiEditor.TEXT_COLOUR; //Ignore the alpha bits
+            currTintColour = PartRegistry.getPart(parent.getCurrentOutfitPart().basePart).tint[currTintEdit - 1] & GuiEditor.TEXT_COLOUR; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;

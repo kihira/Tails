@@ -1,4 +1,4 @@
-package uk.kihira.gltf;
+package uk.kihira.gltf.spec;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

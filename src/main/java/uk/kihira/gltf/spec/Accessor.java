@@ -1,4 +1,4 @@
-package uk.kihira.gltf;
+package uk.kihira.gltf.spec;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
  * A bufferView contains raw binary data.
  * An accessor provides a typed view into a bufferView or a subset of a bufferView similar to how WebGL's `vertexAttribPointer()` defines an attribute in a buffer.
  */
-class Accessor {
+public class Accessor {
     /**
      * The index of the bufferView. 
      * When not defined, accessor must be initialized with zeros; 

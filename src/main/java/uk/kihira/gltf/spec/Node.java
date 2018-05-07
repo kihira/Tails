@@ -1,9 +1,9 @@
-package uk.kihira.gltf;
+package uk.kihira.gltf.spec;
 
 import javax.annotation.Nullable;
 
 // TODO: when loading, should always load stuff into either TSR or matrix
-class Node {
+public class Node {
     /**
      * The indices of this node's children.
      */

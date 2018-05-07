@@ -1,8 +1,8 @@
-package uk.kihira.gltf;
+package uk.kihira.gltf.spec;
 
 import java.util.ArrayList;
 
-class Gltf {
+public class Gltf {
 
     /**
      * An array of accessors.  An accessor is a typed view into a bufferView.

@@ -1,11 +1,11 @@
-package uk.kihira.gltf;
+package uk.kihira.gltf.spec;
 
 import javax.annotation.Nullable;
 
 /**
  * Image data used to create a texture. Image can be referenced by URI or `bufferView` index. `mimeType` is required in the latter case.
  */
-class Image {
+public class Image {
     /**
      * The uri of the image.  
      * 
