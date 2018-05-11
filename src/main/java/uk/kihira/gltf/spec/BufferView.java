@@ -9,12 +9,12 @@ public class BufferView {
     /**
      * The index of the buffer
      */
-    public int buffer;
+    public int buffer = 0;
 
     /**
      * The length of the bufferView in bytes.
      */
-    public int byteLength;
+    public int byteLength = 0;
     
     /**
      * The offset into the buffer in bytes.

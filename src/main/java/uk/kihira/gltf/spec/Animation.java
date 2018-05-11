@@ -2,6 +2,9 @@ package uk.kihira.gltf.spec;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 /**
@@ -54,6 +57,17 @@ public class Animation {
          * For the "scale" property, the values are the scaling factors along the x, y, and z axes.
          */
         @Nonnull
-        public String path = "";
+        public Path path = Path.TRANSLATION;
+    }
+
+    public enum Path {
+        @SerializedName("translation")
+        TRANSLATION,
+        @SerializedName("rotation")
+        ROTATION,
+        @SerializedName("scale")
+        SCALE,
+        @SerializedName("weights")
+        WEIGHTS
     }
 }
