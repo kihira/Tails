@@ -1,5 +1,7 @@
 package uk.kihira.gltf.animation;
 
+import java.nio.FloatBuffer;
+
 import uk.kihira.gltf.spec.Animation.Path;
 
 /**
@@ -14,14 +16,14 @@ class SlerpInterpolation extends Interpolation {
     }
 
 	@Override
-	public float[] evaluate(float[] prevFrameData, float[] nextFrameData, float deltaTime) {
+	public float[] evaluate(FloatBuffer prevFrameData, FloatBuffer nextFrameData, float deltaTime) {
         double dot = dot(prevFrameData, nextFrameData);
         if (dot < 0) {
             dot = -dot;
-            nextFrameData[0] = -nextFrameData[0];
-            nextFrameData[1] = -nextFrameData[1];
-            nextFrameData[2] = -nextFrameData[2];
-            nextFrameData[3] = -nextFrameData[3];
+            nextFrameData.put(0, -nextFrameData.get(0));
+            nextFrameData.put(1, -nextFrameData.get(1));
+            nextFrameData.put(2, -nextFrameData.get(2));
+            nextFrameData.put(3, -nextFrameData.get(3));
         }
 
         double s1, s2;
@@ -37,15 +39,15 @@ class SlerpInterpolation extends Interpolation {
         }
 
         float[] out = new float[]{
-            (float)(s1*prevFrameData[0]+s2*nextFrameData[0]),
-            (float)(s1*prevFrameData[1]+s2*nextFrameData[1]),
-            (float)(s1*prevFrameData[2]+s2*nextFrameData[2]),
-            (float)(s1*prevFrameData[3]+s2*nextFrameData[3])
+            (float)(s1*prevFrameData.get(0)+s2*nextFrameData.get(0)),
+            (float)(s1*prevFrameData.get(1)+s2*nextFrameData.get(1)),
+            (float)(s1*prevFrameData.get(2)+s2*nextFrameData.get(2)),
+            (float)(s1*prevFrameData.get(3)+s2*nextFrameData.get(3))
         };
         return out;
 	}
 
-    private float dot(float[] a, float[] b) {
-        return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
+    private float dot(FloatBuffer a, FloatBuffer b) {
+        return a.get(0) * b.get(0) + a.get(1) * b.get(1) + a.get(2) * b.get(2) + a.get(3) * b.get(3);
     }
 }

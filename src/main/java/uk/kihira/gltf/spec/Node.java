@@ -14,7 +14,7 @@ public class Node {
      * A floating-point 4x4 transformation matrix stored in column-major order.
      */
     @Nullable
-    public Float[] matrix;
+    public float[] matrix;
 
     /**
      * The index of the mesh in this node.

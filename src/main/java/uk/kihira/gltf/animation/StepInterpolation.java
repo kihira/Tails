@@ -1,5 +1,7 @@
 package uk.kihira.gltf.animation;
 
+import java.nio.FloatBuffer;
+
 import uk.kihira.gltf.spec.Animation.Path;
 
 class StepInterpolation extends Interpolation {
@@ -9,7 +11,7 @@ class StepInterpolation extends Interpolation {
     }
 
 	@Override
-	public float[] evaluate(float[] prevFrameData, float[] nextFrameData, float deltaTime) {
-        return prevFrameData;
+	public float[] evaluate(FloatBuffer prevFrameData, FloatBuffer nextFrameData, float deltaTime) {
+        return prevFrameData; // TODO
 	}
 }

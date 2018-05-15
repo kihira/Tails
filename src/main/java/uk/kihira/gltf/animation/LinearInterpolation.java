@@ -2,6 +2,8 @@ package uk.kihira.gltf.animation;
 
 import uk.kihira.gltf.spec.Animation.Path;
 
+import java.nio.FloatBuffer;
+
 class LinearInterpolation extends Interpolation {
 
     public LinearInterpolation(Path path) {
@@ -9,10 +11,10 @@ class LinearInterpolation extends Interpolation {
     }
 
 	@Override
-	public float[] evaluate(float[] prevFrameData, float[] nextFrameData, float deltaTime) {
-        float[] out = new float[prevFrameData.length];
-        for (int i = 0; i < prevFrameData.length; i++) {
-            out[i] = prevFrameData[i] + deltaTime * (nextFrameData[i] - prevFrameData[i]);
+	public float[] evaluate(FloatBuffer prevFrameData, FloatBuffer nextFrameData, float deltaTime) {
+        float[] out = new float[prevFrameData.limit()];
+        for (int i = 0; i < prevFrameData.limit(); i++) {
+            out[i] = prevFrameData.get(i) + deltaTime * (nextFrameData.get(i) - prevFrameData.get(i));
         }
         return out;
 	}

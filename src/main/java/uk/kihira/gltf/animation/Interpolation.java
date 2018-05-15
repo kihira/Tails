@@ -2,6 +2,8 @@ package uk.kihira.gltf.animation;
 
 import uk.kihira.gltf.spec.Animation.Path;
 
+import java.nio.FloatBuffer;
+
 public abstract class Interpolation {
     public final Path path;
 
@@ -17,5 +19,5 @@ public abstract class Interpolation {
      * @param deltaTime The normalised time between the previous key frame and the next one
      * @return The resulting interpolated value
      */
-    public abstract float[] evaluate(float[] prevFrameData, float[] nextFrameData, float deltaTime);
+    public abstract float[] evaluate(FloatBuffer prevFrameData, FloatBuffer nextFrameData, float deltaTime);
 }

@@ -1,7 +1,5 @@
 package uk.kihira.gltf.spec;
 
-import javax.annotation.Nullable;
-
 /**
  * Combines input and output accessors with an interpolation algorithm to define a keyframe graph (but not its target).
  */
@@ -17,8 +15,7 @@ public class AnimationSampler {
     /**
      * Interpolation algorithm.
      */
-    @Nullable
-    public Interpolation interpolation;
+    public Interpolation interpolation = Interpolation.LINEAR;
 
     /**
      * The index of an accessor containing keyframe output values.
