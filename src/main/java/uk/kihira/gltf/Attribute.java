@@ -1,36 +1,33 @@
 package uk.kihira.gltf;
 
-import java.nio.ByteBuffer;
+import uk.kihira.gltf.spec.Accessor;
 
 public class Attribute {
-    private ByteBuffer buffer;
-    private int stride = 0;
-    private int type;
+    private int offset;
+    private int stride;
+    private int bufferView;
+    private Accessor.ComponentType type;
 
-    public Attribute(ByteBuffer buffer, Integer stride, int type) {
-        this.buffer = buffer;
+    public Attribute(int offset, int stride, int bufferView, Accessor.ComponentType type) {
+        this.offset = offset;
         this.stride = stride;
+        this.bufferView = bufferView;
         this.type = type;
     }
 
-	/**
-	 * @return the buffer
-	 */
-	public ByteBuffer getBuffer() {
-		return buffer;
-	}
+    public int getStride() {
+        return stride;
+    }
 
-	/**
-	 * @return the stride
-	 */
-	public int getStride() {
-		return stride;
-	}
+    public int getOffset() {
+        return offset;
+    }
 
-	/**
-	 * @return the type
-	 */
-	public int getType() {
-		return type;
-	}
+    public int getBufferView() {
+        return bufferView;
+    }
+
+    public Accessor.ComponentType getType() {
+        return type;
+    }
 }

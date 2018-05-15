@@ -1,10 +1,9 @@
 package uk.kihira.gltf.spec;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.google.gson.annotations.SerializedName;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -66,19 +65,25 @@ public class Mesh {
 
         public enum Mode {
             @SerializedName("0")
-            POINTS,
+            POINTS(0),
             @SerializedName("1")
-            LINES,
+            LINES(1),
             @SerializedName("2")
-            LINE_LOOP,
+            LINE_LOOP(2),
             @SerializedName("3")
-            LINE_STRIP,
+            LINE_STRIP(3),
             @SerializedName("4")
-            TRIANGLES,
+            TRIANGLES(4),
             @SerializedName("5")
-            TRIANGLE_STRIP,
+            TRIANGLE_STRIP(5),
             @SerializedName("6")
-            TRIANGLE_FAN
+            TRIANGLE_FAN(6);
+
+            public final int gl;
+
+            Mode(final int gl) {
+                this.gl = gl;
+            }
         }
     }
 }

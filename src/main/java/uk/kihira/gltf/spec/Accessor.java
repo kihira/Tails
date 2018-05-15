@@ -1,5 +1,8 @@
 package uk.kihira.gltf.spec;
 
+import com.google.gson.annotations.SerializedName;
+import org.lwjgl.opengl.GL11;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -26,8 +29,7 @@ public class Accessor {
      * 
      * Minimum: 0 Default: 0
      */
-    @Nullable
-    public Integer byteOffset;
+    public int byteOffset = 0;
 
     /**
      * The datatype of components in the attribute.
@@ -42,7 +44,7 @@ public class Accessor {
      * (UNSIGNED_SHORT), 5125 (UNSIGNED_INT), 5126 (FLOAT)
      */
     @Nonnull
-    public int componentType;
+    public ComponentType componentType;
 
     /**
      * Specifies whether integer data values should be normalized (`true`) to [0, 1]
@@ -114,6 +116,35 @@ public class Accessor {
 
         Type(final int size) {
             this.size = size;
+        }
+    }
+
+    public enum ComponentType {
+        @SerializedName("5120")
+        BYTE(1, GL11.GL_BYTE),
+        @SerializedName("5121")
+        UNSIGNED_BYTE(1, GL11.GL_UNSIGNED_BYTE),
+        @SerializedName("5122")
+        SHORT(2, GL11.GL_SHORT),
+        @SerializedName("5123")
+        UNSIGNED_SHORT(2, GL11.GL_UNSIGNED_SHORT),
+        @SerializedName("5125")
+        UNSIGNED_INT(4, GL11.GL_UNSIGNED_INT),
+        @SerializedName("5126")
+        FLOAT(4, GL11.GL_FLOAT);
+
+        /**
+         * Size in bytes
+         */
+        public final int size;
+        /**
+         * GL Code
+         */
+        public final int gl;
+
+        ComponentType(final int size, final int gl) {
+            this.size = size;
+            this.gl = gl;
         }
     }
 

@@ -2,87 +2,121 @@ package uk.kihira.gltf;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
+import uk.kihira.gltf.spec.Accessor;
+import uk.kihira.gltf.spec.BufferView;
+import uk.kihira.gltf.spec.Gltf;
+import uk.kihira.gltf.spec.Mesh.Primitive;
+import uk.kihira.tails.common.IDisposable;
 
-// TODO: things that have a shared buffer (ie strided stuff), upload the same thing twice.
-// Should maybe upload the BufferView instead and have a flag for it?
-class Geometry {
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+
+class Geometry implements IDisposable {
     private int drawMode = GL11.GL_TRIANGLES;
+    private int vertexBuffer;
+    private int indiciesBuffer;
+    private int vertexCount;
 
-    private Attribute positionBuffer;
-    private Attribute normalBuffer;
-    private Attribute texCoordBuffer;
-    private Attribute indiciesBuffer;
+    private Attribute positionAttribute;
+    private Attribute normalAttribute;
+    private Attribute texCoordAttribute;
+    private Attribute indiciesAttribute;
 
-    private int positionBufferId;
-    private int normalBufferId;
-    private int texCoordBufferId;
-    private int indiciesBufferId;
+    public void buildBuffers(Gltf gltf, ByteBuffer binData, Primitive primitive) throws IOException {
+        Set<BufferView> bufferViews = new HashSet<>();
+        int bufferSize = 0; // total size of the buffer to be created after combining bufferViews
+        drawMode = primitive.mode.gl;
 
-	/**
-	 * @param positionBuffer the positionBuffer to set
-	 */
-	public void setPositionBuffer(Attribute positionBuffer) {
-		this.positionBuffer = positionBuffer;
-	}
+        // Load all attributes and their data
+        for (Entry<Primitive.Attribute, Integer> attribute : primitive.attributes.entrySet()) {
+            Accessor accessor = gltf.accessors.get(attribute.getValue());
+            int itemBytes = accessor.type.size * accessor.componentType.size;
 
-	/**
-	 * @param normalBuffer the normalBuffer to set
-	 */
-	public void setNormalBuffer(Attribute normalBuffer) {
-		this.normalBuffer = normalBuffer;
-	}
+            BufferView bufferView = gltf.bufferViews.get(accessor.bufferView);
 
-	/**
-	 * @param texCoordBuffer the texCoordBuffer to set
-	 */
-	public void setTexCoordBuffer(Attribute texCoordBuffer) {
-		this.texCoordBuffer = texCoordBuffer;
-	}
+            // Store the buffer view if not loaded already and add it to total size
+            if (!bufferViews.contains(bufferView)) {
+                bufferViews.add(bufferView);
+                bufferSize += bufferView.byteLength;
+            }
 
-	/**
-	 * @param indiciesBuffer the indiciesBuffer to set
-	 */
-	public void setIndiciesBuffer(Attribute indiciesBuffer) {
-		this.indiciesBuffer = indiciesBuffer;
-    }
+            // If there is a stride and its not equal to its elements size, it's interleaved
+            if (bufferView.byteStride != null && bufferView.byteStride != itemBytes) {
+                // TODO something?
+            }
 
-    // Not used currently
-    public void uploadBuffers() {
-        positionBufferId = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, positionBufferId);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, positionBuffer.getBuffer(), GL15.GL_STATIC_DRAW);
+            switch (attribute.getKey()) {
+            case POSITION:
+                positionAttribute = new Attribute(accessor.byteOffset, bufferView.byteStride, accessor.bufferView, accessor.componentType);
+                vertexCount = accessor.count;
+                break;
+            case NORMAL:
+                normalAttribute = new Attribute(accessor.byteOffset, bufferView.byteStride, accessor.bufferView, accessor.componentType);
+                break;
+            case TEXCOORD_0:
+                texCoordAttribute = new Attribute(accessor.byteOffset, bufferView.byteStride, accessor.bufferView, accessor.componentType);
+                break;
+            default:
+                throw new IOException(String.format("Attribute type %s not supported", attribute.getKey().name()));
+            }
+        }
 
-        normalBufferId = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, normalBufferId);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, normalBuffer.getBuffer(), GL15.GL_STATIC_DRAW);
+        // Gen buffers and fill them with all that juicy data
+        vertexBuffer = GL15.glGenBuffers();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBuffer);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, bufferSize, GL15.GL_STATIC_DRAW);
 
-        texCoordBufferId = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, texCoordBufferId);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, texCoordBuffer.getBuffer(), GL15.GL_STATIC_DRAW);
+        int offset = 0;
+        for (BufferView bufferView : bufferViews) {
+            ByteBuffer data = GltfLoader.LoadBufferView(gltf, binData, bufferView);
+            GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset, data);
 
-        indiciesBufferId = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indiciesBufferId);
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indiciesBuffer.getBuffer(), GL15.GL_STATIC_DRAW);
+            offset += bufferView.byteLength;
+        }
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+
+        // Load indicies if any exist
+        if (primitive.indicies != null) {
+            Accessor accessor = gltf.accessors.get(primitive.indicies);
+            BufferView bufferView = gltf.bufferViews.get(accessor.bufferView);
+
+            vertexCount = accessor.count;
+            indiciesAttribute = new Attribute(accessor.byteOffset, 0, accessor.bufferView, accessor.componentType);
+            indiciesBuffer = GL15.glGenBuffers();
+            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indiciesBuffer);
+            GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, GltfLoader.LoadBufferView(gltf, binData, bufferView), GL15.GL_STATIC_DRAW);
+            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
     }
 
     public void render() {
-        // this is an older way of rendering (immediate mode) but its similar to how MC does it
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBuffer);
         GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-        GL11.glVertexPointer(3, GL11.GL_FLOAT, positionBuffer.getStride(), positionBuffer.getBuffer());
+        GL11.glVertexPointer(3, GL11.GL_FLOAT, positionAttribute.getStride(), positionAttribute.getOffset());
 
-        if (normalBuffer != null) {
+        if (normalAttribute != null) {
             GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
-            GL11.glVertexPointer(3, GL11.GL_FLOAT, normalBuffer.getStride(), normalBuffer.getBuffer());
+            GL11.glNormalPointer(GL11.GL_FLOAT, normalAttribute.getStride(), normalAttribute.getOffset());
         }
-        if (texCoordBuffer != null) {
+        if (positionAttribute != null) {
             GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-            GL11.glNormalPointer(GL11.GL_FLOAT, texCoordBuffer.getStride(), texCoordBuffer.getBuffer()); // TODO could be either float or short
+            GL11.glTexCoordPointer(2, texCoordAttribute.getType().gl, texCoordAttribute.getStride(), texCoordAttribute.getOffset());
         }
 
-        if (indiciesBuffer != null) {
-            GL11.glDrawElements(drawMode, indiciesBuffer.getBuffer());
+        if (indiciesAttribute != null) {
+            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indiciesBuffer);
+            GL11.glDrawElements(drawMode, vertexCount, indiciesAttribute.getType().gl, indiciesAttribute.getOffset());
         } else {
-            GL11.glDrawArrays(drawMode, indiciesBuffer.getStride(), positionBuffer.getBuffer().remaining() / 3);
+            GL11.glDrawArrays(drawMode, 0, vertexCount);
         }
+    }
+
+    @Override
+    public void dispose() {
+        GL15.glDeleteBuffers(vertexBuffer);
+        if (indiciesBuffer > 0) GL15.glDeleteBuffers(indiciesBuffer);
     }
 }

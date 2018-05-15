@@ -18,6 +18,7 @@ public class Gltf {
     public ArrayList<Animation> animations;
 
     /**
+<<<<<<< Updated upstream
      * An array of buffers.
      * A buffer points to binary geometry, animation, or skins.
      */
@@ -25,6 +26,8 @@ public class Gltf {
     public ArrayList<Buffer> buffers;
 
     /**
+=======
+>>>>>>> Stashed changes
      * An array of bufferViews.
      * A bufferView is a view into a buffer generally representing a subset of the buffer.
      */
