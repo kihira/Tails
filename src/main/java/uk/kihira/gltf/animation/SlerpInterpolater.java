@@ -14,7 +14,7 @@ class SlerpInterpolater extends Interpolater {
     }
 
 	@Override
-	public float[] evaluate(FloatBuffer prevFrameData, FloatBuffer nextFrameData, float deltaTime) {
+	public FloatBuffer evaluate(FloatBuffer prevFrameData, FloatBuffer nextFrameData, FloatBuffer result, float deltaTime) {
         double dot = dot(prevFrameData, nextFrameData);
         if (dot < 0) {
             dot = -dot;

@@ -9,7 +9,8 @@ class StepInterpolater extends Interpolater {
     }
 
 	@Override
-	public float[] evaluate(FloatBuffer prevFrameData, FloatBuffer nextFrameData, float deltaTime) {
-        return prevFrameData; // TODO
+	public FloatBuffer evaluate(FloatBuffer prevFrameData, FloatBuffer nextFrameData, FloatBuffer result, float deltaTime) {
+        result = prevFrameData;
+        return result;
 	}
 }

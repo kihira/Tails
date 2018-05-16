@@ -14,8 +14,9 @@ public abstract class Interpolater {
      * 
      * @param prevFrameData The previous key frame data (from the output accessor)
      * @param nextFrameData The next key frame data (from the output accessor)
+     * @param result
      * @param deltaTime The normalised time between the previous key frame and the next one
      * @return The resulting interpolated value
      */
-    public abstract float[] evaluate(FloatBuffer prevFrameData, FloatBuffer nextFrameData, float deltaTime);
+    public abstract FloatBuffer evaluate(FloatBuffer prevFrameData, FloatBuffer nextFrameData, FloatBuffer result, float deltaTime);
 }

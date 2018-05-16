@@ -1,22 +1,25 @@
 package uk.kihira.gltf.animation;
 
+import org.lwjgl.BufferUtils;
+
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 public class Animation {
     private final ArrayList<Channel> channels;
 
+    private FloatBuffer interpolatedValues; // todo per channel instead?
     private float currentAnimTime;
 
     public Animation(ArrayList<Channel> channels) {
         this.channels = channels;
+        interpolatedValues = BufferUtils.createFloatBuffer(4);
     }
 
     public void run() {
         for (Channel channel : channels) {
             int prevKeyFrameIndex = 0, nextKeyFrameIndex = 1;
             float deltaTime;
-            float[] interpolatedValues;
 
             // Find where we are on the track (prev and next keyframe positions)
             for (int i = 0; i < channel.inputData.limit() - 1; i++) {
@@ -36,16 +39,17 @@ public class Animation {
             // Do the interpolation
             switch (channel.sampler.interpolation) {
             case CUBICSPLINE:
-                interpolatedValues = Interpolators.CUBIC.evaluate(prevFrameData, nextFrameData, deltaTime);
+                Interpolators.CUBIC.evaluate(prevFrameData, nextFrameData, interpolatedValues, deltaTime);
                 break;
             case STEP:
-                interpolatedValues = Interpolators.STEP.evaluate(prevFrameData, nextFrameData, deltaTime);
+                Interpolators.STEP.evaluate(prevFrameData, nextFrameData, interpolatedValues, deltaTime);
                 break;
             case LINEAR:
                 if (channel.path == AnimationPath.ROTATION) {
-                    interpolatedValues = Interpolators.SLERP.evaluate(prevFrameData, nextFrameData, deltaTime);
-                } else {
-                    interpolatedValues = Interpolators.LINEAR.evaluate(prevFrameData, nextFrameData, deltaTime);
+                    Interpolators.SLERP.evaluate(prevFrameData, nextFrameData, interpolatedValues, deltaTime);
+                }
+                else {
+                    Interpolators.LINEAR.evaluate(prevFrameData, nextFrameData, interpolatedValues, deltaTime);
                 }
                 break;
             default:
@@ -55,13 +59,13 @@ public class Animation {
             // Apply the interpolated values to the node
             switch (channel.path) {
             case TRANSLATION:
-                channel.node.translation.set(interpolatedValues[0], interpolatedValues[1], interpolatedValues[2]);
+                channel.node.translation.set(interpolatedValues.get(0), interpolatedValues.get(1), interpolatedValues.get(2));
                 break;
             case ROTATION:
-                channel.node.rotation.set(interpolatedValues[0], interpolatedValues[1], interpolatedValues[2], interpolatedValues[3]);
+                channel.node.rotation.set(interpolatedValues.get(0), interpolatedValues.get(1), interpolatedValues.get(2), interpolatedValues.get(3));
                 break;
             case SCALE:
-                channel.node.scale.set(interpolatedValues[0], interpolatedValues[1], interpolatedValues[2]);
+                channel.node.scale.set(interpolatedValues.get(0), interpolatedValues.get(1), interpolatedValues.get(2));
                 break;
             default:
                 break;
