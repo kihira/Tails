@@ -17,8 +17,8 @@ public class NodeImpl {
     private Matrix4f matrix;
     private FloatBuffer fb;
     private boolean isStatic; // This is set to true if there is no animation (ie a matrix is present in the gltf file)
+    private MeshImpl mesh;
     private ArrayList<NodeImpl> children;
-    private ArrayList<Geometry> geometries;
 
     // These must be defined if we have an animation
     public Vector3f translation;
@@ -41,11 +41,16 @@ public class NodeImpl {
             rotation = new Quaternion(node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]);
             scale = new Vector3f(node.scale[0], node.scale[1], node.scale[2]);
         }
+
+        for (int child : node.children) {
+            children.add(GltfLoader.GetNode(child));
+        }
     }
 
     public void render() {
         // Generate matrix if this is not static
         if (!isStatic) {
+            matrix.setIdentity();
             matrix.translate(translation);
             Matrix4f.mul(matrix, rotate(rotation), matrix);
             matrix.scale(scale);
@@ -55,8 +60,8 @@ public class NodeImpl {
         GlStateManager.pushMatrix();
         GlStateManager.multMatrix(fb);
 
-        for (Geometry geometry : geometries) {
-            geometry.render();
+        if (mesh != null) {
+            mesh.render();
         }
 
         for (NodeImpl node : children) {

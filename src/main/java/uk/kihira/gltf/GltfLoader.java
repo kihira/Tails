@@ -1,8 +1,11 @@
 package uk.kihira.gltf;
 
 import com.google.gson.Gson;
+
+import uk.kihira.gltf.spec.Accessor;
 import uk.kihira.gltf.spec.BufferView;
 import uk.kihira.gltf.spec.Gltf;
+import uk.kihira.gltf.spec.Node;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -10,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GltfLoader {
@@ -22,8 +26,10 @@ public class GltfLoader {
     private static ByteBuffer binData;
 
     public static HashMap<BufferView, ByteBuffer> byteBufferCache = new HashMap<>();
+    public static HashMap<Integer, NodeImpl> nodeCache = new HashMap<>();
+    public static HashMap<Integer, Geometry> primitiveCache = new HashMap<>();
 
-    public static Gltf LoadGlbFile(File file) throws IOException {
+    public static Model LoadGlbFile(File file) throws IOException {
         DataInputStream stream = new DataInputStream(new FileInputStream(file));
         int magic = readUnsignedInt(stream);
         int version = readUnsignedInt(stream);
@@ -34,8 +40,16 @@ public class GltfLoader {
 
         ReadChunk(stream);
         ReadChunk(stream);
+        
+        // We can assume all nodes are gonna be part of our main model
+        ArrayList<NodeImpl> nodes = new ArrayList<>();
+        for (Node node : gltf.nodes) {
+            NodeImpl nodeImpl = new NodeImpl(node);
+        }
 
-        return gltf;
+        Model model = new Model();
+
+        return model;
     }
 
     private static void ReadChunk(DataInputStream stream) throws IOException {
@@ -51,6 +65,11 @@ public class GltfLoader {
             binData = ByteBuffer.wrap(data);
         else
             throw new IOException("Unsupport chunk type");
+    }
+
+    public static NodeImpl GetNode(int node) {
+        NodeImpl nodeImpl = new NodeImpl(gltf.nodes.get(node));
+        return nodeImpl;
     }
 
     /**

@@ -1,30 +1,30 @@
 package uk.kihira.gltf.animation;
 
+import uk.kihira.gltf.GltfLoader;
 import uk.kihira.gltf.Model;
 import uk.kihira.gltf.NodeImpl;
 import uk.kihira.gltf.spec.Accessor.Type;
 import uk.kihira.gltf.spec.Animation.Channel;
 import uk.kihira.gltf.spec.Animation.Path;
 import uk.kihira.gltf.spec.AnimationSampler;
+import uk.kihira.gltf.spec.Gltf;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 public class Animation {
-    private Model model;
     private ArrayList<ChannelImpl> channels;
 
     private float currentAnimTime;
 
-    public Animation(Model model, ArrayList<Channel> channels, ArrayList<AnimationSampler> samplers) {
-        this.model = model;
-
+    public Animation(Gltf gltf, Model model, ArrayList<Channel> channels, ArrayList<AnimationSampler> samplers) {
         for (Channel channel : channels) {
             ChannelImpl channelImpl = new ChannelImpl();
             channelImpl.sampler = samplers.get(channel.sampler);
-            // channelImpl.outputType; todo channelImpl.sampler.output
-            // channelImpl.inputData
-            // channelImpl.outputData =
+            channelImpl.outputType = gltf.accessors.get(channelImpl.sampler.output).type;
+            channelImpl.inputData = GltfLoader.byteBufferCache.get(gltf.bufferViews.get(gltf.accessors.get(channelImpl.sampler.input).bufferView)).asFloatBuffer();
+            // TODO: output data could be other then float, need to convert (non float ones are normalised)
+            channelImpl.outputData = GltfLoader.byteBufferCache.get(gltf.bufferViews.get(gltf.accessors.get(channelImpl.sampler.output).bufferView)).asFloatBuffer();
             channelImpl.node = model.allNodes.get(channel.target.node);
             channelImpl.path = channel.target.path;
         }

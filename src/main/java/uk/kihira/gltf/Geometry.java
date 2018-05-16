@@ -25,7 +25,7 @@ class Geometry implements IDisposable {
     private Attribute texCoordAttribute;
     private Attribute indiciesAttribute;
 
-    public void buildBuffers(Gltf gltf, ByteBuffer binData, Primitive primitive) throws IOException {
+    public Geometry(Gltf gltf, ByteBuffer binData, Primitive primitive) throws IOException {
         Set<BufferView> bufferViews = new HashSet<>();
         int bufferSize = 0; // total size of the buffer to be created after combining bufferViews
         drawMode = primitive.mode.gl;
