@@ -1,37 +1,20 @@
 package uk.kihira.gltf.animation;
 
-import uk.kihira.gltf.GltfLoader;
-import uk.kihira.gltf.Model;
-import uk.kihira.gltf.NodeImpl;
-import uk.kihira.gltf.spec.Accessor.Type;
-import uk.kihira.gltf.spec.Animation.Channel;
-import uk.kihira.gltf.spec.Animation.Path;
-import uk.kihira.gltf.spec.AnimationSampler;
-import uk.kihira.gltf.spec.Gltf;
-
+import uk.kihira.gltf.spec.Animation.AnimationPath;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 public class Animation {
-    private ArrayList<ChannelImpl> channels;
+    private final ArrayList<Channel> channels;
 
     private float currentAnimTime;
 
-    public Animation(Gltf gltf, Model model, ArrayList<Channel> channels, ArrayList<AnimationSampler> samplers) {
-        for (Channel channel : channels) {
-            ChannelImpl channelImpl = new ChannelImpl();
-            channelImpl.sampler = samplers.get(channel.sampler);
-            channelImpl.outputType = gltf.accessors.get(channelImpl.sampler.output).type;
-            channelImpl.inputData = GltfLoader.byteBufferCache.get(gltf.bufferViews.get(gltf.accessors.get(channelImpl.sampler.input).bufferView)).asFloatBuffer();
-            // TODO: output data could be other then float, need to convert (non float ones are normalised)
-            channelImpl.outputData = GltfLoader.byteBufferCache.get(gltf.bufferViews.get(gltf.accessors.get(channelImpl.sampler.output).bufferView)).asFloatBuffer();
-            channelImpl.node = model.allNodes.get(channel.target.node);
-            channelImpl.path = channel.target.path;
-        }
+    public Animation(ArrayList<Channel> channels) {
+        this.channels = channels;
     }
 
     public void run() {
-        for (ChannelImpl channel : channels) {
+        for (Channel channel : channels) {
             int prevKeyFrameIndex = 0, nextKeyFrameIndex = 1;
             float deltaTime;
             float[] interpolatedValues;
@@ -60,7 +43,7 @@ public class Animation {
                 interpolatedValues = Interpolators.STEP.evaluate(prevFrameData, nextFrameData, deltaTime);
                 break;
             case LINEAR:
-                if (channel.path == Path.ROTATION) {
+                if (channel.path == AnimationPath.ROTATION) {
                     interpolatedValues = Interpolators.SLERP.evaluate(prevFrameData, nextFrameData, deltaTime);
                 } else {
                     interpolatedValues = Interpolators.LINEAR.evaluate(prevFrameData, nextFrameData, deltaTime);
@@ -85,14 +68,5 @@ public class Animation {
                 break;
             }
         }
-    }
-
-    private class ChannelImpl {
-        AnimationSampler sampler;
-        Type outputType;
-        FloatBuffer inputData;
-        FloatBuffer outputData;
-        NodeImpl node;
-        Path path;
     }
 }

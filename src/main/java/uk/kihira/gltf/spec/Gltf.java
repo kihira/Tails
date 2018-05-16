@@ -18,13 +18,6 @@ public class Gltf {
     public ArrayList<Animation> animations;
 
     /**
-     * An array of buffers.
-     * A buffer points to binary geometry, animation, or skins.
-     */
-    @Nullable
-    public ArrayList<Buffer> buffers;
-
-    /**
      * An array of bufferViews.
      * A bufferView is a view into a buffer generally representing a subset of the buffer.
      */
@@ -37,13 +30,6 @@ public class Gltf {
      */
     @Nullable
     public ArrayList<Image> images;
-
-    /**
-     * An array of meshes.
-     * A mesh is a set of primitives to be rendered.
-     */
-    @Nullable
-    public ArrayList<Mesh> meshes;
 
     /**
      * An array of nodes.

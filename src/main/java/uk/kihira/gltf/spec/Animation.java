@@ -16,7 +16,7 @@ public class Animation {
      * Different channels of the same animation can't have equal targets.
      */
     @Nonnull
-    public ArrayList<Channel> channels;
+    public ArrayList<ChannelSpec> channels;
 
     /**
      * An array of samplers that combines input and output accessors with an interpolation algorithm to define a keyframe graph (but not its target).
@@ -27,7 +27,7 @@ public class Animation {
     /**
      * Targets an animation's sampler at a node's property.v
      */
-    public static class Channel {
+    public static class ChannelSpec {
         /**
          * The index of a sampler in this animation used to compute the value for the target, e.g., a node's translation, rotation, or scale (TRS).
          */
@@ -57,10 +57,10 @@ public class Animation {
          * For the "scale" property, the values are the scaling factors along the x, y, and z axes.
          */
         @Nonnull
-        public Path path = Path.TRANSLATION;
+        public AnimationPath path = AnimationPath.TRANSLATION;
     }
 
-    public enum Path {
+    public enum AnimationPath {
         @SerializedName("translation")
         TRANSLATION,
         @SerializedName("rotation")

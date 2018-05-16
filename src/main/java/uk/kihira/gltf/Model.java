@@ -9,9 +9,10 @@ public class Model {
     private ArrayList<NodeImpl> rootNodes;
     private ArrayList<Animation> animations;
 
-    public Model(ArrayList<NodeImpl> allNodes, ArrayList<Integer> rootNodes) {
+    public Model(ArrayList<NodeImpl> allNodes, ArrayList<NodeImpl> rootNodes, ArrayList<Animation> animations) {
         this.allNodes = allNodes;
-        this.rootNodes = allNodes; // todo get root nodes
+        this.rootNodes = allNodes;
+        this.animations = animations;
     }
 
     public void render() {

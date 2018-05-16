@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL15;
 import uk.kihira.gltf.spec.Accessor;
 import uk.kihira.gltf.spec.BufferView;
 import uk.kihira.gltf.spec.Gltf;
-import uk.kihira.gltf.spec.Mesh.Primitive;
+import uk.kihira.gltf.spec.MeshPrimitive;
 import uk.kihira.tails.common.IDisposable;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-class Geometry implements IDisposable {
+public final class Geometry implements IDisposable {
     private int drawMode = GL11.GL_TRIANGLES;
     private int vertexBuffer;
     private int indiciesBuffer;
@@ -25,17 +25,17 @@ class Geometry implements IDisposable {
     private Attribute texCoordAttribute;
     private Attribute indiciesAttribute;
 
-    public Geometry(Gltf gltf, ByteBuffer binData, Primitive primitive) throws IOException {
+    public Geometry(MeshPrimitive primitive) throws IOException {
         Set<BufferView> bufferViews = new HashSet<>();
         int bufferSize = 0; // total size of the buffer to be created after combining bufferViews
         drawMode = primitive.mode.gl;
 
         // Load all attributes and their data
-        for (Entry<Primitive.Attribute, Integer> attribute : primitive.attributes.entrySet()) {
-            Accessor accessor = gltf.accessors.get(attribute.getValue());
+        for (Entry<MeshPrimitive.Attribute, Integer> attribute : primitive.attributes.entrySet()) {
+            Accessor accessor = GltfLoader.accessors.get(attribute.getValue());
             int itemBytes = accessor.type.size * accessor.componentType.size;
 
-            BufferView bufferView = gltf.bufferViews.get(accessor.bufferView);
+            BufferView bufferView = GltfLoader.bufferViews.get(accessor.bufferView);
 
             // Store the buffer view if not loaded already and add it to total size
             if (!bufferViews.contains(bufferView)) {
@@ -71,7 +71,7 @@ class Geometry implements IDisposable {
 
         int offset = 0;
         for (BufferView bufferView : bufferViews) {
-            ByteBuffer data = GltfLoader.LoadBufferView(gltf, binData, bufferView);
+            ByteBuffer data = GltfLoader.GetBufferFromBufferView(bufferView);
             GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset, data);
 
             offset += bufferView.byteLength;
@@ -80,16 +80,19 @@ class Geometry implements IDisposable {
 
         // Load indicies if any exist
         if (primitive.indicies != null) {
-            Accessor accessor = gltf.accessors.get(primitive.indicies);
-            BufferView bufferView = gltf.bufferViews.get(accessor.bufferView);
+            Accessor accessor = GltfLoader.accessors.get(primitive.indicies);
 
             vertexCount = accessor.count;
             indiciesAttribute = new Attribute(accessor.byteOffset, 0, accessor.bufferView, accessor.componentType);
             indiciesBuffer = GL15.glGenBuffers();
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indiciesBuffer);
-            GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, GltfLoader.LoadBufferView(gltf, binData, bufferView), GL15.GL_STATIC_DRAW);
+            GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, (ByteBuffer) GltfLoader.GetBufferFromBufferView(accessor.bufferView), GL15.GL_STATIC_DRAW);
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
         }
+    }
+
+    public void setIndicies(Attribute attribute) {
+        indiciesAttribute = attribute;
     }
 
     public void render() {

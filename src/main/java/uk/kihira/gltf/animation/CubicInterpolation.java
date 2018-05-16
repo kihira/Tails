@@ -2,11 +2,11 @@ package uk.kihira.gltf.animation;
 
 import java.nio.FloatBuffer;
 
-import uk.kihira.gltf.spec.Animation.Path;
+import uk.kihira.gltf.spec.Animation.AnimationPath;
 
 class CubicInterpolation extends Interpolation {
 
-    public CubicInterpolation(Path path) {
+    public CubicInterpolation(AnimationPath path) {
         super(path);
     }
 
@@ -29,7 +29,7 @@ class CubicInterpolation extends Interpolation {
             result[i] = (float) (a * p0 + b * m0 + c * p1 + d * m1);
         }
 
-        if (path == Path.ROTATION) {
+        if (path == AnimationPath.ROTATION) {
             result = normalize(result);
         }
 
