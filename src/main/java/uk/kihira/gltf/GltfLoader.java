@@ -1,34 +1,22 @@
 package uk.kihira.gltf;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-
+import com.google.gson.*;
 import uk.kihira.gltf.animation.Animation;
+import uk.kihira.gltf.animation.AnimationPath;
 import uk.kihira.gltf.animation.Channel;
+import uk.kihira.gltf.animation.Sampler;
 import uk.kihira.gltf.spec.Accessor;
-import uk.kihira.gltf.spec.AnimationSampler;
 import uk.kihira.gltf.spec.BufferView;
-import uk.kihira.gltf.spec.Gltf;
 import uk.kihira.gltf.spec.MeshPrimitive;
-import uk.kihira.gltf.spec.Node;
-import uk.kihira.gltf.spec.Animation.ChannelSpec;
-import uk.kihira.gltf.spec.Animation.AnimationPath;
 
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class GltfLoader {
@@ -43,8 +31,8 @@ public class GltfLoader {
     public static final ArrayList<Accessor> accessors = new ArrayList<>();
     public static final ArrayList<BufferView> bufferViews = new ArrayList<>();
     public static final TreeMap<Integer, ByteBuffer> bufferViewBufferCache = new TreeMap<>();
-    public static final TreeMap<Integer, NodeImpl> nodeCache = new TreeMap<>();
-    public static final TreeMap<Integer, MeshImpl> meshCache = new TreeMap<>();
+    public static final TreeMap<Integer, Node> nodeCache = new TreeMap<>();
+    public static final TreeMap<Integer, Mesh> meshCache = new TreeMap<>();
 
     public Model LoadGlbFile(File file) throws IOException {
         DataInputStream stream = new DataInputStream(new FileInputStream(file));
@@ -99,13 +87,13 @@ public class GltfLoader {
                 // todo keep geometry loading in its own class? goes against almost everything else
                 geometries.add(new Geometry(gson.fromJson(primitive, MeshPrimitive.class)));
             }
-            meshCache.put(i, new MeshImpl(geometries));
+            meshCache.put(i, new Mesh(geometries));
         }
 
         // Load nodes
         int[] sceneNodes = gson.fromJson(root.get("scenes").getAsJsonArray().get(0).getAsJsonObject().get("nodes"), int[].class);
         JsonArray nodeJsonArray = root.get("nodes").getAsJsonArray();
-        ArrayList<NodeImpl> rootNodes = new ArrayList<>();
+        ArrayList<Node> rootNodes = new ArrayList<>();
         for (int index : sceneNodes) {
             rootNodes.add(LoadNode(nodeJsonArray, index));
         }
@@ -115,12 +103,12 @@ public class GltfLoader {
         for (JsonElement element : root.get("animations").getAsJsonArray()) {
             JsonObject object = element.getAsJsonObject();
             // TODO probably want to use String name = object.get("name").getAsString();
-            ArrayList<AnimationSampler> samplers = gson.fromJson(object.get("samplers"), new TypeToken<ArrayList<AnimationSampler>>(){}.getType());
+            ArrayList<Sampler> samplers = gson.fromJson(object.get("samplers"), new TypeToken<ArrayList<Sampler>>(){}.getType());
             ArrayList<Channel> channels = new ArrayList<>();
 
             for (JsonElement channelElement : object.get("channels").getAsJsonArray()) {
                 JsonObject channelObject = channelElement.getAsJsonObject();
-                AnimationSampler sampler = samplers.get(channelObject.get("sampler").getAsInt());
+                Sampler sampler = samplers.get(channelObject.get("sampler").getAsInt());
                 channels.add(new Channel(
                     sampler,
                     accessors.get(sampler.output).type,
@@ -134,18 +122,18 @@ public class GltfLoader {
             animations.add(new Animation(channels));
         }
 
-        Model model = new Model(new ArrayList<NodeImpl>(nodeCache.values()), rootNodes, animations);
+        Model model = new Model(new ArrayList<Node>(nodeCache.values()), rootNodes, animations);
 
         return model;
     }
 
-    private static NodeImpl LoadNode(JsonArray nodeJsonArray, int index) {
+    private static Node LoadNode(JsonArray nodeJsonArray, int index) {
         if (nodeCache.containsKey(index)) {
             return nodeCache.get(index);
         }
         JsonObject nodeJson = nodeJsonArray.get(index).getAsJsonObject();
-        NodeImpl node;
-        ArrayList<NodeImpl> children = null;
+        Node node;
+        ArrayList<Node> children = null;
 
         // Load children if there any
         if (nodeJson.has("children")) {
@@ -158,10 +146,10 @@ public class GltfLoader {
 
         // Load matrix, or TSR values 
         if (nodeJson.has("matrix")) {
-            node = new NodeImpl(children, gson.fromJson(nodeJson.get("matrix"), float[].class));
+            node = new Node(children, gson.fromJson(nodeJson.get("matrix"), float[].class));
         }
         else if (!nodeJson.has("translation") && !nodeJson.has("rotation") && !!nodeJson.has("scale")) {
-            node = new NodeImpl(children, new float[]{1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1});
+            node = new Node(children, new float[]{1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1});
         }
         else {
             float[] translation = new float[]{0, 0, 0};
@@ -176,7 +164,7 @@ public class GltfLoader {
             if (nodeJson.has("scale")) {
                 scale = gson.fromJson(nodeJson.get("scale"), float[].class);
             }
-            node = new NodeImpl(children, translation, rotation, scale);
+            node = new Node(children, translation, rotation, scale);
         }
 
         nodeCache.put(index, node);

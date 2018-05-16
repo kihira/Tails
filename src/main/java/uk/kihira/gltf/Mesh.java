@@ -2,10 +2,10 @@ package uk.kihira.gltf;
 
 import java.util.ArrayList;
 
-public class MeshImpl {
+public class Mesh {
     private ArrayList<Geometry> geometries;
 
-    public MeshImpl(ArrayList<Geometry> geometries) {
+    public Mesh(ArrayList<Geometry> geometries) {
         this.geometries = geometries;
     }
 

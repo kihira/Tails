@@ -1,6 +1,5 @@
 package uk.kihira.gltf.animation;
 
-import uk.kihira.gltf.spec.Animation.AnimationPath;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 

@@ -2,11 +2,9 @@ package uk.kihira.gltf.animation;
 
 import java.nio.FloatBuffer;
 
-import uk.kihira.gltf.spec.Animation.AnimationPath;
+class CubicInterpolater extends Interpolater {
 
-class CubicInterpolation extends Interpolation {
-
-    public CubicInterpolation(AnimationPath path) {
+    public CubicInterpolater(AnimationPath path) {
         super(path);
     }
 

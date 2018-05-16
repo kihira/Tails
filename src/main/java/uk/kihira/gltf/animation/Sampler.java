@@ -1,9 +1,9 @@
-package uk.kihira.gltf.spec;
+package uk.kihira.gltf.animation;
 
 /**
  * Combines input and output accessors with an interpolation algorithm to define a keyframe graph (but not its target).
  */
-public class AnimationSampler {
+public class Sampler {
 
     /**
      * The index of an accessor containing keyframe input values, e.g., time.

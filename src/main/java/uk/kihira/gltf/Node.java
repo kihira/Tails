@@ -5,44 +5,42 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector3f;
-import uk.kihira.gltf.spec.Node;
-
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 /**
  * NodeImpl can just directly refer to geometries as we don't need to store weights
  */
 @ParametersAreNonnullByDefault
-public final class NodeImpl {
+public final class Node {
     private final Matrix4f matrix;
     private final FloatBuffer fb;
     private boolean isStatic; // This is set to true if there is no animation (ie a matrix is present in the gltf file)
-    private MeshImpl mesh;
-    private final ArrayList<NodeImpl> children;
+    private Mesh mesh;
+    private final ArrayList<Node> children;
 
     // These must be defined if we have an animation
     public Vector3f translation;
     public Quaternion rotation;
     public Vector3f scale;
 
-    private NodeImpl(@Nullable ArrayList<NodeImpl> children) {
+    private Node(@Nullable ArrayList<Node> children) {
         this.fb = BufferUtils.createFloatBuffer(16);
         this.matrix = new Matrix4f();
         this.children = children;
     }
 
-    public NodeImpl(@Nullable ArrayList<NodeImpl> children, float[] matrix) {
+    public Node(@Nullable ArrayList<Node> children, float[] matrix) {
         this(children);
         this.isStatic = true;
         this.matrix.load(FloatBuffer.wrap(matrix));
         this.matrix.store(fb);
     }
 
-    public NodeImpl(@Nullable ArrayList<NodeImpl> children, float[] translation, float[] rotation, float[] scale) {
+    public Node(@Nullable ArrayList<Node> children, float[] translation, float[] rotation, float[] scale) {
         this(children);
         this.translation = new Vector3f(translation[0], translation[1], translation[2]);
         this.rotation = new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
@@ -66,7 +64,7 @@ public final class NodeImpl {
             mesh.render();
         }
 
-        for (NodeImpl node : children) {
+        for (Node node : children) {
             node.render();
         }
 

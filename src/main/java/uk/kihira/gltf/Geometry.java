@@ -4,7 +4,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import uk.kihira.gltf.spec.Accessor;
 import uk.kihira.gltf.spec.BufferView;
-import uk.kihira.gltf.spec.Gltf;
 import uk.kihira.gltf.spec.MeshPrimitive;
 import uk.kihira.tails.common.IDisposable;
 

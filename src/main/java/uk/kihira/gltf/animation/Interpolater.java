@@ -1,13 +1,11 @@
 package uk.kihira.gltf.animation;
 
-import uk.kihira.gltf.spec.Animation.AnimationPath;
-
 import java.nio.FloatBuffer;
 
-public abstract class Interpolation {
+public abstract class Interpolater {
     public final AnimationPath path;
 
-    public Interpolation(AnimationPath path) {
+    public Interpolater(AnimationPath path) {
         this.path = path;
     }
 

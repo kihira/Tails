@@ -2,16 +2,14 @@ package uk.kihira.gltf.animation;
 
 import java.nio.FloatBuffer;
 
-import uk.kihira.gltf.spec.Animation.AnimationPath;
-
 /**
  * Used only when path is rotation (quaternion)
  */
-class SlerpInterpolation extends Interpolation {
+class SlerpInterpolater extends Interpolater {
 
     private static final float E = 1e-6f;
 
-    public SlerpInterpolation(AnimationPath path) {
+    public SlerpInterpolater(AnimationPath path) {
         super(path);
     }
 
