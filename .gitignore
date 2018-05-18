@@ -20,5 +20,8 @@
 /bin
 .idea/
 classes/
+*.launch
+
+/.vscode
 
 /libs
