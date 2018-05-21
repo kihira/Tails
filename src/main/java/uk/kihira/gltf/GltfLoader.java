@@ -16,7 +16,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.TreeMap;
 
 public class GltfLoader {
@@ -24,17 +23,15 @@ public class GltfLoader {
     private static final int JSON_CHUNK = 0x4E4F534A;
     private static final int BIN_CHUNK = 0x004E4942;
 
-    public static HashMap<Integer, Geometry> primitiveCache = new HashMap<>();
-
     // Temp cache values
     private static ByteBuffer binData;
     public static final ArrayList<Accessor> accessors = new ArrayList<>();
     public static final ArrayList<BufferView> bufferViews = new ArrayList<>();
-    public static final TreeMap<Integer, ByteBuffer> bufferViewBufferCache = new TreeMap<>();
-    public static final TreeMap<Integer, Node> nodeCache = new TreeMap<>();
-    public static final TreeMap<Integer, Mesh> meshCache = new TreeMap<>();
+    private static final TreeMap<Integer, ByteBuffer> bufferViewBufferCache = new TreeMap<>();
+    private static final TreeMap<Integer, Node> nodeCache = new TreeMap<>();
+    private static final TreeMap<Integer, Mesh> meshCache = new TreeMap<>();
 
-    public Model LoadGlbFile(File file) throws IOException {
+    public static Model LoadGlbFile(File file) throws IOException {
         DataInputStream stream = new DataInputStream(new FileInputStream(file));
         int magic = readUnsignedInt(stream);
         int version = readUnsignedInt(stream);
@@ -122,9 +119,15 @@ public class GltfLoader {
             animations.add(new Animation(channels));
         }
 
-        Model model = new Model(new ArrayList<Node>(nodeCache.values()), rootNodes, animations);
+        return new Model(new ArrayList<>(nodeCache.values()), rootNodes, animations);
+    }
 
-        return model;
+    public static void clearCache() {
+        meshCache.clear();
+        nodeCache.clear();
+        bufferViewBufferCache.clear();
+        bufferViews.clear();
+        accessors.clear();
     }
 
     private static Node LoadNode(JsonArray nodeJsonArray, int index) {
@@ -165,6 +168,11 @@ public class GltfLoader {
                 scale = gson.fromJson(nodeJson.get("scale"), float[].class);
             }
             node = new Node(children, translation, rotation, scale);
+        }
+
+        // NOTE: depends on meshes being preloaded into the cache
+        if (nodeJson.has("mesh")) {
+            node.setMesh(meshCache.get(nodeJson.get("mesh").getAsInt()));
         }
 
         nodeCache.put(index, node);

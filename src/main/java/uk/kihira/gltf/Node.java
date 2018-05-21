@@ -91,4 +91,8 @@ public final class Node {
         rotMatrix.m33 = 1f;
         return rotMatrix;
     }
+
+    public void setMesh(Mesh mesh) {
+        this.mesh = mesh;
+    }
 }

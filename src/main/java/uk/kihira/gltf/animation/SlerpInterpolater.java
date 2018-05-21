@@ -35,14 +35,12 @@ class SlerpInterpolater extends Interpolater {
             s1 = 1f - deltaTime;
             s2 = deltaTime;
         }
+        result.put(0, (float)(s1*prevFrameData.get(0)+s2*nextFrameData.get(0)));
+        result.put(1, (float)(s1*prevFrameData.get(1)+s2*nextFrameData.get(1)));
+        result.put(2, (float)(s1*prevFrameData.get(2)+s2*nextFrameData.get(2)));
+        result.put(3, (float)(s1*prevFrameData.get(3)+s2*nextFrameData.get(3)));
 
-        float[] out = new float[]{
-            (float)(s1*prevFrameData.get(0)+s2*nextFrameData.get(0)),
-            (float)(s1*prevFrameData.get(1)+s2*nextFrameData.get(1)),
-            (float)(s1*prevFrameData.get(2)+s2*nextFrameData.get(2)),
-            (float)(s1*prevFrameData.get(3)+s2*nextFrameData.get(3))
-        };
-        return out;
+        return result;
 	}
 
     private float dot(FloatBuffer a, FloatBuffer b) {

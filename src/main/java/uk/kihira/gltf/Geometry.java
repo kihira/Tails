@@ -70,7 +70,7 @@ public final class Geometry implements IDisposable {
 
         int offset = 0;
         for (BufferView bufferView : bufferViews) {
-            ByteBuffer data = GltfLoader.GetBufferFromBufferView(bufferView);
+            ByteBuffer data = GltfLoader.GetBufferFromBufferView(0); // todo
             GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, offset, data);
 
             offset += bufferView.byteLength;
@@ -85,7 +85,7 @@ public final class Geometry implements IDisposable {
             indiciesAttribute = new Attribute(accessor.byteOffset, 0, accessor.bufferView, accessor.componentType);
             indiciesBuffer = GL15.glGenBuffers();
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indiciesBuffer);
-            GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, (ByteBuffer) GltfLoader.GetBufferFromBufferView(accessor.bufferView), GL15.GL_STATIC_DRAW);
+            GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, GltfLoader.GetBufferFromBufferView(accessor.bufferView), GL15.GL_STATIC_DRAW);
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
         }
     }
