@@ -71,7 +71,9 @@ public class GltfLoader {
         // Read JSON data and start loading stuff
         // Load buffer views
         for (JsonElement element : root.get("bufferViews").getAsJsonArray()) {
-            bufferViews.add(gson.fromJson(element, BufferView.class));
+            BufferView bufferView = gson.fromJson(element, BufferView.class);
+            bufferView.setData((ByteBuffer) binData.slice().position(bufferView.byteOffset).limit(bufferView.byteLength));
+            bufferViews.add(bufferView);
         }
 
         // Load accessors
@@ -175,16 +177,6 @@ public class GltfLoader {
         // TODO sparse support
         Accessor accessor = accessors.get(accessorIndex);
         return (ByteBuffer) GetBufferFromBufferView(accessor.bufferView).position(accessor.byteOffset).limit(accessor.count * accessor.type.size * accessor.componentType.size);
-    }
-
-    public static ByteBuffer GetBufferFromBufferView(int bufferViewIndex) {
-        if (bufferViewBufferCache.containsKey(bufferViewIndex)) {
-            return bufferViewBufferCache.get(bufferViewIndex);
-        }
-        BufferView bufferView = bufferViews.get(bufferViewIndex);
-        ByteBuffer buffer = (ByteBuffer) binData.slice().position(bufferView.byteOffset).limit(bufferView.byteLength);
-        bufferViewBufferCache.put(bufferViewIndex, buffer);
-        return buffer;
     }
 
     private static int readUnsignedInt(DataInputStream stream) throws IOException {
