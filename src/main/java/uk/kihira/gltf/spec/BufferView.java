@@ -2,13 +2,12 @@ package uk.kihira.gltf.spec;
 
 import org.lwjgl.opengl.GL15;
 
+import uk.kihira.tails.common.IDisposable;
+
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
-/**
- * A view into a buffer generally representing a subset of the buffer.
- */
-public class BufferView {
+public class BufferView implements IDisposable {
     /**
      * The length of the bufferView in bytes.
      */
@@ -30,8 +29,7 @@ public class BufferView {
      * Maximum: 252
      * Multiple Of: 4
      */
-    @Nullable
-    public Integer byteStride;
+    public int byteStride = 0;
 
     /**
      * The target that the GPU buffer should be bound to.
@@ -48,11 +46,7 @@ public class BufferView {
     private ByteBuffer data;
 
     public void setData(ByteBuffer buffer) {
-        if (vbo != -1) {
-            // Force a rebuild of the buffer
-            GL15.glDeleteBuffers(vbo);
-            vbo = -1;
-        }
+        dispose();
         data = buffer;
     }
 
@@ -66,4 +60,12 @@ public class BufferView {
             GL15.glBindBuffer(target, vbo);
         }
     }
+
+	@Override
+	public void dispose() {
+        if (vbo != -1) {
+            GL15.glDeleteBuffers(vbo);
+            vbo = -1;
+        }
+	}
 }

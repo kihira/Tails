@@ -1,22 +1,15 @@
 package uk.kihira.gltf;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GLContext;
 
-import uk.kihira.gltf.spec.Accessor;
-import uk.kihira.gltf.spec.BufferView;
-import uk.kihira.gltf.spec.MeshPrimitive;
 import uk.kihira.gltf.spec.MeshPrimitive.Attribute;
 import uk.kihira.tails.common.IDisposable;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public final class Geometry implements IDisposable {
     private final int drawMode;
@@ -30,9 +23,18 @@ public final class Geometry implements IDisposable {
         this.drawMode = drawMode;
     }
 
+    public void setBuffer(Attribute attribute, VertexBuffer vertexBuffer) {
+        if (buffers.containsKey(attribute)) {
+            buffers.get(attribute).dispose();
+        }
+        buffers.put(attribute, vertexBuffer);
+    }
+
     public void build() {
-        vao = GL30.glGenVertexArrays();
-        GL30.glBindVertexArray(vao);
+        if (GLContext.getCapabilities().OpenGL30) {
+            vao = GL30.glGenVertexArrays();
+            GL30.glBindVertexArray(vao);
+        }
 
         for (Entry<Attribute, VertexBuffer> buffer : buffers.entrySet()) {
             buffer.getValue().bind(buffer.getKey().index);
@@ -40,14 +42,19 @@ public final class Geometry implements IDisposable {
                 vertexCount = buffer.getValue().getCount();
             }
         }
-        GL30.glBindVertexArray(0);
+
+        if (GLContext.getCapabilities().OpenGL30) {
+            GL30.glBindVertexArray(0);
+        }
     }
 
     public void render() {
-        if (vao == -1) {
-            build();
+        if (GLContext.getCapabilities().OpenGL30) {
+            if (vao == -1) {
+                build();
+            }
+            GL30.glBindVertexArray(vao);
         }
-        GL30.glBindVertexArray(vao);
 
         if (indiciesBuffer != null) {
             indiciesBuffer.bind(0);
@@ -60,7 +67,11 @@ public final class Geometry implements IDisposable {
 
     @Override
     public void dispose() {
-        GL15.glDeleteBuffers(vertexBuffer);
-        if (indiciesBuffer > 0) GL15.glDeleteBuffers(indiciesBuffer);
+        for (Entry<Attribute, VertexBuffer> buffer : buffers.entrySet()) {
+            buffer.getValue().dispose();
+        }
+        if (indiciesBuffer != null) {
+            indiciesBuffer.dispose();
+        }
     }
 }
