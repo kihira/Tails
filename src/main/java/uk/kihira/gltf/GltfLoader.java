@@ -64,6 +64,15 @@ public class GltfLoader {
         // Temp cache values
         ByteBuffer binData = ByteBuffer.wrap(data);
 
+        // Get scene
+        if (!root.has("scenes")) {
+            throw new GltfException("At least one scene must be defined in the asset");
+        }
+        if (root.has("scene") && root.get("scene").getAsInt() >= root.get("scenes").getAsJsonArray().size()) {
+            throw new GltfException("Main scene defined is greater then the number of scenes available");
+        }
+        JsonObject scene = root.getAsJsonArray("scenes").get(root.has("scene") ? root.get("scene").getAsInt() : 0).getAsJsonObject();
+
         // Read JSON data and start loading stuff
         // Load buffer views
         for (JsonElement element : root.get("bufferViews").getAsJsonArray()) {
@@ -88,7 +97,7 @@ public class GltfLoader {
         }
 
         // Load nodes
-        int[] sceneNodes = gson.fromJson(root.get("scenes").getAsJsonArray().get(0).getAsJsonObject().get("nodes"), int[].class);
+        int[] sceneNodes = gson.fromJson(scene.get("nodes"), int[].class);
         JsonArray nodeJsonArray = root.get("nodes").getAsJsonArray();
         ArrayList<Node> rootNodes = new ArrayList<>();
         for (int index : sceneNodes) {
