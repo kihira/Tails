@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class GltfLoader {
@@ -23,11 +24,8 @@ public class GltfLoader {
     private static final int JSON_CHUNK = 0x4E4F534A;
     private static final int BIN_CHUNK = 0x004E4942;
 
-    // Temp cache values
-    private static ByteBuffer binData;
     public static final ArrayList<Accessor> accessors = new ArrayList<>();
     public static final ArrayList<BufferView> bufferViews = new ArrayList<>();
-    private static final TreeMap<Integer, ByteBuffer> bufferViewBufferCache = new TreeMap<>();
     private static final TreeMap<Integer, Node> nodeCache = new TreeMap<>();
     private static final TreeMap<Integer, Mesh> meshCache = new TreeMap<>();
 
@@ -63,7 +61,8 @@ public class GltfLoader {
         if (chunkType != BIN_CHUNK) {
             throw new IOException("Expected BIN data but didn't get it");
         }
-        binData = ByteBuffer.wrap(data);
+        // Temp cache values
+        ByteBuffer binData = ByteBuffer.wrap(data);
 
         // Read JSON data and start loading stuff
         // Load buffer views
@@ -83,8 +82,7 @@ public class GltfLoader {
         for (int i = 0; i < meshJsonArray.size(); i++) {
             ArrayList<Geometry> geometries = new ArrayList<>();
             for (JsonElement primitive : meshJsonArray.get(i).getAsJsonObject().get("primitives").getAsJsonArray()) {
-                // todo keep geometry loading in its own class? goes against almost everything else
-                geometries.add(new Geometry(gson.fromJson(primitive, MeshPrimitive.class)));
+                geometries.add(LoadPrimitive(gson.fromJson(primitive, MeshPrimitive.class)));
             }
             meshCache.put(i, new Mesh(geometries));
         }
@@ -127,9 +125,26 @@ public class GltfLoader {
     public static void clearCache() {
         meshCache.clear();
         nodeCache.clear();
-        bufferViewBufferCache.clear();
         bufferViews.clear();
         accessors.clear();
+    }
+
+    private static Geometry LoadPrimitive(MeshPrimitive primitive) {
+        Geometry geometry = new Geometry(primitive.mode.gl);
+
+        for (Map.Entry<MeshPrimitive.Attribute, Integer> attribute : primitive.attributes.entrySet()) {
+            Accessor accessor = GltfLoader.accessors.get(attribute.getValue());
+            int itemBytes = accessor.type.size * accessor.componentType.size;
+
+            BufferView bufferView = bufferViews.get(accessor.bufferView);
+
+            geometry.setBuffer(attribute.getKey(), new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count));
+            if (primitive.indicies != null) {
+                geometry.setIndicies(new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count));
+            }
+        }
+
+        return geometry;
     }
 
     private static Node LoadNode(JsonArray nodeJsonArray, int index) {
@@ -153,7 +168,7 @@ public class GltfLoader {
         if (nodeJson.has("matrix")) {
             node = new Node(children, gson.fromJson(nodeJson.get("matrix"), float[].class));
         }
-        else if (!nodeJson.has("translation") && !nodeJson.has("rotation") && !!nodeJson.has("scale")) {
+        else if (!nodeJson.has("translation") && !nodeJson.has("rotation") && !nodeJson.has("scale")) {
             node = new Node(children, new float[]{1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1});
         }
         else {
@@ -184,14 +199,19 @@ public class GltfLoader {
     public static ByteBuffer GetBufferFromAccessor(int accessorIndex) {
         // TODO sparse support
         Accessor accessor = accessors.get(accessorIndex);
-        return (ByteBuffer) GetBufferFromBufferView(accessor.bufferView).position(accessor.byteOffset).limit(accessor.count * accessor.type.size * accessor.componentType.size);
+        return (ByteBuffer) bufferViews.get(accessor.bufferView).position(accessor.byteOffset).limit(accessor.count * accessor.type.size * accessor.componentType.size);
     }
 
     private static int readUnsignedInt(DataInputStream stream) throws IOException {
         return Integer.reverseBytes(stream.readInt());
     }
 
-    private static void clearCaches() {
-
+    public static void main(String[] args) {
+        try {
+            Model model = LoadGlbFile(new File("./BoxAnimated.glb"));
+            System.out.println(model);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

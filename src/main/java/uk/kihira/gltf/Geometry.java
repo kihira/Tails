@@ -2,35 +2,29 @@ package uk.kihira.gltf;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-
-import uk.kihira.gltf.spec.Accessor;
-import uk.kihira.gltf.spec.BufferView;
-import uk.kihira.gltf.spec.MeshPrimitive;
 import uk.kihira.gltf.spec.MeshPrimitive.Attribute;
 import uk.kihira.tails.common.IDisposable;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.Set;
 
+@ParametersAreNonnullByDefault
 public final class Geometry implements IDisposable {
     private final int drawMode;
     private int vao = -1;
     private int vertexCount;
 
     private HashMap<Attribute, VertexBuffer> buffers = new HashMap<>();
-    private IndiciesBuffer indiciesBuffer;
+    private VertexBuffer indiciesBuffer;
 
-    public Geometry(int drawMode) throws IOException {
+    public Geometry(int drawMode) {
         this.drawMode = drawMode;
     }
 
-    public void build() {
+    private void build() {
         vao = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vao);
 
@@ -39,6 +33,11 @@ public final class Geometry implements IDisposable {
             if (buffer.getKey() == Attribute.POSITION) {
                 vertexCount = buffer.getValue().getCount();
             }
+        }
+
+        if (indiciesBuffer != null) {
+            // Bypass bind on VertexBuffer
+            indiciesBuffer.bufferView.bind();
         }
         GL30.glBindVertexArray(0);
     }
@@ -58,9 +57,23 @@ public final class Geometry implements IDisposable {
         }
     }
 
+    public void setBuffer(Attribute key, VertexBuffer vertexBuffer) {
+        dispose();
+        buffers.put(key, vertexBuffer);
+    }
+
+    public void setIndicies(@Nullable VertexBuffer vertexBuffer) {
+        dispose();
+        indiciesBuffer = vertexBuffer;
+        if (indiciesBuffer != null) {
+            indiciesBuffer.bufferView.target = GL15.GL_ELEMENT_ARRAY_BUFFER;
+            vertexCount = indiciesBuffer.count;
+        }
+    }
+
     @Override
     public void dispose() {
-        GL15.glDeleteBuffers(vertexBuffer);
-        if (indiciesBuffer > 0) GL15.glDeleteBuffers(indiciesBuffer);
+        GL30.glDeleteVertexArrays(vao);
+        vao = -1;
     }
 }

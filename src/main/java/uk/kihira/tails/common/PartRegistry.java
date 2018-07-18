@@ -1,7 +1,10 @@
 package uk.kihira.tails.common;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import uk.kihira.gltf.GltfLoader;
+import uk.kihira.gltf.Model;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.model.ears.ModelCatEars;
@@ -12,15 +15,28 @@ import uk.kihira.tails.client.model.tail.*;
 import uk.kihira.tails.client.render.LegacyPartRenderer;
 import uk.kihira.tails.client.render.RenderWings;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 //Yeah using side only isn't nice but as this is static, it means it only gets constructed on the client
 @SideOnly(Side.CLIENT)
+@ParametersAreNonnullByDefault
 public class PartRegistry {
     private static final HashMap<UUID, LegacyPartRenderer> partRenderers = new HashMap<>();
+    private static final HashMap<UUID, Model> partModels = new HashMap<>();
+    // Current models being downloaded
+    private static final ArrayList<UUID> partModelsInProgress = new ArrayList<>();
 
     private static final HashMap<UUID, Part> parts = new HashMap<>();
 
@@ -84,6 +100,28 @@ public class PartRegistry {
 
     }
 
+    public static void LoadCache() throws IOException {
+        Path cachePath = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), "tails/cache/parts");
+        if (!Files.exists(cachePath)) {
+            Files.createDirectories(cachePath);
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(cachePath)) {
+            paths.filter(Files::isRegularFile).forEach(path -> {
+                try (FileReader reader = new FileReader(path.toFile())) {
+                    addPart(Tails.gson.fromJson(reader, Part.class));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    // Attempts to load a part from the model cache folder first and if not found, loads from server
+    private static void addPart(Part part) {
+        parts.put(part.id, part);
+    }
+
     private static void addPart(Part part, LegacyPartRenderer renderPart) {
         parts.put(part.id, part);
         partRenderers.put(part.id, renderPart);
@@ -99,5 +137,27 @@ public class PartRegistry {
 
     public static LegacyPartRenderer getRenderer(UUID uuid) {
         return partRenderers.get(uuid);
+    }
+
+    @Nullable
+    public static Model getModel(final UUID uuid) {
+        if (partModels.containsKey(uuid)) {
+            return partModels.get(uuid);
+        }
+        if (partModelsInProgress.contains(uuid)) {
+            return null;
+        }
+
+        // Start downloading the model if we don't have it
+        partModelsInProgress.add(uuid);
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            Path path = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), "tails/cache/models");
+            try {
+                partModels.put(uuid, GltfLoader.LoadGlbFile(path.toFile()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return null;
     }
 }
