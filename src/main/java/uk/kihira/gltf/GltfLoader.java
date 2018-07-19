@@ -20,7 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
@@ -35,7 +35,7 @@ public class GltfLoader {
     private static final TreeMap<Integer, Node> nodeCache = new TreeMap<>();
     private static final TreeMap<Integer, Mesh> meshCache = new TreeMap<>();
 
-    public Model LoadGlbFile(File file) throws IOException {
+    public static Model LoadGlbFile(File file) throws IOException {
         DataInputStream stream = new DataInputStream(new FileInputStream(file));
         int magic = readUnsignedInt(stream);
         int version = readUnsignedInt(stream);
@@ -67,8 +67,16 @@ public class GltfLoader {
         if (chunkType != BIN_CHUNK) {
             throw new IOException("Expected BIN data but didn't get it");
         }
-        ByteBuffer binData = BufferUtils.createByteBuffer(data.length);
-        binData.put(data);
+        ByteBuffer binData = ByteBuffer.wrap(data);
+
+        // Get scene
+        if (!root.has("scenes")) {
+            throw new GltfException("At least one scene must be defined in the asset");
+        }
+        if (root.has("scene") && root.get("scene").getAsInt() >= root.get("scenes").getAsJsonArray().size()) {
+            throw new GltfException("Main scene defined is greater then the number of scenes available");
+        }
+        JsonObject scene = root.getAsJsonArray("scenes").get(root.has("scene") ? root.get("scene").getAsInt() : 0).getAsJsonObject();
 
         // Read JSON data and start loading stuff
         // Load buffer views
@@ -87,23 +95,14 @@ public class GltfLoader {
         JsonArray meshJsonArray = root.get("meshes").getAsJsonArray();
         for (int i = 0; i < meshJsonArray.size(); i++) {
             ArrayList<Geometry> geometries = new ArrayList<>();
-            for (JsonElement primitiveJson : meshJsonArray.get(i).getAsJsonObject().get("primitives").getAsJsonArray()) {
-                MeshPrimitive meshPrimitive = gson.fromJson(primitiveJson, MeshPrimitive.class);
-                Geometry geometry = new Geometry(meshPrimitive.mode.gl);
-
-                for (Entry<Attribute, Integer> attribute : meshPrimitive.attributes.entrySet()) {
-                    Accessor accessor = accessors.get(attribute.getValue());
-                    VertexBuffer buffer = new VertexBuffer(bufferViews.get(accessor.bufferView), accessor.componentType, attribute.getKey(), accessor.byteOffset, accessor.count);
-                    geometry.setBuffer(attribute.getKey(), buffer);
-                }
-
-                geometries.add(geometry);
+            for (JsonElement primitive : meshJsonArray.get(i).getAsJsonObject().get("primitives").getAsJsonArray()) {
+                geometries.add(LoadPrimitive(gson.fromJson(primitive, MeshPrimitive.class)));
             }
             meshCache.put(i, new Mesh(geometries));
         }
 
         // Load nodes
-        int[] sceneNodes = gson.fromJson(root.get("scenes").getAsJsonArray().get(0).getAsJsonObject().get("nodes"), int[].class);
+        int[] sceneNodes = gson.fromJson(scene.get("nodes"), int[].class);
         JsonArray nodeJsonArray = root.get("nodes").getAsJsonArray();
         ArrayList<Node> rootNodes = new ArrayList<>();
         for (int index : sceneNodes) {
@@ -134,9 +133,32 @@ public class GltfLoader {
             animations.add(new Animation(channels));
         }
 
-        Model model = new Model(new ArrayList<Node>(nodeCache.values()), rootNodes, animations);
+        return new Model(new ArrayList<>(nodeCache.values()), rootNodes, animations);
+    }
 
-        return model;
+    public static void clearCache() {
+        meshCache.clear();
+        nodeCache.clear();
+        bufferViews.clear();
+        accessors.clear();
+    }
+
+    private static Geometry LoadPrimitive(MeshPrimitive primitive) {
+        Geometry geometry = new Geometry(primitive.mode.gl);
+
+        for (Map.Entry<MeshPrimitive.Attribute, Integer> attribute : primitive.attributes.entrySet()) {
+            Accessor accessor = GltfLoader.accessors.get(attribute.getValue());
+            int itemBytes = accessor.type.size * accessor.componentType.size;
+
+            BufferView bufferView = bufferViews.get(accessor.bufferView);
+
+            geometry.setBuffer(attribute.getKey(), new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count));
+            if (primitive.indicies != null) {
+                geometry.setIndicies(new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count));
+            }
+        }
+
+        return geometry;
     }
 
     private static Node LoadNode(JsonArray nodeJsonArray, int index) {
@@ -160,7 +182,7 @@ public class GltfLoader {
         if (nodeJson.has("matrix")) {
             node = new Node(children, gson.fromJson(nodeJson.get("matrix"), float[].class));
         }
-        else if (!nodeJson.has("translation") && !nodeJson.has("rotation") && !!nodeJson.has("scale")) {
+        else if (!nodeJson.has("translation") && !nodeJson.has("rotation") && !nodeJson.has("scale")) {
             node = new Node(children, new float[]{1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1});
         }
         else {
@@ -179,11 +201,31 @@ public class GltfLoader {
             node = new Node(children, translation, rotation, scale);
         }
 
+        // NOTE: depends on meshes being preloaded into the cache
+        if (nodeJson.has("mesh")) {
+            node.setMesh(meshCache.get(nodeJson.get("mesh").getAsInt()));
+        }
+
         nodeCache.put(index, node);
         return node;
     }
 
+    public static ByteBuffer GetBufferFromAccessor(int accessorIndex) {
+        // TODO sparse support
+        Accessor accessor = accessors.get(accessorIndex);
+        return (ByteBuffer) bufferViews.get(accessor.bufferView).position(accessor.byteOffset).limit(accessor.count * accessor.type.size * accessor.componentType.size);
+    }
+
     private static int readUnsignedInt(DataInputStream stream) throws IOException {
         return Integer.reverseBytes(stream.readInt());
+    }
+
+    public static void main(String[] args) {
+        try {
+            Model model = LoadGlbFile(new File("./BoxAnimated.glb"));
+            System.out.println(model);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

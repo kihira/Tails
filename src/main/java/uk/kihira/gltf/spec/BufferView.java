@@ -15,8 +15,6 @@ public class BufferView implements IDisposable {
 
     /**
      * The offset into the buffer in bytes.
-     * Minimum: 0
-     * Default: 0
      */
     public int byteOffset = 0;
 
@@ -24,10 +22,6 @@ public class BufferView implements IDisposable {
      * The stride, in bytes, between vertex attributes.
      * When this is not defined, data is tightly packed.
      * When two or more accessors use the same bufferView, this field must be defined.
-     *
-     * Minimum: 4
-     * Maximum: 252
-     * Multiple Of: 4
      */
     public int byteStride = 0;
 
@@ -36,8 +30,7 @@ public class BufferView implements IDisposable {
      *
      * Values: 34962 (ARRAY_BUFFER), 34963 (ELEMENT_ARRAY_BUFFER)
      */
-    @Nullable
-    public Integer target;
+    public Integer target = GL15.GL_ARRAY_BUFFER;
 
     /**
      * NON SPEC
