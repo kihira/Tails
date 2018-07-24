@@ -1,18 +1,9 @@
 package uk.kihira.gltf;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
-
-import org.lwjgl.BufferUtils;
-
-import uk.kihira.gltf.animation.Animation;
-import uk.kihira.gltf.animation.AnimationPath;
-import uk.kihira.gltf.animation.Channel;
-import uk.kihira.gltf.animation.Sampler;
 import uk.kihira.gltf.spec.Accessor;
 import uk.kihira.gltf.spec.BufferView;
 import uk.kihira.gltf.spec.MeshPrimitive;
-import uk.kihira.gltf.spec.MeshPrimitive.Attribute;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -22,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 public class GltfLoader {
     private static final Gson gson = new Gson();
@@ -110,30 +100,30 @@ public class GltfLoader {
         }
 
         // Load animations
-        ArrayList<Animation> animations = new ArrayList<>();
-        for (JsonElement element : root.get("animations").getAsJsonArray()) {
-            JsonObject object = element.getAsJsonObject();
-            // TODO probably want to use String name = object.get("name").getAsString();
-            ArrayList<Sampler> samplers = gson.fromJson(object.get("samplers"), new TypeToken<ArrayList<Sampler>>(){}.getType());
-            ArrayList<Channel> channels = new ArrayList<>();
+//        ArrayList<Animation> animations = new ArrayList<>();
+//        for (JsonElement element : root.get("animations").getAsJsonArray()) {
+//            JsonObject object = element.getAsJsonObject();
+//            // TODO probably want to use String name = object.get("name").getAsString();
+//            ArrayList<Sampler> samplers = gson.fromJson(object.get("samplers"), new TypeToken<ArrayList<Sampler>>(){}.getType());
+//            ArrayList<Channel> channels = new ArrayList<>();
+//
+//            for (JsonElement channelElement : object.get("channels").getAsJsonArray()) {
+//                JsonObject channelObject = channelElement.getAsJsonObject();
+//                Sampler sampler = samplers.get(channelObject.get("sampler").getAsInt());
+//                channels.add(new Channel(
+//                    sampler,
+//                    accessors.get(sampler.output).type,
+//                    GetBufferFromAccessor(sampler.input).asFloatBuffer(),
+//                    // TODO: output data could be other then float, need to convert (non float ones are normalised)
+//                    GetBufferFromAccessor(sampler.output).asFloatBuffer(),
+//                    nodeCache.get(channelObject.get("target").getAsJsonObject().get("node").getAsInt()),
+//                    gson.fromJson(channelObject.get("target").getAsJsonObject().get("path"), AnimationPath.class)
+//                ));
+//            }
+//            animations.add(new Animation(channels));
+//        }
 
-            for (JsonElement channelElement : object.get("channels").getAsJsonArray()) {
-                JsonObject channelObject = channelElement.getAsJsonObject();
-                Sampler sampler = samplers.get(channelObject.get("sampler").getAsInt());
-                channels.add(new Channel(
-                    sampler,
-                    accessors.get(sampler.output).type,
-                    GetBufferFromAccessor(sampler.input).asFloatBuffer(),
-                    // TODO: output data could be other then float, need to convert (non float ones are normalised)
-                    GetBufferFromAccessor(sampler.output).asFloatBuffer(),
-                    nodeCache.get(channelObject.get("target").getAsJsonObject().get("node").getAsInt()),
-                    gson.fromJson(channelObject.get("target").getAsJsonObject().get("path"), AnimationPath.class)
-                ));
-            }
-            animations.add(new Animation(channels));
-        }
-
-        return new Model(new ArrayList<>(nodeCache.values()), rootNodes, animations);
+        return new Model(new ArrayList<>(nodeCache.values()), rootNodes, null);
     }
 
     public static void clearCache() {
@@ -181,11 +171,9 @@ public class GltfLoader {
         // Load matrix, or TSR values 
         if (nodeJson.has("matrix")) {
             node = new Node(children, gson.fromJson(nodeJson.get("matrix"), float[].class));
-        }
-        else if (!nodeJson.has("translation") && !nodeJson.has("rotation") && !nodeJson.has("scale")) {
-            node = new Node(children, new float[]{1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1});
-        }
-        else {
+        } else if (!nodeJson.has("translation") && !nodeJson.has("rotation") && !nodeJson.has("scale")) {
+            node = new Node(children, new float[]{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1});
+        } else {
             float[] translation = new float[]{0, 0, 0};
             float[] rotation = new float[]{0, 0, 0, 1};
             float[] scale = new float[]{1, 1, 1};
@@ -213,7 +201,9 @@ public class GltfLoader {
     public static ByteBuffer GetBufferFromAccessor(int accessorIndex) {
         // TODO sparse support
         Accessor accessor = accessors.get(accessorIndex);
-        return (ByteBuffer) bufferViews.get(accessor.bufferView).position(accessor.byteOffset).limit(accessor.count * accessor.type.size * accessor.componentType.size);
+        return (ByteBuffer) bufferViews.get(accessor.bufferView).getData()
+                .position(accessor.byteOffset)
+                .limit(accessor.count * accessor.type.size * accessor.componentType.size);
     }
 
     private static int readUnsignedInt(DataInputStream stream) throws IOException {

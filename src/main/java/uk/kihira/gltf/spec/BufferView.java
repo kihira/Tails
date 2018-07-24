@@ -1,10 +1,8 @@
 package uk.kihira.gltf.spec;
 
 import org.lwjgl.opengl.GL15;
-
 import uk.kihira.tails.common.IDisposable;
 
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class BufferView implements IDisposable {
@@ -54,7 +52,11 @@ public class BufferView implements IDisposable {
         }
     }
 
-	@Override
+    public ByteBuffer getData() {
+        return data;
+    }
+
+    @Override
 	public void dispose() {
         if (vbo != -1) {
             GL15.glDeleteBuffers(vbo);

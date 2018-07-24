@@ -3,6 +3,7 @@ package uk.kihira.gltf;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GLContext;
 import uk.kihira.gltf.spec.MeshPrimitive.Attribute;
 import uk.kihira.tails.common.IDisposable;
 
@@ -18,15 +19,17 @@ public final class Geometry implements IDisposable {
     private int vertexCount;
 
     private HashMap<Attribute, VertexBuffer> buffers = new HashMap<>();
-    private VertexBuffer indiciesBuffer;
+    private VertexBuffer indicesBuffer;
 
     public Geometry(int drawMode) {
         this.drawMode = drawMode;
     }
 
-    private void build() {
-        vao = GL30.glGenVertexArrays();
-        GL30.glBindVertexArray(vao);
+    private void bind() {
+        if (GLContext.getCapabilities().OpenGL30) {
+            vao = GL30.glGenVertexArrays();
+            GL30.glBindVertexArray(vao);
+        }
 
         for (Entry<Attribute, VertexBuffer> buffer : buffers.entrySet()) {
             buffer.getValue().bind(buffer.getKey().index);
@@ -35,24 +38,29 @@ public final class Geometry implements IDisposable {
             }
         }
 
-        if (indiciesBuffer != null) {
+        if (indicesBuffer != null) {
             // Bypass bind on VertexBuffer
-            indiciesBuffer.bufferView.bind();
+            indicesBuffer.bufferView.bind();
         }
-        GL30.glBindVertexArray(0);
+
+        if (GLContext.getCapabilities().OpenGL30) {
+            GL30.glBindVertexArray(0);
+        }
     }
 
     public void render() {
         if (GLContext.getCapabilities().OpenGL30) {
             if (vao == -1) {
-                build();
+                bind();
             }
             GL30.glBindVertexArray(vao);
         }
+        else {
+            bind(); // Binds the buffers and pointers
+        }
 
-        if (indiciesBuffer != null) {
-            indiciesBuffer.bind(0);
-            GL11.glDrawElements(drawMode, indiciesBuffer.getCount(), indiciesBuffer.getType().gl, indiciesBuffer.getOffset());
+        if (indicesBuffer != null) {
+            GL11.glDrawElements(drawMode, indicesBuffer.getCount(), indicesBuffer.getType().gl, indicesBuffer.getOffset());
         }
         else {
             GL11.glDrawArrays(drawMode, 0, vertexCount);
@@ -66,10 +74,10 @@ public final class Geometry implements IDisposable {
 
     public void setIndicies(@Nullable VertexBuffer vertexBuffer) {
         dispose();
-        indiciesBuffer = vertexBuffer;
-        if (indiciesBuffer != null) {
-            indiciesBuffer.bufferView.target = GL15.GL_ELEMENT_ARRAY_BUFFER;
-            vertexCount = indiciesBuffer.count;
+        indicesBuffer = vertexBuffer;
+        if (indicesBuffer != null) {
+            indicesBuffer.bufferView.target = GL15.GL_ELEMENT_ARRAY_BUFFER;
+            vertexCount = indicesBuffer.count;
         }
     }
 
