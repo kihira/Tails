@@ -141,11 +141,15 @@ public class GltfLoader {
             int itemBytes = accessor.type.size * accessor.componentType.size;
 
             BufferView bufferView = bufferViews.get(accessor.bufferView);
+            VertexBuffer buffer = new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count);
+            geometry.setBuffer(attribute.getKey(), buffer);
+        }
 
-            geometry.setBuffer(attribute.getKey(), new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count));
-            if (primitive.indicies != null) {
-                geometry.setIndicies(new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count));
-            }
+        if (primitive.indicies != null) {
+            Accessor accessor = GltfLoader.accessors.get(primitive.indicies);
+            BufferView bufferView = bufferViews.get(accessor.bufferView);
+            VertexBuffer buffer = new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count);
+            geometry.setIndicies(buffer);
         }
 
         return geometry;
@@ -208,14 +212,5 @@ public class GltfLoader {
 
     private static int readUnsignedInt(DataInputStream stream) throws IOException {
         return Integer.reverseBytes(stream.readInt());
-    }
-
-    public static void main(String[] args) {
-        try {
-            Model model = LoadGlbFile(new File("./BoxAnimated.glb"));
-            System.out.println(model);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

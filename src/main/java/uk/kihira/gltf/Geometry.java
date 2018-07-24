@@ -83,7 +83,9 @@ public final class Geometry implements IDisposable {
 
     @Override
     public void dispose() {
-        GL30.glDeleteVertexArrays(vao);
-        vao = -1;
+        if (GLContext.getCapabilities().OpenGL30 && vao != -1) {
+            GL30.glDeleteVertexArrays(vao);
+            vao = -1;
+        }
     }
 }

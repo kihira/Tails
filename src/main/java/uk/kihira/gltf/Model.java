@@ -1,8 +1,8 @@
 package uk.kihira.gltf;
 
-import java.util.ArrayList;
-
 import uk.kihira.gltf.animation.Animation;
+
+import java.util.ArrayList;
 
 public class Model {
     public final ArrayList<Node> allNodes;
@@ -11,7 +11,7 @@ public class Model {
 
     public Model(ArrayList<Node> allNodes, ArrayList<Node> rootNodes, ArrayList<Animation> animations) {
         this.allNodes = allNodes;
-        this.rootNodes = allNodes;
+        this.rootNodes = rootNodes;
         this.animations = animations;
     }
 
