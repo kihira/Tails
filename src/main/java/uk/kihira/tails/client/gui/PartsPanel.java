@@ -13,7 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import uk.kihira.tails.client.*;
-import uk.kihira.tails.common.PartRegistry;
+import uk.kihira.tails.client.PartRegistry;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -126,7 +126,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
         RenderHelper.enableStandardItemLighting();
         Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
-        PartRegistry.getRenderer(part.basePart).render(fakeEntity, part, 0);
+        PartRegistry.getModel(part.basePart).render();
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);

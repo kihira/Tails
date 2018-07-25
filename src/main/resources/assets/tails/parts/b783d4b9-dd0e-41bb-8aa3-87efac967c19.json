@@ -1,0 +1,11 @@
+{
+  "id": "b783d4b9-dd0e-41bb-8aa3-87efac967c19",
+  "name": "Fluffy Tail",
+  "author": "Kihira",
+  "model": "b783d4b9-dd0e-41bb-8aa3-87efac967c19",
+  "mount_point": "CHEST",
+  "mount_offset": [0, 0, 0],
+  "scale": [1, 1, 1],
+  "rotation": [0, 0, 0],
+  "tint": [0, 0, 0]
+}

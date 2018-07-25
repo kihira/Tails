@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.common.Outfit;
-import uk.kihira.tails.common.PartRegistry;
+import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -60,8 +60,7 @@ public class FallbackRenderHandler {
                 for (OutfitPart part : currentOutfit.parts) {
                     if (part.mountPoint != mountPoint) return;
 
-                    PartRegistry.getRenderer(part.basePart).render(currentEvent.getEntityPlayer(),
-                            part, currentEvent.getPartialRenderTick());
+                    PartRegistry.getModel(part.basePart).render();
 
                     Minecraft.getMinecraft().renderEngine.bindTexture(currentPlayerTexture);
                 }

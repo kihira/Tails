@@ -2,7 +2,7 @@ package uk.kihira.tails.client.gui;
 
 import com.mojang.authlib.GameProfile;
 import uk.kihira.tails.client.OutfitPart;
-import uk.kihira.tails.common.PartRegistry;
+import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;

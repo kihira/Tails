@@ -1,12 +1,11 @@
-package uk.kihira.tails.common;
+package uk.kihira.tails.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import uk.kihira.gltf.GltfLoader;
 import uk.kihira.gltf.Model;
-import uk.kihira.tails.client.MountPoint;
-import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.model.ears.ModelCatEars;
 import uk.kihira.tails.client.model.ears.ModelCatSmallEars;
 import uk.kihira.tails.client.model.ears.ModelFoxEars;
@@ -14,11 +13,11 @@ import uk.kihira.tails.client.model.ears.ModelPandaEars;
 import uk.kihira.tails.client.model.tail.*;
 import uk.kihira.tails.client.render.LegacyPartRenderer;
 import uk.kihira.tails.client.render.RenderWings;
+import uk.kihira.tails.common.Tails;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -127,16 +126,26 @@ public class PartRegistry {
         partRenderers.put(part.id, renderPart);
     }
 
+    /**
+     * Loads a part from the resources folder
+     * @param uuid Part ID
+     */
+    public static void loadPart(UUID uuid) {
+        ResourceLocation resLoc = new ResourceLocation("tails", "parts/" + uuid + ".json");
+        try (InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream()) {
+            InputStreamReader reader = new InputStreamReader(is);
+            addPart(Tails.gson.fromJson(reader, Part.class));
+        } catch (IOException e) {
+            Tails.logger.error("Failed to load part " + uuid, e);
+        }
+    }
+
     public static Part getPart(UUID uuid) {
         return parts.get(uuid);
     }
 
     public static List<Part> getPartsByMountPoint(MountPoint mountPoint) {
         return parts.values().stream().filter(part -> part.mountPoint == mountPoint).collect(Collectors.toList());
-    }
-
-    public static LegacyPartRenderer getRenderer(UUID uuid) {
-        return partRenderers.get(uuid);
     }
 
     @Nullable

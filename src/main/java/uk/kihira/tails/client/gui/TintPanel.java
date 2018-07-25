@@ -14,7 +14,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
-import uk.kihira.tails.common.PartRegistry;
+import uk.kihira.tails.client.PartRegistry;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
