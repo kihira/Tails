@@ -17,7 +17,10 @@ import uk.kihira.tails.common.Tails;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,7 +31,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-//Yeah using side only isn't nice but as this is static, it means it only gets constructed on the client
+/**
+ * A registry for all known parts
+ * TODO: Support for unloading models
+ * TODO: Support for unregistering unused parts to save on memory outside of the editor?
+ */
 @SideOnly(Side.CLIENT)
 @ParametersAreNonnullByDefault
 public class PartRegistry {
@@ -116,7 +123,6 @@ public class PartRegistry {
         }
     }
 
-    // Attempts to load a part from the model cache folder first and if not found, loads from server
     private static void addPart(Part part) {
         parts.put(part.id, part);
     }
@@ -157,14 +163,19 @@ public class PartRegistry {
             return null;
         }
 
-        // Start downloading the model if we don't have it
+        // Attempt to load model from file cache first, then try to download it
         partModelsInProgress.add(uuid);
         Minecraft.getMinecraft().addScheduledTask(() -> {
             Path path = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), "tails/cache/models");
-            try {
-                partModels.put(uuid, GltfLoader.LoadGlbFile(path.toFile()));
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (Files.exists(path)) {
+                try {
+                    partModels.put(uuid, GltfLoader.LoadGlbFile(path.toFile()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                // todo download from API server
             }
         });
         return null;
