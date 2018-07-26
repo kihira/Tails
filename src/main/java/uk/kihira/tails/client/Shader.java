@@ -12,6 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.Map;
 
 @ParametersAreNonnullByDefault
@@ -24,18 +25,22 @@ public class Shader {
         ResourceLocation vertRes = new ResourceLocation(Tails.MOD_ID, "shader/" + vertShader + ".glsl");
         ResourceLocation fragRes = new ResourceLocation(Tails.MOD_ID, "shader/" + fragShader + ".glsl");
 
+        uniforms = new HashMap<>();
+
         // Load vert and frag shader source from files
         ByteBuffer vertSrc, fragSrc;
         try (InputStream is = mc.getResourceManager().getResource(vertRes).getInputStream()) {
             byte[] bytes = IOUtils.toByteArray(is);
-            vertSrc = ByteBuffer.wrap(bytes);
+            vertSrc = ByteBuffer.allocateDirect(bytes.length);
+            vertSrc.put(bytes);
         } catch (IOException e) {
             Tails.logger.error("Failed to load vertex shader " + vertShader, e);
             return;
         }
         try (InputStream is = mc.getResourceManager().getResource(fragRes).getInputStream()) {
             byte[] bytes = IOUtils.toByteArray(is);
-            fragSrc = ByteBuffer.wrap(bytes);
+            fragSrc = ByteBuffer.allocateDirect(bytes.length);
+            fragSrc.put(bytes);
         } catch (IOException e) {
             Tails.logger.error("Failed to load fragment shader " + vertShader, e);
             return;
