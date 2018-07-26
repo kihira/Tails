@@ -45,7 +45,7 @@ public class Tails {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent e) {
-        Tails.proxy.init();
+        proxy.preInit();
 
         if (e.getSide().isClient()) {
             Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
@@ -55,7 +55,7 @@ public class Tails {
 
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent e) {
-        proxy.registerRenderers();
+        proxy.postInit();
     }
 
     @SubscribeEvent

@@ -18,13 +18,15 @@ public class CommonProxy {
     protected final HashMap<UUID, Outfit> activeOutfits = new HashMap<>(); // todo move this out of proxy? Will be removed in cloud save stuff most likely
     protected LibraryManager libraryManager;
 
-    public void init() {
+    public void preInit() {
         registerMessages();
         registerHandlers();
         libraryManager = new LibraryManager();
     }
 
-    public void registerMessages() {
+    public void postInit() { }
+
+    protected void registerMessages() {
         Tails.networkWrapper.registerMessage(PlayerDataMessage.Handler.class, PlayerDataMessage.class, 0, Side.SERVER);
         Tails.networkWrapper.registerMessage(PlayerDataMapMessage.Handler.class, PlayerDataMapMessage.class, 1, Side.SERVER);
         Tails.networkWrapper.registerMessage(LibraryEntriesMessage.Handler.class, LibraryEntriesMessage.class, 2, Side.SERVER);
@@ -32,11 +34,9 @@ public class CommonProxy {
         Tails.networkWrapper.registerMessage(ServerCapabilitiesMessage.Handler.class, ServerCapabilitiesMessage.class, 4, Side.SERVER);
     }
 
-    public void registerHandlers() {
+    protected void registerHandlers() {
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
     }
-
-    public void registerRenderers() {}
 
     public void setActiveOutfit(UUID uuid, Outfit outfit) {
         this.activeOutfits.put(uuid, outfit);
