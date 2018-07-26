@@ -12,8 +12,8 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import uk.kihira.gltf.Model;
 import uk.kihira.tails.client.*;
-import uk.kihira.tails.client.PartRegistry;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -120,13 +120,19 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     private void renderPart(int x, int y, int z, int scale, OutfitPart part) {
+        Model model = PartRegistry.getModel(part.basePart);
+
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         GlStateManager.scale(-scale, scale, 1F);
 
         RenderHelper.enableStandardItemLighting();
         Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
-        PartRegistry.getModel(part.basePart).render();
+        if (model != null) {
+            model.render();
+        } else {
+            // todo render loading circle
+        }
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);

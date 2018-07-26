@@ -57,8 +57,6 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
                     Model model = PartRegistry.getModel(part.basePart);
                     if (model != null) {
                         model.render();
-                    } else {
-                        PartRegistry.getLegacyRenderer(part.basePart).render(entity, part, partialTicks);
                     }
                     GlStateManager.popMatrix();
                 }
