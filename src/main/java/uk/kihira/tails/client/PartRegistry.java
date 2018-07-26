@@ -23,7 +23,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
- * A registry for all known parts
+ * A registry for all known parts and models
  * TODO: Support for unloading models
  * TODO: Support for unregistering unused parts to save on memory outside of the editor?
  */
@@ -35,8 +35,8 @@ public class PartRegistry {
     private static final HashMap<UUID, Part> parts = new HashMap<>();
     private static final ArrayList<UUID> partsInProgress = new ArrayList<>(); // Current parts being loaded
 
-    public static final String MODEL_CACHE_FOLDER = "tails/cache/model";
-    public static final String PARTS_CACHE_FOLDER = "tails/cache/part";
+    private static final String MODEL_CACHE_FOLDER = "tails/cache/model";
+    private static final String PARTS_CACHE_FOLDER = "tails/cache/part";
 
     static {
         loadPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19"));

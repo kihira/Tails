@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.render;
 
 import net.minecraft.client.renderer.GlStateManager;

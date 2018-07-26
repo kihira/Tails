@@ -20,9 +20,6 @@ import net.minecraftforge.fml.common.versioning.VersionParser;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.kihira.tails.client.FakeEntity;
-import uk.kihira.tails.client.render.FakeEntityRenderHelper;
-import uk.kihira.tails.client.render.LegacyPartRenderer;
 import uk.kihira.tails.proxy.CommonProxy;
 
 import java.util.Map;
@@ -53,8 +50,6 @@ public class Tails {
         if (e.getSide().isClient()) {
             Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
             loadConfig();
-
-            LegacyPartRenderer.registerRenderHelper(FakeEntity.class, new FakeEntityRenderHelper());
         }
     }
 
