@@ -37,12 +37,13 @@ import java.util.stream.Stream;
 @SideOnly(Side.CLIENT)
 @ParametersAreNonnullByDefault
 public class PartRegistry {
-    private static final HashMap<UUID, LegacyPartRenderer> partRenderers = new HashMap<>();
-    private static final HashMap<UUID, Model> partModels = new HashMap<>();
-    // Current models being downloaded
-    private static final ArrayList<UUID> partModelsInProgress = new ArrayList<>();
-
+    private static final HashMap<UUID, Model> models = new HashMap<>();
+    private static final ArrayList<UUID> modelsInProgress = new ArrayList<>(); // Current models being loaded
     private static final HashMap<UUID, Part> parts = new HashMap<>();
+    private static final ArrayList<UUID> partsInProgress = new ArrayList<>(); // Current parts being loaded
+
+    public static final String MODEL_CACHE_FOLDER = "tails/cache/model";
+    public static final String PARTS_CACHE_FOLDER = "tails/cache/parts";
 
     static {
         // todo need to rename texture ids?
@@ -127,7 +128,6 @@ public class PartRegistry {
 
     private static void addPart(Part part, LegacyPartRenderer renderPart) {
         parts.put(part.id, part);
-        partRenderers.put(part.id, renderPart);
     }
 
     /**
@@ -145,8 +145,46 @@ public class PartRegistry {
         }
     }
 
+    /**
+     * Gets the {@link Part} for the associated ID, or loads it if it is not yet created.
+     * <p>
+     * A step-by-step procedure is followed to attempt to load the part as outlined:
+     * - If the part has been loaded already, this is returned from {@link PartRegistry#parts}
+     * - If the part does not exist in there, it will attempt to load it from the cache directory. This method will
+     * return null until it is loaded.
+     * - If it does not exist in the cache directory, it will attempt to download it from API server. This will return
+     * null until it is loaded
+     *
+     * @param uuid The ID of the part
+     * @return The part if loaded, or null if not
+     */
+    @Nullable
     public static Part getPart(UUID uuid) {
-        return parts.get(uuid);
+        if (parts.containsKey(uuid)) {
+            return parts.get(uuid);
+        }
+        if (partsInProgress.contains(uuid)) {
+            return null;
+        }
+
+        // Attempt to load part from cache folder
+        partsInProgress.add(uuid);
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            Path path = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), PARTS_CACHE_FOLDER, uuid.toString() + ".json");
+
+            if (Files.exists(path)) {
+                try (FileReader reader = new FileReader(path.toFile())) {
+                    parts.put(uuid, Tails.gson.fromJson(reader, Part.class));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    partsInProgress.remove(uuid);
+                }
+            } else {
+                // todo download from API server. also track if download from API server failed and don't retry
+            }
+        });
+        return null;
     }
 
     /**
@@ -163,7 +201,7 @@ public class PartRegistry {
      * Gets the {@link Model} for the associated ID, or loads it if it is not yet created.
      * <p>
      * A step-by-step procedure is followed to attempt to load the model as outlined:
-     * - If the model has been loaded already, this is returned from {@link #partModels}
+     * - If the model has been loaded already, this is returned from {@link PartRegistry#models}
      * - If the model does not exist in there, it will attempt to load it from the cache directory. This method will
      * return null until it is loaded.
      * - If it does not exist in the cache directory, it will attempt to download it from API server. This will return
@@ -174,22 +212,25 @@ public class PartRegistry {
      */
     @Nullable
     public static Model getModel(final UUID uuid) {
-        if (partModels.containsKey(uuid)) {
-            return partModels.get(uuid);
+        if (models.containsKey(uuid)) {
+            return models.get(uuid);
         }
-        if (partModelsInProgress.contains(uuid)) {
+        if (modelsInProgress.contains(uuid)) {
             return null;
         }
 
         // Attempt to load model from file cache first, then try to download it
-        partModelsInProgress.add(uuid);
+        modelsInProgress.add(uuid);
         Minecraft.getMinecraft().addScheduledTask(() -> {
-            Path path = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), "tails/cache/models");
+            Path path = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), MODEL_CACHE_FOLDER, uuid.toString() + ".glb");
+
             if (Files.exists(path)) {
                 try {
-                    partModels.put(uuid, GltfLoader.LoadGlbFile(path.toFile()));
+                    models.put(uuid, GltfLoader.LoadGlbFile(path.toFile()));
                 } catch (IOException e) {
                     e.printStackTrace();
+                } finally {
+                    modelsInProgress.remove(uuid);
                 }
             } else {
                 // todo download from API server. also track if download from API server failed and don't retry
