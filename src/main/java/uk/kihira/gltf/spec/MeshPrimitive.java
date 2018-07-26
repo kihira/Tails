@@ -20,7 +20,7 @@ public class MeshPrimitive {
 
     /**
      * The index of the accessor that contains mesh indices.
-     *
+     * <p>
      * When this is not defined, the primitives should be rendered without indices
      * using `drawArrays()`. When defined, the accessor must contain indices: the
      * `bufferView` referenced by the accessor should have a `target` equal to 34963
@@ -28,6 +28,7 @@ public class MeshPrimitive {
      * (UNSIGNED_SHORT) or 5125 (UNSIGNED_INT), the latter may require enabling
      * additional hardware support; `type` must be `"SCALAR"`. For triangle
      * primitives, the front face has a counter-clockwise (CCW) winding order.
+     * </p>
      */
     @Nullable
     public Integer indicies;
@@ -40,9 +41,10 @@ public class MeshPrimitive {
 
     /**
      * The type of primitives to render. All valid values correspond to WebGL enums.
-     *
+     * <p>
      * Default: 4 Values: 0 (POINTS), 1 (LINES), 2 (LINE_LOOP), 3 (LINE_STRIP), 4
      * (TRIANGLES), 5 (TRIANGLE_STRIP), 6 (TRIANGLE_FAN)
+     * </p>
      */
     public Mode mode = Mode.TRIANGLES;
 
@@ -62,12 +64,18 @@ public class MeshPrimitive {
 
     public enum Mode {
         @SerializedName("0")
-        POINTS(0), @SerializedName("1")
-        LINES(1), @SerializedName("2")
-        LINE_LOOP(2), @SerializedName("3")
-        LINE_STRIP(3), @SerializedName("4")
-        TRIANGLES(4), @SerializedName("5")
-        TRIANGLE_STRIP(5), @SerializedName("6")
+        POINTS(0),
+        @SerializedName("1")
+        LINES(1),
+        @SerializedName("2")
+        LINE_LOOP(2),
+        @SerializedName("3")
+        LINE_STRIP(3),
+        @SerializedName("4")
+        TRIANGLES(4),
+        @SerializedName("5")
+        TRIANGLE_STRIP(5),
+        @SerializedName("6")
         TRIANGLE_FAN(6);
 
         public final int gl;

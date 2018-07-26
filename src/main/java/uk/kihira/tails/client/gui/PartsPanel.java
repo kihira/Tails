@@ -103,7 +103,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         dispose();
 
         this.partList = new GuiList<>(this, width, height - listTop, listTop, height, 55,
-                PartRegistry.getPartsByMountPoint(mountPoint).stream().map(PartEntry::new).collect(Collectors.toList()));
+                PartRegistry.getPartsByMountPoint(mountPoint).map(PartEntry::new).collect(Collectors.toList()));
         this.partList.width = width;
         selectDefaultListEntry();
     }

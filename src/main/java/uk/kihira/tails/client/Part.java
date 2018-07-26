@@ -1,10 +1,12 @@
 package uk.kihira.tails.client;
 
+import uk.kihira.gltf.Model;
+
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
- * Represents an immutable part
+ * Represents a Part that has a name, author, model and various details about how it should render
  */
 @Nullable
 public class Part {
@@ -21,6 +23,8 @@ public class Part {
     public final float[] scale;
     public final int[] tint;
     public final UUID[] textures;
+
+    private transient Model model;
 
     public Part(UUID id, String name, String author, MountPoint mountPoint, float[] defaultMountOffset, float[] defaultRotation, float[] defaultScale, int[] defaultTints, UUID[] textures) {
         this.id = id;
@@ -44,5 +48,20 @@ public class Part {
 
     public Part(UUID id, String name, String author, MountPoint mountPoint, int[] defaultTints, UUID[] textures) {
         this(id, name, author, mountPoint, new float[]{0.f, 0.f, 0.f}, new float[]{0.f, 0.f, 0.f}, new float[]{1.f, 1.f, 1.f}, defaultTints, textures);
+    }
+
+    /**
+     * Returns the {@link Model} associated with this part.
+     * If the model is not yet loaded, it will begin loading it.
+     * Returns null if model is not loaded
+     *
+     * @return The model if loaded
+     */
+    @Nullable
+    public Model getModel() {
+        if (model == null) {
+            model = PartRegistry.getModel(id);
+        }
+        return model;
     }
 }

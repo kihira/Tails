@@ -26,9 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -134,6 +132,7 @@ public class PartRegistry {
 
     /**
      * Loads a part from the resources folder
+     *
      * @param uuid Part ID
      */
     public static void loadPart(UUID uuid) {
@@ -150,10 +149,29 @@ public class PartRegistry {
         return parts.get(uuid);
     }
 
-    public static List<Part> getPartsByMountPoint(MountPoint mountPoint) {
-        return parts.values().stream().filter(part -> part.mountPoint == mountPoint).collect(Collectors.toList());
+    /**
+     * Gets a {@link Stream} of Parts whose {@link Part#mountPoint} equals the specified {@link MountPoint}
+     *
+     * @param mountPoint The mount point to filter by
+     * @return A stream of parts
+     */
+    public static Stream<Part> getPartsByMountPoint(MountPoint mountPoint) {
+        return parts.values().stream().filter(part -> part.mountPoint == mountPoint);
     }
 
+    /**
+     * Gets the {@link Model} for the associated ID, or loads it if it is not yet created.
+     * <p>
+     * A step-by-step procedure is followed to attempt to load the model as outlined:
+     * - If the model has been loaded already, this is returned from {@link #partModels}
+     * - If the model does not exist in there, it will attempt to load it from the cache directory. This method will
+     * return null until it is loaded.
+     * - If it does not exist in the cache directory, it will attempt to download it from API server. This will return
+     * null until it is loaded
+     *
+     * @param uuid The ID of the model
+     * @return The model if loaded, or null if not
+     */
     @Nullable
     public static Model getModel(final UUID uuid) {
         if (partModels.containsKey(uuid)) {
@@ -173,9 +191,8 @@ public class PartRegistry {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-            else {
-                // todo download from API server
+            } else {
+                // todo download from API server. also track if download from API server failed and don't retry
             }
         });
         return null;
