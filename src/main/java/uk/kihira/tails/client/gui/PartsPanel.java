@@ -92,18 +92,11 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     @Override
-    public void onGuiClosed() {
-        dispose();
-    }
-
-    @Override
     public boolean onEntrySelected(GuiList guiList, int index, PartEntry entry) {
         return true;
     }
 
     private void initPartList() {
-        dispose();
-
         this.partList = new GuiList<>(this, width, height - listTop, listTop, height, 55,
                 PartRegistry.getPartsByMountPoint(mountPoint).map(PartEntry::new).collect(Collectors.toList()));
         this.partList.width = width;
@@ -112,13 +105,6 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     void selectDefaultListEntry() {
         partList.setCurrrentIndex(0);
-    }
-
-    private void dispose() {
-        if (partList == null) return;
-        for (PartEntry entry : partList.getEntries()) {
-            entry.outfitPart.dispose();
-        }
     }
 
     private void renderPart(int x, int y, int z, int scale, OutfitPart part) {

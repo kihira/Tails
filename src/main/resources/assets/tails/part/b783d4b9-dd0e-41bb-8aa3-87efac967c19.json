@@ -7,7 +7,7 @@
   "mountOffset": [0, 0, 0],
   "scale": [1, 1, 1],
   "rotation": [0, 0, 0],
-  "tint": [0, 0, 0],
+  "tint": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
   "textures": [
     "b783d4b9-dd0e-41bb-8aa3-87efac967c19"
   ]

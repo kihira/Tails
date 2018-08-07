@@ -14,12 +14,10 @@ import uk.kihira.tails.client.PartRenderer;
 import uk.kihira.tails.client.render.FallbackRenderHandler;
 import uk.kihira.tails.client.render.LayerPart;
 import uk.kihira.tails.common.LibraryManager;
-import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.*;
 
 import java.util.Map;
-import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
@@ -36,31 +34,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void postInit() {
         setupRenderers();
-    }
-
-    @Override
-    public void setActiveOutfit(UUID uuid, Outfit outfit) {
-        if (hasActiveOutfit(uuid)) {
-            this.activeOutfits.get(uuid).dispose();
-        }
-
-        super.setActiveOutfit(uuid, outfit);
-    }
-
-    @Override
-    public void removeActiveOutfit(UUID uuid) {
-        if (hasActiveOutfit(uuid)) {
-            this.activeOutfits.get(uuid).dispose();
-        }
-        super.removeActiveOutfit(uuid);
-    }
-
-    @Override
-    public void clearAllPartsData() {
-        for (Outfit outfit : this.activeOutfits.values()) {
-            outfit.dispose();
-        }
-        super.clearAllPartsData();
     }
 
     @Override

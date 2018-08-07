@@ -16,16 +16,17 @@ import java.util.HashMap;
  * The main class for handling rendering of parts
  */
 public class PartRenderer {
-    private Shader shader;
-    private FloatBuffer modelViewMatrixWorld;
-
-    private ArrayDeque<FloatBuffer> bufferPool;
-    private HashMap<OutfitPart, FloatBuffer> renders;
+    private final Shader shader;
+    private final FloatBuffer modelViewMatrixWorld;
+    private final IntBuffer tintBuffer;
+    private final ArrayDeque<FloatBuffer> bufferPool;
+    private final HashMap<OutfitPart, FloatBuffer> renders;
 
     public PartRenderer() {
+        modelViewMatrixWorld = BufferUtils.createFloatBuffer(16);
+        tintBuffer = BufferUtils.createIntBuffer(9);
         bufferPool = new ArrayDeque<>();
         renders = new HashMap<>(16);
-        modelViewMatrixWorld = BufferUtils.createFloatBuffer(16);
         shader = new Shader("threetint_vert", "threetint_frag");
         shader.registerUniform("tints");
     }
@@ -63,7 +64,6 @@ public class PartRenderer {
     public void doRender() {
         if (renders.size() == 0) return;
 
-        IntBuffer tintBuffer = BufferUtils.createIntBuffer(9);
         GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
         shader.use();
 
@@ -74,7 +74,7 @@ public class PartRenderer {
             Model model = basePart.getModel();
             if (model == null) continue;
 
-            // Set tint colors
+            // Set tint colors TODO: Should probably encode each tint into one int again
             tintBuffer.put(outfitPart.tint[0]);
             tintBuffer.put(outfitPart.tint[1]);
             tintBuffer.put(outfitPart.tint[2]);
@@ -86,6 +86,7 @@ public class PartRenderer {
             model.render();
 
             freeFloatBuffer(entry.getValue());
+            tintBuffer.clear();
         }
         renders.clear();
 

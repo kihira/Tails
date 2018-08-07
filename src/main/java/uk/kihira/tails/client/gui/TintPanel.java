@@ -14,7 +14,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
-import uk.kihira.tails.client.PartRegistry;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
@@ -117,7 +116,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         // Tint buttons
         if (button.id >= 0 && button.id < 3) {
             currTintEdit = button.id;
-            currTintColour = parent.getCurrentOutfitPart().tint[currTintEdit] & GuiEditor.TEXT_COLOUR; //Ignore the alpha bits
+            //todo currTintColour = parent.getCurrentOutfitPart().tint[currTintEdit] & GuiEditor.TEXT_COLOUR; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;
@@ -125,7 +124,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         // Reset Tint
         else if (button.id == 8) {
-            currTintColour = PartRegistry.getPart(parent.getCurrentOutfitPart().basePart).tint[currTintEdit - 1] & GuiEditor.TEXT_COLOUR; //Ignore the alpha bits
+            //todo currTintColour = PartRegistry.getPart(parent.getCurrentOutfitPart().basePart).tint[currTintEdit - 1] & GuiEditor.TEXT_COLOUR; //Ignore the alpha bits
             hexText.setText(Integer.toHexString(currTintColour));
             refreshTintPane();
             tintReset.enabled = false;
@@ -299,7 +298,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
                 drawRect(x-1, y-1, x+width+1, y+height+1, HIGHLIGHT);
             }
 
-            drawRect(x, y, x + width, y + height, parent.getCurrentOutfitPart().tint[tintId]);
+            //todo drawRect(x, y, x + width, y + height, parent.getCurrentOutfitPart().tint[tintId]);
 
         }
     }

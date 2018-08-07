@@ -1,10 +1,10 @@
-#version 130
+#version 120
 
-in vec3 pos;
-in vec3 normal;
-in vec2 uv;
+attribute vec3 pos;
+attribute vec3 normal;
+attribute vec2 uv;
 
-out vec2 TexCoord;
+varying vec2 TexCoord;
 
 void main() {
   TexCoord = vec2(uv.x, uv.y);

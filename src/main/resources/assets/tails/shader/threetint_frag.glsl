@@ -1,12 +1,12 @@
-#version 130
+#version 120
 
-in vec2 TexCoord;
+varying vec2 TexCoord;
 
 uniform sampler2D tex;
 uniform vec3[3] tints; // todo encode rgb into one int value again to save memory?
 
 void main() {
-  vec4 texCol = texture(tex, TexCoord);
+  vec4 texCol = texture2D(tex, TexCoord);
 /*
   Experimental version using alpha as the tone instead of red channel
   float tone = texCol.a;

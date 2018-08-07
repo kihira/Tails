@@ -1,18 +1,17 @@
 package uk.kihira.tails.client.gui;
 
 import com.mojang.authlib.GameProfile;
-import uk.kihira.tails.client.OutfitPart;
-import uk.kihira.tails.client.PartRegistry;
-import uk.kihira.tails.common.LibraryEntryData;
-import uk.kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import uk.kihira.tails.client.OutfitPart;
+import uk.kihira.tails.client.PartRegistry;
+import uk.kihira.tails.common.LibraryEntryData;
+import uk.kihira.tails.common.Tails;
 
 
 public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
@@ -43,7 +42,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         for (OutfitPart part : data.outfit.parts) {
             fontRenderer.drawString(I18n.format(PartRegistry.getPart(part.basePart).name), x + 5, y + 12 + (8 * offset), 0xFFFFFF);
             for (int i = 1; i < 4; i++) {
-                Gui.drawRect(listWidth - (8 * i), y + 13 + (offset * 8), listWidth + 7 - (8 * i), y + 20 + (offset * 8), part.tint[i - 1]);
+                //todo Gui.drawRect(listWidth - (8 * i), y + 13 + (offset * 8), listWidth + 7 - (8 * i), y + 20 + (offset * 8), part.tint[i - 1]);
             }
             offset++;
         }
