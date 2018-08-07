@@ -9,5 +9,5 @@ out vec2 TexCoord;
 void main() {
   TexCoord = vec2(uv.x, uv.y);
 
-  gl_Position = gl_ModelViewProjectionMatrix * vec4(pos, 0);
+  gl_Position = gl_ModelViewProjectionMatrix * vec4(pos, 1);
 }

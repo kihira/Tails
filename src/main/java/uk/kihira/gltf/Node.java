@@ -66,8 +66,10 @@ public final class Node {
             mesh.render();
         }
 
-        for (Node node : children) {
-            node.render();
+        if (children != null) {
+            for (Node node : children) {
+                node.render();
+            }
         }
 
         GlStateManager.popMatrix();

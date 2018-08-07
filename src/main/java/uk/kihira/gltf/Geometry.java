@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 import uk.kihira.gltf.spec.MeshPrimitive.Attribute;
+import uk.kihira.tails.client.PartRenderer;
 import uk.kihira.tails.common.IDisposable;
 
 import javax.annotation.Nullable;
@@ -28,7 +29,7 @@ public final class Geometry implements IDisposable {
     private void bind() {
         if (GLContext.getCapabilities().OpenGL30) {
             vao = GL30.glGenVertexArrays();
-            GL30.glBindVertexArray(vao);
+            PartRenderer.glBindVertexArray(vao);
         }
 
         for (Entry<Attribute, VertexBuffer> buffer : buffers.entrySet()) {
@@ -44,7 +45,7 @@ public final class Geometry implements IDisposable {
         }
 
         if (GLContext.getCapabilities().OpenGL30) {
-            GL30.glBindVertexArray(0);
+            PartRenderer.glBindVertexArray(0);
         }
     }
 
@@ -53,7 +54,7 @@ public final class Geometry implements IDisposable {
             if (vao == -1) {
                 bind();
             }
-            GL30.glBindVertexArray(vao);
+            PartRenderer.glBindVertexArray(vao);
         }
         else {
             bind(); // Binds the buffers and pointers

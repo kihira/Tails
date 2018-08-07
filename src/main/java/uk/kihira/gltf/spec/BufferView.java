@@ -1,6 +1,6 @@
 package uk.kihira.gltf.spec;
 
-import org.lwjgl.opengl.GL15;
+import net.minecraft.client.renderer.OpenGlHelper;
 import uk.kihira.tails.common.IDisposable;
 
 import java.nio.ByteBuffer;
@@ -28,7 +28,7 @@ public class BufferView implements IDisposable {
      *
      * Values: 34962 (ARRAY_BUFFER), 34963 (ELEMENT_ARRAY_BUFFER)
      */
-    public Integer target = GL15.GL_ARRAY_BUFFER;
+    public Integer target = OpenGlHelper.GL_ARRAY_BUFFER;
 
     /**
      * NON SPEC
@@ -43,12 +43,12 @@ public class BufferView implements IDisposable {
 
     public void bind() {
         if (vbo == -1) {
-            vbo = GL15.glGenBuffers();
-            GL15.glBindBuffer(target, vbo);
-            GL15.glBufferData(target, data, GL15.GL_STATIC_DRAW);
+            vbo = OpenGlHelper.glGenBuffers();
+            OpenGlHelper.glBindBuffer(target, vbo);
+            OpenGlHelper.glBufferData(target, data, OpenGlHelper.GL_STATIC_DRAW);
         }
         else {
-            GL15.glBindBuffer(target, vbo);
+            OpenGlHelper.glBindBuffer(target, vbo);
         }
     }
 
@@ -59,7 +59,7 @@ public class BufferView implements IDisposable {
     @Override
 	public void dispose() {
         if (vbo != -1) {
-            GL15.glDeleteBuffers(vbo);
+            OpenGlHelper.glDeleteBuffers(vbo);
             vbo = -1;
         }
 	}

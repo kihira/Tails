@@ -148,8 +148,8 @@ public class GltfLoader {
             geometry.setBuffer(attribute.getKey(), buffer);
         }
 
-        if (primitive.indicies != null) {
-            Accessor accessor = GltfLoader.accessors.get(primitive.indicies);
+        if (primitive.indices != null) {
+            Accessor accessor = GltfLoader.accessors.get(primitive.indices);
             BufferView bufferView = bufferViews.get(accessor.bufferView);
             VertexBuffer buffer = new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count);
             geometry.setIndicies(buffer);

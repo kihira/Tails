@@ -4,9 +4,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL30;
 import uk.kihira.gltf.Model;
-import uk.kihira.tails.common.Tails;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -58,15 +58,20 @@ public class PartRenderer {
         GL11.glLoadMatrix(modelViewMatrixWorld);
         OpenGlHelper.glUseProgram(0);
 
-        checkError();
+        glBindVertexArray(0);
+        OpenGlHelper.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        OpenGlHelper.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    public static void checkError() {
-        int i = GlStateManager.glGetError();
-        if (i != 0) {
-            String s = GLU.gluErrorString(i);
-            Tails.logger.error("########## GL ERROR ##########");
-            Tails.logger.error("{}: {}", i, s);
+    /*
+    Caching for vertex array binding
+     */
+    private static int vertexArray = 0;
+
+    public static void glBindVertexArray(int vao) {
+        if (vao != vertexArray) {
+            GL30.glBindVertexArray(vao);
+            vertexArray = vao;
         }
     }
 }

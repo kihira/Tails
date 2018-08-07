@@ -31,7 +31,7 @@ public class MeshPrimitive {
      * </p>
      */
     @Nullable
-    public Integer indicies;
+    public Integer indices;
 
     /**
      * The index of the material to apply to this primitive when rendering.
@@ -51,8 +51,8 @@ public class MeshPrimitive {
     public enum Attribute {
         POSITION(0),
         NORMAL(1),
-        TANGENT(2),
-        TEXCOORD_0(3),
+        TEXCOORD_0(2),
+        TANGENT(3),
         COLOR_0(4);
 
         public final int index;

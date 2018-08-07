@@ -15,8 +15,6 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static uk.kihira.tails.client.PartRenderer.checkError;
-
 @ParametersAreNonnullByDefault
 public class Shader {
     private int program;
@@ -53,37 +51,39 @@ public class Shader {
         // Create the shaders and compile
         int vert, frag;
 
-        vert = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
-        GL20.glShaderSource(vert, vertSrc);
-        GL20.glCompileShader(vert);
+        vert = OpenGlHelper.glCreateShader(OpenGlHelper.GL_VERTEX_SHADER);
+        OpenGlHelper.glShaderSource(vert, vertSrc);
+        OpenGlHelper.glCompileShader(vert);
         checkShaderCompile(vert);
 
-        frag = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
-        GL20.glShaderSource(frag, fragSrc);
-        GL20.glCompileShader(frag);
+        frag = OpenGlHelper.glCreateShader(OpenGlHelper.GL_FRAGMENT_SHADER);
+        OpenGlHelper.glShaderSource(frag, fragSrc);
+        OpenGlHelper.glCompileShader(frag);
         checkShaderCompile(frag);
 
-        // Create program and link shaders
-        program = GL20.glCreateProgram();
-        GL20.glAttachShader(program, vert);
-        GL20.glAttachShader(program, frag);
-        GL20.glLinkProgram(program);
+        program = OpenGlHelper.glCreateProgram();
+        // bind attrib locations
+        GL20.glBindAttribLocation(program, 0, "pos");
+        GL20.glBindAttribLocation(program, 1, "normal");
+        GL20.glBindAttribLocation(program, 2, "uv");
+        // Attach shaders and links
+        OpenGlHelper.glAttachShader(program, vert);
+        OpenGlHelper.glAttachShader(program, frag);
+        OpenGlHelper.glLinkProgram(program);
 
-        int err = GL20.glGetProgrami(program, GL20.GL_LINK_STATUS);
+        int err = OpenGlHelper.glGetProgrami(program, GL20.GL_LINK_STATUS);
         if (err != GL11.GL_TRUE) {
-            String msg = GL20.glGetProgramInfoLog(program, 1024);
+            String msg = OpenGlHelper.glGetProgramInfoLog(program, 1024);
             Tails.logger.error("Failed to link program: " + msg);
         }
 
         // Cleanup shaders
-        GL20.glDeleteShader(vert);
-        GL20.glDeleteShader(frag);
+        OpenGlHelper.glDeleteShader(vert);
+        OpenGlHelper.glDeleteShader(frag);
     }
 
     public void use() {
-        checkError();
         OpenGlHelper.glUseProgram(program);
-        checkError();
     }
 
     /**
@@ -111,9 +111,9 @@ public class Shader {
      * @param shader The shader ID
      */
     private void checkShaderCompile(int shader) {
-        int err = GL20.glGetShaderi(shader, GL20.GL_COMPILE_STATUS);
+        int err = OpenGlHelper.glGetShaderi(shader, OpenGlHelper.GL_COMPILE_STATUS);
         if (err != GL11.GL_TRUE) {
-            String msg = GL20.glGetShaderInfoLog(shader, 1024);
+            String msg = OpenGlHelper.glGetShaderInfoLog(shader, 1024);
             Tails.logger.error("Failed to compile shader: " + msg);
         }
     }
