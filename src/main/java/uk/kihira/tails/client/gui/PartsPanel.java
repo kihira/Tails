@@ -120,7 +120,9 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     private void renderPart(int x, int y, int z, int scale, OutfitPart part) {
-        Model model = PartRegistry.getModel(part.basePart);
+        Part basePart = part.getPart();
+        if (basePart == null) return; // todo spinny circle
+        Model model = basePart.getModel();
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);

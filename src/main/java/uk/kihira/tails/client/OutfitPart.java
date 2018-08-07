@@ -6,6 +6,7 @@ import uk.kihira.tails.client.texture.TextureHelper;
 import uk.kihira.tails.common.IDisposable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
 
@@ -24,6 +25,7 @@ public class OutfitPart implements IDisposable {
 
     // Client only fields
     private transient ResourceLocation compiledTexture;
+    private transient Part part;
 
     public OutfitPart(UUID basePart) {
             this.basePart = basePart;
@@ -50,6 +52,18 @@ public class OutfitPart implements IDisposable {
     public void setCompiledTexture(ResourceLocation texture) {
         dispose();
         compiledTexture = texture;
+    }
+
+    /**
+     * Gets the {@link Part} that has the ID for {@link #basePart}
+     * @return The part
+     */
+    @Nullable
+    public Part getPart() {
+        if (part == null) {
+            part = PartRegistry.getPart(basePart);
+        }
+        return part;
     }
 
     public void dispose() {

@@ -38,6 +38,7 @@ public final class Node {
         this.isStatic = true;
         this.matrix.load(FloatBuffer.wrap(matrix));
         this.matrix.store(fb);
+        fb.rewind();
     }
 
     public Node(@Nullable ArrayList<Node> children, float[] translation, float[] rotation, float[] scale) {
@@ -55,6 +56,7 @@ public final class Node {
             Matrix4f.mul(matrix, rotate(rotation), matrix);
             matrix.scale(scale);
             matrix.store(fb);
+            fb.rewind();
         }
 
         GlStateManager.pushMatrix();

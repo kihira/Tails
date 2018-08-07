@@ -40,16 +40,18 @@ public class PartRenderer {
      * Renders the entire queue of parts
      */
     public void doRender() {
-        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
+        GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
         shader.use();
 
         for (HashMap.Entry<OutfitPart, FloatBuffer> entry : renders.entrySet()) {
-            Model model = PartRegistry.getModel(entry.getKey().basePart);
+            Part part = entry.getKey().getPart();
+            if (part == null) continue;
+            Model model = part.getModel();
+            if (model == null) continue;
+
             // todo load texture
             GL11.glLoadMatrix(entry.getValue());
-            if (model != null) {
-                model.render();
-            }
+            model.render();
         }
         renders.clear();
 

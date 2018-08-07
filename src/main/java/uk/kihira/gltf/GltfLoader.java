@@ -1,6 +1,7 @@
 package uk.kihira.gltf;
 
 import com.google.gson.*;
+import org.lwjgl.BufferUtils;
 import uk.kihira.gltf.spec.Accessor;
 import uk.kihira.gltf.spec.BufferView;
 import uk.kihira.gltf.spec.MeshPrimitive;
@@ -57,7 +58,9 @@ public class GltfLoader {
         if (chunkType != BIN_CHUNK) {
             throw new IOException("Expected BIN data but didn't get it");
         }
-        ByteBuffer binData = ByteBuffer.wrap(data);
+        ByteBuffer binData = BufferUtils.createByteBuffer(data.length);
+        binData.put(data);
+        binData.rewind();
 
         // Get scene
         if (!root.has("scenes")) {
