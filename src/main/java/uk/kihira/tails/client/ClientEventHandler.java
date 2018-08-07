@@ -22,7 +22,7 @@ public class ClientEventHandler {
     private boolean clearAllPartInfo = false;
 
     /*
-        *** Tails Editor Button ***
+     *** Tails Editor Button ***
      */
     @SubscribeEvent
     public void onScreenInitPost(GuiScreenEvent.InitGuiEvent.Post event) {
@@ -42,7 +42,7 @@ public class ClientEventHandler {
     }
 
     /*
-        *** Tails syncing ***
+     *** Tails syncing ***
      */
     @SubscribeEvent
     public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
@@ -78,6 +78,6 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
-        ((ClientProxy)Tails.proxy).partRenderer.doRender();
+        ((ClientProxy) Tails.proxy).partRenderer.doRender();
     }
 }

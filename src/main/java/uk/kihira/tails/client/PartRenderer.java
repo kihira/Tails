@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 import uk.kihira.gltf.Model;
 
@@ -30,7 +29,6 @@ public class PartRenderer {
      * Queues up a part to be rendered
      */
     public void render(OutfitPart part) {
-
         FloatBuffer fb = BufferUtils.createFloatBuffer(16);
         GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, fb);
         renders.put(part, fb);
@@ -40,6 +38,8 @@ public class PartRenderer {
      * Renders the entire queue of parts
      */
     public void doRender() {
+        if (renders.size() == 0) return;
+
         GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
         shader.use();
 
@@ -55,12 +55,11 @@ public class PartRenderer {
         }
         renders.clear();
 
-        GL11.glLoadMatrix(modelViewMatrixWorld);
+        // Unbind everything
         OpenGlHelper.glUseProgram(0);
-
         glBindVertexArray(0);
-        OpenGlHelper.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-        OpenGlHelper.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        GL11.glLoadMatrix(modelViewMatrixWorld);
     }
 
     /*
