@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL30;
 import uk.kihira.gltf.Model;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 
@@ -26,10 +27,12 @@ public class PartRenderer {
         renders = new HashMap<>(16);
         modelViewMatrixWorld = BufferUtils.createFloatBuffer(16);
         shader = new Shader("threetint_vert", "threetint_frag");
+        shader.registerUniform("tints");
     }
 
     /**
      * Gets a {@link FloatBuffer} from the pool. If there is none left, creates a new one
+     *
      * @return
      */
     private FloatBuffer getFloatBuffer() {
@@ -60,14 +63,23 @@ public class PartRenderer {
     public void doRender() {
         if (renders.size() == 0) return;
 
+        IntBuffer tintBuffer = BufferUtils.createIntBuffer(9);
         GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
         shader.use();
 
         for (HashMap.Entry<OutfitPart, FloatBuffer> entry : renders.entrySet()) {
-            Part part = entry.getKey().getPart();
-            if (part == null) continue;
-            Model model = part.getModel();
+            OutfitPart outfitPart = entry.getKey();
+            Part basePart = outfitPart.getPart();
+            if (basePart == null) continue;
+            Model model = basePart.getModel();
             if (model == null) continue;
+
+            // Set tint colors
+            tintBuffer.put(outfitPart.tint[0]);
+            tintBuffer.put(outfitPart.tint[1]);
+            tintBuffer.put(outfitPart.tint[2]);
+            tintBuffer.flip();
+            OpenGlHelper.glUniform3(shader.getUniform("tints"), tintBuffer);
 
             // todo load texture
             GL11.glLoadMatrix(entry.getValue());

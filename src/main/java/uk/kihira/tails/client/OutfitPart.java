@@ -20,7 +20,7 @@ public class OutfitPart implements IDisposable {
     public float[] mountOffset;
     public float[] rotation;
     public float[] scale;
-    public int[] tint;
+    public int[][] tint;
     public UUID texture;
 
     // Client only fields

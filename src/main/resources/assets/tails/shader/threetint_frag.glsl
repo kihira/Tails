@@ -3,7 +3,7 @@
 in vec2 TexCoord;
 
 uniform sampler2D tex;
-uniform vec3[3] tints;
+uniform vec3[3] tints; // todo encode rgb into one int value again to save memory?
 
 void main() {
   vec4 texCol = texture(tex, TexCoord);

@@ -7,14 +7,12 @@ import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector3f;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 /**
  * NodeImpl can just directly refer to geometries as we don't need to store weights
  */
-@ParametersAreNonnullByDefault
 public final class Node {
     private final Matrix4f matrix;
     private final FloatBuffer fb;
@@ -33,7 +31,7 @@ public final class Node {
         this.children = children;
     }
 
-    public Node(@Nullable ArrayList<Node> children, float[] matrix) {
+    Node(@Nullable ArrayList<Node> children, float[] matrix) {
         this(children);
         this.isStatic = true;
         this.matrix.load(FloatBuffer.wrap(matrix));
@@ -41,7 +39,7 @@ public final class Node {
         fb.rewind();
     }
 
-    public Node(@Nullable ArrayList<Node> children, float[] translation, float[] rotation, float[] scale) {
+    Node(@Nullable ArrayList<Node> children, float[] translation, float[] rotation, float[] scale) {
         this(children);
         this.translation = new Vector3f(translation[0], translation[1], translation[2]);
         this.rotation = new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);

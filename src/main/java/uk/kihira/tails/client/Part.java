@@ -21,12 +21,12 @@ public class Part {
     public final float[] mountOffset;
     public final float[] rotation;
     public final float[] scale;
-    public final int[] tint;
+    public final int[][] tint;
     public final UUID[] textures;
 
     private transient Model model;
 
-    public Part(UUID id, String name, String author, MountPoint mountPoint, float[] defaultMountOffset, float[] defaultRotation, float[] defaultScale, int[] defaultTints, UUID[] textures) {
+    public Part(UUID id, String name, String author, MountPoint mountPoint, float[] defaultMountOffset, float[] defaultRotation, float[] defaultScale, int[][] defaultTints, UUID[] textures) {
         this.id = id;
         this.mountPoint = mountPoint;
         this.mountOffset = defaultMountOffset;
@@ -36,18 +36,6 @@ public class Part {
         this.author = author;
         this.name = name;
         this.textures = textures;
-    }
-
-    public Part(UUID id, String name, String author, MountPoint mountPoint, float[] defaultMountOffset, float[] defaultRotation, int[] defaultTints, UUID[] textures) {
-        this(id, name, author, mountPoint, defaultMountOffset, defaultRotation, new float[]{1.f, 1.f, 1.f}, defaultTints, textures);
-    }
-
-    public Part(UUID id, String name, String author, MountPoint mountPoint, float[] defaultMountOffset, int[] defaultTints, UUID[] textures) {
-        this(id, name, author, mountPoint, defaultMountOffset, new float[]{0.f, 0.f, 0.f}, new float[]{1.f, 1.f, 1.f}, defaultTints, textures);
-    }
-
-    public Part(UUID id, String name, String author, MountPoint mountPoint, int[] defaultTints, UUID[] textures) {
-        this(id, name, author, mountPoint, new float[]{0.f, 0.f, 0.f}, new float[]{0.f, 0.f, 0.f}, new float[]{1.f, 1.f, 1.f}, defaultTints, textures);
     }
 
     /**

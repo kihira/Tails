@@ -39,7 +39,7 @@ public class PartRegistry {
     private static final String PARTS_CACHE_FOLDER = "tails/cache/part";
 
     static {
-        loadPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19"));
+        loadPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19")); // Test model
     }
 
     public static void LoadCache() throws IOException {
@@ -74,7 +74,7 @@ public class PartRegistry {
             InputStreamReader reader = new InputStreamReader(is);
             addPart(Tails.gson.fromJson(reader, Part.class));
         } catch (IOException e) {
-            Tails.logger.error("Failed to load part " + uuid, e);
+            Tails.logger.error("Failed to load part: " + uuid, e);
         }
     }
 
@@ -109,7 +109,7 @@ public class PartRegistry {
                 try (FileReader reader = new FileReader(path.toFile())) {
                     parts.put(uuid, Tails.gson.fromJson(reader, Part.class));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Tails.logger.error("Failed to load part: " + uuid, e);
                 } finally {
                     partsInProgress.remove(uuid);
                 }
@@ -161,7 +161,7 @@ public class PartRegistry {
                 try {
                     models.put(uuid, GltfLoader.LoadGlbFile(path.toFile()));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Tails.logger.error("Failed to load model: " + uuid, e);
                 } finally {
                     modelsInProgress.remove(uuid);
                 }
