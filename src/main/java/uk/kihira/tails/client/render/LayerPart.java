@@ -8,10 +8,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import uk.kihira.gltf.Model;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.OutfitPart;
-import uk.kihira.tails.client.PartRegistry;
+import uk.kihira.tails.client.PartRenderer;
 import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
 
@@ -24,11 +23,13 @@ import java.util.UUID;
 public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
 
     private final ModelRenderer modelRenderer;
+    private final PartRenderer partRenderer;
     private final MountPoint mountPoint;
     private final boolean mpmCompat;
 
-    public LayerPart(ModelRenderer modelRenderer, MountPoint mountPoint) {
+    public LayerPart(ModelRenderer modelRenderer, PartRenderer partRenderer, MountPoint mountPoint) {
         this.modelRenderer = modelRenderer;
+        this.partRenderer = partRenderer;
         this.mountPoint = mountPoint;
         this.mpmCompat = Loader.isModLoaded("moreplayermodels");
     }
@@ -54,10 +55,7 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
                     }
 
                     modelRenderer.postRender(0.0625F);
-                    Model model = PartRegistry.getModel(part.basePart);
-                    if (model != null) {
-                        model.render();
-                    }
+                    partRenderer.render(part);
                     GlStateManager.popMatrix();
                 }
             }

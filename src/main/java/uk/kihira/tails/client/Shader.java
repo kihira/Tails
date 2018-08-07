@@ -15,6 +15,8 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static uk.kihira.tails.client.PartRenderer.checkError;
+
 @ParametersAreNonnullByDefault
 public class Shader {
     private int program;
@@ -33,6 +35,7 @@ public class Shader {
             byte[] bytes = IOUtils.toByteArray(is);
             vertSrc = ByteBuffer.allocateDirect(bytes.length);
             vertSrc.put(bytes);
+            vertSrc.position(0);
         } catch (IOException e) {
             Tails.logger.error("Failed to load vertex shader " + vertShader, e);
             return;
@@ -41,6 +44,7 @@ public class Shader {
             byte[] bytes = IOUtils.toByteArray(is);
             fragSrc = ByteBuffer.allocateDirect(bytes.length);
             fragSrc.put(bytes);
+            fragSrc.position(0);
         } catch (IOException e) {
             Tails.logger.error("Failed to load fragment shader " + vertShader, e);
             return;
@@ -65,13 +69,21 @@ public class Shader {
         GL20.glAttachShader(program, frag);
         GL20.glLinkProgram(program);
 
+        int err = GL20.glGetProgrami(program, GL20.GL_LINK_STATUS);
+        if (err != GL11.GL_TRUE) {
+            String msg = GL20.glGetProgramInfoLog(program, 1024);
+            Tails.logger.error("Failed to link program: " + msg);
+        }
+
         // Cleanup shaders
         GL20.glDeleteShader(vert);
         GL20.glDeleteShader(frag);
     }
 
     public void use() {
+        checkError();
         OpenGlHelper.glUseProgram(program);
+        checkError();
     }
 
     /**

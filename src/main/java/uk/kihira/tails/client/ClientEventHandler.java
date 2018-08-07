@@ -1,30 +1,21 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client;
 
-import uk.kihira.tails.client.gui.GuiEditor;
-import uk.kihira.tails.client.texture.TextureHelper;
-import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.common.network.PlayerDataMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import uk.kihira.tails.client.gui.GuiEditor;
+import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.common.network.PlayerDataMessage;
+import uk.kihira.tails.proxy.ClientProxy;
 
-@SuppressWarnings("UnusedParameters")
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler {
     private boolean sentPartInfoToServer = false;
@@ -34,7 +25,6 @@ public class ClientEventHandler {
         *** Tails Editor Button ***
      */
     @SubscribeEvent
-    @SuppressWarnings("unchecked")
     public void onScreenInitPost(GuiScreenEvent.InitGuiEvent.Post event) {
         if (event.getGui() instanceof GuiIngameMenu) {
             event.getButtonList().add(new GuiButton(1234, (event.getGui().width / 2) - 35, event.getGui().height - 25, 70, 20, I18n.format("gui.button.editor")));
@@ -84,5 +74,10 @@ public class ClientEventHandler {
                 sentPartInfoToServer = true;
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onRenderWorldLast(RenderWorldLastEvent event) {
+        ((ClientProxy)Tails.proxy).partRenderer.doRender();
     }
 }
