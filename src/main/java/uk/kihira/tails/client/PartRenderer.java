@@ -74,7 +74,7 @@ public class PartRenderer {
             Model model = basePart.getModel();
             if (model == null) continue;
 
-            // Set tint colors TODO: Should probably encode each tint into one int again
+            // Set tint colors
             tintBuffer.put(outfitPart.tint[0]);
             tintBuffer.put(outfitPart.tint[1]);
             tintBuffer.put(outfitPart.tint[2]);
