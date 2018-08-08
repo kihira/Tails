@@ -13,7 +13,7 @@ public class GuiEditor extends GuiBase {
     static final int TEXT_COLOUR = 0xFFFFFF;
 
     @Nullable
-    public Outfit originalOutfit; // The outfit from before the GUI was opened. Is updated when player saves new outfit
+    private Outfit originalOutfit; // The outfit from before the GUI was opened. Is updated when player saves new outfit
     private Outfit outfit;
     @Nullable
     private OutfitPart currentOutfitPart;
@@ -21,6 +21,7 @@ public class GuiEditor extends GuiBase {
 
     TintPanel tintPanel;
     PartsPanel partsPanel;
+    PartsEditorPanel partsEditorPanel;
     private PreviewPanel previewPanel;
     private ControlsPanel controlsPanel;
     public LibraryPanel libraryPanel;
@@ -56,7 +57,8 @@ public class GuiEditor extends GuiBase {
             getLayer(0).add(previewPanel = new PreviewPanel(this, previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom));
             getLayer(1).add(partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - texSelectHeight));
             getLayer(1).add(libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height));
-            getLayer(1).add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
+            getLayer(1).add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, 100));
+            getLayer(1).add(partsEditorPanel = new PartsEditorPanel(this, previewWindowRight, 100, width - previewWindowRight, height - 100));
             getLayer(1).add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 60));
             getLayer(1).add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
 
