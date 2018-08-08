@@ -22,7 +22,6 @@ class PreviewPanel extends Panel<GuiEditor> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void initGui() {
         doRender = Minecraft.getMinecraft().gameSettings.thirdPersonView == 0;
         if (!doRender)

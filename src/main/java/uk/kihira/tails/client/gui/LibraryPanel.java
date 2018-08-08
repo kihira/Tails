@@ -25,7 +25,6 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void initGui() {
         initList();
 

@@ -10,13 +10,11 @@ import uk.kihira.tails.common.network.PlayerDataMessage;
 
 public class ControlsPanel extends Panel<GuiEditor> {
 
-    @SuppressWarnings("unchecked")
-    public ControlsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
+    ControlsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void initGui() {
         //Mode Switch
         buttonList.add(new GuiButton(0, 3, height - 25, 46, 20, I18n.format("gui.button.mode.library")));

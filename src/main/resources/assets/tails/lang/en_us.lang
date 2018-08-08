@@ -123,7 +123,7 @@ gui.tint=Tint %s
 gui.tint.edit=Editing Tint %s
 gui.hex=Hex
 gui.texture=Texture Select
-gui.createdby=Created by
+gui.author=Author:
 gui.partselect=Part Select
 
 tails.export.success=Successfully saved skin to %s

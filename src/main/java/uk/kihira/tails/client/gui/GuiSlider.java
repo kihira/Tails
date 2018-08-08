@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014 Zoe Lee (Kihira)
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
@@ -14,9 +6,9 @@ import net.minecraft.util.math.MathHelper;
 
 public class GuiSlider extends GuiButton implements IControl<Float> {
 
-    public float currentValue;
     private final float minValue;
     private final float maxValue;
+    private float currentValue;
     private float sliderValue;
     private boolean dragging = false;
     private IControlCallback<GuiSlider, Float> parent;

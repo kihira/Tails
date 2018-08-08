@@ -31,7 +31,6 @@ public class TailsGuiFactory implements IModGuiFactory {
 
     public static class TailsConfigGUI extends GuiConfig {
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
         public TailsConfigGUI(GuiScreen parentScreen) {
             super(parentScreen, new ConfigElement(Tails.configuration.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(),
                     Tails.MOD_ID, false, false, GuiConfig.getAbridgedConfigPath(Tails.configuration.toString()));

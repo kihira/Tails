@@ -13,10 +13,12 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public class GuiHSBSlider extends GuiSlider implements ITooltip {
 
     private static final ResourceLocation sliderTexture = new ResourceLocation(Tails.MOD_ID, "texture/gui/controls/slider_hue.png");

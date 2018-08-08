@@ -1,23 +1,21 @@
 package uk.kihira.tails.client.gui;
 
-import net.minecraft.client.renderer.GlStateManager;
-import uk.kihira.tails.client.toast.ToastManager;
-import uk.kihira.tails.common.LibraryEntryData;
-import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.common.network.LibraryEntriesMessage;
-import uk.kihira.tails.common.network.LibraryRequestMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
+import uk.kihira.tails.client.toast.ToastManager;
+import uk.kihira.tails.common.LibraryEntryData;
+import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.common.network.LibraryRequestMessage;
 
-
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 public class LibraryInfoPanel extends Panel<GuiEditor> {
 
@@ -32,14 +30,12 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void initGui() {
         textField = new GuiTextField(-1, fontRenderer, 6, 6, width - 12, 15);
         textField.setMaxStringLength(16);
 
         buttonList.add(favButton = new GuiIconButton.GuiIconToggleButton(0, 5, height - 20, GuiIconButton.Icons.STAR, I18n.format("gui.button.favourite")));
         buttonList.add(new GuiIconButton(1, 21, height - 20, GuiIconButton.Icons.DELETE, I18n.format("gui.button.delete")));
-        buttonList.add(new GuiIconButton(2, 36, height - 20, GuiIconButton.Icons.UPLOAD, I18n.format("gui.button.upload")));
         buttonList.add(new GuiIconButton(3, 53, height - 20, GuiIconButton.Icons.DOWNLOAD, I18n.format("gui.button.savelocal")));
         buttonList.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, I18n.format("gui.button.share")));
         super.initGui();
@@ -96,11 +92,6 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             parent.libraryPanel.removeEntry(entry);
             setEntry(null);
         }
-        //Upload
-        else if (button.id == 2) {
-            Tails.networkWrapper.sendToServer(new LibraryEntriesMessage(new ArrayList<LibraryEntryData>() {{ add(entry.data); }}, false));
-            button.enabled = false;
-        }
         //Download/save locally
         else if (button.id == 3) {
             entry.data.remoteEntry = false;
@@ -143,7 +134,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         super.onGuiClosed();
     }
 
-    public void setEntry(LibraryListEntry entry) {
+    public void setEntry(@Nullable LibraryListEntry entry) {
         this.entry = entry;
         if (entry == null) {
             textField.setVisible(false);

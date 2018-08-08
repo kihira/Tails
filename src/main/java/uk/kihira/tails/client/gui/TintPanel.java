@@ -272,7 +272,6 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         return true;
     }
 
-    @ParametersAreNonnullByDefault
     private class TintButton extends GuiButton {
         private static final int BTN_SIZE = 20;
         private static final int HIGHLIGHT = 0xFFCCC23D;

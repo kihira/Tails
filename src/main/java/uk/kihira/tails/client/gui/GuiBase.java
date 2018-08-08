@@ -12,13 +12,13 @@ public abstract class GuiBase extends GuiBaseScreen {
     //0 is bottom layer
     private final ArrayList<ArrayList<Panel>> layers = new ArrayList<>();
 
-    public GuiBase(int layerCount) {
+    GuiBase(int layerCount) {
         for (int i = 0; i < layerCount; i++) {
             layers.add(new ArrayList<>());
         }
     }
 
-    public ArrayList<Panel> getLayer(int layer) {
+    ArrayList<Panel> getLayer(int layer) {
         return layers.get(layer);
     }
 

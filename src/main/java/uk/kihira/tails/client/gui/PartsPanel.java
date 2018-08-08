@@ -26,22 +26,19 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     private GuiButton mountPointButton;
     private MountPoint mountPoint; // todo temporary until UI rework. Tabs with search?
 
-    private final FakeEntity fakeEntity;
     private final int listTop = 35;
 
     PartsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);
         alwaysReceiveMouse = true;
         mountPoint = MountPoint.CHEST;
-
-        fakeEntity = new FakeEntity(Minecraft.getMinecraft().world);
     }
 
     @Override
     public void initGui() {
         initPartList();
 
-        buttonList.add(mountPointButton = new GuiButtonExt(0, width/2 - 25, 16, 50, 16, mountPoint.name()));
+        buttonList.add(mountPointButton = new GuiButtonExt(0, width / 2 - 25, 16, 50, 16, mountPoint.name()));
     }
 
     @Override
@@ -51,7 +48,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         drawGradientRect(0, listTop, width, height, 0xCC000000, 0xCC000000);
         zLevel = 0;
         GlStateManager.color(1, 1, 1, 1);
-        drawCenteredString(fontRenderer, I18n.format("gui.partselect"), width/2, 5, 0xFFFFFF);
+        drawCenteredString(fontRenderer, I18n.format("gui.partselect"), width / 2, 5, 0xFFFFFF);
         //Tails list
         partList.drawScreen(mouseX, mouseY, p_73863_3_);
 
@@ -63,8 +60,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         if (button.id == mountPointButton.id) {
             if (mountPoint.ordinal() + 1 >= MountPoint.values().length) {
                 mountPoint = MountPoint.values()[0];
-            }
-            else {
+            } else {
                 mountPoint = MountPoint.values()[mountPoint.ordinal() + 1];
             }
 
@@ -156,31 +152,30 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
             ClientUtils.drawStringMultiLine(fontRenderer, part.name, 5, y + 17, 0xFFFFFF);
 
             if (currentPart) {
-                if (part.author != null) {
-                    //Yeah its not nice but eh, works
-                    GlStateManager.pushMatrix();
-                    GlStateManager.translate(5, y + 27, 0);
-                    GlStateManager.scale(0.6F, 0.6F, 1F);
-                    //zLevel = 100;
-                    fontRenderer.drawString(I18n.format("gui.author") + ":", 0, 0, 0xFFFFFF);
-                    GlStateManager.translate(0, 10, 0);
-                    fontRenderer.drawString(TextFormatting.AQUA + part.author, 0, 0, 0xFFFFFF);
-                    GlStateManager.popMatrix();
-                    //zLevel = 0;
-                }
+                //Yeah its not nice but eh, works
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(5, y + 27, 0);
+                GlStateManager.scale(0.6F, 0.6F, 1F);
+                //zLevel = 100;
+                fontRenderer.drawString(I18n.format("gui.author"), 0, 0, 0xFFFFFF);
+                GlStateManager.translate(0, 10, 0);
+                fontRenderer.drawString(TextFormatting.AQUA + part.author, 0, 0, 0xFFFFFF);
+                GlStateManager.popMatrix();
+                //zLevel = 0;
                 // Draw "add" button
-                GuiUtils.drawGradientRect(0, x+addX, y+addY, x+addX+addWidth, y+addY+addHeight, addColour, addColour);
-                fontRenderer.drawString("+", x+addX+(addWidth/4), y+addY+(addHeight/4), 0xFFFFFF);
+                GuiUtils.drawGradientRect(0, x + addX, y + addY, x + addX + addWidth, y + addY + addHeight, addColour, addColour);
+                fontRenderer.drawString("+", x + addX + (addWidth / 4), y + addY + (addHeight / 4), 0xFFFFFF);
                 //GuiUtils.drawContinuousTexturedBox(new ResourceLocation("textures/gui/widgets.png"), x+addX, y+addY, 0, 66, addWidth, addHeight, 200, 20, 2, zLevel);
             }
         }
 
         @Override
-        public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {}
+        public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
+        }
 
         @Override
         public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
-            if (relativeX > addX && relativeX < addX+addWidth && relativeY > addY && relativeY < addY+addHeight) {
+            if (relativeX > addX && relativeX < addX + addWidth && relativeY > addY && relativeY < addY + addHeight) {
                 parent.addOutfitPart(new OutfitPart(part));
                 mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 return true;
@@ -189,6 +184,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         }
 
         @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {}
+        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
+        }
     }
 }

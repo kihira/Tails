@@ -7,10 +7,8 @@ import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
 
-@ParametersAreNonnullByDefault
 public class GuiEditor extends GuiBase {
     public static final int TEXT_COLOUR = 0xFFFFFF;
 
@@ -27,7 +25,6 @@ public class GuiEditor extends GuiBase {
     private ControlsPanel controlsPanel;
     public LibraryPanel libraryPanel;
     public LibraryInfoPanel libraryInfoPanel;
-    LibraryImportPanel libraryImportPanel;
 
     public GuiEditor() {
         super(4);
@@ -60,12 +57,10 @@ public class GuiEditor extends GuiBase {
             getLayer(1).add(partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - texSelectHeight));
             getLayer(1).add(libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height));
             getLayer(1).add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, height));
-            getLayer(1).add(libraryImportPanel = new LibraryImportPanel(this, previewWindowRight, height - 60, width - previewWindowRight, 60));
             getLayer(1).add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 60));
             getLayer(1).add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
 
             libraryInfoPanel.enabled = false;
-            libraryImportPanel.enabled = false;
             libraryPanel.enabled = false;
         }
         else {
@@ -74,7 +69,6 @@ public class GuiEditor extends GuiBase {
             partsPanel.resize(0, 0, previewWindowEdgeOffset, height - texSelectHeight);
             libraryPanel.resize(0, 0, previewWindowEdgeOffset, height);
             previewPanel.resize(previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
-            libraryImportPanel.resize(previewWindowRight, height - 60, width - previewWindowRight, 60);
             controlsPanel.resize(previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom);
         }
         super.initGui();
