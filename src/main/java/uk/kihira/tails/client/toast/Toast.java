@@ -1,11 +1,3 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2014
- *
- * See LICENSE for full License
- */
-
 package uk.kihira.tails.client.toast;
 
 import net.minecraft.client.Minecraft;
@@ -19,6 +11,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Arrays;
 import java.util.List;
 
+// todo use IToast and vanilla system?
 public class Toast {
 
     private final int xPos;

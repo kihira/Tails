@@ -18,6 +18,8 @@ import uk.kihira.tails.proxy.ClientProxy;
 
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler {
+    private static final int TAILS_BUTTON_ID = 1234;
+
     private boolean sentPartInfoToServer = false;
     private boolean clearAllPartInfo = false;
 
@@ -27,14 +29,14 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onScreenInitPost(GuiScreenEvent.InitGuiEvent.Post event) {
         if (event.getGui() instanceof GuiIngameMenu) {
-            event.getButtonList().add(new GuiButton(1234, (event.getGui().width / 2) - 35, event.getGui().height - 25, 70, 20, I18n.format("gui.button.editor")));
+            event.getButtonList().add(new GuiButton(TAILS_BUTTON_ID, (event.getGui().width / 2) - 35, event.getGui().height - 25, 70, 20, I18n.format("gui.button.editor")));
         }
     }
 
     @SubscribeEvent
     public void onButtonClickPre(GuiScreenEvent.ActionPerformedEvent.Pre event) {
         if (event.getGui() instanceof GuiIngameMenu) {
-            if (event.getButton().id == 1234) {
+            if (event.getButton().id == TAILS_BUTTON_ID) {
                 event.getGui().mc.displayGuiScreen(new GuiEditor());
                 event.setCanceled(true);
             }

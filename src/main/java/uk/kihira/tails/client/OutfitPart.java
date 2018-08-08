@@ -1,13 +1,11 @@
 package uk.kihira.tails.client;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
 
 /**
  * Represents a part that is in an outfit
  */
-@ParametersAreNonnullByDefault
 public class OutfitPart {
     public final UUID basePart;
     public MountPoint mountPoint;
