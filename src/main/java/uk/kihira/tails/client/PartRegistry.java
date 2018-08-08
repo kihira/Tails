@@ -42,7 +42,7 @@ public class PartRegistry {
         loadPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19")); // Test model
     }
 
-    public static void LoadCache() throws IOException {
+    public static void loadCache() throws IOException {
         Path cachePath = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), PARTS_CACHE_FOLDER);
         if (!Files.exists(cachePath)) {
             Files.createDirectories(cachePath);
@@ -56,25 +56,6 @@ public class PartRegistry {
                     e.printStackTrace();
                 }
             });
-        }
-    }
-
-    private static void addPart(Part part) {
-        parts.put(part.id, part);
-    }
-
-    /**
-     * Loads a part from the resources folder
-     *
-     * @param uuid Part ID
-     */
-    public static void loadPart(UUID uuid) {
-        ResourceLocation resLoc = new ResourceLocation(Tails.MOD_ID, "part/" + uuid + ".json");
-        try (InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream()) {
-            InputStreamReader reader = new InputStreamReader(is);
-            addPart(Tails.gson.fromJson(reader, Part.class));
-        } catch (IOException e) {
-            Tails.logger.error("Failed to load part: " + uuid, e);
         }
     }
 
@@ -170,5 +151,24 @@ public class PartRegistry {
             }
         });
         return null;
+    }
+
+    /**
+     * Loads a part from the resources folder. Then saves the
+     *
+     * @param uuid Part ID
+     */
+    private static void loadPart(UUID uuid) {
+        ResourceLocation resLoc = new ResourceLocation(Tails.MOD_ID, "part/" + uuid + ".json");
+        try (InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream()) {
+            InputStreamReader reader = new InputStreamReader(is);
+            addPart(Tails.gson.fromJson(reader, Part.class));
+        } catch (IOException e) {
+            Tails.logger.error("Failed to load part: " + uuid, e);
+        }
+    }
+
+    private static void addPart(Part part) {
+        parts.put(part.id, part);
     }
 }
