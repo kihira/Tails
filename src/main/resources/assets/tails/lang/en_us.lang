@@ -124,7 +124,7 @@ gui.tint.edit=Editing Tint %s
 gui.hex=Hex
 gui.texture=Texture Select
 gui.author=Author:
-gui.partselect=Part Select
+tails.gui.parts=Parts
 
 tails.export.success=Successfully saved skin to %s
 tails.upload.unavailable=This feature is not yet functional!

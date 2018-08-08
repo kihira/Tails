@@ -9,6 +9,9 @@ import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
 
 public class ControlsPanel extends Panel<GuiEditor> {
+    private static final int MODE_BUTTON_ID = 0;
+    private static final int RESET_BUTTON_ID = 1;
+    private static final int DONE_BUTTON_ID = 2;
 
     ControlsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
         super(parent, left, top, right, bottom);
@@ -17,10 +20,10 @@ public class ControlsPanel extends Panel<GuiEditor> {
     @Override
     public void initGui() {
         //Mode Switch
-        buttonList.add(new GuiButton(0, 3, height - 25, 46, 20, I18n.format("gui.button.mode.library")));
+        buttonList.add(new GuiButton(MODE_BUTTON_ID, 3, height - 25, 46, 20, I18n.format("gui.button.mode.library")));
         //Reset/Save
-        buttonList.add(new GuiButton(1, width/2 - 23, height - 25, 46, 20, I18n.format("gui.button.reset")));
-        buttonList.add(new GuiButton(2, width - 49, height - 25, 46, 20, I18n.format("gui.done")));
+        buttonList.add(new GuiButton(RESET_BUTTON_ID, width/2 - 23, height - 25, 46, 20, I18n.format("gui.button.reset")));
+        buttonList.add(new GuiButton(DONE_BUTTON_ID, width - 49, height - 25, 46, 20, I18n.format("gui.done")));
     }
 
     @Override
@@ -34,7 +37,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
     protected void actionPerformed(GuiButton button) {
         Outfit outfit = parent.getOutfit();
         // Mode Switch
-        if (button.id == 0) {
+        if (button.id == MODE_BUTTON_ID) {
             //TODO change parts data when switching? clear libraryinfo panel?
             boolean libraryMode = button.displayString.equals(I18n.format("gui.button.mode.library"));
             parent.partsPanel.enabled = !libraryMode;
@@ -42,7 +45,6 @@ public class ControlsPanel extends Panel<GuiEditor> {
 
             parent.libraryInfoPanel.enabled = libraryMode;
             parent.libraryPanel.enabled = libraryMode;
-            parent.libraryImportPanel.enabled = libraryMode;
 
             parent.partsPanel.selectDefaultListEntry();
             parent.libraryPanel.initList();
@@ -58,7 +60,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
             button.displayString = (libraryMode ? I18n.format("gui.button.mode.editor") : I18n.format("gui.button.mode.library"));
         }
         //Reset All
-        else if (button.id == 1) {
+        else if (button.id == RESET_BUTTON_ID) {
             parent.partsPanel.selectDefaultListEntry();
             parent.libraryPanel.initList();
             parent.libraryInfoPanel.setEntry(null);
@@ -67,7 +69,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
             parent.setActiveOutfitPart(null);
         }
         //Save All
-        else if (button.id == 2) {
+        else if (button.id == DONE_BUTTON_ID) {
             //Update part info, set local and send it to the server
             Tails.setLocalOutfit(outfit);
             Tails.proxy.setActiveOutfit(mc.player.getPersistentID(), outfit);

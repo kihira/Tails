@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class GuiEditor extends GuiBase {
-    public static final int TEXT_COLOUR = 0xFFFFFF;
+    static final int TEXT_COLOUR = 0xFFFFFF;
 
     @Nullable
     public Outfit originalOutfit; // The outfit from before the GUI was opened. Is updated when player saves new outfit
@@ -77,7 +77,6 @@ public class GuiEditor extends GuiBase {
     @Override
     public void onGuiClosed() {
         Tails.proxy.setActiveOutfit(playerUUID, Tails.localOutfit);
-        //setScale(guiScale);
         super.onGuiClosed();
     }
 

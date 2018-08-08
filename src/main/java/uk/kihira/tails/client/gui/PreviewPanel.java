@@ -10,6 +10,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 
 class PreviewPanel extends Panel<GuiEditor> {
+    private static final int RESET_BUTTON = 0;
+    private static final int HELP_BUTTON = 1;
 
     private float yaw = 0F;
     private float pitch = 10F;
@@ -27,10 +29,10 @@ class PreviewPanel extends Panel<GuiEditor> {
         if (!doRender)
             return;
         scaledRes = new ScaledResolution(this.mc);
-        //Reset Camera
-        buttonList.add(new GuiIconButton(0, width - 18, 22, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset.camera")));
-        //Help
-        buttonList.add(new GuiIconButton(1, width - 18, 4, GuiIconButton.Icons.QUESTION, I18n.format("gui.button.help.camera.0"), I18n.format("gui.button.help.camera.1")));
+        // Reset Camera
+        buttonList.add(new GuiIconButton(RESET_BUTTON, width - 18, 22, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset.camera")));
+        // Help
+        buttonList.add(new GuiIconButton(HELP_BUTTON, width - 18, 4, GuiIconButton.Icons.QUESTION, I18n.format("gui.button.help.camera.0"), I18n.format("gui.button.help.camera.1")));
     }
 
     @Override
@@ -38,18 +40,18 @@ class PreviewPanel extends Panel<GuiEditor> {
         if (!doRender)
             return;
         zLevel = -1000;
-        //Background
+        // Background
         drawGradientRect(0, 0, width, height, 0xEE000000, 0xEE000000);
 
-        //Player
+        // Player
         drawEntity((width / 2), (height / 2) + (scaledRes.getScaledHeight() / 4), scaledRes.getScaledHeight() / 4, yaw, pitch, mc.player);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        //Reset Camera
-        if (button.id == 1) {
+        // Reset Camera
+        if (button.id == RESET_BUTTON) {
             yaw = 0;
             pitch = 10F;
         }

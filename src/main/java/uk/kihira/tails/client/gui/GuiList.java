@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.Tessellator;
 import java.util.List;
 
 public class GuiList<T extends GuiListExtended.IGuiListEntry> extends GuiListExtended {
-
     private final IListCallback<T> parent;
     private final List<T> entries;
     private int currrentIndex;

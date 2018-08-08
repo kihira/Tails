@@ -35,7 +35,6 @@ public abstract class GuiBaseScreen extends GuiScreen {
         private final int maxTextWidth;
         protected final ArrayList<String> tooltip = new ArrayList<>();
 
-        @SuppressWarnings("unchecked")
         public GuiButtonTooltip(int id, int x, int y, int width, int height, String text, int maxTextWidth, String... tooltips) {
             super(id, x, y, width, height, text);
             this.maxTextWidth = maxTextWidth;
@@ -69,8 +68,7 @@ public abstract class GuiBaseScreen extends GuiScreen {
 
         @Override
         public void drawButtonForegroundLayer(int x, int y) {
-            ArrayList<String> list = new ArrayList<>();
-            list.addAll(this.tooltip);
+            ArrayList<String> list = new ArrayList<>(this.tooltip);
             list.add((!this.enabled ? TextFormatting.GREEN + TextFormatting.ITALIC.toString() + "Enabled" : TextFormatting.RED + TextFormatting.ITALIC.toString() + "Disabled"));
             drawHoveringText(list, x, y);
         }

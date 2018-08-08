@@ -5,7 +5,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.math.MathHelper;
 
 public class GuiSlider extends GuiButton implements IControl<Float> {
-
     private final float minValue;
     private final float maxValue;
     private float currentValue;

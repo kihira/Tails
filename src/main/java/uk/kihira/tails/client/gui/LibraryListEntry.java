@@ -25,7 +25,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
     @Override
     public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
         if (data.remoteEntry) {
-            Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.iconsTextures);
+            Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.ICONS_TEXTURES);
             GuiIconButton.Icons icon = GuiIconButton.Icons.SERVER;
             GlStateManager.pushMatrix();
             GlStateManager.translate(x + listWidth - 16, y + slotHeight - 12, 0F);
@@ -49,7 +49,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         fontRenderer.setUnicodeFlag(false);
 
         if (data.favourite) {
-            Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.iconsTextures);
+            Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.ICONS_TEXTURES);
             GuiIconButton.Icons icon = GuiIconButton.Icons.STAR;
             GlStateManager.pushMatrix();
             GlStateManager.translate(x + listWidth - 16, y, 0F);

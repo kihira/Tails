@@ -10,14 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GuiIconButton extends GuiButton implements ITooltip {
+    static final ResourceLocation ICONS_TEXTURES = new ResourceLocation("tails", "texture/gui/icons.png");
 
-    public static final ResourceLocation iconsTextures = new ResourceLocation("tails", "texture/gui/icons.png");
-
-    protected final Icons icon;
+    final Icons icon;
     private final List<String> tooltip;
 
-    public GuiIconButton(int id, int x, int y, Icons icon, String ... tooltips) {
-        super(id, x, y, 16 ,16, "");
+    public GuiIconButton(int id, int x, int y, Icons icon, String... tooltips) {
+        super(id, x, y, 16, 16, "");
         this.icon = icon;
         this.tooltip = Arrays.asList(tooltips);
     }
@@ -25,7 +24,7 @@ public class GuiIconButton extends GuiButton implements ITooltip {
     @Override
     public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partial) {
         if (visible) {
-            minecraft.getTextureManager().bindTexture(iconsTextures);
+            minecraft.getTextureManager().bindTexture(ICONS_TEXTURES);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
             OpenGlHelper.glBlendFunc(770, 771, 1, 0);
@@ -67,15 +66,14 @@ public class GuiIconButton extends GuiButton implements ITooltip {
         @Override
         public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partial) {
             if (visible && toggled) {
-                minecraft.getTextureManager().bindTexture(iconsTextures);
+                minecraft.getTextureManager().bindTexture(ICONS_TEXTURES);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 GlStateManager.enableBlend();
                 OpenGlHelper.glBlendFunc(770, 771, 1, 0);
                 //Check mouse over
                 hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
                 drawTexturedModalRect(x, y, icon.u, icon.v + 32, 16, 16);
-            }
-            else {
+            } else {
                 super.drawButton(minecraft, mouseX, mouseY, partial);
             }
         }

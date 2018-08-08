@@ -42,7 +42,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
         list.drawScreen(mouseX, mouseY, p_73863_3_);
 
         zLevel = 0;
-        Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.iconsTextures);
+        Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.ICONS_TEXTURES);
         GlStateManager.pushMatrix();
         GlStateManager.color(1, 1, 1, 1);
         GlStateManager.translate(width - 16, height - 32, 0);

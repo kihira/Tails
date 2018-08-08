@@ -151,7 +151,7 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
         this.briValue = value;
     }
     
-    void drawTexturedModalRectScaled (int x, int y, int u, int v, int srcWidth, int srcHeight, int tarWidth, int tarHeight) {
+    private void drawTexturedModalRectScaled(int x, int y, int u, int v, int srcWidth, int srcHeight, int tarWidth, int tarHeight) {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         BufferBuilder renderer = Tessellator.getInstance().getBuffer();

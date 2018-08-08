@@ -48,7 +48,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         drawGradientRect(0, listTop, width, height, 0xCC000000, 0xCC000000);
         zLevel = 0;
         GlStateManager.color(1, 1, 1, 1);
-        drawCenteredString(fontRenderer, I18n.format("gui.partselect"), width / 2, 5, 0xFFFFFF);
+        drawCenteredString(fontRenderer, I18n.format("tails.gui.parts"), width / 2, 5, 0xFFFFFF);
         //Tails list
         partList.drawScreen(mouseX, mouseY, p_73863_3_);
 
