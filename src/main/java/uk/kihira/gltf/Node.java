@@ -5,6 +5,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Quaternion;
 import org.lwjgl.util.vector.Vector3f;
+import uk.kihira.tails.common.IDisposable;
 
 import javax.annotation.Nullable;
 import java.nio.FloatBuffer;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 /**
  * NodeImpl can just directly refer to geometries as we don't need to store weights
  */
-public final class Node {
+public final class Node implements IDisposable {
     private final Matrix4f matrix;
     private final FloatBuffer fb;
     private boolean isStatic; // This is set to true if there is no animation (ie a matrix is present in the gltf file)
@@ -96,5 +97,10 @@ public final class Node {
 
     public void setMesh(Mesh mesh) {
         this.mesh = mesh;
+    }
+
+    @Override
+    public void dispose() {
+        mesh.dispose();
     }
 }

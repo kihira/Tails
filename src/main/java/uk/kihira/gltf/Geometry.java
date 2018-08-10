@@ -73,7 +73,7 @@ public final class Geometry implements IDisposable {
         buffers.put(key, vertexBuffer);
     }
 
-    public void setIndicies(@Nullable VertexBuffer vertexBuffer) {
+    public void setIndices(@Nullable VertexBuffer vertexBuffer) {
         dispose();
         indicesBuffer = vertexBuffer;
         if (indicesBuffer != null) {
@@ -84,9 +84,10 @@ public final class Geometry implements IDisposable {
 
     @Override
     public void dispose() {
-        if (GLContext.getCapabilities().OpenGL30 && vao != -1) {
+        if (vao != -1) {
             GL30.glDeleteVertexArrays(vao);
             vao = -1;
         }
+        buffers.values().forEach(VertexBuffer::dispose);
     }
 }

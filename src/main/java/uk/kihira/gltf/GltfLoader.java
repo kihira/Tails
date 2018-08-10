@@ -179,7 +179,7 @@ public class GltfLoader {
             Accessor accessor = GltfLoader.accessors.get(primitive.indices);
             BufferView bufferView = bufferViews.get(accessor.bufferView);
             VertexBuffer buffer = new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count);
-            geometry.setIndicies(buffer);
+            geometry.setIndices(buffer);
         }
 
         return geometry;
