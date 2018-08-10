@@ -31,7 +31,7 @@ public class GltfLoader {
     private static final ArrayList<Accessor> accessors = new ArrayList<>();
     private static final ArrayList<BufferView> bufferViews = new ArrayList<>();
     private static final TreeMap<Integer, Node> nodeCache = new TreeMap<>();
-    private static final TreeMap<Integer, Mesh> meshCache = new TreeMap<>();
+    private static final ArrayList<Mesh> meshCache = new ArrayList<>();
 
     public static Model LoadGlbFile(File file) throws IOException {
         DataInputStream stream = new DataInputStream(new FileInputStream(file));
@@ -82,7 +82,7 @@ public class GltfLoader {
         // Load buffer views
         for (JsonElement element : root.get("bufferViews").getAsJsonArray()) {
             BufferView bufferView = gson.fromJson(element, BufferView.class);
-            bufferView.setData((ByteBuffer) binData.slice().position(bufferView.byteOffset).limit(bufferView.byteOffset + bufferView.byteLength));
+            bufferView.setData(binData.slice().position(bufferView.byteOffset).limit(bufferView.byteOffset + bufferView.byteLength));
             bufferViews.add(bufferView);
         }
 
@@ -92,18 +92,16 @@ public class GltfLoader {
         }
 
         // Load meshes
-        JsonArray meshJsonArray = root.get("meshes").getAsJsonArray();
-        for (int i = 0; i < meshJsonArray.size(); i++) {
+        root.get("meshes").getAsJsonArray().forEach(meshJson -> {
             ArrayList<Geometry> geometries = new ArrayList<>();
-            for (JsonElement primitive : meshJsonArray.get(i).getAsJsonObject().get("primitives").getAsJsonArray()) {
-                geometries.add(LoadPrimitive(gson.fromJson(primitive, MeshPrimitive.class)));
-            }
-            meshCache.put(i, new Mesh(geometries));
-        }
+            meshJson.getAsJsonObject().get("primitives").getAsJsonArray().forEach(
+                    primitive -> geometries.add(LoadPrimitive(gson.fromJson(primitive, MeshPrimitive.class))));
+            meshCache.add(new Mesh(geometries));
+        });
 
         // Load textures
         ArrayList<ResourceLocation> textures = new ArrayList<>();
-        root.get("images").getAsJsonArray().forEach((imageJson) -> {
+        root.get("images").getAsJsonArray().forEach(imageJson -> {
             JsonObject imageObj = imageJson.getAsJsonObject();
             ByteBuffer bufferView = bufferViews.get(imageObj.get("bufferView").getAsInt()).getData();
             String mimeType = imageObj.get("mimeType").getAsString();
