@@ -1,12 +1,15 @@
 package uk.kihira.gltf;
 
 import com.google.gson.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.BufferUtils;
 import uk.kihira.gltf.spec.Accessor;
 import uk.kihira.gltf.spec.BufferView;
 import uk.kihira.gltf.spec.MeshPrimitive;
 import uk.kihira.tails.common.ByteBufferInputStream;
+import uk.kihira.tails.common.Tails;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -99,16 +102,22 @@ public class GltfLoader {
         }
 
         // Load textures
+        ArrayList<ResourceLocation> textures = new ArrayList<>();
         root.get("images").getAsJsonArray().forEach((imageJson) -> {
             JsonObject imageObj = imageJson.getAsJsonObject();
             ByteBuffer bufferView = bufferViews.get(imageObj.get("bufferView").getAsInt()).getData();
             String mimeType = imageObj.get("mimeType").getAsString();
+            String name = imageObj.get("name").getAsString(); // todo this could be null
 
             try (ByteBufferInputStream is = new ByteBufferInputStream(bufferView)) {
                 BufferedImage bufferedImage = ImageIO.read(is);
                 DynamicTexture texture = new DynamicTexture(bufferedImage);
+                ResourceLocation texResLoc = new ResourceLocation(name); // todo should use model name as well
+
+                Minecraft.getMinecraft().getTextureManager().loadTexture(texResLoc, texture);
+                textures.add(texResLoc);
             } catch (IOException e) {
-                e.printStackTrace();
+                Tails.logger.error("Failed to load texture " + name, e);
             }
         });
 
@@ -144,7 +153,7 @@ public class GltfLoader {
 //            animations.add(new Animation(channels));
 //        }
 
-        return new Model(new ArrayList<>(nodeCache.values()), rootNodes, null);
+        return new Model(new ArrayList<>(nodeCache.values()), rootNodes, null, textures);
     }
 
     public static void clearCache() {
