@@ -24,7 +24,7 @@ void main() {
   diffuse = vec4(0);
   directional_light(0, Normal);
   directional_light(1, Normal);
-  Color = gl_FrontLightModelProduct.sceneColor + ambient * gl_FrontMaterial.ambient + diffuse * gl_FrontMaterial.diffuse + gl_FrontMaterial.specular;
+  Color = gl_LightModel.ambient + ambient * gl_FrontMaterial.ambient + diffuse * gl_FrontMaterial.diffuse + gl_FrontMaterial.specular;
 
   gl_Position = gl_ModelViewProjectionMatrix * vec4(pos, 1);
 }
