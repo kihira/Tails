@@ -1,18 +1,12 @@
 package uk.kihira.gltf;
 
 import com.google.gson.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.BufferUtils;
 import uk.kihira.gltf.spec.Accessor;
 import uk.kihira.gltf.spec.BufferView;
 import uk.kihira.gltf.spec.MeshPrimitive;
-import uk.kihira.tails.common.ByteBufferInputStream;
-import uk.kihira.tails.common.Tails;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -101,7 +95,7 @@ public class GltfLoader {
 
         // Load textures
         ArrayList<ResourceLocation> textures = new ArrayList<>();
-        root.get("images").getAsJsonArray().forEach(imageJson -> {
+/*        root.get("images").getAsJsonArray().forEach(imageJson -> {
             JsonObject imageObj = imageJson.getAsJsonObject();
             ByteBuffer bufferView = bufferViews.get(imageObj.get("bufferView").getAsInt()).getData();
             String mimeType = imageObj.get("mimeType").getAsString();
@@ -117,7 +111,7 @@ public class GltfLoader {
             } catch (IOException e) {
                 Tails.logger.error("Failed to load texture " + name, e);
             }
-        });
+        });*/
 
         // Load nodes
         int[] sceneNodes = gson.fromJson(scene.get("nodes"), int[].class);

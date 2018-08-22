@@ -52,7 +52,7 @@ public final class Node implements IDisposable {
         if (!isStatic) {
             matrix.setIdentity();
             matrix.translate(translation);
-            Matrix4f.mul(matrix, rotate(rotation), matrix);
+            Matrix4f.mul(matrix, getRotateMatrix(), matrix);
             matrix.scale(scale);
             matrix.store(fb);
             fb.rewind();
@@ -60,38 +60,26 @@ public final class Node implements IDisposable {
 
         GlStateManager.pushMatrix();
         GlStateManager.multMatrix(fb);
+//        GlStateManager.translate(translation.x, translation.y, translation.z);
+//        GlStateManager.getRotateMatrix(rotation);
+//        GlStateManager.scale(scale.x, scale.y, scale.z);
 
         if (mesh != null) {
             mesh.render();
         }
 
         if (children != null) {
-            for (Node node : children) {
-                node.render();
-            }
+            children.forEach(Node::render);
         }
 
         GlStateManager.popMatrix();
     }
 
-    private Matrix4f rotate(Quaternion q) {
+    private Matrix4f getRotateMatrix() {
         Matrix4f rotMatrix = new Matrix4f();
-        rotMatrix.m00 = q.x*q.x+q.y*q.y-q.z*q.z-q.w*q.w;
-        rotMatrix.m01 = (2f*q.y*q.z)+(2f*q.x*q.w);
-        rotMatrix.m02 = (2f*q.y*q.w)+(2f*q.x*q.z);
-        rotMatrix.m03 = 0f;
-        rotMatrix.m10 = (2f*q.y*q.z)-(2f*q.x*q.w);
-        rotMatrix.m11 = q.x*q.x-q.y*q.y+q.z*q.z-q.w*q.w;
-        rotMatrix.m12 = (2f*q.z*q.w)+(2f*q.x*q.y);
-        rotMatrix.m13 = 0f;
-        rotMatrix.m20 = (2f*q.y*q.w)+(2f*q.x*q.z);
-        rotMatrix.m21 = (2f*q.z*q.w)-(2f*q.x*q.y);
-        rotMatrix.m22 = q.x*q.x-q.y*q.y-q.z*q.z+q.w*q.w;
-        rotMatrix.m23 = 0f;
-        rotMatrix.m30 = 0f;
-        rotMatrix.m31 = 0f;
-        rotMatrix.m32 = 0f;
-        rotMatrix.m33 = 1f;
+        GlStateManager.quatToGlMatrix(fb, rotation);
+        rotMatrix.load(fb);
+        fb.clear();
         return rotMatrix;
     }
 
