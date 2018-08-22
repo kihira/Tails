@@ -5,12 +5,18 @@ import net.minecraft.entity.player.EntityPlayer;
 import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.proxy.ClientProxy;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class GuiEditor extends GuiBase {
     static final int TEXT_COLOUR = 0xFFFFFF;
+    static final int HOZ_LINE_COLOUR = 0xFF000000;
+    static final int DARK_GREY = 0xFF1A1A1A;
+    static final int GREY = 0xFF666666;
+
+    private static final int TINT_PANEL_HEIGHT = 145;
 
     @Nullable
     private Outfit originalOutfit; // The outfit from before the GUI was opened. Is updated when player saves new outfit
@@ -21,7 +27,7 @@ public class GuiEditor extends GuiBase {
 
     TintPanel tintPanel;
     PartsPanel partsPanel;
-    PartsEditorPanel partsEditorPanel;
+    private TransformPanel transformPanel;
     private PreviewPanel previewPanel;
     private ControlsPanel controlsPanel;
     public LibraryPanel libraryPanel;
@@ -47,7 +53,7 @@ public class GuiEditor extends GuiBase {
 
     @Override
     public void initGui() {
-        int previewWindowEdgeOffset = 110;
+        int previewWindowEdgeOffset = 150;
         int previewWindowRight = width - previewWindowEdgeOffset;
         int previewWindowBottom = height - 30;
         int texSelectHeight = 35;
@@ -57,8 +63,8 @@ public class GuiEditor extends GuiBase {
             getLayer(0).add(previewPanel = new PreviewPanel(this, previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom));
             getLayer(1).add(partsPanel = new PartsPanel(this, 0, 0, previewWindowEdgeOffset, height - texSelectHeight));
             getLayer(1).add(libraryPanel = new LibraryPanel(this, 0, 0, previewWindowEdgeOffset, height));
-            getLayer(1).add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, 100));
-            getLayer(1).add(partsEditorPanel = new PartsEditorPanel(this, previewWindowRight, 100, width - previewWindowRight, height - 100));
+            getLayer(1).add(tintPanel = new TintPanel(this, previewWindowRight, 0, width - previewWindowRight, TINT_PANEL_HEIGHT));
+            getLayer(1).add(transformPanel = new TransformPanel(this, previewWindowRight, TINT_PANEL_HEIGHT, width - previewWindowRight, height - TINT_PANEL_HEIGHT));
             getLayer(1).add(libraryInfoPanel = new LibraryInfoPanel(this, previewWindowRight, 0, width - previewWindowRight, height - 60));
             getLayer(1).add(controlsPanel = new ControlsPanel(this, previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, height - previewWindowBottom));
 
@@ -66,7 +72,8 @@ public class GuiEditor extends GuiBase {
             libraryPanel.enabled = false;
         }
         else {
-            tintPanel.resize(previewWindowRight, 0, width - previewWindowRight, height);
+            tintPanel.resize(previewWindowRight, 0, width - previewWindowRight, TINT_PANEL_HEIGHT);
+            transformPanel.resize(previewWindowRight, TINT_PANEL_HEIGHT,width - previewWindowRight, height - TINT_PANEL_HEIGHT);
             libraryInfoPanel.resize(previewWindowRight, 0, width - previewWindowRight, height - 60);
             partsPanel.resize(0, 0, previewWindowEdgeOffset, height - texSelectHeight);
             libraryPanel.resize(0, 0, previewWindowEdgeOffset, height);
@@ -77,13 +84,21 @@ public class GuiEditor extends GuiBase {
     }
 
     @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+
+        // Render any parts that have been queued up whilst in GUI as RenderWorldLast is called before GUIs
+        ((ClientProxy) Tails.proxy).partRenderer.doRender();
+    }
+
+    @Override
     public void onGuiClosed() {
         Tails.proxy.setActiveOutfit(playerUUID, Tails.localOutfit);
         super.onGuiClosed();
     }
 
     void refreshTintPane() {
-        tintPanel.refreshTintPane();
+        tintPanel.updateTints(true);
     }
 
     /**
@@ -96,7 +111,7 @@ public class GuiEditor extends GuiBase {
 
     /**
      * Adds a new OutfitPart to the Outfit and sets it to the current edited one
-     * @param outfitPart
+     * @param outfitPart The part to be added
      */
     void addOutfitPart(OutfitPart outfitPart) {
         outfit.parts.add(outfitPart);
@@ -108,9 +123,9 @@ public class GuiEditor extends GuiBase {
         return currentOutfitPart;
     }
 
-    public void setOutfit(Outfit outfit) {
-        this.outfit = outfit;
-        Tails.proxy.setActiveOutfit(playerUUID, this.outfit);
+    public void setOutfit(Outfit newOutfit) {
+        outfit = newOutfit;
+        Tails.proxy.setActiveOutfit(playerUUID, outfit);
     }
 
     public Outfit getOutfit() {

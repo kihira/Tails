@@ -78,3 +78,8 @@ tails.uploading=Nahrávám...
 tails.upload.success=Úspěšně nahráno! Zkontrolujte si to v prohlížeči
 tails.upload.failed=Nahrávání selhalo. Možná jsou Minecraft servery nebo imgur nefunkční?
 tails.upload.ratelimit=Nahrávání selhalo! Nezkoušíte nahrávat příliš často?
+
+tails.gui.position=Position
+tails.gui.rotation=Rotation
+tails.gui.scale=Scale
+tails.gui.mountpont=Mount Point

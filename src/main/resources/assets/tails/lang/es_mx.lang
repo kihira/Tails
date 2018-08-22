@@ -78,3 +78,8 @@ tails.uploading=Subiendo...
 tails.upload.success=Subida exitosamente! Revisa tu navegador
 tails.upload.failed=Subida fallida! Esta imgur o el sitio de Minecraft caído?
 tails.upload.ratelimit=Subida fallida! Se ha llegado a la tasa limite, estas subiendo muy frecuentemente?
+
+tails.gui.position=Position
+tails.gui.rotation=Rotation
+tails.gui.scale=Scale
+tails.gui.mountpont=Mount Point

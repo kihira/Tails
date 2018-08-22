@@ -78,3 +78,7 @@ tails.uploading=Lädt hoch...
 tails.upload.success=Erfolgreich hochgeladen! Schau in deinen Browser
 tails.upload.failed=Upload fehlgeschlagen! Ist imgur oder die Minecraft-Website nicht verfügbar?
 tails.upload.ratelimit=Upload fehlgeschlagen! Das Raten-Limit wurde erreicht, lädst du zu oft hoch?
+tails.gui.position=Position
+tails.gui.rotation=Rotation
+tails.gui.scale=Scale
+tails.gui.mountpont=Mount Point

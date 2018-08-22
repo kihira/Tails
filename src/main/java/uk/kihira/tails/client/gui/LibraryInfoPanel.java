@@ -118,14 +118,14 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
     }
 
     @Override
-    public void keyTyped(char key, int keycode) {
-        textField.textboxKeyTyped(key, keycode);
+    public void keyTyped(char key, int keyCode) {
+        textField.textboxKeyTyped(key, keyCode);
 
         if (textField.isFocused() && entry != null) {
             entry.data.entryName = textField.getText();
             Tails.proxy.getLibraryManager().saveLibrary();
         }
-        super.keyTyped(key, keycode);
+        super.keyTyped(key, keyCode);
     }
 
     @Override

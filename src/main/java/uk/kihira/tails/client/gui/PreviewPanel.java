@@ -6,6 +6,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 
@@ -13,8 +14,8 @@ class PreviewPanel extends Panel<GuiEditor> {
     private static final int RESET_BUTTON = 0;
     private static final int HELP_BUTTON = 1;
 
-    private float yaw = 0F;
-    private float pitch = 10F;
+    private float yaw = 0f;
+    private float pitch = 10f;
     private int prevMouseX = -1;
     private ScaledResolution scaledRes;
     private boolean doRender;
@@ -32,7 +33,7 @@ class PreviewPanel extends Panel<GuiEditor> {
         // Reset Camera
         buttonList.add(new GuiIconButton(RESET_BUTTON, width - 18, 22, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset.camera")));
         // Help
-        buttonList.add(new GuiIconButton(HELP_BUTTON, width - 18, 4, GuiIconButton.Icons.QUESTION, I18n.format("gui.button.help.camera.0"), I18n.format("gui.button.help.camera.1")));
+        buttonList.add(new GuiIconButton(HELP_BUTTON, width - 18, 4, GuiIconButton.Icons.QUESTION, I18n.format("gui.button.help.camera")));
     }
 
     @Override
@@ -41,10 +42,10 @@ class PreviewPanel extends Panel<GuiEditor> {
             return;
         zLevel = -1000;
         // Background
-        drawGradientRect(0, 0, width, height, 0xEE000000, 0xEE000000);
+        drawRect(0, 0, width, height, GuiEditor.GREY);
 
         // Player
-        drawEntity((width / 2), (height / 2) + (scaledRes.getScaledHeight() / 4), scaledRes.getScaledHeight() / 4, yaw, pitch, mc.player);
+        drawEntity(width / 2, height / 2 + scaledRes.getScaledHeight() / 8, scaledRes.getScaledHeight() / 4, yaw, pitch, mc.player);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -63,7 +64,7 @@ class PreviewPanel extends Panel<GuiEditor> {
             //Yaw
             if (prevMouseX == -1) prevMouseX = mouseX;
             else {
-                yaw += (mouseX - prevMouseX) * 1.5F;
+                yaw += (mouseX - prevMouseX) * 1.5f;
                 prevMouseX = mouseX;
             }
         }
@@ -79,32 +80,35 @@ class PreviewPanel extends Panel<GuiEditor> {
         float prevHeadYaw = entity.rotationYawHead;
         float prevRotYaw = entity.rotationYaw;
         float prevRotPitch = entity.rotationPitch;
+        RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, 100F);
-        GlStateManager.scale(-scale, scale, scale);
-        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.translate(0.0F, (float) entity.getYOffset(), 0.0F);
-        GlStateManager.rotate(pitch, 1F, 0.0F, 0.0F);
-        GlStateManager.rotate(yaw, 0F, 1F, 0.0F);
-
-        entity.rotationYawHead = 0F;
-        entity.rotationYaw = 0F;
-        entity.rotationPitch = 0F;
-        entity.renderYawOffset = 0F;
+        entity.rotationYawHead = 0f;
+        entity.rotationYaw = 0f;
+        entity.rotationPitch = 0f;
+        entity.renderYawOffset = 0f;
         entity.setSneaking(false);
 
+        GlStateManager.pushMatrix();
+
+        GlStateManager.translate(x, y, 100f);
+        GlStateManager.scale(-scale, scale, scale);
+        GlStateManager.rotate(180f, 0f, 0f, 1f);
+        GlStateManager.translate(0d, entity.getYOffset(), 0d);
+        GlStateManager.rotate(pitch, 1f, 0f, 0f);
+        GlStateManager.rotate(yaw, 0f, 1f, 0f);
+        GlStateManager.color(1f, 1f, 1f, 1f);
+
         RenderHelper.enableStandardItemLighting();
-        Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
-        Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0D, 0D, 0D, 0F, 1F, false);
+        renderManager.setPlayerViewY(180f);
+        renderManager.doRenderEntity(entity, 0d, 0d, 0d, 0f, 1f, false);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
+        GlStateManager.popMatrix();
+
         entity.rotationYawHead = prevHeadYaw;
         entity.rotationYaw = prevRotYaw;
         entity.rotationPitch = prevRotPitch;
-
-        GlStateManager.popMatrix();
     }
 }

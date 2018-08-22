@@ -102,3 +102,8 @@ tails.uploading=Uploading...
 tails.upload.success=Uploaden gelukt! Ga verder in je browser
 tails.upload.failed=Upload mislukt! Is de side van Imgur or Minecraft down?
 tails.upload.ratelimit=Upload mislukt! Je moet minder vaak uploaden!
+
+tails.gui.position=Position
+tails.gui.rotation=Rotation
+tails.gui.scale=Scale
+tails.gui.mountpont=Mount Point

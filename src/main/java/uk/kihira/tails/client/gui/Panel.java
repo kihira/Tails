@@ -42,7 +42,7 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
     }
 
     //All this stuff is to make them public
-    public void keyTyped(char key, int keycode) {}
+    public void keyTyped(char key, int keyCode) {}
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -61,7 +61,6 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
      * This is ALWAYS called regardless of if the mouse is in the bounds or not
      * It is also generally the first method to be called
      * Does not call super as we never want to call super from a panel for this method
-     * @throws IOException
      */
-    public void handleMouseInput() throws IOException {}
+    public void handleMouseInput() {}
 }

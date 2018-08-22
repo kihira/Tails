@@ -62,3 +62,7 @@ gui.hex=Hex
 
 tails.export.success=Skin correctement sauvegarder sous %s
 tails.upload.unavailable=Cette fonction n'est pas encore ajoutée!
+tails.gui.position=Position
+tails.gui.rotation=Rotation
+tails.gui.scale=Scale
+tails.gui.mountpont=Mount Point

@@ -78,3 +78,8 @@ tails.uploading=Загрузка...
 tails.upload.success=Успех! Продолжите в браузере
 tails.upload.failed=Ошибка! Сайты Imgur или Minecraft недоступны?
 tails.upload.ratelimit=Ошибка! Превышен лимит обращений, вы пытаетесь загружать скин слишком часто?
+
+tails.gui.position=Position
+tails.gui.rotation=Rotation
+tails.gui.scale=Scale
+tails.gui.mountpont=Mount Point

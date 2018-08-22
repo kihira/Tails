@@ -28,7 +28,7 @@ public class ControlsPanel extends Panel<GuiEditor> {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        drawRect(0, 0, width, height, 0xDD000000);
+        drawRect(0, 0, width, height, GuiEditor.DARK_GREY);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

@@ -78,3 +78,7 @@ tails.uploading=Shippin'...
 tails.upload.success=Shipment succsful! Check yer browser
 tails.upload.failed=Shipment failed! Were imgur or Minecraft attacked by them Redcoats?
 tails.upload.ratelimit=Shipment failed! No ships left in the harbour, did ye send them all?
+tails.gui.position=Position
+tails.gui.rotation=Rotation
+tails.gui.scale=Scale
+tails.gui.mountpont=Mount Point

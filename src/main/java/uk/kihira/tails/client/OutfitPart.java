@@ -12,7 +12,7 @@ public class OutfitPart {
     public float[] mountOffset; // [x,y,z]
     public float[] rotation; // [x,y,z]
     public float[] scale; // [x,y,z]
-    public int[][] tint; // [[r,g,b],[r,g,b]]
+    public float[][] tint; // [[r,g,b],[r,g,b]]
     public UUID texture;
 
     // Client only fields

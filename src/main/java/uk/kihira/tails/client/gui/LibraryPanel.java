@@ -15,8 +15,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<LibraryListEntry> {
+    private static final LibrarySorter SORTER = new LibrarySorter();
+    private static final int ALL_BUTTON = 0;
 
-    private static final LibrarySorter sorter = new LibrarySorter();
     private GuiList<LibraryListEntry> list;
     private GuiTextField searchField;
 
@@ -28,34 +29,34 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public void initGui() {
         initList();
 
-        buttonList.add(new GuiButtonExt(0, 3, height - 18, width - 6, 15, I18n.format("gui.button.all")));
+        buttonList.add(new GuiButtonExt(ALL_BUTTON, 3, height - 18, width - 6, 15, I18n.format("gui.button.all")));
         searchField = new GuiTextField(1, fontRenderer, 5, height - 31, width - 10, 10);
         super.initGui();
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         zLevel = -100;
-        drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
+        drawGradientRect(0, 0, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
 
         searchField.drawTextBox();
-        list.drawScreen(mouseX, mouseY, p_73863_3_);
+        list.drawScreen(mouseX, mouseY, partialTicks);
 
         zLevel = 0;
         Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.ICONS_TEXTURES);
         GlStateManager.pushMatrix();
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color(1f, 1f, 1f, 1f);
         GlStateManager.translate(width - 16, height - 32, 0);
-        GlStateManager.scale(0.75F, 0.75F, 0F);
+        GlStateManager.scale(.75f, .75f, 0f);
         drawTexturedModalRect(0, 0, 160, 0, 16, 16);
         GlStateManager.popMatrix();
 
-        super.drawScreen(mouseX, mouseY, p_73863_3_);
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if (button.id == 0) {
+        if (button.id == ALL_BUTTON) {
             // todo?
         }
     }
@@ -74,20 +75,20 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     @Override
-    public void handleMouseInput() throws IOException {
+    public void handleMouseInput() {
         list.handleMouseInput();
     }
 
     @Override
-    public void keyTyped(char key, int keycode) {
-        searchField.textboxKeyTyped(key, keycode);
+    public void keyTyped(char key, int keyCode) {
+        searchField.textboxKeyTyped(key, keyCode);
         if (searchField.getVisible() && searchField.isFocused()) {
             List<LibraryListEntry> newEntries = filterListEntries(searchField.getText().toLowerCase());
             newEntries.add(0, new LibraryListEntry.NewLibraryListEntry(this, null));
             list.getEntries().clear();
             list.getEntries().addAll(newEntries);
         }
-        super.keyTyped(key, keycode);
+        super.keyTyped(key, keyCode);
     }
 
     @Override
@@ -108,14 +109,14 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
         //Add in new entry creation
         libraryEntries.add(0, new LibraryListEntry.NewLibraryListEntry(this, null));
 
-        libraryEntries.sort(sorter);
+        libraryEntries.sort(SORTER);
 
         list = new GuiList<>(this, width, height - 34, 0, height - 34, 50, libraryEntries);
     }
 
     public void addSelectedEntry(LibraryListEntry entry) {
         list.getEntries().add(entry);
-        list.setCurrrentIndex(list.getEntries().size() - 1);
+        list.setCurrentIndex(list.getEntries().size() - 1);
         parent.libraryInfoPanel.setEntry(entry);
     }
 
@@ -154,18 +155,17 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
                 return 0;
             }
 
+            // Always ensure new library entry button is at the top
             if (entry1 instanceof LibraryListEntry.NewLibraryListEntry) {
                 return Integer.MIN_VALUE;
-            }
-            else if (entry2 instanceof LibraryListEntry.NewLibraryListEntry) {
+            } else if (entry2 instanceof LibraryListEntry.NewLibraryListEntry) {
                 return Integer.MAX_VALUE;
             }
 
             //Put favourites at the top
             if (entry1.data.favourite && !entry2.data.favourite) {
                 return -1;
-            }
-            else if (!entry1.data.favourite && entry2.data.favourite) {
+            } else if (!entry1.data.favourite && entry2.data.favourite) {
                 return 1;
             }
 

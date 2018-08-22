@@ -27,3 +27,7 @@ gui.button.openfolder=Abrir local de exportação
 
 tails.export.success=Skin salva com sucesso em %s
 tails.upload.unavailable=Essa função ainda não é funcional!
+tails.gui.position=Position
+tails.gui.rotation=Rotation
+tails.gui.scale=Scale
+tails.gui.mountpont=Mount Point

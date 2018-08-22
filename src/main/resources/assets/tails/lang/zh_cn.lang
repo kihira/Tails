@@ -78,3 +78,7 @@ tails.uploading=上传中...
 tails.upload.success=上传成功! 请在浏览器上查看
 tails.upload.failed=上传失败! 或许是imgur或Minecraft官网连接失败了?
 tails.upload.ratelimit=上传失败! 你不能太频繁的上传皮肤
+tails.gui.position=Position
+tails.gui.rotation=Rotation
+tails.gui.scale=Scale
+tails.gui.mountpont=Mount Point

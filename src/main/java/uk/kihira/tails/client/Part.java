@@ -21,12 +21,12 @@ public class Part {
     public final float[] mountOffset;
     public final float[] rotation;
     public final float[] scale;
-    public final int[][] tint;
+    public final float[][] tint;
     public final UUID[] textures;
 
     private transient Model model;
 
-    public Part(UUID id, String name, String author, MountPoint mountPoint, float[] defaultMountOffset, float[] defaultRotation, float[] defaultScale, int[][] defaultTints, UUID[] textures) {
+    public Part(UUID id, String name, String author, MountPoint mountPoint, float[] defaultMountOffset, float[] defaultRotation, float[] defaultScale, float[][] defaultTints, UUID[] textures) {
         this.id = id;
         this.mountPoint = mountPoint;
         this.mountOffset = defaultMountOffset;

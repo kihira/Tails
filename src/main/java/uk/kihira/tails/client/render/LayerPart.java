@@ -45,8 +45,6 @@ public class LayerPart implements LayerRenderer<AbstractClientPlayer> {
                 if (part.mountPoint == mountPoint) {
                     GlStateManager.pushMatrix();
 
-                    GlStateManager.translate(part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
-
                     if (mountPoint == MountPoint.HEAD && entity.isSneaking()) GlStateManager.translate(0f, 0.2F, 0f);
                     if (mpmCompat) {
                         GlStateManager.rotate(netHeadYaw, 0f, 1f, 0f);

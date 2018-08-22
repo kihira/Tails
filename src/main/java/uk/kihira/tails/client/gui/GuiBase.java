@@ -42,38 +42,38 @@ public abstract class GuiBase extends GuiBaseScreen {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
                 if (panel.enabled) {
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(panel.left, panel.top, 0);
-                    GlStateManager.color(1, 1, 1, 1);
-                    panel.drawScreen(mouseX - panel.left, mouseY - panel.top, p_73863_3_);
+                    GlStateManager.color(1f, 1f, 1f, 1f);
+                    panel.drawScreen(mouseX - panel.left, mouseY - panel.top, partialTicks);
                     GlStateManager.disableLighting();
                     GlStateManager.popMatrix();
                 }
             }
         }
-        GlStateManager.color(1, 1, 1, 1);
-        super.drawScreen(mouseX, mouseY, p_73863_3_);
+        GlStateManager.color(1f, 1f, 1f, 1f);
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
-    protected void keyTyped(char key, int keycode) throws IOException {
+    protected void keyTyped(char key, int keyCode) throws IOException {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
-                if (panel.enabled) panel.keyTyped(key, keycode);
+                if (panel.enabled) panel.keyTyped(key, keyCode);
             }
         }
-        super.keyTyped(key, keycode);
+        super.keyTyped(key, keyCode);
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
-                if (panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
+                if (shouldReceiveMouse(mouseX, mouseY, panel)) {
                     panel.mouseClicked(mouseX - panel.left, mouseY - panel.top, mouseButton);
                 }
             }
@@ -85,7 +85,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     protected void mouseReleased(int mouseX, int mouseY, int mouseButton) {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
-                if (panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
+                if (shouldReceiveMouse(mouseX, mouseY, panel)) {
                     panel.mouseReleased(mouseX - panel.left, mouseY - panel.top, mouseButton);
                 }
             }
@@ -97,7 +97,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     protected void mouseClickMove(int mouseX, int mouseY, int mouseButton, long pressTime) {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
-                if (panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse) {
+                if (shouldReceiveMouse(mouseX, mouseY, panel)) {
                     panel.mouseClickMove(mouseX - panel.left, mouseY - panel.top, mouseButton, pressTime);
                 }
             }
@@ -125,5 +125,16 @@ public abstract class GuiBase extends GuiBaseScreen {
             }
         }
         super.onGuiClosed();
+    }
+
+    /**
+     * Whether the indicated panel should receive the current mouse event based
+     * @param mouseX The mouse's x position
+     * @param mouseY The mouse's y position
+     * @param panel The panel
+     * @return Whether it should receive them
+     */
+    private boolean shouldReceiveMouse(int mouseX, int mouseY, Panel panel) {
+        return panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse;
     }
 }

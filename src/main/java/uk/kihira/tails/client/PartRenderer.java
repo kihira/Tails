@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL30;
 import uk.kihira.gltf.Model;
 
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 
@@ -18,13 +17,13 @@ import java.util.HashMap;
 public class PartRenderer {
     private final Shader shader;
     private final FloatBuffer modelViewMatrixWorld;
-    private final IntBuffer tintBuffer;
+    private final FloatBuffer tintBuffer;
     private final ArrayDeque<FloatBuffer> bufferPool;
     private final HashMap<OutfitPart, FloatBuffer> renders;
 
     public PartRenderer() {
         modelViewMatrixWorld = BufferUtils.createFloatBuffer(16);
-        tintBuffer = BufferUtils.createIntBuffer(9);
+        tintBuffer = BufferUtils.createFloatBuffer(9);
         bufferPool = new ArrayDeque<>();
         renders = new HashMap<>(16);
         shader = new Shader("threetint_vert", "threetint_frag");
@@ -53,8 +52,17 @@ public class PartRenderer {
      * Queues up a part to be rendered
      */
     public void render(OutfitPart part) {
+        GL11.glPushMatrix();
+        GlStateManager.translate(part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
+        GlStateManager.rotate(part.rotation[0], 1f, 0f, 0f);
+        GlStateManager.rotate(part.rotation[1], 0f, 1f, 0f);
+        GlStateManager.rotate(part.rotation[2], 0f, 0f, 1f);
+        GlStateManager.scale(part.scale[0], part.scale[1], part.scale[2]);
+
         FloatBuffer fb = getFloatBuffer();
         GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, fb);
+        GL11.glPopMatrix();
+
         renders.put(part, fb);
     }
 
