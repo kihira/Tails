@@ -82,7 +82,7 @@ public class GltfLoader {
         // Load buffer views
         for (JsonElement element : root.get("bufferViews").getAsJsonArray()) {
             BufferView bufferView = gson.fromJson(element, BufferView.class);
-            bufferView.setData(binData.slice().position(bufferView.byteOffset).limit(bufferView.byteOffset + bufferView.byteLength));
+            bufferView.setData((ByteBuffer) binData.slice().position(bufferView.byteOffset).limit(bufferView.byteOffset + bufferView.byteLength));
             bufferViews.add(bufferView);
         }
 

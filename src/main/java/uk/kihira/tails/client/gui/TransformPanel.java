@@ -139,15 +139,15 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         yPosInput.keyTyped(key, keyCode);
         zPosInput.keyTyped(key, keyCode);
 
-        xRotInput.keyTyped(key, keycode);
-        yRotInput.keyTyped(key, keycode);
-        zRotInput.keyTyped(key, keycode);
+        xRotInput.keyTyped(key, keyCode);
+        yRotInput.keyTyped(key, keyCode);
+        zRotInput.keyTyped(key, keyCode);
 
-        xScaleInput.keyTyped(key, keycode);
-        yScaleInput.keyTyped(key, keycode);
-        zScaleInput.keyTyped(key, keycode);
+        xScaleInput.keyTyped(key, keyCode);
+        yScaleInput.keyTyped(key, keyCode);
+        zScaleInput.keyTyped(key, keyCode);
 
-        super.keyTyped(key, keycode);
+        super.keyTyped(key, keyCode);
     }
 
     @Override

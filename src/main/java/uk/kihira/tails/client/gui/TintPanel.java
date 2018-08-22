@@ -132,7 +132,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         if (parent.getCurrentOutfitPart() == null) return;
 
         // Tint buttons
-        if (button.id >= TINT_1_BUTTON && button.id < TINT_3_BUTTON) {
+        if (button.id >= TINT_1_BUTTON && button.id <= TINT_3_BUTTON) {
             currTintEdit = button.id;
             currTintColour = tintToArgb(parent.getCurrentOutfitPart().tint[currTintEdit]);
             updateTints(true);
@@ -141,7 +141,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         // Reset Tint
         else if (button.id == RESET_BUTTON) {
-            currTintColour = tintToArgb(PartRegistry.getPart(parent.getCurrentOutfitPart().basePart).tint[currTintEdit]); //Ignore the alpha bits
+            currTintColour = tintToArgb(PartRegistry.getPart(parent.getCurrentOutfitPart().basePart).tint[currTintEdit]);
             updateTints(true);
             tintReset.enabled = false;
         }
@@ -202,17 +202,17 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
      */
     protected int tintToArgb(float[] tint) {
         int col = 0xFF000000;
-        col = col | (int)(tint[0] * 255f) << 16;
-        col = col | (int)(tint[1] * 255f) << 8;
-        col = col | (int)(tint[2] * 255f);
+        col |= (int)(tint[0] * 255f) << 16;
+        col |= (int)(tint[1] * 255f) << 8;
+        col |= (int)(tint[2] * 255f);
         return col;
     }
 
     protected float[] argbToTint(int argb) {
         float[] tint = new float[3];
-        tint[0] = argb >> 16 & 0xFF;
-        tint[1] = argb >> 8 & 0xFF;
-        tint[2] = argb & 0xFF;
+        tint[0] = ((argb >> 16) & 0xFF) / 255f;
+        tint[1] = ((argb >> 8) & 0xFF) / 255f;
+        tint[2] = (argb & 0xFF) / 255f;
         return tint;
     }
 
@@ -302,7 +302,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
         tintReset.enabled = true;
 
-        if (currTintEdit >= 0 && parent.getCurrentOutfitPart() != null) {
+        if (parent.getCurrentOutfitPart() != null) {
             parent.getCurrentOutfitPart().tint[currTintEdit] = argbToTint(currTintColour);
         }
     }
