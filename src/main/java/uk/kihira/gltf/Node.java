@@ -60,9 +60,6 @@ public final class Node implements IDisposable {
 
         GlStateManager.pushMatrix();
         GlStateManager.multMatrix(fb);
-//        GlStateManager.translate(translation.x, translation.y, translation.z);
-//        GlStateManager.getRotateMatrix(rotation);
-//        GlStateManager.scale(scale.x, scale.y, scale.z);
 
         if (mesh != null) {
             mesh.render();

@@ -97,6 +97,7 @@ public class PartRenderer {
             // todo load texture
             Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("tails", "blah"));
             GL11.glLoadMatrix(entry.getValue());
+            GlStateManager.scale(1, -1, 1); // Seems y is flipped, quick and cheap solution for now
             model.render();
 
             freeFloatBuffer(entry.getValue());

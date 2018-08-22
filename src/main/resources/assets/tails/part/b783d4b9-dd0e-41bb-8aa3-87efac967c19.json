@@ -4,7 +4,7 @@
   "author": "Kihira",
   "model": "432762e2-5a22-4f31-8547-5d22b6a89015",
   "mountPoint": "CHEST",
-  "mountOffset": [0, 0, 0],
+  "mountOffset": [0, 1, 0],
   "scale": [1, 1, 1],
   "rotation": [0, 0, 0],
   "tint": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
