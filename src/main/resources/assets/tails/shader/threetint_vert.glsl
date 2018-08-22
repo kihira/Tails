@@ -17,7 +17,7 @@ void directional_light(in int light, in vec3 normal) {
 }
 
 void main() {
-  Normal = vec3(gl_ModelViewMatrix * vec4(normal, 1));
+  Normal = gl_NormalMatrix * normal, 1;
   TexCoord = vec2(uv.x, uv.y);
 
   ambient = vec4(0);

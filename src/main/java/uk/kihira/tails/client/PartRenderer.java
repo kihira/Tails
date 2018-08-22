@@ -74,6 +74,7 @@ public class PartRenderer {
         if (renders.size() == 0) return;
 
         RenderHelper.enableStandardItemLighting();
+        GlStateManager.color(1f, 1f, 1f);
         GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
         shader.use();
 
