@@ -5,7 +5,6 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 
 /**
  * A typed view into a bufferView.
@@ -101,7 +100,7 @@ public class Accessor {
      * Sparse storage of attributes that deviate from their initialization value.
      */
     @Nullable
-    public ArrayList<Sparse> sparse;
+    public Sparse sparse;
 
     public enum Type {
         SCALAR(1), 
@@ -151,7 +150,7 @@ public class Accessor {
     /**
      * Sparse storage of attributes that deviate from their initialization value.
      */
-    private static class Sparse {
+    public static final class Sparse {
         /**
          * The number of attributes encoded in this sparse accessor.
          * 
@@ -164,19 +163,19 @@ public class Accessor {
          * Indices must strictly increase.
          */
         @Nonnull
-        public ArrayList<Indicies> indicies;
+        public Indices indices;
 
         /**
          * Array of size `count` times number of components, storing the displaced accessor attributes pointed by `indices`.
          * Substituted values must have the same `componentType` and number of components as the base accessor.
          */
         @Nonnull
-        public ArrayList<Values> values;
+        public Values values;
 
         /**
          * Indices of those attributes that deviate from their initialization value.
          */
-        private static class Indicies {
+        public static final class Indices {
             /**
              * The index of the bufferView with sparse indices. Referenced bufferView can't
              * have ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER target.
@@ -201,7 +200,7 @@ public class Accessor {
          * Array of size `accessor.sparse.count` times number of components storing the
          * displaced accessor attributes pointed by `accessor.sparse.indices`.
          */
-        private static class Values {
+        public static final class Values {
             /**
              * The index of the bufferView with sparse values. Referenced bufferView can't
              * have ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER target.

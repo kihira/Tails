@@ -230,14 +230,6 @@ public class GltfLoader {
         return node;
     }
 
-    public static ByteBuffer GetBufferFromAccessor(int accessorIndex) {
-        // TODO sparse support
-        Accessor accessor = accessors.get(accessorIndex);
-        return (ByteBuffer) bufferViews.get(accessor.bufferView).getData()
-                .position(accessor.byteOffset)
-                .limit(accessor.count * accessor.type.size * accessor.componentType.size);
-    }
-
     private static int readUnsignedInt(DataInputStream stream) throws IOException {
         return Integer.reverseBytes(stream.readInt());
     }

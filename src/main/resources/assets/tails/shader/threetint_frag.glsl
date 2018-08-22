@@ -1,11 +1,14 @@
 #version 120
 
+varying vec3 Normal;
 varying vec2 TexCoord;
+varying vec4 Color;
 
 uniform sampler2D tex;
 uniform vec3[3] tints; // Normalised set of tints
 
 void main() {
+
   vec4 texCol = texture2D(tex, TexCoord);
 /*
   Experimental version using alpha as the tone instead of red channel
@@ -23,5 +26,7 @@ void main() {
   float green = tints[0].g * w1 + tints[1].g * w2 + tints[2].g * w3;
   float blue = tints[0].b * w1 + tints[1].b * w2 + tints[2].b * w3;
 
-  gl_FragColor = vec4(tone * red, tone * green, tone * blue, texCol.a);
+  //gl_FragColor = vec4(tone * red, tone * green, tone * blue, texCol.a);
+
+  gl_FragColor = vec4(tone * red, tone * green, tone * blue, texCol.a) * Color;
 }

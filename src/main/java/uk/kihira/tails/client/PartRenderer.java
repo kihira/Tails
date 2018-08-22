@@ -1,5 +1,6 @@
 package uk.kihira.tails.client;
 
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.BufferUtils;
@@ -72,6 +73,7 @@ public class PartRenderer {
     public void doRender() {
         if (renders.size() == 0) return;
 
+        RenderHelper.enableStandardItemLighting();
         GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
         shader.use();
 
@@ -103,6 +105,7 @@ public class PartRenderer {
         glBindVertexArray(0);
         OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, 0);
 
+        RenderHelper.disableStandardItemLighting();
         GL11.glLoadMatrix(modelViewMatrixWorld);
     }
 

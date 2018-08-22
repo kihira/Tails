@@ -208,6 +208,11 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         return col;
     }
 
+    /**
+     * Converts a ARGB int to a vec3 of floats
+     * @param argb The int value
+     * @return A vec3 of RGB
+     */
     protected float[] argbToTint(int argb) {
         float[] tint = new float[3];
         tint[0] = ((argb >> 16) & 0xFF) / 255f;
