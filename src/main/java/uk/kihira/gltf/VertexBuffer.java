@@ -1,6 +1,7 @@
 package uk.kihira.gltf;
 
 import org.lwjgl.opengl.GL20;
+import uk.kihira.gltf.spec.Accessor;
 import uk.kihira.gltf.spec.Accessor.ComponentType;
 import uk.kihira.gltf.spec.BufferView;
 import uk.kihira.tails.common.IDisposable;
@@ -10,22 +11,18 @@ import uk.kihira.tails.common.IDisposable;
  */
 public class VertexBuffer implements IDisposable {
     protected final BufferView bufferView;
-    protected final ComponentType type;
-    protected final int offset;
-    protected final int count;
+    protected final Accessor accessor;
 
-    public VertexBuffer(BufferView bufferView, ComponentType type, int offset, int count) {
+    public VertexBuffer(BufferView bufferView, Accessor accessor) {
         this.bufferView = bufferView;
-        this.type = type;
-        this.offset = offset;
-        this.count = count;
+        this.accessor = accessor;
     }
 
     public void bind(int vertexIndex) {
         bufferView.bind();
 
         GL20.glEnableVertexAttribArray(vertexIndex);
-        GL20.glVertexAttribPointer(vertexIndex, type.size, type.gl, false, bufferView.byteStride, offset);
+        GL20.glVertexAttribPointer(vertexIndex, accessor.type.size, accessor.componentType.gl, false, bufferView.byteStride, accessor.byteOffset);
     }
 
     public BufferView getBufferView() {
@@ -37,15 +34,15 @@ public class VertexBuffer implements IDisposable {
     }
 
     public int getOffset() {
-        return offset;
+        return accessor.byteOffset;
     }
 
-    public ComponentType getType() {
-        return type;
+    public ComponentType getComponentType() {
+        return accessor.componentType;
     }
 
     public int getCount() {
-        return count;
+        return accessor.count;
     }
 
     @Override

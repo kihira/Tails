@@ -126,7 +126,7 @@ public class GltfLoader {
 //        for (JsonElement element : root.get("animations").getAsJsonArray()) {
 //            JsonObject object = element.getAsJsonObject();
 //            // TODO probably want to use String name = object.get("name").getAsString();
-//            ArrayList<Sampler> samplers = gson.fromJson(object.get("samplers"), new TypeToken<ArrayList<Sampler>>(){}.getType());
+//            ArrayList<Sampler> samplers = gson.fromJson(object.get("samplers"), new TypeToken<ArrayList<Sampler>>(){}.getComponentType());
 //            ArrayList<Channel> channels = new ArrayList<>();
 //
 //            for (JsonElement channelElement : object.get("channels").getAsJsonArray()) {
@@ -134,7 +134,7 @@ public class GltfLoader {
 //                Sampler sampler = samplers.get(channelObject.get("sampler").getAsInt());
 //                channels.add(new Channel(
 //                    sampler,
-//                    accessors.get(sampler.output).type,
+//                    accessors.get(sampler.output).componentType,
 //                    GetBufferFromAccessor(sampler.input).asFloatBuffer(),
 //                    // TODO: output data could be other then float, need to convert (non float ones are normalised)
 //                    GetBufferFromAccessor(sampler.output).asFloatBuffer(),
@@ -163,14 +163,14 @@ public class GltfLoader {
             int itemBytes = accessor.type.size * accessor.componentType.size;
 
             BufferView bufferView = bufferViews.get(accessor.bufferView);
-            VertexBuffer buffer = new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count);
+            VertexBuffer buffer = new VertexBuffer(bufferView, accessor);
             geometry.setBuffer(attribute.getKey(), buffer);
         }
 
         if (primitive.indices != null) {
             Accessor accessor = GltfLoader.accessors.get(primitive.indices);
             BufferView bufferView = bufferViews.get(accessor.bufferView);
-            VertexBuffer buffer = new VertexBuffer(bufferView, accessor.componentType, accessor.byteOffset, accessor.count);
+            VertexBuffer buffer = new VertexBuffer(bufferView, accessor);
             geometry.setIndices(buffer);
         }
 

@@ -2,7 +2,6 @@
   "id": "b783d4b9-dd0e-41bb-8aa3-87efac967c19",
   "name": "Fluffy Tail",
   "author": "Kihira",
-  "model": "432762e2-5a22-4f31-8547-5d22b6a89015",
   "mountPoint": "CHEST",
   "mountOffset": [0, 1, 0],
   "scale": [1, 1, 1],

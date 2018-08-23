@@ -1,19 +1,18 @@
 package uk.kihira.tails.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.io.IOUtils;
 import uk.kihira.gltf.GltfLoader;
 import uk.kihira.gltf.Model;
 import uk.kihira.tails.common.Tails;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,6 +38,7 @@ public class PartRegistry {
     private static final String PARTS_CACHE_FOLDER = "tails/cache/part";
 
     static {
+        initCache();
         loadPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19")); // Test model
     }
 
@@ -56,6 +56,22 @@ public class PartRegistry {
                     e.printStackTrace();
                 }
             });
+        }
+    }
+
+    private static void initCache() {
+        Path partCachePath = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), PARTS_CACHE_FOLDER);
+        Path modelCachePath = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), MODEL_CACHE_FOLDER);
+
+        try {
+            if (!Files.exists(partCachePath)) {
+                Files.createDirectories(partCachePath);
+            }
+            if (!Files.exists(modelCachePath)) {
+                Files.createDirectories(modelCachePath);
+            }
+        } catch (IOException e) {
+            Tails.logger.error("Failed to create cache directories", e);
         }
     }
 
@@ -154,15 +170,24 @@ public class PartRegistry {
     }
 
     /**
-     * Loads a part from the resources folder. Then saves the
+     * Loads a part from the resources folder and copies it model
      *
      * @param uuid Part ID
      */
     private static void loadPart(UUID uuid) {
+        IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
         ResourceLocation resLoc = new ResourceLocation(Tails.MOD_ID, "part/" + uuid + ".json");
-        try (InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream()) {
+        try (InputStream is = resourceManager.getResource(resLoc).getInputStream()) {
             InputStreamReader reader = new InputStreamReader(is);
             addPart(Tails.gson.fromJson(reader, Part.class));
+
+            // Copy model to cache
+            ResourceLocation modelResLoc = new ResourceLocation(Tails.MOD_ID, "model/" + uuid + ".glb");
+            Path path = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), MODEL_CACHE_FOLDER, uuid.toString() + ".glb");
+            try (InputStream modelStream = resourceManager.getResource(modelResLoc).getInputStream();
+                 FileOutputStream outputStream = new FileOutputStream(path.toFile())) {
+                IOUtils.copy(modelStream, outputStream);
+            }
         } catch (IOException e) {
             Tails.logger.error("Failed to load part: " + uuid, e);
         }

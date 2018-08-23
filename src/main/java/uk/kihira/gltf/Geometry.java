@@ -61,7 +61,7 @@ public final class Geometry implements IDisposable {
         }
 
         if (indicesBuffer != null) {
-            GL11.glDrawElements(drawMode, indicesBuffer.getCount(), indicesBuffer.getType().gl, indicesBuffer.getOffset());
+            GL11.glDrawElements(drawMode, indicesBuffer.getCount(), indicesBuffer.getComponentType().gl, indicesBuffer.getOffset());
         }
         else {
             GL11.glDrawArrays(drawMode, 0, vertexCount);
@@ -78,7 +78,7 @@ public final class Geometry implements IDisposable {
         indicesBuffer = vertexBuffer;
         if (indicesBuffer != null) {
             indicesBuffer.bufferView.target = GL15.GL_ELEMENT_ARRAY_BUFFER;
-            vertexCount = indicesBuffer.count;
+            vertexCount = indicesBuffer.getCount();
         }
     }
 
