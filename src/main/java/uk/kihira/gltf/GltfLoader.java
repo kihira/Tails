@@ -101,7 +101,7 @@ public class GltfLoader {
         root.get("meshes").getAsJsonArray().forEach(meshJson -> {
             ArrayList<Geometry> geometries = new ArrayList<>();
             meshJson.getAsJsonObject().get("primitives").getAsJsonArray().forEach(
-                    primitive -> geometries.add(LoadPrimitive(gson.fromJson(primitive, MeshPrimitive.class))));
+                    primitive -> geometries.add(loadPrimitive(gson.fromJson(primitive, MeshPrimitive.class))));
             meshCache.add(new Mesh(geometries));
         });
 
@@ -130,7 +130,7 @@ public class GltfLoader {
         JsonArray nodeJsonArray = root.get("nodes").getAsJsonArray();
         ArrayList<Node> rootNodes = new ArrayList<>();
         for (int index : sceneNodes) {
-            rootNodes.add(LoadNode(nodeJsonArray, index));
+            rootNodes.add(loadNode(nodeJsonArray, index));
         }
 
         // Load animations
@@ -177,7 +177,7 @@ public class GltfLoader {
         return defaultName;
     }
 
-    private static Geometry LoadPrimitive(MeshPrimitive primitive) {
+    private static Geometry loadPrimitive(MeshPrimitive primitive) {
         Geometry geometry = new Geometry(primitive.mode.gl);
 
         for (Map.Entry<MeshPrimitive.Attribute, Integer> attribute : primitive.attributes.entrySet()) {
@@ -199,7 +199,7 @@ public class GltfLoader {
         return geometry;
     }
 
-    private static Node LoadNode(JsonArray nodeJsonArray, int index) {
+    private static Node loadNode(JsonArray nodeJsonArray, int index) {
         if (nodeCache.containsKey(index)) {
             return nodeCache.get(index);
         }
@@ -212,7 +212,7 @@ public class GltfLoader {
             int[] childrenIndexes = gson.fromJson(nodeJson.get("children"), int[].class);
             children = new ArrayList<>(childrenIndexes.length);
             for (int childIndex : childrenIndexes) {
-                children.add(LoadNode(nodeJsonArray, childIndex));
+                children.add(loadNode(nodeJsonArray, childIndex));
             }
         }
 
