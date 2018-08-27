@@ -2,9 +2,9 @@ package uk.kihira.gltf.animation;
 
 import java.nio.FloatBuffer;
 
-class StepInterpolater extends Interpolater {
+class StepInterpolator extends Interpolator {
 
-    public StepInterpolater(AnimationPath path) {
+    public StepInterpolator(AnimationPath path) {
         super(path);
     }
 

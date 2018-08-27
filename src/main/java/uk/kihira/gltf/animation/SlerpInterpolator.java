@@ -5,11 +5,11 @@ import java.nio.FloatBuffer;
 /**
  * Used only when path is rotation (quaternion)
  */
-class SlerpInterpolater extends Interpolater {
+class SlerpInterpolator extends Interpolator {
 
     private static final float E = 1e-6f;
 
-    public SlerpInterpolater(AnimationPath path) {
+    public SlerpInterpolator(AnimationPath path) {
         super(path);
     }
 

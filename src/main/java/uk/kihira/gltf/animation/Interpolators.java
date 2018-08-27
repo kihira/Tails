@@ -1,8 +1,8 @@
 package uk.kihira.gltf.animation;
 
 class Interpolators {
-    public static final CubicInterpolater CUBIC = new CubicInterpolater(null);
-    public static final StepInterpolater STEP = new StepInterpolater(null);
-    public static final LinearInterpolater LINEAR = new LinearInterpolater(null);
-    public static final SlerpInterpolater SLERP = new SlerpInterpolater(null);
+    public static final CubicInterpolator CUBIC = new CubicInterpolator(null);
+    public static final StepInterpolator STEP = new StepInterpolator(null);
+    public static final LinearInterpolator LINEAR = new LinearInterpolator(null);
+    public static final SlerpInterpolator SLERP = new SlerpInterpolator(null);
 }
