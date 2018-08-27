@@ -1,18 +1,30 @@
 package uk.kihira.gltf;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.BufferUtils;
+import uk.kihira.gltf.animation.Animation;
+import uk.kihira.gltf.animation.AnimationPath;
+import uk.kihira.gltf.animation.Channel;
+import uk.kihira.gltf.animation.Sampler;
 import uk.kihira.gltf.spec.Accessor;
 import uk.kihira.gltf.spec.BufferView;
 import uk.kihira.gltf.spec.MeshPrimitive;
+import uk.kihira.tails.common.ByteBufferInputStream;
+import uk.kihira.tails.common.Tails;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -95,11 +107,11 @@ public class GltfLoader {
 
         // Load textures
         ArrayList<ResourceLocation> textures = new ArrayList<>();
-/*        root.get("images").getAsJsonArray().forEach(imageJson -> {
+        root.get("images").getAsJsonArray().forEach(imageJson -> {
             JsonObject imageObj = imageJson.getAsJsonObject();
             ByteBuffer bufferView = bufferViews.get(imageObj.get("bufferView").getAsInt()).getData();
             String mimeType = imageObj.get("mimeType").getAsString();
-            String name = imageObj.get("name").getAsString(); // todo this could be null
+            String name = getName(imageObj, "image"); // todo default name
 
             try (ByteBufferInputStream is = new ByteBufferInputStream(bufferView)) {
                 BufferedImage bufferedImage = ImageIO.read(is);
@@ -111,7 +123,7 @@ public class GltfLoader {
             } catch (IOException e) {
                 Tails.logger.error("Failed to load texture " + name, e);
             }
-        });*/
+        });
 
         // Load nodes
         int[] sceneNodes = gson.fromJson(scene.get("nodes"), int[].class);
@@ -122,30 +134,33 @@ public class GltfLoader {
         }
 
         // Load animations
-//        ArrayList<Animation> animations = new ArrayList<>();
-//        for (JsonElement element : root.get("animations").getAsJsonArray()) {
-//            JsonObject object = element.getAsJsonObject();
-//            // TODO probably want to use String name = object.get("name").getAsString();
-//            ArrayList<Sampler> samplers = gson.fromJson(object.get("samplers"), new TypeToken<ArrayList<Sampler>>(){}.getComponentType());
-//            ArrayList<Channel> channels = new ArrayList<>();
-//
-//            for (JsonElement channelElement : object.get("channels").getAsJsonArray()) {
-//                JsonObject channelObject = channelElement.getAsJsonObject();
-//                Sampler sampler = samplers.get(channelObject.get("sampler").getAsInt());
-//                channels.add(new Channel(
-//                    sampler,
-//                    accessors.get(sampler.output).componentType,
-//                    GetBufferFromAccessor(sampler.input).asFloatBuffer(),
-//                    // TODO: output data could be other then float, need to convert (non float ones are normalised)
-//                    GetBufferFromAccessor(sampler.output).asFloatBuffer(),
-//                    nodeCache.get(channelObject.get("target").getAsJsonObject().get("node").getAsInt()),
-//                    gson.fromJson(channelObject.get("target").getAsJsonObject().get("path"), AnimationPath.class)
-//                ));
-//            }
-//            animations.add(new Animation(channels));
-//        }
+        HashMap<String, Animation> animations = new HashMap<>();
+        if (root.has("animations")) {
+            for (JsonElement element : root.get("animations").getAsJsonArray()) {
+                JsonObject object = element.getAsJsonObject();
+                String name = getName(object, "default");
+                ArrayList<Sampler> samplers = gson.fromJson(object.get("samplers"), new TypeToken<ArrayList<Sampler>>(){}.getType());
+                ArrayList<Channel> channels = new ArrayList<>();
 
-        return new Model(new ArrayList<>(nodeCache.values()), rootNodes, null, textures);
+                for (JsonElement channelElement : object.get("channels").getAsJsonArray()) {
+                    JsonObject channelObject = channelElement.getAsJsonObject();
+                    JsonObject targetObject = channelObject.get("target").getAsJsonObject();
+                    Sampler sampler = samplers.get(channelObject.get("sampler").getAsInt());
+                    channels.add(new Channel(
+                            sampler,
+                            accessors.get(sampler.output).componentType,
+                            GetBufferFromAccessor(sampler.input).asFloatBuffer(),
+                            // TODO: output data could be other then float, need to convert (non float ones are normalised)
+                            GetBufferFromAccessor(sampler.output).asFloatBuffer(),
+                            nodeCache.get(targetObject.get("node").getAsInt()),
+                            gson.fromJson(targetObject.get("path"), AnimationPath.class)
+                    ));
+                }
+                animations.put(name, new Animation(channels));
+            }
+        }
+
+        return new Model(new ArrayList<>(nodeCache.values()), rootNodes, animations, textures);
     }
 
     public static void clearCache() {
@@ -153,6 +168,13 @@ public class GltfLoader {
         nodeCache.clear();
         bufferViews.clear();
         accessors.clear();
+    }
+
+    private static String getName(JsonObject object, String defaultName) {
+        if (object.has("name")) {
+            return object.get("name").getAsString();
+        }
+        return defaultName;
     }
 
     private static Geometry LoadPrimitive(MeshPrimitive primitive) {
