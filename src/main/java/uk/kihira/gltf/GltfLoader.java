@@ -148,10 +148,10 @@ public class GltfLoader {
                     Sampler sampler = samplers.get(channelObject.get("sampler").getAsInt());
                     channels.add(new Channel(
                             sampler,
-                            accessors.get(sampler.output).componentType,
-                            GetBufferFromAccessor(sampler.input).asFloatBuffer(),
+                            accessors.get(sampler.output).type,
+                            bufferViews.get(accessors.get(sampler.input).bufferView).getData().asFloatBuffer(),
                             // TODO: output data could be other then float, need to convert (non float ones are normalised)
-                            GetBufferFromAccessor(sampler.output).asFloatBuffer(),
+                            bufferViews.get(accessors.get(sampler.output).bufferView).getData().asFloatBuffer(),
                             nodeCache.get(targetObject.get("node").getAsInt()),
                             gson.fromJson(targetObject.get("path"), AnimationPath.class)
                     ));
@@ -219,8 +219,6 @@ public class GltfLoader {
         // Load matrix, or TSR values 
         if (nodeJson.has("matrix")) {
             node = new Node(children, gson.fromJson(nodeJson.get("matrix"), float[].class));
-        } else if (!nodeJson.has("translation") && !nodeJson.has("rotation") && !nodeJson.has("scale")) {
-            node = new Node(children, new float[]{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1});
         } else {
             float[] translation = new float[]{0, 0, 0};
             float[] rotation = new float[]{0, 0, 0, 1};
