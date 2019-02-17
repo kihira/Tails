@@ -2,34 +2,24 @@ package uk.kihira.tails.common.network;
 
 import com.google.common.base.Strings;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.util.UUIDTypeAdapter;
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkEvent;
 import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
-public class PlayerDataMessage implements IMessage {
+public class PlayerDataMessage {
 
     private UUID uuid;
     private Outfit outfit;
     private boolean shouldRemove;
 
-    public PlayerDataMessage() {}
-    public PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) {
-        this.uuid = uuid;
-        this.outfit = outfit;
-        this.shouldRemove = shouldRemove;
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        uuid = UUIDTypeAdapter.fromString(ByteBufUtils.readUTF8String(buf));
-        String tailInfoJson = ByteBufUtils.readUTF8String(buf);
+    public PlayerDataMessage(PacketBuffer buf) {
+        uuid = buf.readUniqueId();
+        String tailInfoJson = buf.readString(Integer.MAX_VALUE);
         if (!Strings.isNullOrEmpty(tailInfoJson)) {
             try {
                 outfit = Tails.gson.fromJson(tailInfoJson, Outfit.class);
@@ -40,26 +30,31 @@ public class PlayerDataMessage implements IMessage {
         else outfit = null;
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeUTF8String(buf, UUIDTypeAdapter.fromUUID(uuid));
-        String tailInfoJson = outfit == null ? "" : Tails.gson.toJson(this.outfit);
-        ByteBufUtils.writeUTF8String(buf, tailInfoJson);
+    public PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) {
+        this.uuid = uuid;
+        this.outfit = outfit;
+        this.shouldRemove = shouldRemove;
     }
 
-    public static class Handler implements IMessageHandler<PlayerDataMessage, IMessage> {
+    public void toBytes(PacketBuffer buf) {
+        String tailInfoJson = outfit == null ? "" : Tails.gson.toJson(this.outfit);
 
-        @Override
-        public IMessage onMessage(PlayerDataMessage message, MessageContext ctx) {
-            if (message.shouldRemove) Tails.proxy.removeActiveOutfit(message.uuid);
-            else if (message.outfit != null) {
-                Tails.proxy.setActiveOutfit(message.uuid, message.outfit);
+        buf.writeUniqueId(uuid);
+        buf.writeString(tailInfoJson);
+    }
+
+    public void handle(Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            if (shouldRemove) {
+                // todo Tails.proxy.removeActiveOutfit(uuid);
+            }
+            else if (outfit != null) {
+                // todo Tails.proxy.setActiveOutfit(uuid, outfit);
                 //Tell other clients about the change
-                if (ctx.side.isServer()) {
-                    Tails.networkWrapper.sendToAll(new PlayerDataMessage(message.uuid, message.outfit, false));
+                if (ctx.get().getDirection() == NetworkDirection.PLAY_TO_SERVER) {
+                    Tails.networkWrapper.sendTo(new PlayerDataMessage(uuid, outfit, false), ctx.get().getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
                 }
             }
-            return null;
-        }
+        });
     }
 }

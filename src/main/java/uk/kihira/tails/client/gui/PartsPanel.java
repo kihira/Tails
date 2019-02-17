@@ -12,7 +12,6 @@ import net.minecraftforge.fml.client.config.GuiUtils;
 import uk.kihira.gltf.Model;
 import uk.kihira.tails.client.*;
 import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.proxy.ClientProxy;
 
 import java.io.IOException;
 import java.util.stream.Collectors;

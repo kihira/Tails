@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import uk.kihira.tails.client.gui.GuiEditor;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
-import uk.kihira.tails.proxy.ClientProxy;
 
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler {

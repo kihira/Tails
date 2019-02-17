@@ -10,7 +10,6 @@ import org.lwjgl.input.Keyboard;
 import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.common.network.LibraryRequestMessage;
 
 import javax.annotation.Nullable;
 import java.io.IOException;

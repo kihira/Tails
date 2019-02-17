@@ -5,7 +5,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.common.Outfit;
 import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.proxy.ClientProxy;
 
 import javax.annotation.Nullable;
 import java.util.UUID;

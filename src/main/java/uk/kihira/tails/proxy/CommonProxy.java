@@ -1,13 +1,8 @@
 package uk.kihira.tails.proxy;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import uk.kihira.tails.common.LibraryManager;
 import uk.kihira.tails.common.Outfit;
-import uk.kihira.tails.common.ServerEventHandler;
 import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.common.network.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,26 +12,6 @@ public class CommonProxy {
 
     protected final HashMap<UUID, Outfit> activeOutfits = new HashMap<>(); // todo move this out of proxy? Will be removed in cloud save stuff most likely
     protected LibraryManager libraryManager;
-
-    public void preInit() {
-        registerMessages();
-        registerHandlers();
-        libraryManager = new LibraryManager();
-    }
-
-    public void postInit() { }
-
-    protected void registerMessages() {
-        Tails.networkWrapper.registerMessage(PlayerDataMessage.Handler.class, PlayerDataMessage.class, 0, Side.SERVER);
-        Tails.networkWrapper.registerMessage(PlayerDataMapMessage.Handler.class, PlayerDataMapMessage.class, 1, Side.SERVER);
-        Tails.networkWrapper.registerMessage(LibraryEntriesMessage.Handler.class, LibraryEntriesMessage.class, 2, Side.SERVER);
-        Tails.networkWrapper.registerMessage(LibraryRequestMessage.Handler.class, LibraryRequestMessage.class, 3, Side.SERVER);
-        Tails.networkWrapper.registerMessage(ServerCapabilitiesMessage.Handler.class, ServerCapabilitiesMessage.class, 4, Side.SERVER);
-    }
-
-    protected void registerHandlers() {
-        MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
-    }
 
     public void setActiveOutfit(UUID uuid, Outfit outfit) {
         this.activeOutfits.put(uuid, outfit);

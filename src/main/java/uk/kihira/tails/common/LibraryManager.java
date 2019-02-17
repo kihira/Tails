@@ -3,7 +3,6 @@ package uk.kihira.tails.common;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import uk.kihira.tails.client.gui.GuiEditor;
-import uk.kihira.tails.common.network.LibraryEntriesMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.apache.commons.io.IOUtils;
