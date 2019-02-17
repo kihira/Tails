@@ -5,7 +5,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraftforge.client.event.MouseEvent;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
@@ -28,14 +27,14 @@ public class Toast {
         this.width = width;
         this.time = time;
         this.message = Arrays.asList(message);
-        height = this.message.size() * Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 7;
+        height = this.message.size() * Minecraft.getInstance().fontRenderer.FONT_HEIGHT + 7;
     }
 
     public void onMouseEvent(MouseEvent mouseEvent) {}
 
     public void drawToast(int mouseX, int mouseY) {
         if (this.time > 0) {
-            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+            FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
             mouseOver = mouseX >= xPos && mouseY >= yPos && mouseX < xPos + width && mouseY < yPos + height;
             int opacity = mouseOver ? 255 : (int) (this.time * 256F / 10F);
             if (opacity > 255) opacity = 255;
@@ -45,7 +44,7 @@ public class Toast {
                 GlStateManager.pushMatrix();
                 GlStateManager.enableBlend();
                 GlStateManager.disableLighting();
-                OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+                OpenGlHelper.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
                 drawBackdrop(xPos, yPos, width, height);
                 int colour = 0xFFFFFF | (opacity << 24);
                 for (int i = 0; i < message.size(); i++) {
@@ -53,7 +52,7 @@ public class Toast {
                     fontRenderer.drawStringWithShadow(s, (xPos + width / 2) - (fontRenderer.getStringWidth(s) / 2), yPos + 4 + (fontRenderer.FONT_HEIGHT * i), colour);
                 }
                 GlStateManager.disableBlend();
-                GlStateManager.color(0F, 0F, 0F, 1F);
+                GlStateManager.color4f(0f, 0f, 0f, 1f);
                 GlStateManager.popMatrix();
             }
         }

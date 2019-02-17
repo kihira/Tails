@@ -65,11 +65,11 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         if (outfitPart != null) mountPoint = outfitPart.mountPoint.name();
         mountPoint = I18n.format("tails.mountpoint." + mountPoint);
 
-        buttonList.add(mountPointButton = new GuiButtonExt(0, 5, spacing * 7, width - 10, 20, mountPoint));
+        buttons.add(mountPointButton = new GuiButtonExt(0, 5, spacing * 7, width - 10, 20, mountPoint));
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         drawHorizontalLine(0, width, 0, HOZ_LINE_COLOUR);
 
         zLevel = -100;
@@ -78,26 +78,26 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
 
         // Rotation
         fontRenderer.drawString(I18n.format("tails.gui.rotation"), 5, fontRenderer.FONT_HEIGHT / 2, GuiEditor.TEXT_COLOUR);
-        xRotInput.draw(mouseX, mouseY);
-        yRotInput.draw(mouseX, mouseY);
-        zRotInput.draw(mouseX, mouseY);
+        xRotInput.draw(mouseX, mouseY, partialTicks);
+        yRotInput.draw(mouseX, mouseY, partialTicks);
+        zRotInput.draw(mouseX, mouseY, partialTicks);
 
         // Position
         fontRenderer.drawString(I18n.format("tails.gui.position"), 5, spacing * 2 + fontRenderer.FONT_HEIGHT / 2, GuiEditor.TEXT_COLOUR);
-        xPosInput.draw(mouseX, mouseY);
-        yPosInput.draw(mouseX, mouseY);
-        zPosInput.draw(mouseX, mouseY);
+        xPosInput.draw(mouseX, mouseY, partialTicks);
+        yPosInput.draw(mouseX, mouseY, partialTicks);
+        zPosInput.draw(mouseX, mouseY, partialTicks);
 
         // Scale
         fontRenderer.drawString(I18n.format("tails.gui.scale"), 5, spacing * 4 + fontRenderer.FONT_HEIGHT / 2, GuiEditor.TEXT_COLOUR);
-        xScaleInput.draw(mouseX, mouseY);
-        yScaleInput.draw(mouseX, mouseY);
-        zScaleInput.draw(mouseX, mouseY);
+        xScaleInput.draw(mouseX, mouseY, partialTicks);
+        yScaleInput.draw(mouseX, mouseY, partialTicks);
+        zScaleInput.draw(mouseX, mouseY, partialTicks);
 
         // Mount point
         fontRenderer.drawString(I18n.format("tails.gui.mountpoint"), 5, spacing * 6 + fontRenderer.FONT_HEIGHT / 2, GuiEditor.TEXT_COLOUR);
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
     }
 
     @Override

@@ -22,13 +22,13 @@ import java.util.List;
 public class GuiHSBSlider extends GuiSlider implements ITooltip {
 
     private static final ResourceLocation sliderTexture = new ResourceLocation(Tails.MOD_ID, "texture/gui/controls/slider_hue.png");
-    
+
     private final HSBSliderType type;
     private final IHSBSliderCallback callback;
     private float hueValue;
     private float briValue;
     private List<String> tooltips;
-    
+
     public GuiHSBSlider(int id, int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type) {
         super(id, xPos, yPos, width, height, "", "", 0, 256 * 6 - 5, 0, false, false);
         this.type = type;
@@ -41,26 +41,26 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
         this(id, xPos, yPos, width, height, callback, type);
         this.tooltips = Arrays.asList(tooltips);
     }
-    
+
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partial) {
+    public void render(int mouseX, int mouseY, float partial) {
         if (this.visible) {
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
             GuiUtils.drawContinuousTexturedBox(GuiButton.BUTTON_TEXTURES, this.x, this.y, 0, 46, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
-            mc.renderEngine.bindTexture(sliderTexture);
-            
+            Minecraft.getInstance().getTextureManager().bindTexture(sliderTexture);
+
             if (type == HSBSliderType.SATURATION) {
                 Color hueColour = Color.getHSBColor(hueValue, 1F, 1F);
-                float red = (float) hueColour.getRed() / 255;
-                float green = (float) hueColour.getGreen() / 255;
-                float blue = (float) hueColour.getBlue() / 255;
-                GlStateManager.color(red, green, blue, 1.0F);
+                float red = (float) hueColour.getRed() / 255f;
+                float green = (float) hueColour.getGreen() / 255f;
+                float blue = (float) hueColour.getBlue() / 255f;
+                GlStateManager.color4f(red, green, blue, 1f);
                 drawTexturedModalRectScaled(x + 1, y + 1, 0, 176, 256, 20, this.width - 2, this.height - 2);
             }
-            
+
             int srcY = 236;
-            
+
             if (type == HSBSliderType.BRIGHTNESS) {
                 srcY -= 20;
             }
@@ -69,23 +69,23 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
             }
             if (type == HSBSliderType.SATURATION) {
                 Color hueColour = Color.getHSBColor(0F, 0F, briValue);
-                float red = (float) hueColour.getRed() / 255;
-                float green = (float) hueColour.getGreen() / 255;
-                float blue = (float) hueColour.getBlue() / 255;
-                GlStateManager.color(red, green, blue, 1.0F);
+                float red = (float) hueColour.getRed() / 255f;
+                float green = (float) hueColour.getGreen() / 255f;
+                float blue = (float) hueColour.getBlue() / 255f;
+                GlStateManager.color4f(red, green, blue, 1f);
                 drawTexturedModalRectScaled(x + 1, y + 1, 0, srcY, 231, 20, this.width - 2, this.height - 2);
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.color4f(1f, 1f, 1f, 1f);
             } else {
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.color4f(1f, 1f, 1f, 1f);
                 drawTexturedModalRectScaled(x + 1, y + 1, 0, srcY, 256, 20, this.width - 2, this.height - 2);
             }
-            
-            this.mouseDragged(mc, mouseX, mouseY);
+
+            this.mouseDragged(mouseX, mouseY);
         }
     }
-    
+
     @Override
-    protected void mouseDragged(Minecraft mc, int par2, int par3) {
+    public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_, double p_mouseDragged_6_, double p_mouseDragged_8_) {
         if (this.visible) {
             if (this.dragging) {
                 this.sliderValue = (par2 - (this.x + 4)) / (float)(this.width - 8);
@@ -95,19 +95,20 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
                 }
             }
 
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color4f(1f, 1f, 1f, 1f);
             //RenderHelper.startGlScissor(x, y, width, height);
-            mc.renderEngine.bindTexture(sliderTexture);
+            Minecraft.getInstance().getTextureManager().bindTexture(sliderTexture);
             this.drawTexturedModalRect(this.x + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.y, 0, 0, 7, 4);
             this.drawTexturedModalRect(this.x + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.y + this.height - 4, 7, 0, 7, 4);
             //RenderHelper.endGlScissor();
         }
+        return true; // todo
     }
-    
+
     public HSBSliderType getType() {
         return type;
     }
-    
+
     @Override
     public double getValue() {
         return sliderValue;
@@ -150,7 +151,7 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
     public void setBrightness(float value) {
         this.briValue = value;
     }
-    
+
     private void drawTexturedModalRectScaled(int x, int y, int u, int v, int srcWidth, int srcHeight, int tarWidth, int tarHeight) {
         float f = 0.00390625F;
         float f1 = 0.00390625F;

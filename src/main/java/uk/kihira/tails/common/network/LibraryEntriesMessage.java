@@ -6,9 +6,6 @@ import io.netty.buffer.ByteBuf;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.List;
 

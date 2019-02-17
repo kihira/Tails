@@ -38,7 +38,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     public void initGui() {
         initPartList();
 
-        buttonList.add(mountPointButton = new GuiButtonExt(0, width / 2 - 25, 16, 50, 16, I18n.format("tails.mountpoint." + mountPoint.name())));
+        buttons.add(mountPointButton = new GuiButtonExt(0, width / 2 - 25, 16, 50, 16, I18n.format("tails.mountpoint." + mountPoint.name())));
     }
 
     @Override

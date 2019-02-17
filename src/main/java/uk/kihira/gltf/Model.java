@@ -31,7 +31,7 @@ public class Model implements IDisposable {
         allNodes.forEach(Node::dispose);
 
         // Textures
-        textures.forEach(texture -> Minecraft.getMinecraft().getTextureManager().deleteTexture(texture));
+        textures.forEach(texture -> Minecraft.getInstance().getTextureManager().deleteTexture(texture));
         textures.clear();
     }
 }

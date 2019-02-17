@@ -114,7 +114,7 @@ public class LibraryManager {
         @Override
         public void addEntries(List<? extends LibraryEntryData> entries) {
             super.addEntries(entries);
-            GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
+            GuiScreen guiScreen = Minecraft.getInstance().currentScreen;
 
             if (guiScreen instanceof GuiEditor) {
                 GuiEditor editor = (GuiEditor) guiScreen;

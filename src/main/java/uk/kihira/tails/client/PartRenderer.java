@@ -55,16 +55,16 @@ public class PartRenderer {
      * Queues up a part to be rendered
      */
     public void render(OutfitPart part) {
-        GL11.glPushMatrix();
-        GlStateManager.translate(part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
-        GlStateManager.rotate(part.rotation[0], 1f, 0f, 0f);
-        GlStateManager.rotate(part.rotation[1], 0f, 1f, 0f);
-        GlStateManager.rotate(part.rotation[2], 0f, 0f, 1f);
-        GlStateManager.scale(part.scale[0], part.scale[1], part.scale[2]);
+        GlStateManager.pushMatrix();
+        GlStateManager.translatef(part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
+        GlStateManager.rotatef(part.rotation[0], 1f, 0f, 0f);
+        GlStateManager.rotatef(part.rotation[1], 0f, 1f, 0f);
+        GlStateManager.rotatef(part.rotation[2], 0f, 0f, 1f);
+        GlStateManager.scalef(part.scale[0], part.scale[1], part.scale[2]);
 
         FloatBuffer fb = getFloatBuffer();
-        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, fb);
-        GL11.glPopMatrix();
+        GlStateManager.getFloatv(GL11.GL_MODELVIEW_MATRIX, fb);
+        GlStateManager.popMatrix();
 
         renders.put(part, fb);
     }
@@ -76,8 +76,8 @@ public class PartRenderer {
         if (renders.size() == 0) return;
 
         RenderHelper.enableStandardItemLighting();
-        GlStateManager.color(1f, 1f, 1f);
-        GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
+        GlStateManager.color3f(1f, 1f, 1f);
+        GlStateManager.getFloatv(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
         shader.use();
 
         for (HashMap.Entry<OutfitPart, FloatBuffer> entry : renders.entrySet()) {
@@ -92,12 +92,12 @@ public class PartRenderer {
             tintBuffer.put(outfitPart.tint[1]);
             tintBuffer.put(outfitPart.tint[2]);
             tintBuffer.flip();
-            OpenGlHelper.glUniform3(shader.getUniform("tints"), tintBuffer);
+            OpenGlHelper.glUniform3fv(shader.getUniform("tints"), tintBuffer);
 
             // todo load texture
-            Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("tails", "blah"));
-            GL11.glLoadMatrix(entry.getValue());
-            GlStateManager.scale(1, -1, 1); // Seems y is flipped, quick and cheap solution for now
+            Minecraft.getInstance().getTextureManager().bindTexture(new ResourceLocation("tails", "blah"));
+            GL11.glLoadMatrixf(entry.getValue());
+            GlStateManager.scalef(1.f, -1.f, 1.f); // Seems y is flipped, quick and cheap solution for now
             model.render();
 
             freeFloatBuffer(entry.getValue());
@@ -111,7 +111,7 @@ public class PartRenderer {
         OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, 0);
 
         RenderHelper.disableStandardItemLighting();
-        GL11.glLoadMatrix(modelViewMatrixWorld);
+        GL11.glLoadMatrixf(modelViewMatrixWorld);
     }
 
     /*

@@ -6,11 +6,8 @@ import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import uk.kihira.tails.client.gui.GuiEditor;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
@@ -29,7 +26,7 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onScreenInitPost(GuiScreenEvent.InitGuiEvent.Post event) {
         if (event.getGui() instanceof GuiIngameMenu) {
-            event.getButtonList().add(new GuiButton(TAILS_BUTTON_ID, (event.getGui().width / 2) - 35, event.getGui().height - 25, 70, 20, I18n.format("gui.button.editor")));
+            event.getbuttons().add(new GuiButton(TAILS_BUTTON_ID, (event.getGui().width / 2) - 35, event.getGui().height - 25, 70, 20, I18n.format("gui.button.editor")));
         }
     }
 
@@ -50,7 +47,7 @@ public class ClientEventHandler {
     public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         //Add local player texture to map
         if (Tails.localOutfit != null) {
-            Tails.proxy.setActiveOutfit(Minecraft.getMinecraft().getSession().getProfile().getId(), Tails.localOutfit);
+            Tails.proxy.setActiveOutfit(Minecraft.getInstance().getSession().getProfile().getId(), Tails.localOutfit);
         }
     }
 
@@ -71,8 +68,8 @@ public class ClientEventHandler {
                 clearAllPartInfo = false;
             }
             //World can't be null if we want to send a packet it seems
-            else if (!sentPartInfoToServer && Minecraft.getMinecraft().world != null) {
-                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Minecraft.getMinecraft().getSession().getProfile().getId(), Tails.localOutfit, false));
+            else if (!sentPartInfoToServer && Minecraft.getInstance().world != null) {
+                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Minecraft.getInstance().getSession().getProfile().getId(), Tails.localOutfit, false));
                 sentPartInfoToServer = true;
             }
         }

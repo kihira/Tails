@@ -1,9 +1,9 @@
 package uk.kihira.gltf;
 
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GLContext;
 import uk.kihira.gltf.spec.MeshPrimitive.Attribute;
 import uk.kihira.tails.client.PartRenderer;
 import uk.kihira.tails.common.IDisposable;
@@ -27,7 +27,7 @@ public final class Geometry implements IDisposable {
     }
 
     private void bind() {
-        if (GLContext.getCapabilities().OpenGL30) {
+        if (GL.getCapabilities().OpenGL30) {
             vao = GL30.glGenVertexArrays();
             PartRenderer.glBindVertexArray(vao);
         }
@@ -44,13 +44,13 @@ public final class Geometry implements IDisposable {
             indicesBuffer.bufferView.bind();
         }
 
-        if (GLContext.getCapabilities().OpenGL30) {
+        if (GL.getCapabilities().OpenGL30) {
             PartRenderer.glBindVertexArray(0);
         }
     }
 
     public void render() {
-        if (GLContext.getCapabilities().OpenGL30) {
+        if (GL.getCapabilities().OpenGL30) {
             if (vao == -1) {
                 bind();
             }

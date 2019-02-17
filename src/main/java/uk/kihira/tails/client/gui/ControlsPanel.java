@@ -20,10 +20,10 @@ public class ControlsPanel extends Panel<GuiEditor> {
     @Override
     public void initGui() {
         //Mode Switch
-        buttonList.add(new GuiButton(MODE_BUTTON_ID, 3, height - 25, 46, 20, I18n.format("gui.button.mode.library")));
+        buttons.add(new GuiButton(MODE_BUTTON_ID, 3, height - 25, 46, 20, I18n.format("gui.button.mode.library")));
         //Reset/Save
-        buttonList.add(new GuiButton(RESET_BUTTON_ID, width/2 - 23, height - 25, 46, 20, I18n.format("gui.button.reset")));
-        buttonList.add(new GuiButton(DONE_BUTTON_ID, width - 49, height - 25, 46, 20, I18n.format("gui.done")));
+        buttons.add(new GuiButton(RESET_BUTTON_ID, width/2 - 23, height - 25, 46, 20, I18n.format("gui.button.reset")));
+        buttons.add(new GuiButton(DONE_BUTTON_ID, width - 49, height - 25, 46, 20, I18n.format("gui.done")));
     }
 
     @Override

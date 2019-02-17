@@ -21,7 +21,7 @@ public class Shader {
     private Map<String, Integer> uniforms;
 
     public Shader(String vertShader, String fragShader) {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         ResourceLocation vertRes = new ResourceLocation(Tails.MOD_ID, "shader/" + vertShader + ".glsl");
         ResourceLocation fragRes = new ResourceLocation(Tails.MOD_ID, "shader/" + fragShader + ".glsl");
 
@@ -102,7 +102,7 @@ public class Shader {
     }
 
     public void setTexture(ResourceLocation resourceLocation) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(resourceLocation);
+        Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
     }
 
     /**

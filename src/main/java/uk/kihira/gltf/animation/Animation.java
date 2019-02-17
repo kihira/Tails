@@ -1,5 +1,6 @@
 package uk.kihira.gltf.animation;
 
+import net.minecraft.client.renderer.Quaternion;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -60,7 +61,7 @@ public class Animation {
                     channel.node.translation.set(interpolatedValues.get(0), interpolatedValues.get(1), interpolatedValues.get(2));
                     break;
                 case ROTATION:
-                    channel.node.rotation.set(interpolatedValues.get(0), interpolatedValues.get(1), interpolatedValues.get(2), interpolatedValues.get(3));
+                    channel.node.rotation = new Quaternion(interpolatedValues.get(0), interpolatedValues.get(1), interpolatedValues.get(2), interpolatedValues.get(3));
                     break;
                 case SCALE:
                     channel.node.scale.set(interpolatedValues.get(0), interpolatedValues.get(1), interpolatedValues.get(2));

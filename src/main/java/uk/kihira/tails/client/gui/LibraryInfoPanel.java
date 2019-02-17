@@ -34,10 +34,10 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         textField = new GuiTextField(-1, fontRenderer, 6, 6, width - 12, 15);
         textField.setMaxStringLength(16);
 
-        buttonList.add(favButton = new GuiIconButton.GuiIconToggleButton(0, 5, height - 20, GuiIconButton.Icons.STAR, I18n.format("gui.button.favourite")));
-        buttonList.add(new GuiIconButton(1, 21, height - 20, GuiIconButton.Icons.DELETE, I18n.format("gui.button.delete")));
-        buttonList.add(new GuiIconButton(3, 53, height - 20, GuiIconButton.Icons.DOWNLOAD, I18n.format("gui.button.savelocal")));
-        buttonList.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, I18n.format("gui.button.share")));
+        buttons.add(favButton = new GuiIconButton.GuiIconToggleButton(0, 5, height - 20, GuiIconButton.Icons.STAR, I18n.format("gui.button.favourite")));
+        buttons.add(new GuiIconButton(1, 21, height - 20, GuiIconButton.Icons.DELETE, I18n.format("gui.button.delete")));
+        buttons.add(new GuiIconButton(3, 53, height - 20, GuiIconButton.Icons.DOWNLOAD, I18n.format("gui.button.savelocal")));
+        buttons.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, I18n.format("gui.button.share")));
         super.initGui();
 
         //Only request library if on remote server
@@ -138,7 +138,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         this.entry = entry;
         if (entry == null) {
             textField.setVisible(false);
-            for (Object button : buttonList) {
+            for (Object button : buttons) {
                 ((GuiButton) button).visible = false;
             }
         }
@@ -146,7 +146,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             favButton.toggled = entry.data.favourite;
             textField.setVisible(true);
             textField.setText(entry.data.entryName);
-            for (Object obj : buttonList) {
+            for (Object obj : buttons) {
                 GuiButton button = (GuiButton) obj;
                 button.visible = true;
 

@@ -2,7 +2,6 @@ package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,15 +46,15 @@ public abstract class GuiBase extends GuiBaseScreen {
             for (Panel panel : layer) {
                 if (panel.enabled) {
                     GlStateManager.pushMatrix();
-                    GlStateManager.translate(panel.left, panel.top, 0);
-                    GlStateManager.color(1f, 1f, 1f, 1f);
+                    GlStateManager.translatef(panel.left, panel.top, 0);
+                    GlStateManager.color4f(1f, 1f, 1f, 1f);
                     panel.drawScreen(mouseX - panel.left, mouseY - panel.top, partialTicks);
                     GlStateManager.disableLighting();
                     GlStateManager.popMatrix();
                 }
             }
         }
-        GlStateManager.color(1f, 1f, 1f, 1f);
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -70,7 +69,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
                 if (shouldReceiveMouse(mouseX, mouseY, panel)) {
@@ -82,7 +81,7 @@ public abstract class GuiBase extends GuiBaseScreen {
     }
 
     @Override
-    protected void mouseReleased(int mouseX, int mouseY, int mouseButton) {
+    protected boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
                 if (shouldReceiveMouse(mouseX, mouseY, panel)) {
@@ -106,18 +105,6 @@ public abstract class GuiBase extends GuiBaseScreen {
     }
 
     @Override
-    public void handleMouseInput() throws IOException {
-        for (ArrayList<Panel> layer : layers) {
-            for (Panel panel : layer) {
-                if (panel.enabled) {
-                    panel.handleMouseInput();
-                }
-            }
-        }
-        super.handleMouseInput();
-    }
-
-    @Override
     public void onGuiClosed() {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
@@ -134,7 +121,7 @@ public abstract class GuiBase extends GuiBaseScreen {
      * @param panel The panel
      * @return Whether it should receive them
      */
-    private boolean shouldReceiveMouse(int mouseX, int mouseY, Panel panel) {
+    private boolean shouldReceiveMouse(double mouseX, double mouseY, Panel panel) {
         return panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse;
     }
 }

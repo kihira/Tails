@@ -36,7 +36,7 @@ public class GuiEditor extends GuiBase {
     public GuiEditor() {
         super(4);
 
-        playerUUID = EntityPlayer.getUUID(Minecraft.getMinecraft().getSession().getProfile());
+        playerUUID = EntityPlayer.getUUID(Minecraft.getInstance().getSession().getProfile());
 
         // Load outfit or create empty one
         if (Tails.localOutfit == null) originalOutfit = new Outfit();

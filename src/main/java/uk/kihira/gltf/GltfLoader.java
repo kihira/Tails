@@ -118,7 +118,7 @@ public class GltfLoader {
                 DynamicTexture texture = new DynamicTexture(bufferedImage);
                 ResourceLocation texResLoc = new ResourceLocation(name); // todo should use model name as well
 
-                Minecraft.getMinecraft().getTextureManager().loadTexture(texResLoc, texture);
+                Minecraft.getInstance().getTextureManager().loadTexture(texResLoc, texture);
                 textures.add(texResLoc);
             } catch (IOException e) {
                 Tails.logger.error("Failed to load texture " + name, e);

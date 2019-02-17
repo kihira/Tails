@@ -7,9 +7,6 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import uk.kihira.tails.client.PartRegistry;
@@ -61,9 +58,9 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         editPaneTop = 40;
 
         // Edit tint buttons
-        buttonList.add(new TintButton(TINT_1_BUTTON, 10, 16, TINT_1_BUTTON));
-        buttonList.add(new TintButton(TINT_2_BUTTON, 40, 16, TINT_2_BUTTON));
-        buttonList.add(new TintButton(TINT_3_BUTTON, 70, 16, TINT_3_BUTTON));
+        buttons.add(new TintButton(TINT_1_BUTTON, 10, 16, TINT_1_BUTTON));
+        buttons.add(new TintButton(TINT_2_BUTTON, 40, 16, TINT_2_BUTTON));
+        buttons.add(new TintButton(TINT_3_BUTTON, 70, 16, TINT_3_BUTTON));
 
         //Tint edit pane
         hexText = new GuiTextField(HEX_TEXT, fontRenderer, 30, editPaneTop + 20, 73, 10);
@@ -78,9 +75,9 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         rgbSliders[1].setHue(1f / 3f);
         rgbSliders[2].setHue(2f / 3f);
 
-        buttonList.add(rgbSliders[0]);
-        buttonList.add(rgbSliders[1]);
-        buttonList.add(rgbSliders[2]);
+        buttons.add(rgbSliders[0]);
+        buttons.add(rgbSliders[1]);
+        buttons.add(rgbSliders[2]);
 
         //HBS sliders
         hsbSliders = new GuiHSBSlider[3];
@@ -88,23 +85,23 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         hsbSliders[1] = new GuiHSBSlider(SATURATION_SLIDER, 5, editPaneTop + 45, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.saturation.tooltip"));
         hsbSliders[2] = new GuiHSBSlider(BRIGHTNESS_SLIDER, 5, editPaneTop + 55, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.BRIGHTNESS, I18n.format("gui.slider.brightness.tooltip"));
 
-        buttonList.add(hsbSliders[0]);
-        buttonList.add(hsbSliders[1]);
-        buttonList.add(hsbSliders[2]);
+        buttons.add(hsbSliders[0]);
+        buttons.add(hsbSliders[1]);
+        buttons.add(hsbSliders[2]);
 
         //Reset/Save
-        buttonList.add(tintReset = new GuiIconButton(RESET_BUTTON, width - 20, editPaneTop + 2, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset")));
+        buttons.add(tintReset = new GuiIconButton(RESET_BUTTON, width - 20, editPaneTop + 2, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset")));
         tintReset.enabled = false;
 
         //Colour Picker
-        buttonList.add(colourPicker = new GuiIconButton(COLOR_PICKER_BUTTON, width - 36, editPaneTop + 1, GuiIconButton.Icons.EYEDROPPER, I18n.format("gui.button.picker.0"), I18n.format("gui.button.picker.1")));
+        buttons.add(colourPicker = new GuiIconButton(COLOR_PICKER_BUTTON, width - 36, editPaneTop + 1, GuiIconButton.Icons.EYEDROPPER, I18n.format("gui.button.picker.0"), I18n.format("gui.button.picker.1")));
         colourPicker.visible = false;
 
         updateTints(true);
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         drawRect(0, 0, width, height, GuiEditor.DARK_GREY);
         drawString(fontRenderer, I18n.format("gui.tint"), 5, 3, GuiEditor.TEXT_COLOUR);
 
@@ -114,17 +111,17 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             fontRenderer.drawString(I18n.format("gui.tint.edit", currTintEdit + 1), 5, editPaneTop + 5, GuiEditor.TEXT_COLOUR);
 
             fontRenderer.drawString(I18n.format("gui.hex") + ":", 5, editPaneTop + 21, GuiEditor.TEXT_COLOUR);
-            hexText.drawTextBox();
+            hexText.drawTextField(mouseX, mouseY, partialTicks);
         }
 
         // Draw preview of colour hovered over
         if (selectingColour) {
             int x = mouseX + COLOUR_PREVIEW_OFFSET;
             int y = mouseY + COLOUR_PREVIEW_OFFSET;
-            drawRect(x, y, x + COLOUR_PREVIEW_SIZE, y + COLOUR_PREVIEW_SIZE, getColourAtPoint(Mouse.getX(), Mouse.getY()));
+            drawRect(x, y, x + COLOUR_PREVIEW_SIZE, y + COLOUR_PREVIEW_SIZE, getColourAtPoint(mouseX, mouseY));
         }
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -175,7 +172,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (selectingColour && mouseButton == 0) {
-            currTintColour = getColourAtPoint(Mouse.getEventX(), Mouse.getEventY()); //Ignore alpha
+            currTintColour = getColourAtPoint(mouseX, mouseY); //Ignore alpha
             setSelectingColour(false);
             updateTints(true);
         } else {
@@ -230,11 +227,11 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         pixelData = new int[pixels];
 
-        GlStateManager.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
-        GlStateManager.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        GlStateManager.pixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
+        GlStateManager.pixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
         pixelBuffer.clear();
 
-        GlStateManager.glReadPixels(x, y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);
+        GlStateManager.readPixels(x, y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);
 
         pixelBuffer.get(pixelData);
 
@@ -251,7 +248,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
                 int pixels = 16 * 16;
                 pixelData = new int[pixels];
                 IntBuffer buffer = IntBuffer.wrap(bufferedImage.getRGB(GuiIconButton.Icons.EYEDROPPER.u, GuiIconButton.Icons.EYEDROPPER.v + 16, 16, 16, pixelData, 0, 16));
-                org.lwjgl.input.Cursor cursor = new org.lwjgl.input.Cursor(16, 16, 0, 15, 1, buffer, null);
+                Cursor cursor = new Cursor(16, 16, 0, 15, 1, buffer, null);
 
                 Mouse.setNativeCursor(cursor);
 
@@ -330,7 +327,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        public void render(int mouseX, int mouseY, float partialTicks) {
             if (parent.getCurrentOutfitPart() == null) return;
 
             hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;

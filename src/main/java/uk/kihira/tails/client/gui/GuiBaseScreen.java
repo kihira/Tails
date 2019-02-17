@@ -1,6 +1,5 @@
 package uk.kihira.tails.client.gui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
@@ -15,11 +14,11 @@ public abstract class GuiBaseScreen extends GuiScreen {
     private float mouseIdleTicks;
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        super.render(mouseX, mouseY, partialTicks);
 
         // Tooltips
-        for (GuiButton btn : buttonList) {
+        for (GuiButton btn : buttons) {
             if (btn instanceof ITooltip && btn.isMouseOver()) {
                 if (prevMouseX == mouseX && prevMouseY == mouseY) mouseIdleTicks += partialTicks;
                 else if (mouseIdleTicks > 0f) mouseIdleTicks = 0f;
@@ -58,12 +57,10 @@ public abstract class GuiBaseScreen extends GuiScreen {
         }
 
         @Override
-        public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY) {
+        public void onClick(double mouseX, double mouseY) {
             if (this.visible && GuiBaseScreen.isMouseOver(mouseX, mouseY, x, y, width, height)) {
                 this.enabled = !this.enabled;
-                return true;
             }
-            return false;
         }
 
         @Override
@@ -74,7 +71,7 @@ public abstract class GuiBaseScreen extends GuiScreen {
         }
     }
 
-    public static boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height) {
+    public static boolean isMouseOver(double mouseX, double mouseY, int x, int y, int width, int height) {
         return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
     }
 }

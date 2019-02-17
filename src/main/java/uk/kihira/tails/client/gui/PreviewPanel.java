@@ -31,9 +31,9 @@ class PreviewPanel extends Panel<GuiEditor> {
             return;
         scaledRes = new ScaledResolution(this.mc);
         // Reset Camera
-        buttonList.add(new GuiIconButton(RESET_BUTTON, width - 18, 22, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset.camera")));
+        buttons.add(new GuiIconButton(RESET_BUTTON, width - 18, 22, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset.camera")));
         // Help
-        buttonList.add(new GuiIconButton(HELP_BUTTON, width - 18, 4, GuiIconButton.Icons.QUESTION, I18n.format("gui.button.help.camera")));
+        buttons.add(new GuiIconButton(HELP_BUTTON, width - 18, 4, GuiIconButton.Icons.QUESTION, I18n.format("gui.button.help.camera")));
     }
 
     @Override

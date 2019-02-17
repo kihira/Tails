@@ -3,33 +3,28 @@ package uk.kihira.tails.common;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.NetworkCheckHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
-import net.minecraftforge.fml.common.versioning.VersionParser;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
 import uk.kihira.tails.proxy.CommonProxy;
 
 import java.util.Map;
 
-@Mod(modid = Tails.MOD_ID, name = "Tails", version = "@VERSION@", dependencies = "after:moreplayermodels")
+@Mod(Tails.MOD_ID)
 public class Tails {
 
     public static final String MOD_ID = "tails";
     public static final Logger logger = LogManager.getLogger(MOD_ID);
-    public static final SimpleNetworkWrapper networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
+    public static final SimpleChannel networkWrapper = NetworkRegistry.newSimpleChannel(MOD_ID);
     public static final Gson gson = new GsonBuilder().create();
 
     public static Configuration configuration;
@@ -38,23 +33,22 @@ public class Tails {
 
     @SidedProxy(clientSide = "uk.kihira.tails.proxy.ClientProxy", serverSide = "uk.kihira.tails.proxy.CommonProxy")
     public static CommonProxy proxy;
-    @Mod.Instance(value = "tails")
-    public static Tails instance;
 
     public static Outfit localOutfit;
 
-    @Mod.EventHandler
-    public void onPreInit(FMLPreInitializationEvent e) {
-        proxy.preInit();
-
-        if (e.getSide().isClient()) {
-            Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
-            loadConfig();
-        }
+    public Tails() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
     }
 
-    @Mod.EventHandler
-    public void onPostInit(FMLPostInitializationEvent e) {
+    private void clientInit(final FMLClientSetupEvent event) {
+        Tails.configuration = new Configuration(e.getSuggestedConfigurationFile());
+        loadConfig();
+    }
+
+    private void init(final FMLCommonSetupEvent event) {
+        proxy.preInit();
+
         proxy.postInit();
     }
 
@@ -68,7 +62,7 @@ public class Tails {
     @NetworkCheckHandler
     public boolean checkRemoteVersions(Map<String, String> versions, Side side) {
         if (versions.containsKey(MOD_ID)) {
-            String clientVer = Loader.instance().getReversedModObjectList().get(this).getVersion();
+            ArtifactVersion clientVer = ModList.get().getModContainerById(Tails.MOD_ID).get().getModInfo().getVersion();
             if (!VersionParser.parseRange("[" + clientVer + ",)").containsVersion(new DefaultArtifactVersion(versions.get(MOD_ID)))) {
                 logger.warn(String.format("Remote version not in acceptable version bounds! Local is %s, Remote (%s) is %s", clientVer, side.toString(), versions.get(MOD_ID)));
             }

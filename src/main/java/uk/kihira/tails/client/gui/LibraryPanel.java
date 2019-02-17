@@ -29,7 +29,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public void initGui() {
         initList();
 
-        buttonList.add(new GuiButtonExt(ALL_BUTTON, 3, height - 18, width - 6, 15, I18n.format("gui.button.all")));
+        buttons.add(new GuiButtonExt(ALL_BUTTON, 3, height - 18, width - 6, 15, I18n.format("gui.button.all")));
         searchField = new GuiTextField(1, fontRenderer, 5, height - 31, width - 10, 10);
         super.initGui();
     }

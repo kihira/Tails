@@ -20,8 +20,8 @@ public class ConfirmationDialog<T extends GuiBase & IDialogCallback> extends Dia
     public void initGui() {
         setHeight((messageList.size() * 9) + 50);
 
-        buttonList.add(new GuiButtonExt(0, (width / 2) - 52, height - 25, 50, 20, "Cancel"));
-        buttonList.add(new GuiButtonExt(1, (width / 2) + 2, height - 25, 50, 20, "Confirm"));
+        buttons.add(new GuiButtonExt(0, (width / 2) - 52, height - 25, 50, 20, "Cancel"));
+        buttons.add(new GuiButtonExt(1, (width / 2) + 2, height - 25, 50, 20, "Confirm"));
     }
 
     @Override

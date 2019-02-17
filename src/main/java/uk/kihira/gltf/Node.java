@@ -1,10 +1,10 @@
 package uk.kihira.gltf;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Quaternion;
-import org.lwjgl.util.vector.Vector3f;
 import uk.kihira.tails.common.IDisposable;
 
 import javax.annotation.Nullable;
@@ -35,8 +35,8 @@ public final class Node implements IDisposable {
     Node(@Nullable ArrayList<Node> children, float[] matrix) {
         this(children);
         this.isStatic = true;
-        this.matrix.load(FloatBuffer.wrap(matrix));
-        this.matrix.store(fb);
+        this.matrix.read(FloatBuffer.wrap(matrix));
+        this.matrix.write(fb);
         fb.rewind();
     }
 
@@ -51,15 +51,15 @@ public final class Node implements IDisposable {
         // Generate matrix if this is not static
         if (!isStatic) {
             matrix.setIdentity();
-            matrix.translate(translation);
-            Matrix4f.mul(matrix, getRotateMatrix(), matrix);
+            matrix.translatef(translation);
+            matrix.mul(getRotateMatrix());
             matrix.scale(scale);
-            matrix.store(fb);
+            matrix.write(fb);
             fb.rewind();
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.multMatrix(fb);
+        GlStateManager.multMatrixf(fb);
 
         if (mesh != null) {
             mesh.render();
@@ -75,7 +75,7 @@ public final class Node implements IDisposable {
     private Matrix4f getRotateMatrix() {
         Matrix4f rotMatrix = new Matrix4f();
         GlStateManager.quatToGlMatrix(fb, rotation);
-        rotMatrix.load(fb);
+        rotMatrix.read(fb);
         fb.clear();
         return rotMatrix;
     }

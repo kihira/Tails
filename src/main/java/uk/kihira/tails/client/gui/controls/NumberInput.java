@@ -5,9 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 import uk.kihira.tails.client.gui.GuiBaseScreen;
 import uk.kihira.tails.client.gui.IControl;
 import uk.kihira.tails.client.gui.IControlCallback;
@@ -21,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 // todo tooltips only work for guibuttons
-@SideOnly(Side.CLIENT)
 public class NumberInput extends Gui implements IControl<Float>, ITooltip {
     private static final char[] VALID_CHARS = new char[]{'-', '.', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}; //todo might need to sort first, need to check
     private static final float SHIFT_MOD = 10f;
@@ -59,7 +56,7 @@ public class NumberInput extends Gui implements IControl<Float>, ITooltip {
         this.callback = callback;
         df.setRoundingMode(RoundingMode.FLOOR);
 
-        numInput = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, xPos + 1, yPos + 1, width - btnWidth - 2, height - 2);
+        numInput = new GuiTextField(0, Minecraft.getInstance().fontRenderer, xPos + 1, yPos + 1, width - btnWidth - 2, height - 2);
         numInput.setValidator(input -> {
             if (input == null) return true;
             int dotCount = 0;
@@ -83,8 +80,8 @@ public class NumberInput extends Gui implements IControl<Float>, ITooltip {
         this.btnHeight = height / 2;
     }
 
-    public void draw(int mouseX, int mouseY) {
-        numInput.drawTextBox();
+    public void draw(int mouseX, int mouseY, float partialTicks) {
+        numInput.drawTextField(mouseX, mouseY, partialTicks);
         drawRect(btnXPos, yPos, btnXPos + btnWidth, yPos + btnHeight, 0xFFFFFFFF); // Increment
         drawRect(btnXPos, yPos + btnHeight, btnXPos + btnWidth, yPos + height, 0xAAAAAAFF); // Decrement
     }
@@ -100,8 +97,8 @@ public class NumberInput extends Gui implements IControl<Float>, ITooltip {
         }
 
         float inc = increment;
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) inc *= SHIFT_MOD;
-        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) inc *= CTRL_MOD;
+        if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) inc *= SHIFT_MOD;
+        else if (Keyboard.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)) inc *= CTRL_MOD;
 
         // Increase
         if (GuiBaseScreen.isMouseOver(mouseX, mouseY, xPos + numInput.width, yPos, btnWidth, btnHeight)) {
@@ -114,7 +111,7 @@ public class NumberInput extends Gui implements IControl<Float>, ITooltip {
     }
 
     public void keyTyped(char key, int keycode) {
-        numInput.textboxKeyTyped(key, keycode);
+        numInput.charTyped(key, keycode);
     }
 
     @Override

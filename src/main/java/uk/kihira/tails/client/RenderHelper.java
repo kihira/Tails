@@ -5,16 +5,15 @@
 package uk.kihira.tails.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.opengl.GL11;
 
 public class RenderHelper {
 
     public static void startGlScissor(int x, int y, int width, int height) {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         ScaledResolution reso = new ScaledResolution(mc);
 
-        double scaleW = (double)mc.displayWidth / reso.getScaledWidth_double();
+        double scaleW = (double)mc.mainWindow.getScaledWidth() / reso.getScaledWidth_double();
         double scaleH = (double)mc.displayHeight / reso.getScaledHeight_double();
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);

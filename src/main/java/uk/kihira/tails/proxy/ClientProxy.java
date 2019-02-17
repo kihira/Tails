@@ -1,13 +1,8 @@
 package uk.kihira.tails.proxy;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import uk.kihira.tails.client.ClientEventHandler;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.PartRenderer;
