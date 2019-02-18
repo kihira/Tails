@@ -6,7 +6,10 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import uk.kihira.tails.client.PartRegistry;
@@ -18,7 +21,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
 
-public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback, IControlCallback<GuiSlider, Float> {
+@OnlyIn(Dist.CLIENT)
+public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback, IControlCallback<GuiSlider, Double> {
     private static final int TINT_1_BUTTON = 0;
     private static final int TINT_2_BUTTON = 1;
     private static final int TINT_3_BUTTON = 2;
@@ -149,35 +153,36 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     }
 
     @Override
-    public void keyTyped(char letter, int keyCode) {
-        hexText.textboxKeyTyped(letter, keyCode);
+    public boolean keyPressed(int keyCode, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if (hexText.keyPressed(keyCode, p_keyPressed_2_, p_keyPressed_3_)) {
+            try {
+                //Gets the current colour from the hex text
+                if (!Strings.isNullOrEmpty(hexText.getText())) {
+                    this.currTintColour = Integer.parseInt(hexText.getText(), 16);
+                }
+            } catch (NumberFormatException ignored) {}
 
-        try {
-            //Gets the current colour from the hex text
-            if (!Strings.isNullOrEmpty(hexText.getText())) {
-                this.currTintColour = Integer.parseInt(hexText.getText(), 16);
-            }
-        } catch (NumberFormatException ignored) {
+            updateTints(false);
         }
 
-        updateTints(false);
-
-        if (keyCode == Keyboard.KEY_ESCAPE && selectingColour) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE && selectingColour) {
             setSelectingColour(false);
-        } else {
-            super.keyTyped(letter, keyCode);
+            return true;
         }
+
+        return super.keyPressed(keyCode, p_keyPressed_2_, p_keyPressed_3_);
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         if (selectingColour && mouseButton == 0) {
             currTintColour = getColourAtPoint(mouseX, mouseY); //Ignore alpha
             setSelectingColour(false);
             updateTints(true);
+            return true;
         } else {
             hexText.mouseClicked(mouseX, mouseY, mouseButton);
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+            return super.mouseClicked(mouseX, mouseY, mouseButton);
         }
     }
 
@@ -218,7 +223,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         return tint;
     }
 
-    private int getColourAtPoint(int x, int y) {
+    private int getColourAtPoint(double x, double y) {
         int[] pixelData;
         int pixels = 1;
 
@@ -310,7 +315,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     }
 
     @Override
-    public boolean onValueChange(GuiSlider slider, Float oldValue, Float newValue) {
+    public boolean onValueChange(GuiSlider slider, Double oldValue, Double newValue) {
         return true;
     }
 

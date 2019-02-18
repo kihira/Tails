@@ -4,6 +4,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.BufferUtils;
 import uk.kihira.tails.common.IDisposable;
 
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 /**
  * NodeImpl can just directly refer to geometries as we don't need to store weights
  */
+@OnlyIn(Dist.CLIENT)
 public final class Node implements IDisposable {
     private final Matrix4f matrix;
     private final FloatBuffer fb;
@@ -51,7 +54,7 @@ public final class Node implements IDisposable {
         // Generate matrix if this is not static
         if (!isStatic) {
             matrix.setIdentity();
-            matrix.translatef(translation);
+            matrix.translate(translation);
             matrix.mul(getRotateMatrix());
             matrix.scale(scale);
             matrix.write(fb);
@@ -72,12 +75,9 @@ public final class Node implements IDisposable {
         GlStateManager.popMatrix();
     }
 
+    // todo cache rotation
     private Matrix4f getRotateMatrix() {
-        Matrix4f rotMatrix = new Matrix4f();
-        GlStateManager.quatToGlMatrix(fb, rotation);
-        rotMatrix.read(fb);
-        fb.clear();
-        return rotMatrix;
+        return new Matrix4f(rotation);
     }
 
     public void setMesh(Mesh mesh) {

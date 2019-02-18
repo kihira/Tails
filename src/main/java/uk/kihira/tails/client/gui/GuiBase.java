@@ -2,10 +2,13 @@ package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiBase extends GuiBaseScreen {
 
     //0 is bottom layer
@@ -41,31 +44,31 @@ public abstract class GuiBase extends GuiBaseScreen {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
                 if (panel.enabled) {
                     GlStateManager.pushMatrix();
                     GlStateManager.translatef(panel.left, panel.top, 0);
                     GlStateManager.color4f(1f, 1f, 1f, 1f);
-                    panel.drawScreen(mouseX - panel.left, mouseY - panel.top, partialTicks);
+                    panel.render(mouseX - panel.left, mouseY - panel.top, partialTicks);
                     GlStateManager.disableLighting();
                     GlStateManager.popMatrix();
                 }
             }
         }
         GlStateManager.color4f(1f, 1f, 1f, 1f);
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
     }
 
     @Override
-    protected void keyTyped(char key, int keyCode) throws IOException {
+    public boolean charTyped(char key, int keyCode) {
         for (ArrayList<Panel> layer : layers) {
             for (Panel panel : layer) {
                 if (panel.enabled) panel.keyTyped(key, keyCode);
             }
         }
-        super.keyTyped(key, keyCode);
+        super.charTyped(key, keyCode);
     }
 
     @Override

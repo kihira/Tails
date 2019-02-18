@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.model.ModelPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,14 +21,13 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.maven.artifact.versioning.ArtifactVersion;
 import uk.kihira.tails.client.ClientEventHandler;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.PartRenderer;
 import uk.kihira.tails.client.render.FallbackRenderHandler;
 import uk.kihira.tails.client.render.LayerPart;
-import uk.kihira.tails.common.network.*;
-import uk.kihira.tails.proxy.CommonProxy;
+import uk.kihira.tails.common.network.PlayerDataMapMessage;
+import uk.kihira.tails.common.network.PlayerDataMessage;
 
 import java.util.Map;
 
@@ -64,7 +64,7 @@ public class Tails {
             legacyRenderer = true;
         }
 
-        partRenderer = new PartRenderer();
+        PartRenderer partRenderer = new PartRenderer();
 
         if (legacyRenderer) {
             MinecraftForge.EVENT_BUS.register(new FallbackRenderHandler());
@@ -113,8 +113,6 @@ public class Tails {
     }
 
     private void init(final FMLCommonSetupEvent event) {
-        proxy.preInit();
-
         networkWrapper.registerMessage(0, PlayerDataMessage.class,
                 PlayerDataMessage::toBytes,
                 PlayerDataMessage::new,
@@ -123,8 +121,6 @@ public class Tails {
                 PlayerDataMapMessage::toBytes,
                 PlayerDataMapMessage::new,
                 PlayerDataMapMessage::handle);
-
-        proxy.postInit();
     }
 
     @SubscribeEvent

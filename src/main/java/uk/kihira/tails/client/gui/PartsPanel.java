@@ -1,12 +1,13 @@
 package uk.kihira.tails.client.gui;
 
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import uk.kihira.gltf.Model;
@@ -16,6 +17,7 @@ import uk.kihira.tails.common.Tails;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+@OnlyIn(Dist.CLIENT)
 public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsPanel.PartEntry> {
     private static final float Z_POSITION = 100f;
     private static final float PART_SCALE = 40f;
@@ -37,37 +39,36 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     public void initGui() {
         initPartList();
 
-        buttons.add(mountPointButton = new GuiButtonExt(0, width / 2 - 25, 16, 50, 16, I18n.format("tails.mountpoint." + mountPoint.name())));
+        buttons.add(mountPointButton = new GuiButtonExt(0, width / 2 - 25, 16, 50, 16, I18n.format("tails.mountpoint." + mountPoint.name())) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                super.onClick(mouseX, mouseY);
+                if (mountPoint.ordinal() + 1 >= MountPoint.values().length) {
+                    mountPoint = MountPoint.values()[0];
+                } else {
+                    mountPoint = MountPoint.values()[mountPoint.ordinal() + 1];
+                }
+
+                initPartList();
+
+                mountPointButton.displayString = I18n.format("tails.mountpoint." + mountPoint.name());
+            }
+        });
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         rotation += partialTicks;
 
         zLevel = -100;
         drawGradientRect(0, 0, width, listTop, 0xEA000000, 0xEA000000);
         drawGradientRect(0, listTop, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
         zLevel = 0;
-        GlStateManager.color(1f, 1f, 1f, 1f);
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
         drawCenteredString(fontRenderer, I18n.format("tails.gui.parts"), width / 2, 5, GuiEditor.TEXT_COLOUR);
         partList.drawScreen(mouseX, mouseY, partialTicks);
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) {
-        if (button.id == mountPointButton.id) {
-            if (mountPoint.ordinal() + 1 >= MountPoint.values().length) {
-                mountPoint = MountPoint.values()[0];
-            } else {
-                mountPoint = MountPoint.values()[mountPoint.ordinal() + 1];
-            }
-
-            initPartList();
-
-            mountPointButton.displayString = I18n.format("tails.mountpoint." + mountPoint.name());
-        }
+        super.render(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -80,11 +81,6 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     public void mouseReleased(int mouseX, int mouseY, int state) {
         super.mouseReleased(mouseX, mouseY, state);
         partList.mouseReleased(mouseX, mouseY, state);
-    }
-
-    @Override
-    public void handleMouseInput() {
-        partList.handleMouseInput();
     }
 
     @Override
@@ -105,14 +101,14 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     private void renderPart(int x, int y, OutfitPart part) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, Z_POSITION);
+        GlStateManager.translatef(x, y, Z_POSITION);
 
         Part basePart = part.getPart();
         if (basePart == null) return;
         Model model = basePart.getModel();
         if (model != null) {
-            GlStateManager.rotate(rotation, 0f, 1f, 0f);
-            GlStateManager.scale(PART_SCALE, PART_SCALE, PART_SCALE);
+            GlStateManager.rotatef(rotation, 0f, 1f, 0f);
+            GlStateManager.scalef(PART_SCALE, PART_SCALE, PART_SCALE);
             ((ClientProxy) Tails.proxy).partRenderer.render(part);
         } else {
             drawTexturedModalRect(x - 16, y - 16, 0, 0, 32, 32);
@@ -122,7 +118,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         GlStateManager.popMatrix();
     }
 
-    class PartEntry implements GuiListExtended.IGuiListEntry {
+    class PartEntry extends GuiListExtended.IGuiListEntry {
         private static final int ADD_X = 1;
         private static final int ADD_Y = 40;
         private static final int ADD_WIDTH = 10;
@@ -138,19 +134,19 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         }
 
         @Override
-        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
+        public void drawEntry(int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
             boolean currentPart = partList.getCurrentIndex() == slotIndex;
-            renderPart(right - 40, y + (slotHeight / 2), outfitPart);
+            renderPart(right - 40, y + (entryHeight / 2), outfitPart);
             ClientUtils.drawStringMultiLine(fontRenderer, part.name, 5, y + 17, GuiEditor.TEXT_COLOUR);
 
             if (currentPart) {
                 //Yeah its not nice but eh, works
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(5, y + 27, 0);
-                GlStateManager.scale(.6f, .6f, 1f);
+                GlStateManager.translatef(5, y + 27, 0);
+                GlStateManager.scalef(.6f, .6f, 1f);
                 //zLevel = 100;
                 fontRenderer.drawString(I18n.format("gui.author"), 0, 0, GuiEditor.TEXT_COLOUR);
-                GlStateManager.translate(0, 10, 0);
+                GlStateManager.translatef(0, 10, 0);
                 fontRenderer.drawString(TextFormatting.AQUA + part.author, 0, 0, GuiEditor.TEXT_COLOUR);
                 GlStateManager.popMatrix();
                 //zLevel = 0;
@@ -162,21 +158,13 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         }
 
         @Override
-        public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
-        }
-
-        @Override
-        public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
+        public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
             if (GuiBaseScreen.isMouseOver(relativeX, relativeY, ADD_X, ADD_Y, ADD_WIDTH, ADD_HEIGHT)) {
                 parent.addOutfitPart(new OutfitPart(part));
-                mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                mc.getSoundHandler().play(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 return true;
             }
             return false;
-        }
-
-        @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
         }
     }
 }

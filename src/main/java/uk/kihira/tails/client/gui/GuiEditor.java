@@ -2,13 +2,17 @@ package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.common.Outfit;
+import uk.kihira.tails.common.OutfitManager;
 import uk.kihira.tails.common.Tails;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiEditor extends GuiBase {
     static final int TEXT_COLOUR = 0xFFFFFF;
     static final int HOZ_LINE_COLOUR = 0xFF000000;
@@ -83,8 +87,8 @@ public class GuiEditor extends GuiBase {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        super.render(mouseX, mouseY, partialTicks);
 
         // Render any parts that have been queued up whilst in GUI as RenderWorldLast is called before GUIs
         ((ClientProxy) Tails.proxy).partRenderer.doRender();
@@ -92,7 +96,7 @@ public class GuiEditor extends GuiBase {
 
     @Override
     public void onGuiClosed() {
-        Tails.proxy.setActiveOutfit(playerUUID, Tails.localOutfit);
+        OutfitManager.INSTANCE.setActiveOutfit(playerUUID, Tails.localOutfit);
         super.onGuiClosed();
     }
 
@@ -124,7 +128,7 @@ public class GuiEditor extends GuiBase {
 
     public void setOutfit(Outfit newOutfit) {
         outfit = newOutfit;
-        Tails.proxy.setActiveOutfit(playerUUID, outfit);
+        OutfitManager.INSTANCE.setActiveOutfit(playerUUID, outfit);
     }
 
     public Outfit getOutfit() {

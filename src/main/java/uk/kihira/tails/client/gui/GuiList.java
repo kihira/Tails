@@ -1,5 +1,7 @@
 package uk.kihira.tails.client.gui;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import uk.kihira.tails.client.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
@@ -7,13 +9,15 @@ import net.minecraft.client.renderer.Tessellator;
 
 import java.util.List;
 
+// todo GuiListExtended is a lot better now, need to refactor this
+@OnlyIn(Dist.CLIENT)
 public class GuiList<T extends GuiListExtended.IGuiListEntry> extends GuiListExtended {
     private final IListCallback<T> parent;
     private final List<T> entries;
     private int currentIndex;
 
     public GuiList(IListCallback<T> parent, int width, int height, int top, int bottom, int slotHeight, List<T> entries) {
-        super(Minecraft.getMinecraft(), width, height, top, bottom, slotHeight);
+        super(Minecraft.getInstance(), width, height, top, bottom, slotHeight);
         this.parent = parent;
         this.entries = entries;
         left = -3;
@@ -48,11 +52,6 @@ public class GuiList<T extends GuiListExtended.IGuiListEntry> extends GuiListExt
     @Override
     public T getListEntry(int index) {
         return this.entries.get(index);
-    }
-
-    @Override
-    protected int getSize() {
-        return this.entries.size();
     }
 
     @Override

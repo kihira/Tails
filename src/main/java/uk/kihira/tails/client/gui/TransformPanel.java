@@ -2,6 +2,8 @@ package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.OutfitPart;
@@ -11,6 +13,7 @@ import java.io.IOException;
 
 import static uk.kihira.tails.client.gui.GuiEditor.HOZ_LINE_COLOUR;
 
+@OnlyIn(Dist.CLIENT)
 public class TransformPanel extends Panel<GuiEditor> implements IControlCallback<IControl<Float>, Float> {
     private static final float MAX_ROTATION = 180;
     private static final float MIN_ROTATION = -180;
@@ -65,7 +68,23 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         if (outfitPart != null) mountPoint = outfitPart.mountPoint.name();
         mountPoint = I18n.format("tails.mountpoint." + mountPoint);
 
-        buttons.add(mountPointButton = new GuiButtonExt(0, 5, spacing * 7, width - 10, 20, mountPoint));
+        buttons.add(mountPointButton = new GuiButtonExt(0, 5, spacing * 7, width - 10, 20, mountPoint) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                super.onClick(mouseX, mouseY);
+
+                OutfitPart outfitPart = parent.getCurrentOutfitPart();
+                if (outfitPart == null) return;
+
+                if (outfitPart.mountPoint.ordinal() + 1 >= MountPoint.values().length) {
+                    outfitPart.mountPoint = MountPoint.values()[0];
+                } else {
+                    outfitPart.mountPoint = MountPoint.values()[outfitPart.mountPoint.ordinal() + 1];
+                }
+
+                mountPointButton.displayString = I18n.format("tails.mountpoint." + outfitPart.mountPoint.name());
+            }
+        });
     }
 
     @Override
@@ -101,23 +120,7 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
-        if (button.id == mountPointButton.id) {
-            OutfitPart outfitPart = parent.getCurrentOutfitPart();
-            if (outfitPart == null) return;
-
-            if (outfitPart.mountPoint.ordinal() + 1 >= MountPoint.values().length) {
-                outfitPart.mountPoint = MountPoint.values()[0];
-            } else {
-                outfitPart.mountPoint = MountPoint.values()[outfitPart.mountPoint.ordinal() + 1];
-            }
-
-            mountPointButton.displayString = I18n.format("tails.mountpoint." + outfitPart.mountPoint.name());
-        }
-    }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         xPosInput.mouseClicked(mouseX, mouseY, mouseButton);
         yPosInput.mouseClicked(mouseX, mouseY, mouseButton);
         zPosInput.mouseClicked(mouseX, mouseY, mouseButton);

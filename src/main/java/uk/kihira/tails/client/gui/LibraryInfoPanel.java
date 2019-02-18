@@ -2,13 +2,14 @@ package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import org.lwjgl.input.Keyboard;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.common.LibraryEntryData;
+import uk.kihira.tails.common.OutfitManager;
 import uk.kihira.tails.common.Tails;
 
 import javax.annotation.Nullable;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
+@OnlyIn(Dist.CLIENT)
 public class LibraryInfoPanel extends Panel<GuiEditor> {
 
     private LibraryListEntry entry;
@@ -25,7 +27,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
 
     public LibraryInfoPanel(GuiEditor parent, int left, int top, int width, int height) {
         super(parent, left, top, width, height);
-        Keyboard.enableRepeatEvents(true);
+        Minecraft.getInstance().keyboardListener.enableRepeatEvents(true);
     }
 
     @Override
@@ -33,32 +35,71 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
         textField = new GuiTextField(-1, fontRenderer, 6, 6, width - 12, 15);
         textField.setMaxStringLength(16);
 
-        buttons.add(favButton = new GuiIconButton.GuiIconToggleButton(0, 5, height - 20, GuiIconButton.Icons.STAR, I18n.format("gui.button.favourite")));
-        buttons.add(new GuiIconButton(1, 21, height - 20, GuiIconButton.Icons.DELETE, I18n.format("gui.button.delete")));
-        buttons.add(new GuiIconButton(3, 53, height - 20, GuiIconButton.Icons.DOWNLOAD, I18n.format("gui.button.savelocal")));
-        buttons.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, I18n.format("gui.button.share")));
-        super.initGui();
+        buttons.add(favButton = new GuiIconButton.GuiIconToggleButton(0, 5, height - 20, GuiIconButton.Icons.STAR, I18n.format("gui.button.favourite")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                super.onClick(mouseX, mouseY);
 
-        //Only request library if on remote server
-        if (!Minecraft.getMinecraft().isIntegratedServerRunning()) {
-            Tails.networkWrapper.sendToServer(new LibraryRequestMessage());
-        }
+                entry.data.favourite = toggled;
+            }
+        });
+        buttons.add(new GuiIconButton(1, 21, height - 20, GuiIconButton.Icons.DELETE, I18n.format("gui.button.delete")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                super.onClick(mouseX, mouseY);
+
+                if (entry.data.remoteEntry) {
+                    //Only allow removing if player owns the entry
+                    if (!entry.data.creatorUUID.equals(mc.player.getUniqueID())) {
+                        return;
+                    }
+                }
+                setHover(false);
+                parent.libraryPanel.removeEntry(entry);
+                setEntry(null);
+            }
+        });
+        buttons.add(new GuiIconButton(3, 53, height - 20, GuiIconButton.Icons.DOWNLOAD, I18n.format("gui.button.savelocal")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                super.onClick(mouseX, mouseY);
+
+                entry.data.remoteEntry = false;
+                enabled = false;
+            }
+        });
+        buttons.add(new GuiIconButton(4, 68, height - 20, GuiIconButton.Icons.EXPORT, I18n.format("gui.button.share")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                super.onClick(mouseX, mouseY);
+
+                StringBuilder sb = new StringBuilder();
+                LibraryEntryData libData = parent.libraryInfoPanel.getEntry().data;
+                sb.append(libData.entryName).append(":");
+                sb.append(libData.creatorUUID).append(":");
+                sb.append(Tails.gson.toJson(libData.outfit));
+
+                ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height / 2, parent.width / 2, I18n.format("gui.library.info.toast.export"));
+                Minecraft.getInstance().keyboardListener.setClipboardString(sb.toString());
+            }
+        });
+        super.initGui();
 
         setEntry(null);
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         zLevel = 0;
         drawGradientRect(0, 0, width, height, 0xCC000000, 0xCC000000);
 
-        GlStateManager.color(0F, 0F, 0F, 0F);
+        GlStateManager.color4f(0f, 0f, 0f, 0f);
 
         zLevel = 10;
         drawGradientRect(3, 3, width - 3, height - 3, 0xFF000000, 0xFF000000);
 
         if (entry != null) {
-            textField.drawTextBox();
+            textField.drawTextField(mouseX, mouseY, partialTicks);
 
             fontRenderer.setUnicodeFlag(true);
             fontRenderer.drawString(I18n.format("gui.library.info.created") + ":", 5, height - 40, 0xAAAAAA);
@@ -70,44 +111,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             fontRenderer.setUnicodeFlag(false);
         }
 
-        super.drawScreen(mouseX, mouseY, p_73863_3_);
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) {
-        //Favourite
-        if (button.id == 0) {
-            entry.data.favourite = ((GuiIconButton.GuiIconToggleButton) button).toggled;
-        }
-        //Delete
-        else if (button.id == 1) {
-            if (entry.data.remoteEntry) {
-                //Only allow removing if player owns the entry
-                if (!entry.data.creatorUUID.equals(mc.player.getUniqueID())) {
-                    return;
-                }
-            }
-            ((GuiIconButton) button).setHover(false);
-            parent.libraryPanel.removeEntry(entry);
-            setEntry(null);
-        }
-        //Download/save locally
-        else if (button.id == 3) {
-            entry.data.remoteEntry = false;
-            button.enabled = false;
-        }
-        //Export to string
-        else if (button.id == 4) {
-            StringBuilder sb = new StringBuilder();
-            LibraryEntryData libData = parent.libraryInfoPanel.getEntry().data;
-            sb.append(libData.entryName).append(":");
-            sb.append(libData.creatorUUID).append(":");
-            sb.append(Tails.gson.toJson(libData.outfit));
-
-            ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height / 2, parent.width / 2, I18n.format("gui.library.info.toast.export"));
-            GuiScreen.setClipboardString(sb.toString());
-        }
-        Tails.proxy.getLibraryManager().saveLibrary();
+        super.render(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -117,19 +121,19 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
     }
 
     @Override
-    public void keyTyped(char key, int keyCode) {
-        textField.textboxKeyTyped(key, keyCode);
-
-        if (textField.isFocused() && entry != null) {
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if (textField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) && entry != null) {
             entry.data.entryName = textField.getText();
-            Tails.proxy.getLibraryManager().saveLibrary();
+            OutfitManager.INSTANCE.getLibraryManager().saveLibrary();
+            return true;
         }
-        super.keyTyped(key, keyCode);
+
+        return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
 
     @Override
     public void onGuiClosed() {
-        Keyboard.enableRepeatEvents(true);
+        Minecraft.getInstance().keyboardListener.enableRepeatEvents(true);
         super.onGuiClosed();
     }
 

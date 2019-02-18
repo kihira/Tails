@@ -1,19 +1,21 @@
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.tails.common.LibraryEntryData;
-import uk.kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
+import uk.kihira.tails.common.LibraryEntryData;
+import uk.kihira.tails.common.OutfitManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<LibraryListEntry> {
     private static final LibrarySorter SORTER = new LibrarySorter();
     private static final int ALL_BUTTON = 0;
@@ -29,36 +31,36 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     public void initGui() {
         initList();
 
-        buttons.add(new GuiButtonExt(ALL_BUTTON, 3, height - 18, width - 6, 15, I18n.format("gui.button.all")));
+        buttons.add(new GuiButtonExt(ALL_BUTTON, 3, height - 18, width - 6, 15, I18n.format("gui.button.all")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                super.onClick(mouseX, mouseY);
+
+                // todo
+            }
+        });
         searchField = new GuiTextField(1, fontRenderer, 5, height - 31, width - 10, 10);
         super.initGui();
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         zLevel = -100;
         drawGradientRect(0, 0, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
 
-        searchField.drawTextBox();
+        searchField.drawTextField(mouseX, mouseY, partialTicks);
         list.drawScreen(mouseX, mouseY, partialTicks);
 
         zLevel = 0;
-        Minecraft.getMinecraft().renderEngine.bindTexture(GuiIconButton.ICONS_TEXTURES);
+        Minecraft.getInstance().getTextureManager().bindTexture(GuiIconButton.ICONS_TEXTURES);
         GlStateManager.pushMatrix();
-        GlStateManager.color(1f, 1f, 1f, 1f);
-        GlStateManager.translate(width - 16, height - 32, 0);
-        GlStateManager.scale(.75f, .75f, 0f);
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        GlStateManager.translatef(width - 16, height - 32, 0);
+        GlStateManager.scalef(.75f, .75f, 0f);
         drawTexturedModalRect(0, 0, 160, 0, 16, 16);
         GlStateManager.popMatrix();
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) {
-        if (button.id == ALL_BUTTON) {
-            // todo?
-        }
+        super.render(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -75,20 +77,17 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     @Override
-    public void handleMouseInput() {
-        list.handleMouseInput();
-    }
-
-    @Override
-    public void keyTyped(char key, int keyCode) {
-        searchField.textboxKeyTyped(key, keyCode);
-        if (searchField.getVisible() && searchField.isFocused()) {
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if (searchField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_)) {
             List<LibraryListEntry> newEntries = filterListEntries(searchField.getText().toLowerCase());
             newEntries.add(0, new LibraryListEntry.NewLibraryListEntry(this, null));
             list.getEntries().clear();
             list.getEntries().addAll(newEntries);
+
+            return true;
         }
-        super.keyTyped(key, keyCode);
+
+        return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
 
     @Override
@@ -102,7 +101,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
 
     public void initList() {
         List<LibraryListEntry> libraryEntries = new ArrayList<>();
-        for (LibraryEntryData data : Tails.proxy.getLibraryManager().libraryEntries) {
+        for (LibraryEntryData data : OutfitManager.INSTANCE.getLibraryManager().libraryEntries) {
             libraryEntries.add(new LibraryListEntry(data));
         }
 
@@ -121,7 +120,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     public void removeEntry(LibraryListEntry entry) {
-        Tails.proxy.getLibraryManager().removeEntry(entry.data);
+        OutfitManager.INSTANCE.getLibraryManager().removeEntry(entry.data);
         list.getEntries().remove(entry);
     }
 
@@ -129,7 +128,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
         ArrayList<LibraryListEntry> filteredEntries = new ArrayList<>();
         List<LibraryListEntry> entries = new ArrayList<>();
 
-        for (LibraryEntryData data : Tails.proxy.getLibraryManager().libraryEntries) {
+        for (LibraryEntryData data : OutfitManager.INSTANCE.getLibraryManager().libraryEntries) {
             entries.add(new LibraryListEntry(data));
         }
 
@@ -143,7 +142,7 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
 
     @Override
     public void onGuiClosed() {
-        Tails.proxy.getLibraryManager().removeRemoteEntries();
+        OutfitManager.INSTANCE.getLibraryManager().removeRemoteEntries();
         super.onGuiClosed();
     }
 

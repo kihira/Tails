@@ -86,7 +86,7 @@ public class NumberInput extends Gui implements IControl<Float>, ITooltip {
         drawRect(btnXPos, yPos + btnHeight, btnXPos + btnWidth, yPos + height, 0xAAAAAAFF); // Decrement
     }
 
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClicked(double mouseX, double mouseY, int mouseButton) {
         boolean focused = numInput.isFocused();
         numInput.mouseClicked(mouseX, mouseY, mouseButton);
         // Only update num when input loses focus

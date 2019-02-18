@@ -2,15 +2,18 @@ package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 
-public class GuiSlider extends GuiButtonExt implements IControl<Float> {
-    private final float minValue;
-    private final float maxValue;
-    private float currentValue;
-    private float sliderValue;
+@OnlyIn(Dist.CLIENT)
+public class GuiSlider extends GuiButtonExt implements IControl<Double> {
+    private final double minValue;
+    private final double maxValue;
+    private double currentValue;
+    private double sliderValue;
     private boolean dragging = false;
-    private IControlCallback<GuiSlider, Float> parent;
+    private IControlCallback<GuiSlider, Double> parent;
 
     public GuiSlider(int id, int x, int y, int width, int height, float minValue, float maxValue, float defaultValue) {
         super(id, x, y, width, height, String.valueOf(defaultValue));
@@ -24,28 +27,30 @@ public class GuiSlider extends GuiButtonExt implements IControl<Float> {
         this(id, x, y, width, 20, minValue, maxValue, defaultValue);
     }
 
-    public GuiSlider(IControlCallback<GuiSlider, Float> parent, int id, int x, int y, int width, float minValue, float maxValue, float defaultValue) {
+    public GuiSlider(IControlCallback<GuiSlider, Double> parent, int id, int x, int y, int width, float minValue, float maxValue, float defaultValue) {
         this(id, x, y, width, minValue, maxValue, defaultValue);
         this.parent = parent;
     }
 
     @Override
-    protected void mouseDragged(Minecraft minecraft, int xPos, int yPos) {
+    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double p_mouseDragged_6_, double p_mouseDragged_8_) {
         if (visible) {
             if (dragging) {
-                updateValues(xPos, yPos);
+                updateValues(mouseX, mouseY);
             }
 
-            minecraft.renderEngine.bindTexture(BUTTON_TEXTURES);
+            Minecraft.getInstance().getTextureManager().bindTexture(BUTTON_TEXTURES);
             drawTexturedModalRect((int) (x + (sliderValue * (width - 8))), y, 0, 66, 4, height);
             drawTexturedModalRect((int) (x + (sliderValue * (width - 8)) + 4), y, 196, 66, 4, height);
         }
+
+        return super.mouseDragged(mouseX, mouseY, mouseButton, p_mouseDragged_6_, p_mouseDragged_8_);
     }
 
     @Override
-    public boolean mousePressed(Minecraft minecraft, int xPos, int yPos) {
-        if (super.mousePressed(minecraft, xPos, yPos)) {
-            updateValues(xPos, yPos);
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        if (super.mouseClicked(mouseX, mouseY, mouseButton)) {
+            updateValues(mouseX, mouseY);
             dragging = true;
             return true;
         }
@@ -65,21 +70,21 @@ public class GuiSlider extends GuiButtonExt implements IControl<Float> {
     }
 
     @Override
-    public void setValue(Float newValue) {
+    public void setValue(Double newValue) {
         currentValue = newValue;
         sliderValue = MathHelper.clamp((currentValue - minValue) / (maxValue - minValue), .0f, 1.f);
         displayString = String.valueOf(currentValue);
     }
 
     @Override
-    public Float getValue() {
+    public Double getValue() {
         return currentValue;
     }
 
-    private void updateValues(int xPos, int yPos) {
-        float prevValue = currentValue;
+    private void updateValues(double mouseX, double mouseY) {
+        double prevValue = currentValue;
 
-        sliderValue = MathHelper.clamp((xPos - (x + 4f)) / (width - 8f), 0f, 1f);
+        sliderValue = MathHelper.clamp((mouseX - (x + 4f)) / (width - 8f), 0f, 1f);
         currentValue = (int) (sliderValue * (maxValue - minValue) + minValue);
 
         if (parent != null && !parent.onValueChange(this, prevValue, currentValue)) {

@@ -7,13 +7,15 @@ import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
 
-
+@OnlyIn(Dist.CLIENT)
 public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
 
     public final LibraryEntryData data;
