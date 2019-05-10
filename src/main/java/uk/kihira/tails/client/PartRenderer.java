@@ -59,7 +59,7 @@ public class PartRenderer {
         GlStateManager.translate(part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
         GlStateManager.rotate(part.rotation[0], 1f, 0f, 0f);
         GlStateManager.rotate(part.rotation[1], 0f, 1f, 0f);
-        GlStateManager.rotate(part.rotation[2], 0f, 0f, 1f);
+        GlStateManager.rotate(part.rotation[2] + 180f, 0f, 0f, 1f); // todo need to find out why its being rotated 180 degrees so this fix is no longer required
         GlStateManager.scale(part.scale[0], part.scale[1], part.scale[2]);
 
         FloatBuffer fb = getFloatBuffer();
