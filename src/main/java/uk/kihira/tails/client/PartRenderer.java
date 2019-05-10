@@ -77,7 +77,6 @@ public class PartRenderer {
 
         RenderHelper.enableStandardItemLighting();
         GlStateManager.enableDepth();
-        GL11.glFrontFace(GL11.GL_CW); // TODO need to see why it faces are defined CW not CCW
         GlStateManager.color(1f, 1f, 1f);
         GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
         shader.use();
@@ -99,7 +98,6 @@ public class PartRenderer {
             // todo load texture
             Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("tails", "blah"));
             GL11.glLoadMatrix(entry.getValue());
-            GlStateManager.scale(1, -1, 1); // Seems y is flipped, quick and cheap solution for now
             model.render();
 
             freeFloatBuffer(entry.getValue());
@@ -112,7 +110,6 @@ public class PartRenderer {
         glBindVertexArray(0);
         OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, 0);
 
-        GL11.glFrontFace(GL11.GL_CCW);
         GlStateManager.disableDepth();
         RenderHelper.disableStandardItemLighting();
         GL11.glLoadMatrix(modelViewMatrixWorld);

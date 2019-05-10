@@ -107,23 +107,29 @@ public class GltfLoader {
 
         // Load textures
         ArrayList<ResourceLocation> textures = new ArrayList<>();
-        root.get("images").getAsJsonArray().forEach(imageJson -> {
-            JsonObject imageObj = imageJson.getAsJsonObject();
-            ByteBuffer bufferView = bufferViews.get(imageObj.get("bufferView").getAsInt()).getData();
-            String mimeType = imageObj.get("mimeType").getAsString();
-            String name = getName(imageObj, "image"); // todo default name
+        if (root.has("images")) {
+            root.get("images").getAsJsonArray().forEach(imageJson -> {
+                JsonObject imageObj = imageJson.getAsJsonObject();
+                ByteBuffer bufferView = bufferViews.get(imageObj.get("bufferView").getAsInt()).getData();
+                String mimeType = imageObj.get("mimeType").getAsString();
+                String name = getName(imageObj, "image"); // todo default name
 
-            try (ByteBufferInputStream is = new ByteBufferInputStream(bufferView)) {
-                BufferedImage bufferedImage = ImageIO.read(is);
-                DynamicTexture texture = new DynamicTexture(bufferedImage);
-                ResourceLocation texResLoc = new ResourceLocation(name); // todo should use model name as well
+                try (ByteBufferInputStream is = new ByteBufferInputStream(bufferView)) {
+                    BufferedImage bufferedImage = ImageIO.read(is);
+                    DynamicTexture texture = new DynamicTexture(bufferedImage);
+                    ResourceLocation texResLoc = new ResourceLocation(name); // todo should use model name as well
 
-                Minecraft.getMinecraft().getTextureManager().loadTexture(texResLoc, texture);
-                textures.add(texResLoc);
-            } catch (IOException e) {
-                Tails.logger.error("Failed to load texture " + name, e);
-            }
-        });
+                    Minecraft.getMinecraft().getTextureManager().loadTexture(texResLoc, texture);
+                    textures.add(texResLoc);
+                } catch (IOException e) {
+                    Tails.logger.error("Failed to load texture " + name, e);
+                }
+            });
+        }
+        else {
+            // todo default texture
+            Tails.logger.warn("No texture exists for model: " + file.getName());
+        }
 
         // Load nodes
         int[] sceneNodes = gson.fromJson(scene.get("nodes"), int[].class);
