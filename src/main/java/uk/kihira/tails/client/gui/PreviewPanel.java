@@ -100,7 +100,7 @@ class PreviewPanel extends Panel<GuiEditor> {
 
         RenderHelper.enableStandardItemLighting();
         renderManager.setPlayerViewY(180f);
-        renderManager.doRenderEntity(entity, 0d, 0d, 0d, 0f, 1f, false);
+        renderManager.renderEntity(entity, 0d, 0d, 0d, 0f, 1f, false);
         RenderHelper.disableStandardItemLighting();
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
