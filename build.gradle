@@ -24,10 +24,17 @@ group= "uk.kihira.tails"
 archivesBaseName = "Tails"
 version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
 
+if (System.getenv("BRANCH_NAME") != null && System.getenv("BRANCH_NAME") != "master") {
+    version += "-${System.getenv("BRANCH_NAME")}"
+}
+if (System.getenv("BUILD_NUMBER") != null) {
+    version += "-${System.getenv("BUILD_NUMBER")}"
+}
+
 minecraft {
     version = "${project.mcVersion}-${project.forgeVersion}"
     runDir = "run"
-    mappings = "snapshot_20171003"
+    mappings = "stable_39"
 }
 
 //noinspection GroovyAssignabilityCheck
