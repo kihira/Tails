@@ -29,7 +29,6 @@ public class ToastManager {
         toasts.add(new Toast(x, y, stringWidth + 10,  stringWidth * 3, text));
     }
 
-    @SuppressWarnings("unchecked")
     public void createCenteredToast(int x, int y, int maxWidth, String text) {
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
         int stringWidth = fontRenderer.getStringWidth(text);
@@ -65,7 +64,7 @@ public class ToastManager {
 
     @SubscribeEvent
     public void onDrawScreenPost(GuiScreenEvent.DrawScreenEvent.Post event) {
-        Profiler profiler = Minecraft.getMinecraft().mcProfiler;
+        Profiler profiler = Minecraft.getMinecraft().profiler;
         profiler.startSection("toastNotification");
         for (Toast toast : toasts) {
             toast.drawToast(event.getMouseX(), event.getMouseY());

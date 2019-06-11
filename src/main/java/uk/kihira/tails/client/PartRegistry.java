@@ -43,7 +43,7 @@ public class PartRegistry {
     }
 
     public static void loadCache() throws IOException {
-        Path cachePath = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), PARTS_CACHE_FOLDER);
+        Path cachePath = Paths.get(Minecraft.getMinecraft().gameDir.getPath(), PARTS_CACHE_FOLDER);
         if (!Files.exists(cachePath)) {
             Files.createDirectories(cachePath);
             return;
@@ -60,8 +60,8 @@ public class PartRegistry {
     }
 
     private static void initCache() {
-        Path partCachePath = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), PARTS_CACHE_FOLDER);
-        Path modelCachePath = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), MODEL_CACHE_FOLDER);
+        Path partCachePath = Paths.get(Minecraft.getMinecraft().gameDir.getPath(), PARTS_CACHE_FOLDER);
+        Path modelCachePath = Paths.get(Minecraft.getMinecraft().gameDir.getPath(), MODEL_CACHE_FOLDER);
 
         try {
             if (!Files.exists(partCachePath)) {
@@ -100,7 +100,7 @@ public class PartRegistry {
         // Attempt to load part from cache folder
         partsInProgress.add(uuid);
         Minecraft.getMinecraft().addScheduledTask(() -> {
-            Path path = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), PARTS_CACHE_FOLDER, uuid.toString() + ".json");
+            Path path = Paths.get(Minecraft.getMinecraft().gameDir.getPath(), PARTS_CACHE_FOLDER, uuid.toString() + ".json");
 
             if (Files.exists(path)) {
                 try (FileReader reader = new FileReader(path.toFile())) {
@@ -152,7 +152,7 @@ public class PartRegistry {
         // Attempt to load model from file cache first, then try to download it
         modelsInProgress.add(uuid);
         Minecraft.getMinecraft().addScheduledTask(() -> {
-            Path path = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), MODEL_CACHE_FOLDER, uuid.toString() + ".glb");
+            Path path = Paths.get(Minecraft.getMinecraft().gameDir.getPath(), MODEL_CACHE_FOLDER, uuid.toString() + ".glb");
 
             if (Files.exists(path)) {
                 try {
@@ -183,7 +183,7 @@ public class PartRegistry {
 
             // Copy model to cache
             ResourceLocation modelResLoc = new ResourceLocation(Tails.MOD_ID, "model/" + uuid + ".glb");
-            Path path = Paths.get(Minecraft.getMinecraft().mcDataDir.getPath(), MODEL_CACHE_FOLDER, uuid.toString() + ".glb");
+            Path path = Paths.get(Minecraft.getMinecraft().gameDir.getPath(), MODEL_CACHE_FOLDER, uuid.toString() + ".glb");
             try (InputStream modelStream = resourceManager.getResource(modelResLoc).getInputStream();
                  FileOutputStream outputStream = new FileOutputStream(path.toFile())) {
                 IOUtils.copy(modelStream, outputStream);
