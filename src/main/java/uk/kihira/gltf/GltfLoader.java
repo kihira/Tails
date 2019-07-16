@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.BufferUtils;
 import uk.kihira.gltf.animation.Animation;
@@ -112,12 +113,12 @@ public class GltfLoader {
                 JsonObject imageObj = imageJson.getAsJsonObject();
                 ByteBuffer bufferView = bufferViews.get(imageObj.get("bufferView").getAsInt()).getData();
                 String mimeType = imageObj.get("mimeType").getAsString();
-                String name = getName(imageObj, "image"); // todo default name
+                String name = getName(imageObj, "Image_" + textures.size());
 
                 try (ByteBufferInputStream is = new ByteBufferInputStream(bufferView)) {
                     BufferedImage bufferedImage = ImageIO.read(is);
                     DynamicTexture texture = new DynamicTexture(bufferedImage);
-                    ResourceLocation texResLoc = new ResourceLocation(name); // todo should use model name as well
+                    ResourceLocation texResLoc = new ResourceLocation(file.getName() + "_" + name);
 
                     Minecraft.getMinecraft().getTextureManager().loadTexture(texResLoc, texture);
                     textures.add(texResLoc);
@@ -128,6 +129,7 @@ public class GltfLoader {
         }
         else {
             // todo default texture
+            textures.add(TextureManager.RESOURCE_LOCATION_EMPTY);
             Tails.logger.warn("No texture exists for model: " + file.getName());
         }
 

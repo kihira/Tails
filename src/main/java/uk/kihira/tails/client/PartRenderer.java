@@ -1,10 +1,8 @@
 package uk.kihira.tails.client;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.RenderHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -75,6 +73,7 @@ public class PartRenderer {
     public void doRender() {
         if (renders.size() == 0) return;
 
+        // Prepare OpenGL for rendering
         RenderHelper.enableStandardItemLighting();
         GlStateManager.enableDepth();
         GlStateManager.color(1f, 1f, 1f);
@@ -95,8 +94,8 @@ public class PartRenderer {
             tintBuffer.flip();
             OpenGlHelper.glUniform3(shader.getUniform("tints"), tintBuffer);
 
-            // todo load texture
-            Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("tails", "blah"));
+            // Load texture and model matrix
+            // Minecraft.getMinecraft().getTextureManager().bindTexture(outfitPart.texture);
             GL11.glLoadMatrix(entry.getValue());
             model.render();
 
