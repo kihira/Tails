@@ -7,6 +7,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 import uk.kihira.gltf.Model;
+import uk.kihira.tails.common.Tails;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayDeque;
@@ -99,6 +100,11 @@ public class PartRenderer {
             GL11.glLoadMatrix(entry.getValue());
             model.render();
 
+            if (Tails.DEBUG)
+            {
+                renderDebugGizmo();
+            }
+
             freeFloatBuffer(entry.getValue());
             tintBuffer.clear();
         }
@@ -112,6 +118,13 @@ public class PartRenderer {
         GlStateManager.disableDepth();
         RenderHelper.disableStandardItemLighting();
         GL11.glLoadMatrix(modelViewMatrixWorld);
+    }
+
+    public void renderDebugGizmo()
+    {
+        OpenGlHelper.glUseProgram(0);
+
+        OpenGlHelper.renderDirections(1);
     }
 
     /*

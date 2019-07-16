@@ -31,6 +31,7 @@ public class Tails {
     public static final Logger logger = LogManager.getLogger(MOD_ID);
     public static final SimpleNetworkWrapper networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
     public static final Gson gson = new GsonBuilder().create();
+    public static final boolean DEBUG = true;
 
     public static Configuration configuration;
     public static boolean libraryEnabled;
