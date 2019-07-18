@@ -110,21 +110,26 @@ public class PartRenderer {
         }
         renders.clear();
 
-        // Unbind everything
-        OpenGlHelper.glUseProgram(0);
-        glBindVertexArray(0);
-        OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, 0);
+        unbindBuffersAndShader();
 
         GlStateManager.disableDepth();
         RenderHelper.disableStandardItemLighting();
         GL11.glLoadMatrix(modelViewMatrixWorld);
     }
 
-    public void renderDebugGizmo()
+    private void renderDebugGizmo()
+    {
+        OpenGlHelper.renderDirections(1);
+    }
+
+    /**
+     * Helper method to clear OpenGL state related to VBOs and Shader programs
+     */
+    private void unbindBuffersAndShader()
     {
         OpenGlHelper.glUseProgram(0);
-
-        OpenGlHelper.renderDirections(1);
+        glBindVertexArray(0);
+        OpenGlHelper.glBindBuffer(OpenGlHelper.GL_ARRAY_BUFFER, 0);
     }
 
     /*
