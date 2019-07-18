@@ -11,7 +11,8 @@ import java.io.IOException;
 
 import static uk.kihira.tails.client.gui.GuiEditor.HOZ_LINE_COLOUR;
 
-public class TransformPanel extends Panel<GuiEditor> implements IControlCallback<IControl<Float>, Float> {
+public class TransformPanel extends Panel<GuiEditor> implements IControlCallback<IControl<Float>, Float>, IOutfitPartSelected
+{
     private static final float MAX_ROTATION = 180;
     private static final float MIN_ROTATION = -180;
     private static final float INC_ROTATION = 1.f;
@@ -42,26 +43,32 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
 
     private GuiButtonExt mountPointButton;
 
-    TransformPanel(GuiEditor parent, int x, int y, int width, int height) {
+    TransformPanel(GuiEditor parent, int x, int y, int width, int height)
+    {
         super(parent, x, y, width, height);
     }
 
     @Override
-    public void initGui() {
-        xRotInput = new NumberInput(3, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this);
-        yRotInput = new NumberInput(52, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this);
-        zRotInput = new NumberInput(101, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this);
+    public void initGui()
+    {
+        final int firstInputX = 3;
+        final int secondInputX = 52;
+        final int thirdInputX = 101;
 
-        xPosInput = new NumberInput(3, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this);
-        yPosInput = new NumberInput(52, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this);
-        zPosInput = new NumberInput(101, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this);
+        xRotInput = new NumberInput(firstInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this);
+        yRotInput = new NumberInput(secondInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this);
+        zRotInput = new NumberInput(thirdInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this);
 
-        xScaleInput = new NumberInput(3, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this);
-        yScaleInput = new NumberInput(52, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this);
-        zScaleInput = new NumberInput(101, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this);
+        xPosInput = new NumberInput(firstInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this);
+        yPosInput = new NumberInput(secondInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this);
+        zPosInput = new NumberInput(thirdInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this);
+
+        xScaleInput = new NumberInput(firstInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this);
+        yScaleInput = new NumberInput(secondInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this);
+        zScaleInput = new NumberInput(thirdInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this);
 
         String mountPoint = MountPoint.values()[0].name();
-        OutfitPart outfitPart = parent.getCurrentOutfitPart();
+        final OutfitPart outfitPart = parent.getCurrentOutfitPart();
         if (outfitPart != null) mountPoint = outfitPart.mountPoint.name();
         mountPoint = I18n.format("tails.mountpoint." + mountPoint);
 
@@ -69,7 +76,8 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
         drawHorizontalLine(0, width, 0, HOZ_LINE_COLOUR);
 
         zLevel = -100;
@@ -101,23 +109,26 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
-        if (button.id == mountPointButton.id) {
-            OutfitPart outfitPart = parent.getCurrentOutfitPart();
+    protected void actionPerformed(GuiButton button)
+    {
+        if (button.id == mountPointButton.id)
+        {
+            final OutfitPart outfitPart = parent.getCurrentOutfitPart();
             if (outfitPart == null) return;
 
-            if (outfitPart.mountPoint.ordinal() + 1 >= MountPoint.values().length) {
-                outfitPart.mountPoint = MountPoint.values()[0];
-            } else {
-                outfitPart.mountPoint = MountPoint.values()[outfitPart.mountPoint.ordinal() + 1];
-            }
+            // Move to next enum for MointPoint or back to 0 if at the end
+            final int mountPointOrdinalNext = outfitPart.mountPoint.ordinal() + 1;
+            final int mountPointOrdinal = mountPointOrdinalNext >= MountPoint.values().length ? 0 : mountPointOrdinalNext;
+
+            outfitPart.mountPoint = MountPoint.values()[mountPointOrdinal];
 
             mountPointButton.displayString = I18n.format("tails.mountpoint." + outfitPart.mountPoint.name());
         }
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    {
         xPosInput.mouseClicked(mouseX, mouseY, mouseButton);
         yPosInput.mouseClicked(mouseX, mouseY, mouseButton);
         zPosInput.mouseClicked(mouseX, mouseY, mouseButton);
@@ -134,7 +145,8 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     }
 
     @Override
-    public void keyTyped(char key, int keyCode) {
+    public void keyTyped(char key, int keyCode)
+    {
         xPosInput.keyTyped(key, keyCode);
         yPosInput.keyTyped(key, keyCode);
         zPosInput.keyTyped(key, keyCode);
@@ -151,8 +163,9 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     }
 
     @Override
-    public boolean onValueChange(IControl<Float> control, Float oldValue, Float newValue) {
-        OutfitPart outfitPart = parent.getCurrentOutfitPart();
+    public boolean onValueChange(IControl<Float> control, Float oldValue, Float newValue)
+    {
+        final OutfitPart outfitPart = parent.getCurrentOutfitPart();
         if (outfitPart == null) return true;
 
         // Rot
@@ -169,5 +182,21 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         else if (control == zScaleInput) outfitPart.scale[2] = newValue;
 
         return true;
+    }
+
+    @Override
+    public void OnOutfitPartSelected(OutfitPart part)
+    {
+        xPosInput.setValue(part.mountOffset[0]);
+        yPosInput.setValue(part.mountOffset[1]);
+        zPosInput.setValue(part.mountOffset[2]);
+
+        xRotInput.setValue(part.rotation[0]);
+        yRotInput.setValue(part.rotation[1]);
+        zRotInput.setValue(part.rotation[2]);
+
+        xScaleInput.setValue(part.scale[0]);
+        yScaleInput.setValue(part.scale[1]);
+        zScaleInput.setValue(part.scale[2]);
     }
 }

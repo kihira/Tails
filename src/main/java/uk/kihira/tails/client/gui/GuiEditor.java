@@ -165,7 +165,14 @@ public class GuiEditor extends GuiBase
      */
     void setActiveOutfitPart(@Nullable OutfitPart outfitPart)
     {
-        // todo pass event down to panels when part is set active
+        // todo should maintain a list of IOutfitPartSelected instead
+        getAllPanels().forEach((final Panel panel) -> {
+            if (panel instanceof IOutfitPartSelected)
+            {
+                ((IOutfitPartSelected) panel).OnOutfitPartSelected(outfitPart);
+            }
+        });
+
         currentOutfitPart = outfitPart;
     }
 

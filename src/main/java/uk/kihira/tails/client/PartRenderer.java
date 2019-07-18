@@ -119,7 +119,10 @@ public class PartRenderer {
 
     private void renderDebugGizmo()
     {
-        OpenGlHelper.renderDirections(1);
+        unbindBuffersAndShader();
+
+        final int scale = 1;
+        OpenGlHelper.renderDirections(scale);
     }
 
     /**
