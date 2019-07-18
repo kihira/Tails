@@ -17,7 +17,8 @@ import uk.kihira.tails.proxy.ClientProxy;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsPanel.PartEntry> {
+public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsPanel.PartEntry>
+{
     private static final float Z_POSITION = 100f;
     private static final float PART_SCALE = 40f;
 
@@ -28,17 +29,26 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
     private final int listTop = 35;
 
-    PartsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
+    PartsPanel(GuiEditor parent, int left, int top, int right, int bottom)
+    {
         super(parent, left, top, right, bottom);
         alwaysReceiveMouse = true;
         mountPoint = MountPoint.CHEST;
     }
 
     @Override
-    public void initGui() {
+    public void initGui()
+    {
         initPartList();
 
-        buttonList.add(mountPointButton = new GuiButtonExt(0, width / 2 - 25, 16, 50, 16, I18n.format("tails.mountpoint." + mountPoint.name())));
+        buttonList.add(mountPointButton = new GuiButtonExt(
+                0,
+                width / 2 - 25,
+                16,
+                50,
+                16,
+                I18n.format("tails.mountpoint." + mountPoint.name())
+        ));
     }
 
     @Override
@@ -46,8 +56,9 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         rotation += partialTicks;
 
         zLevel = -100;
-        drawGradientRect(0, 0, width, listTop, 0xEA000000, 0xEA000000);
+        drawGradientRect(0, 0, width, listTop, GuiEditor.SOFT_BLACK, GuiEditor.SOFT_BLACK);
         drawGradientRect(0, listTop, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
+
         zLevel = 0;
         GlStateManager.color(1f, 1f, 1f, 1f);
         drawCenteredString(fontRenderer, I18n.format("tails.gui.parts"), width / 2, 5, GuiEditor.TEXT_COLOUR);
@@ -57,13 +68,15 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
-        if (button.id == mountPointButton.id) {
-            if (mountPoint.ordinal() + 1 >= MountPoint.values().length) {
-                mountPoint = MountPoint.values()[0];
-            } else {
-                mountPoint = MountPoint.values()[mountPoint.ordinal() + 1];
-            }
+    protected void actionPerformed(GuiButton button)
+    {
+        if (button.id == mountPointButton.id)
+        {
+            // Move to next enum for MointPoint or back to 0 if at the end
+            final int mountPointOrdinalNext = mountPoint.ordinal() + 1;
+            final int mountPointOrdinal = mountPointOrdinalNext >= MountPoint.values().length ? 0 : mountPointOrdinalNext;
+
+            mountPoint = MountPoint.values()[mountPointOrdinal];
 
             initPartList();
 
@@ -72,19 +85,22 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         partList.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state) {
+    public void mouseReleased(int mouseX, int mouseY, int state)
+    {
         super.mouseReleased(mouseX, mouseY, state);
         partList.mouseReleased(mouseX, mouseY, state);
     }
 
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput()
+    {
         partList.handleMouseInput();
     }
 
@@ -94,13 +110,20 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     private void initPartList() {
-        this.partList = new GuiList<>(this, width, height - listTop, listTop, height, 55,
+        this.partList = new GuiList<>(
+                this,
+                width,
+                height - listTop,
+                listTop,
+                height,
+                55,
                 PartRegistry.getPartsByMountPoint(mountPoint).map(PartEntry::new).collect(Collectors.toList()));
-        this.partList.width = width;
+        // this.partList.width = width;
         selectDefaultListEntry();
     }
 
-    void selectDefaultListEntry() {
+    void selectDefaultListEntry()
+    {
         partList.setCurrentIndex(0);
     }
 
@@ -110,12 +133,16 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
         Part basePart = part.getPart();
         if (basePart == null) return;
+
         Model model = basePart.getModel();
-        if (model != null) {
+        if (model != null)
+        {
             GlStateManager.rotate(rotation, 0f, 1f, 0f);
             GlStateManager.scale(PART_SCALE, PART_SCALE, PART_SCALE);
             ((ClientProxy) Tails.proxy).partRenderer.render(part);
-        } else {
+        }
+        else
+        {
             drawTexturedModalRect(x - 16, y - 16, 0, 0, 32, 32);
             // todo render loading circle
         }
@@ -133,28 +160,31 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         final OutfitPart outfitPart;
         final Part part;
 
-        PartEntry(Part part) {
+        PartEntry(Part part)
+        {
             this.part = part;
             this.outfitPart = new OutfitPart(part);
         }
 
         @Override
         public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
-            boolean currentPart = partList.getCurrentIndex() == slotIndex;
+            final boolean isCurrentSelectedPart = partList.getCurrentIndex() == slotIndex;
+
             renderPart(right - 40, y + (slotHeight / 2), outfitPart);
             ClientUtils.drawStringMultiLine(fontRenderer, part.name, 5, y + 17, GuiEditor.TEXT_COLOUR);
 
-            if (currentPart) {
+            if (isCurrentSelectedPart)
+            {
                 //Yeah its not nice but eh, works
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(5, y + 27, 0);
                 GlStateManager.scale(.6f, .6f, 1f);
-                //zLevel = 100;
+
                 fontRenderer.drawString(I18n.format("gui.author"), 0, 0, GuiEditor.TEXT_COLOUR);
                 GlStateManager.translate(0, 10, 0);
                 fontRenderer.drawString(TextFormatting.AQUA + part.author, 0, 0, GuiEditor.TEXT_COLOUR);
                 GlStateManager.popMatrix();
-                //zLevel = 0;
+
                 // Draw "add" button
                 GuiUtils.drawGradientRect(0, x + ADD_X, y + ADD_Y, x + ADD_X + ADD_WIDTH, y + ADD_Y + ADD_HEIGHT, ADD_COLOUR, ADD_COLOUR);
                 fontRenderer.drawString("+", x + ADD_X + (ADD_WIDTH / 4), y + ADD_Y + (ADD_HEIGHT / 4), GuiEditor.TEXT_COLOUR);
@@ -163,21 +193,22 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         }
 
         @Override
-        public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_) {
-        }
+        public void updatePosition(int slotIndex, int x, int y, float partialTicks) { }
 
         @Override
-        public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
-            if (GuiBaseScreen.isMouseOver(relativeX, relativeY, ADD_X, ADD_Y, ADD_WIDTH, ADD_HEIGHT)) {
+        public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY)
+        {
+            if (GuiBaseScreen.isMouseOver(relativeX, relativeY, ADD_X, ADD_Y, ADD_WIDTH, ADD_HEIGHT))
+            {
                 parent.addOutfitPart(new OutfitPart(part));
                 mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+
                 return true;
             }
             return false;
         }
 
         @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
-        }
+        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) { }
     }
 }
