@@ -7,6 +7,7 @@ import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.client.gui.controls.NumberInput;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 import static uk.kihira.tails.client.gui.GuiEditor.HOZ_LINE_COLOUR;
@@ -185,8 +186,10 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     }
 
     @Override
-    public void OnOutfitPartSelected(OutfitPart part)
+    public void OnOutfitPartSelected(@Nullable OutfitPart part)
     {
+        if (part == null) return;
+
         xPosInput.setValue(part.mountOffset[0]);
         yPosInput.setValue(part.mountOffset[1]);
         zPosInput.setValue(part.mountOffset[2]);

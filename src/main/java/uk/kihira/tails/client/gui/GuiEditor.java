@@ -210,9 +210,4 @@ public class GuiEditor extends GuiBase
     {
         return outfit;
     }
-
-    void clearCurrTintEdit()
-    {
-        // todo still needed? tintPanel.currTintEdit = 0;
-    }
 }
