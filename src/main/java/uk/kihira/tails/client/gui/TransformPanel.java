@@ -3,14 +3,13 @@ package uk.kihira.tails.client.gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
+import uk.kihira.tails.client.Colour;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.OutfitPart;
 import uk.kihira.tails.client.gui.controls.NumberInput;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-
-import static uk.kihira.tails.client.gui.GuiEditor.HOZ_LINE_COLOUR;
 
 public class TransformPanel extends Panel<GuiEditor> implements IControlCallback<IControl<Float>, Float>, IOutfitPartSelected
 {
@@ -79,7 +78,7 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        drawHorizontalLine(0, width, 0, HOZ_LINE_COLOUR);
+        drawHorizontalLine(0, width, 0, Colour.BLACK);
 
         zLevel = -100;
         drawGradientRect(0, 0, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
