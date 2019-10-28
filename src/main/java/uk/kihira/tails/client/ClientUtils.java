@@ -22,6 +22,6 @@ public class ClientUtils {
 
     public static void drawCenteredString(FontRenderer fontRenderer, String string, int x, int y, int color) {
         int width = fontRenderer.getStringWidth(string);
-        fontRenderer.drawString(string, x - fontRenderer.getStringWidth(string)/2, y, color);
+        fontRenderer.drawString(string, x - width/2, y, color);
     }
 }

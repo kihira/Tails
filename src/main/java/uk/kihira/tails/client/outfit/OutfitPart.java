@@ -1,6 +1,11 @@
-package uk.kihira.tails.client;
+package uk.kihira.tails.client.outfit;
+
+import uk.kihira.tails.client.MountPoint;
+import uk.kihira.tails.client.Part;
+import uk.kihira.tails.client.PartRegistry;
 
 import javax.annotation.Nullable;
+
 import java.util.UUID;
 
 /**
@@ -33,9 +38,11 @@ public class OutfitPart {
      * @return The part
      */
     @Nullable
-    public Part getPart() {
-        if (part == null) {
-            part = PartRegistry.getPart(basePart);
+    public Part getPart() 
+    {
+        if (part == null) 
+        {
+            part = PartRegistry.getPart(basePart).orElse(null);
         }
         return part;
     }

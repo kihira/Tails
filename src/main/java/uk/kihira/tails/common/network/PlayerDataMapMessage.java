@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import uk.kihira.tails.common.Outfit;
+import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Tails;
 
 import java.util.Map;

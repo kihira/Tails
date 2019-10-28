@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.versioning.VersionParser;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.proxy.CommonProxy;
 
 import java.util.Map;

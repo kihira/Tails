@@ -7,6 +7,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 import uk.kihira.gltf.Model;
+import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.common.Tails;
 
 import java.nio.FloatBuffer;

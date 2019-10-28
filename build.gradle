@@ -17,6 +17,11 @@ ext {
     forgeVersion = "14.23.5.2768"
 }
 
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+}
+
 sourceCompatibility='1.8'
 targetCompatibility='1.8'
 
@@ -55,4 +60,10 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+idea { module { inheritOutputDirs = true } }
+
+test {
+	useJUnitPlatform()
 }

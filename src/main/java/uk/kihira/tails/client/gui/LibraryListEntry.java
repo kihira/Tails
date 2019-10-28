@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import uk.kihira.tails.client.OutfitPart;
+import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
@@ -40,7 +40,7 @@ public class LibraryListEntry implements GuiListExtended.IGuiListEntry {
         fontRenderer.setUnicodeFlag(true);
         int offset = 0;
         for (OutfitPart part : data.outfit.parts) {
-            fontRenderer.drawString(I18n.format(PartRegistry.getPart(part.basePart).name), x + 5, y + 12 + (8 * offset), 0xFFFFFF);
+            fontRenderer.drawString(I18n.format(PartRegistry.getPart(part.basePart).get().name), x + 5, y + 12 + (8 * offset), 0xFFFFFF);
             for (int i = 1; i < 4; i++) {
                 //todo Gui.drawRect(listWidth - (8 * i), y + 13 + (offset * 8), listWidth + 7 - (8 * i), y + 20 + (offset * 8), part.tint[i - 1]);
             }

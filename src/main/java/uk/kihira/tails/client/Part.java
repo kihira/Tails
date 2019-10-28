@@ -9,7 +9,7 @@ import java.util.UUID;
  * Represents a Part that has a name, author, model and various details about how it should render
  */
 @Nullable
-public class Part {
+public final class Part {
     // Non render details
     public final UUID id; // A UUID for a file that contains the model and texture. Also the UUID for the part
     public final String author;
@@ -48,7 +48,7 @@ public class Part {
     @Nullable
     public Model getModel() {
         if (model == null) {
-            model = PartRegistry.getModel(id);
+            // model = PartRegistry.getModel(id);
         }
         return model;
     }

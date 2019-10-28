@@ -9,9 +9,9 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import uk.kihira.tails.client.MountPoint;
-import uk.kihira.tails.client.OutfitPart;
+import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.PartRenderer;
-import uk.kihira.tails.common.Outfit;
+import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Tails;
 
 import javax.annotation.Nonnull;

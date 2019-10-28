@@ -2,8 +2,8 @@ package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import uk.kihira.tails.client.OutfitPart;
-import uk.kihira.tails.common.Outfit;
+import uk.kihira.tails.client.outfit.OutfitPart;
+import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.proxy.ClientProxy;
 

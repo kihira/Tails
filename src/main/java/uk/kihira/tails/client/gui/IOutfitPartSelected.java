@@ -1,6 +1,6 @@
 package uk.kihira.tails.client.gui;
 
-import uk.kihira.tails.client.OutfitPart;
+import uk.kihira.tails.client.outfit.OutfitPart;
 
 import javax.annotation.Nullable;
 

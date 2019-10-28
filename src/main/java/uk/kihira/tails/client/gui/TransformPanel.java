@@ -5,7 +5,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import uk.kihira.tails.client.Colour;
 import uk.kihira.tails.client.MountPoint;
-import uk.kihira.tails.client.OutfitPart;
+import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.gui.controls.NumberInput;
 
 import javax.annotation.Nullable;

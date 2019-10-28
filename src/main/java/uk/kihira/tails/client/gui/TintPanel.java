@@ -14,7 +14,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import uk.kihira.tails.client.Colour;
-import uk.kihira.tails.client.OutfitPart;
+import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
@@ -25,6 +25,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.Optional;
 
 
 public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback, IControlCallback<GuiSlider, Float>
@@ -158,14 +159,14 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         // Reset Tint
         else if (button.id == RESET_BUTTON)
         {
-            final Part basePart = PartRegistry.getPart(currentPart.basePart);
-            if (basePart == null)
+            final Optional<Part> basePart = PartRegistry.getPart(currentPart.basePart);
+            if (!basePart.isPresent())
             {
                 Tails.logger.error("Current outfit part does not have a base part available, this is an invalid state!");
                 return;
             }
 
-            currTintColour = tintToArgb(basePart.tint[currTintEdit]);
+            currTintColour = tintToArgb(basePart.get().tint[currTintEdit]);
             updateTints(true);
             tintReset.enabled = false;
         }

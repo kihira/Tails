@@ -2,7 +2,7 @@ package uk.kihira.tails.client.render;
 
 import net.minecraft.client.renderer.GlStateManager;
 import uk.kihira.tails.api.IRenderHelper;
-import uk.kihira.tails.client.OutfitPart;
+import uk.kihira.tails.client.outfit.OutfitPart;
 import net.minecraft.entity.EntityLivingBase;
 
 

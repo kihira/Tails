@@ -11,6 +11,7 @@ import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import uk.kihira.gltf.Model;
 import uk.kihira.tails.client.*;
+import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.proxy.ClientProxy;
 

@@ -4,7 +4,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import uk.kihira.tails.common.LibraryManager;
-import uk.kihira.tails.common.Outfit;
+import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.ServerEventHandler;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.*;

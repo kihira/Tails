@@ -1,6 +1,6 @@
 package uk.kihira.tails.api;
 
-import uk.kihira.tails.client.OutfitPart;
+import uk.kihira.tails.client.outfit.OutfitPart;
 import net.minecraft.entity.EntityLivingBase;
 
 public interface IRenderHelper {

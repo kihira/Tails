@@ -1,6 +1,7 @@
 package uk.kihira.tails.common;
 
 import com.google.gson.annotations.Expose;
+import uk.kihira.tails.client.outfit.Outfit;
 
 import java.util.Calendar;
 import java.util.UUID;

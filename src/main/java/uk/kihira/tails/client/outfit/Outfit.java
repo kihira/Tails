@@ -1,17 +1,17 @@
-package uk.kihira.tails.common;
-
-import uk.kihira.tails.client.OutfitPart;
+package uk.kihira.tails.client.outfit;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Outfit {
+public final class Outfit
+{
     public final UUID id;
     public String name;
     public String description;
     public ArrayList<OutfitPart> parts;
 
-    public Outfit() {
+    public Outfit()
+    {
         id = UUID.randomUUID();
         parts = new ArrayList<>();
     }
