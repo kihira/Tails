@@ -5,6 +5,7 @@
 
 trigger:
 - develop
+- master
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -44,3 +45,14 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'build'
+- task: Gradle@2
+  displayName: "Publish"
+  inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.8'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: false
+    tasks: 'publish'
