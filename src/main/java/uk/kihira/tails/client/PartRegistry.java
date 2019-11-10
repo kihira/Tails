@@ -1,5 +1,6 @@
 package uk.kihira.tails.client;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -9,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import uk.kihira.gltf.GltfLoader;
 import uk.kihira.gltf.Model;
 import uk.kihira.tails.common.Tails;
 
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 /**
@@ -35,20 +38,12 @@ import java.util.stream.Stream;
 @SideOnly(Side.CLIENT)
 public final class PartRegistry
 {
-    private static final HashMap<UUID, Model> models = new HashMap<>();
-    private static final ArrayList<UUID> modelsInProgress = new ArrayList<>(); // Current models being loaded
-    private static final HashMap<UUID, Part> parts = new HashMap<>();
-    private static final ArrayList<UUID> partsInProgress = new ArrayList<>(); // Current parts being loaded
-
     private static final Logger LOGGER = LogManager.getFormatterLogger();
     private static final String MODEL_CACHE_FOLDER = "tails/cache/model";
     private static final String PARTS_CACHE_FOLDER = "tails/cache/part";
 
-    static
-    {
-        initCache();
-        loadAllPartsFromResources();
-    }
+    private static final LazyLoadAssetRegistry<UUID, Part> parts = new LazyLoadAssetRegistry<>(LOGGER, PartRegistry::loadPart, null, null);
+    private static final LazyLoadAssetRegistry<UUID, Model> models = new LazyLoadAssetRegistry<>(LOGGER, PartRegistry::loadModel, null, null);
 
     /**
      * Loads the cache from disk locally 
@@ -111,53 +106,35 @@ public final class PartRegistry
      */
     public static Optional<Part> getPart(final UUID uuid)
     {
-        if (parts.containsKey(uuid)) { return Optional.of(parts.get(uuid)); }
-        if (partsInProgress.contains(uuid)) { return Optional.empty(); }
-
-        // Attempt to load part from cache folder
-        partsInProgress.add(uuid);
-        loadPart(uuid)
-                .thenAccept(part ->
-                {
-                    // Load part into memory
-                    if (part.isPresent())
-                    {
-                        partsInProgress.remove(part.get().id);
-                        parts.put(part.get().id, part.get());
-                        LOGGER.info("Loaded part %s (%s)", part.get().name, part.get().id.toString());
-                    }
-                    else
-                    {
-                        // TODO load error part?
-                        LOGGER.warn("Unable to load part %s", uuid.toString());
-                    }
-                });
-        return Optional.empty();
+        return parts.get(uuid);
     }
 
-    private static CompletableFuture<Optional<Part>> loadPart(final UUID partId)
+    private static CompletableFuture<Part> loadPart(final UUID partId)
     {
         return loadPartFromCache(partId)
-                .thenCompose(part -> part.isPresent()
-                        ? CompletableFuture.completedFuture(part)
-                        : loadPartFromApi(partId)
-                        .thenApply(optionalPart ->
-                        {
-                            optionalPart.ifPresent(PartRegistry::savePartToCache);
-                            return optionalPart;
-                        })
-                )
+                .thenCompose(part -> part
+                        .map(CompletableFuture::completedFuture)
+                        .orElseGet(() -> loadPartFromApiAndSaveToCache(partId)))
                 .exceptionally(ex ->
                 {
                     LOGGER.error("Failed to load part " + partId.toString(), ex);
-                    return Optional.empty();
+                    return null;
                 });
     }
 
-    private static CompletableFuture<Optional<Part>> loadPartFromApi(final UUID partId)
+    private static CompletableFuture<Part> loadPartFromApiAndSaveToCache(final UUID partId)
     {
         // TODO Implement call to API
-        return CompletableFuture.completedFuture(null);
+        return CompletableFuture.completedFuture(Optional.empty())
+                .thenApply(optionalPart ->
+                {
+                    if (optionalPart.isPresent())
+                    {
+                        savePartToCache((Part) optionalPart.get());
+                        return (Part) optionalPart.get();
+                    }
+                    return null;
+                });
     }
 
     /**
@@ -227,38 +204,54 @@ public final class PartRegistry
      * @param uuid The ID of the model
      * @return The model if loaded, or null if not
      */
-/*    public static Model getModel(final UUID uuid) {
-        if (models.containsKey(uuid)) {
-            return models.get(uuid);
-        }
-        if (modelsInProgress.contains(uuid)) {
-            return null;
-        }
+    public static Optional<Model> getModel(final UUID uuid)
+    {
+        return models.get(uuid);
+    }
 
-        // Attempt to load model from file cache first, then try to download it
-        modelsInProgress.add(uuid);
-        Minecraft.getMinecraft().addScheduledTask(() -> {
+    private static CompletableFuture<Model> loadModel(final UUID uuid)
+    {
+        final ListenableFuture future = Minecraft.getMinecraft().addScheduledTask(() ->
+        {
             Path path = Paths.get(Minecraft.getMinecraft().gameDir.getPath(), MODEL_CACHE_FOLDER, uuid.toString() + ".glb");
 
-            if (Files.exists(path)) {
+            if (Files.exists(path))
+            {
                 try {
-                    models.put(uuid, GltfLoader.LoadGlbFile(path.toFile()));
+                    // todo seperate loading and OpenGL calls
+                    return GltfLoader.LoadGlbFile(path.toFile());
                 } catch (IOException e) {
-                    LOGGER.error("Failed to load model: " + uuid, e);
-                } finally {
-                    modelsInProgress.remove(uuid);
+                    e.printStackTrace();
                 }
-            } else {
-                // todo download from API server. also track if download from API server failed and don't retry
             }
+            else
+            {
+                // todo download from API server. also track if download from API server failed and don't retry
+                return null;
+            }
+            return null;
         });
-        return null;
-    }*/
+
+        return CompletableFuture.supplyAsync(() ->
+        {
+            try {
+                return (Model) future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+            return null;
+        })
+                .exceptionally(ex ->
+                {
+                    LOGGER.error("Failed to load model " + uuid.toString(), ex);
+                    return null;
+                });
+    }
 
     /**
      * Loads all parts from the resources directory into the cache and memory
      */
-    private static void loadAllPartsFromResources()
+    public static void loadAllPartsFromResources()
     {
         ResourceLocation resLoc = new ResourceLocation(Tails.MOD_ID, "parts.json");
         try (InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream())
@@ -269,7 +262,7 @@ public final class PartRegistry
             CompletableFuture.allOf(parts.stream()
                     .map(uuid -> CompletableFuture.runAsync(() -> PartRegistry.loadPartFromResources(uuid)))
                     .toArray(CompletableFuture[]::new))
-                    .thenRun(() -> System.out.println("Loaded everything!"));
+                    .thenRun(() -> LOGGER.info("Loaded %i parts from resources", parts.size()));
         }
         catch (IOException e)
         {

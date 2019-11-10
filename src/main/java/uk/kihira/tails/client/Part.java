@@ -48,7 +48,7 @@ public final class Part {
     @Nullable
     public Model getModel() {
         if (model == null) {
-            // model = PartRegistry.getModel(id);
+            model = PartRegistry.getModel(id).orElse(null);
         }
         return model;
     }

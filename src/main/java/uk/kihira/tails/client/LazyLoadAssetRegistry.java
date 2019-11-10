@@ -3,6 +3,7 @@ package uk.kihira.tails.client;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -89,6 +90,21 @@ public final class LazyLoadAssetRegistry<K, V>
             future.cancel(true);
             itemsLoading.remove(key);
         }
+    }
+
+    public void put(K key, V value)
+    {
+        items.put(key, value);
+    }
+
+    /**
+     * Returns a {@link Collection} of values for all items that have been fully loaded, including items that are error
+     * values
+     * @return
+     */
+    public Collection<V> values()
+    {
+        return items.values();
     }
 
     /**

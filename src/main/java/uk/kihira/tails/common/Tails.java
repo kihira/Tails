@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.versioning.VersionParser;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.proxy.CommonProxy;
 
@@ -58,6 +59,8 @@ public class Tails {
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent e) {
         proxy.postInit();
+
+        PartRegistry.loadAllPartsFromResources();
     }
 
     @SubscribeEvent
