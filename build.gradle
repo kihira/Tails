@@ -8,10 +8,11 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven-publish'
 
 ext {
-    massive = "1"
-    major = "10"
+    massive = "2"
+    major = "0"
     minor = "0"
     mcVersion = "1.12.2"
     forgeVersion = "14.23.5.2768"
@@ -66,4 +67,36 @@ idea { module { inheritOutputDirs = true } }
 
 test {
 	useJUnitPlatform()
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+}
+
+artifacts {
+    archives sourceJar
+    archives deobfJar
+}
+
+publishing {
+    publications {
+        java(MavenPublication) {
+            artifacts = [
+                "$buildDir/libs/$project.archivesBaseName-${project.version}.jar",
+                sourceJar,
+                deobfJar
+            ]
+        }
+    }
+
+    repositories {
+        maven {
+            url 'https://pkgs.dev.azure.com/kihira/Tails/_packaging/Tails/maven/v1'
+            credentials {
+                username "AZURE_ARTIFACTS"
+                password System.getenv("AZURE_ARTIFACTS_ENV_ACCESS_TOKEN") ?: "${azureArtifactsGradleAccessToken}"
+            }
+        }
+    }
 }
