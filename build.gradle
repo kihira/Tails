@@ -82,6 +82,7 @@ artifacts {
 publishing {
     publications {
         java(MavenPublication) {
+            artifactId = "Tails"
             artifacts = [
                 "$buildDir/libs/$project.archivesBaseName-${project.version}.jar",
                 sourceJar,
