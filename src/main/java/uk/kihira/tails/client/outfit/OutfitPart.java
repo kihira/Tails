@@ -1,8 +1,10 @@
 package uk.kihira.tails.client.outfit;
 
+import net.minecraft.util.ResourceLocation;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.PartRegistry;
+import uk.kihira.tails.common.Tails;
 
 import javax.annotation.Nullable;
 
@@ -22,6 +24,7 @@ public class OutfitPart {
 
     // Client only fields
     private transient Part part;
+    public transient ResourceLocation textureLoc;
 
     public OutfitPart(Part part) {
         this.basePart = part.id;
@@ -31,6 +34,8 @@ public class OutfitPart {
         this.scale = part.scale;
         this.tint = part.tint;
         this.texture = part.textures[0];
+
+        this.textureLoc = new ResourceLocation(Tails.MOD_ID, this.texture.toString());
     }
 
     /**

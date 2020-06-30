@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.io.FilenameUtils;
 import org.lwjgl.BufferUtils;
 import uk.kihira.gltf.animation.Animation;
 import uk.kihira.gltf.animation.AnimationPath;
@@ -118,7 +119,8 @@ public class GltfLoader {
                 try (ByteBufferInputStream is = new ByteBufferInputStream(bufferView)) {
                     BufferedImage bufferedImage = ImageIO.read(is);
                     DynamicTexture texture = new DynamicTexture(bufferedImage);
-                    ResourceLocation texResLoc = new ResourceLocation(file.getName() + "_" + name);
+                    // TODO we're assuming that we have one texture, and giving it the same name/id as the main model file. This is the same one as defined in the part definition file
+                    ResourceLocation texResLoc = new ResourceLocation( Tails.MOD_ID, FilenameUtils.getBaseName(file.getName()));
 
                     Minecraft.getMinecraft().getTextureManager().loadTexture(texResLoc, texture);
                     textures.add(texResLoc);

@@ -1,5 +1,6 @@
 package uk.kihira.tails.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
@@ -97,7 +98,7 @@ public class PartRenderer {
             OpenGlHelper.glUniform3(shader.getUniform("tints"), tintBuffer);
 
             // Load texture and model matrix
-            // Minecraft.getMinecraft().getTextureManager().bindTexture(outfitPart.texture);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(outfitPart.textureLoc);
             GL11.glLoadMatrix(entry.getValue());
             model.render();
 
