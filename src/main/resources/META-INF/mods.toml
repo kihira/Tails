@@ -1,0 +1,30 @@
+    modLoader="javafml"
+    loaderVersion="[31,)"
+    issueTrackerURL="github.com/Kihira/Tails/issues"
+    showAsResourcePack=false
+
+    [[mods]]
+      modId="tails"
+      version="1.0.0.0"
+      displayName="Tails"
+      updateJSONURL="minecraftforge.net/versions.json"
+      displayURL="kihira.uk"
+      logoFile="assets/tails/textures/logo.png"
+      authors="Kihira, TTFTCUTS"
+      description='''
+      For all your taily needs
+      '''
+
+      [[dependencies.tails]]
+        modId="forge"
+        mandatory=true
+        versionRange="[31,)"
+        ordering="NONE"
+        side="BOTH"
+
+      [[dependencies.tails]]
+        modId="minecraft"
+        mandatory=true
+        versionRange="[1.16.4]"
+        ordering="NONE"
+        side="BOTH"

@@ -1,8 +1,6 @@
 package uk.kihira.tails.client.gui;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
 import uk.kihira.tails.client.Colour;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.outfit.OutfitPart;

@@ -1,24 +1,24 @@
 package uk.kihira.tails.common.network;
 
-import io.netty.buffer.ByteBuf;
+import java.util.function.Supplier;
+
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import uk.kihira.tails.common.Tails;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class LibraryRequestMessage implements IMessage {
+// TODO Is this still needed?
+public class LibraryRequestMessage
+{
+    public LibraryRequestMessage(PacketBuffer buf) {}
 
-    @Override
-    public void fromBytes(ByteBuf buf) {}
+    public void encode(PacketBuffer buf) {}
 
-    @Override
-    public void toBytes(ByteBuf buf) {}
-
-    public static class Handler implements IMessageHandler<LibraryRequestMessage, LibraryEntriesMessage> {
-
-        @Override
-        public LibraryEntriesMessage onMessage(LibraryRequestMessage message, MessageContext ctx) {
-            return new LibraryEntriesMessage(Tails.proxy.getLibraryManager().libraryEntries, false);
-        }
+    public void handle(Supplier<Context> ctx) 
+    {
+        ctx.get().enqueueWork(() ->
+        {
+            TailsPacketHandler.networkWrapper.reply(new LibraryEntriesMessage(Tails.proxy.getLibraryManager().libraryEntries, false), ctx.get());
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

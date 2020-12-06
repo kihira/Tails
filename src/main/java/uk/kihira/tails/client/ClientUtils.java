@@ -1,9 +1,11 @@
 package uk.kihira.tails.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.FontRenderer;
 
-public class ClientUtils {
-
+public class ClientUtils 
+{
     /**
      * Draws a string that respects new lines
      * @param fontRenderer Font Renderer
@@ -12,16 +14,19 @@ public class ClientUtils {
      * @param y Y Position
      * @param color Text Colour
      */
-    public static void drawStringMultiLine(FontRenderer fontRenderer, String string, int x, int y, int color) {
+    public static void drawStringMultiLine(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, int color) 
+    {
         String[] lines = string.split("\\\\n");
-        for (int i = 0; i < lines.length; i++) {
+        for (int i = 0; i < lines.length; i++) 
+        {
             String line = lines[i];
-            fontRenderer.drawString(line, x, y + (fontRenderer.FONT_HEIGHT * i), color);
+            fontRenderer.drawString(matrixStack, line, x, y + (fontRenderer.FONT_HEIGHT * i), color);
         }
     }
 
-    public static void drawCenteredString(FontRenderer fontRenderer, String string, int x, int y, int color) {
+    public static void drawCenteredString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, int color) 
+    {
         int width = fontRenderer.getStringWidth(string);
-        fontRenderer.drawString(string, x - width/2, y, color);
+        fontRenderer.drawString(matrixStack, string, x - width/2, y, color);
     }
 }

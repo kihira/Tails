@@ -1,10 +1,11 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
 
-public class GuiSlider extends GuiButtonExt implements IControl<Float> {
+public class GuiSlider extends Button implements IControl<Float> 
+{
     private final float minValue;
     private final float maxValue;
     private float currentValue;

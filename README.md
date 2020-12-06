@@ -1,3 +1,4 @@
+[![Build Status](https://dev.azure.com/kihira/Tails/_apis/build/status/kihira.Tails?branchName=develop)](https://dev.azure.com/kihira/Tails/_build/latest?definitionId=3&branchName=develop)
 # Tails
 A small mod that adds in a variety of tails
 

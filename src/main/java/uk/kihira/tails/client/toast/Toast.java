@@ -2,14 +2,12 @@ package uk.kihira.tails.client.toast;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraftforge.client.event.MouseEvent;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 // todo use IToast and vanilla system?
 public class Toast {
@@ -28,33 +26,33 @@ public class Toast {
         this.width = width;
         this.time = time;
         this.message = Arrays.asList(message);
-        height = this.message.size() * Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 7;
+        height = this.message.size() * Minecraft.getInstance().fontRenderer.FONT_HEIGHT + 7;
     }
 
     public void onMouseEvent(MouseEvent mouseEvent) {}
 
-    public void drawToast(int mouseX, int mouseY) {
+    public void drawToast(MatrixStack matrixStack, int mouseX, int mouseY) {
         if (this.time > 0) {
-            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+            FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
             mouseOver = mouseX >= xPos && mouseY >= yPos && mouseX < xPos + width && mouseY < yPos + height;
             int opacity = mouseOver ? 255 : (int) (this.time * 256F / 10F);
             if (opacity > 255) opacity = 255;
             if (mouseOver) time = 20;
 
             if (opacity > 0) {
-                GlStateManager.pushMatrix();
-                GlStateManager.enableBlend();
-                GlStateManager.disableLighting();
-                OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+                matrixStack.push();
+                matrixStack.enableBlend();
+                matrixStack.disableLighting();
+                matrixStack.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
                 drawBackdrop(xPos, yPos, width, height);
                 int colour = 0xFFFFFF | (opacity << 24);
                 for (int i = 0; i < message.size(); i++) {
                     String s = message.get(i);
-                    fontRenderer.drawStringWithShadow(s, (xPos + width / 2) - (fontRenderer.getStringWidth(s) / 2), yPos + 4 + (fontRenderer.FONT_HEIGHT * i), colour);
+                    fontRenderer.drawStringWithShadow(matrixStack, s, (xPos + width / 2) - (fontRenderer.getStringWidth(s) / 2), yPos + 4 + (fontRenderer.FONT_HEIGHT * i), colour);
                 }
-                GlStateManager.disableBlend();
-                GlStateManager.color(0F, 0F, 0F, 1F);
-                GlStateManager.popMatrix();
+                matrixStack.disableBlend();
+                matrixStack.color(0F, 0F, 0F, 1F);
+                matrixStack.pop();
             }
         }
     }

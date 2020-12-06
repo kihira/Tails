@@ -1,12 +1,7 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import org.lwjgl.input.Keyboard;
 import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
@@ -103,7 +98,7 @@ public class LibraryInfoPanel extends Panel<GuiEditor> {
             LibraryEntryData libData = parent.libraryInfoPanel.getEntry().data;
             sb.append(libData.entryName).append(":");
             sb.append(libData.creatorUUID).append(":");
-            sb.append(Tails.gson.toJson(libData.outfit));
+            sb.append(Tails.GSON.toJson(libData.outfit));
 
             ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height / 2, parent.width / 2, I18n.format("gui.library.info.toast.export"));
             GuiScreen.setClipboardString(sb.toString());

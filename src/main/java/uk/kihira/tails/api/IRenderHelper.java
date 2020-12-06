@@ -1,8 +1,8 @@
 package uk.kihira.tails.api;
 
 import uk.kihira.tails.client.outfit.OutfitPart;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 
 public interface IRenderHelper {
-    void onPreRenderTail(EntityLivingBase entity, OutfitPart outfitPart);
+    void onPreRenderPart(LivingEntity entity, OutfitPart outfitPart);
 }

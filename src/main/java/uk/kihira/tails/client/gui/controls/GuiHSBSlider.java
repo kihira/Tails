@@ -1,26 +1,26 @@
 package uk.kihira.tails.client.gui.controls;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraftforge.fml.client.config.GuiSlider;
-import net.minecraftforge.fml.client.config.GuiUtils;
 import uk.kihira.tails.client.gui.ITooltip;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
-
+import net.minecraftforge.fml.client.gui.widget.Slider;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
-public class GuiHSBSlider extends GuiSlider implements ITooltip {
-
+public class GuiHSBSlider extends Slider implements ITooltip 
+{
     private static final ResourceLocation sliderTexture = new ResourceLocation(Tails.MOD_ID, "texture/gui/controls/slider_hue.png");
     
     private final HSBSliderType type;
@@ -29,7 +29,8 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
     private float briValue;
     private List<String> tooltips;
     
-    public GuiHSBSlider(int id, int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type) {
+    public GuiHSBSlider(int id, int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type)
+    {
         super(id, xPos, yPos, width, height, "", "", 0, 256 * 6 - 5, 0, false, false);
         this.type = type;
         this.hueValue = 0;
@@ -37,15 +38,17 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
         this.callback = callback;
     }
 
-    public GuiHSBSlider(int id, int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type, String ... tooltips) {
+    public GuiHSBSlider(int id, int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type, String ... tooltips)
+    {
         this(id, xPos, yPos, width, height, callback, type);
         this.tooltips = Arrays.asList(tooltips);
     }
     
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partial) {
-        if (this.visible) {
-            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+    public void renderBg(MatrixStack matrixStack, Minecraft mc, int mouseX, int mouseY)
+    {
+        if (this.visible) 
+        {
 
             GuiUtils.drawContinuousTexturedBox(GuiButton.BUTTON_TEXTURES, this.x, this.y, 0, 46, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
             mc.renderEngine.bindTexture(sliderTexture);
@@ -61,13 +64,16 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
             
             int srcY = 236;
             
-            if (type == HSBSliderType.BRIGHTNESS) {
+            if (type == HSBSliderType.BRIGHTNESS)
+            {
                 srcY -= 20;
             }
-            if (type == HSBSliderType.SATURATION) {
+            else if (type == HSBSliderType.SATURATION)
+            {
                 srcY -= 40;
             }
-            if (type == HSBSliderType.SATURATION) {
+            else if (type == HSBSliderType.SATURATION)
+            {
                 Color hueColour = Color.getHSBColor(0F, 0F, briValue);
                 float red = (float) hueColour.getRed() / 255;
                 float green = (float) hueColour.getGreen() / 255;
@@ -75,24 +81,11 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
                 GlStateManager.color(red, green, blue, 1.0F);
                 drawTexturedModalRectScaled(x + 1, y + 1, 0, srcY, 231, 20, this.width - 2, this.height - 2);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            } else {
+            } 
+            else
+            {
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 drawTexturedModalRectScaled(x + 1, y + 1, 0, srcY, 256, 20, this.width - 2, this.height - 2);
-            }
-            
-            this.mouseDragged(mc, mouseX, mouseY);
-        }
-    }
-    
-    @Override
-    protected void mouseDragged(Minecraft mc, int par2, int par3) {
-        if (this.visible) {
-            if (this.dragging) {
-                this.sliderValue = (par2 - (this.x + 4)) / (float)(this.width - 8);
-                updateSlider();
-                if (callback != null) {
-                    callback.onValueChangeHSBSlider(this, this.sliderValue);
-                }
             }
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -101,15 +94,28 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
             this.drawTexturedModalRect(this.x + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.y, 0, 0, 7, 4);
             this.drawTexturedModalRect(this.x + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.y + this.height - 4, 7, 0, 7, 4);
             //RenderHelper.endGlScissor();
+            
+            if (this.dragging)
+            {
+                this.sliderValue = (x - (this.x + 4)) / (float)(this.width - 8);
+                updateSlider();
+
+                if (callback != null)
+                {
+                    callback.onValueChangeHSBSlider(this, this.sliderValue);
+                }
+            }
         }
     }
     
-    public HSBSliderType getType() {
+    public HSBSliderType getType() 
+    {
         return type;
     }
     
     @Override
-    public double getValue() {
+    public double getValue() 
+    {
         return sliderValue;
     }
 
@@ -118,7 +124,8 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
      * @param value New value
      */
     @Override
-    public void setValue(double value) {
+    public void setValue(double value)
+    {
         this.sliderValue = value;
         updateSlider();
     }
@@ -127,9 +134,13 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
      * Sets the current slider value between 0-1F and calls the callback
      * @param value New value
      */
-    public void setValueWithCallback(double value) {
+    public void setValueWithCallback(double value)
+    {
+        assert(value >= 0f && value <= 1.f);
+
         this.sliderValue = value;
         updateSlider();
+
         if (callback != null) {
             callback.onValueChangeHSBSlider(this, this.sliderValue);
         }
@@ -139,7 +150,10 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
      * Sets the current hue value between 0-1F
      * @param value New value
      */
-    public void setHue(float value) {
+    public void setHue(float value)
+    {
+        assert(value >= 0f && value <= 1.f);
+
         this.hueValue = value;
     }
 
@@ -147,11 +161,15 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
      * Sets the current brightness value between 0-1F
      * @param value New value
      */
-    public void setBrightness(float value) {
+    public void setBrightness(float value)
+    {
+        assert(value >= 0f && value <= 1.f);
+
         this.briValue = value;
     }
     
-    private void drawTexturedModalRectScaled(int x, int y, int u, int v, int srcWidth, int srcHeight, int tarWidth, int tarHeight) {
+    private void drawTexturedModalRectScaled(int x, int y, int u, int v, int srcWidth, int srcHeight, int tarWidth, int tarHeight)
+    {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         BufferBuilder renderer = Tessellator.getInstance().getBuffer();
@@ -164,15 +182,20 @@ public class GuiHSBSlider extends GuiSlider implements ITooltip {
     }
 
     @Override
-    public List<String> getTooltip(int mouseX, int mouseY, float mouseIdleTime) {
+    public List<String> getTooltip(int mouseX, int mouseY, float mouseIdleTime)
+    {
         return tooltips;
     }
 
-    public enum HSBSliderType {
-        HUE, SATURATION, BRIGHTNESS
+    public enum HSBSliderType
+    {
+        HUE,
+        SATURATION,
+        BRIGHTNESS,
     }
 
-    public interface IHSBSliderCallback {
+    public interface IHSBSliderCallback
+    {
         void onValueChangeHSBSlider(GuiHSBSlider source, double sliderValue);
     }
 }

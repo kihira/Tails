@@ -1,35 +1,38 @@
 package uk.kihira.tails.common.network;
 
-import io.netty.buffer.ByteBuf;
-import uk.kihira.tails.common.Tails;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import java.util.function.Supplier;
 
-public class ServerCapabilitiesMessage implements IMessage {
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+import uk.kihira.tails.common.Tails;
+
+public class ServerCapabilitiesMessage 
+{
 
     private boolean library;
 
     public ServerCapabilitiesMessage() {}
-    public ServerCapabilitiesMessage(boolean library) {
+    public ServerCapabilitiesMessage(boolean library) 
+    {
         this.library = library;
     }
-    @Override
-    public void fromBytes(ByteBuf buf) {
+
+    public ServerCapabilitiesMessage(PacketBuffer buf) 
+    {
         library = buf.readBoolean();
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
+    public void encode(PacketBuffer buf) 
+    {
         buf.writeBoolean(library);
     }
 
-    public static class Handler implements IMessageHandler<ServerCapabilitiesMessage, IMessage> {
-
-        @Override
-        public IMessage onMessage(ServerCapabilitiesMessage message, MessageContext ctx) {
-            Tails.libraryEnabled = message.library;
-            return null;
-        }
+    public void handle(Supplier<Context> ctx) 
+    {
+        ctx.get().enqueueWork(() ->
+        {
+            Tails.libraryEnabled = this.library;
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

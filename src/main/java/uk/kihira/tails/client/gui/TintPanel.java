@@ -163,7 +163,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             final Optional<Part> basePart = PartRegistry.getPart(currentPart.basePart);
             if (!basePart.isPresent())
             {
-                Tails.logger.error("Current outfit part does not have a base part available, this is an invalid state!");
+                Tails.LOGGER.error("Current outfit part does not have a base part available, this is an invalid state!");
                 return;
             }
 

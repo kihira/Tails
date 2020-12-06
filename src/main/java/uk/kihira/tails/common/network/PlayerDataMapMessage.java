@@ -2,52 +2,52 @@ package uk.kihira.tails.common.network;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonSyntaxException;
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Tails;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 
-public class PlayerDataMapMessage implements IMessage {
-
+public class PlayerDataMapMessage 
+{
     private Map<UUID, Outfit> outfitMap;
 
     public PlayerDataMapMessage() {}
-    @SuppressWarnings("unchecked")
-    public PlayerDataMapMessage(Map outfitMap) {
+    public PlayerDataMapMessage(Map<UUID, Outfit> outfitMap) 
+    {
         this.outfitMap = outfitMap;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void fromBytes(ByteBuf buf) {
-        String tailInfoJson = ByteBufUtils.readUTF8String(buf);
-        try {
-            this.outfitMap = Tails.gson.fromJson(tailInfoJson, new TypeToken<Map<UUID, Outfit>>() {}.getType());
-        } catch (JsonSyntaxException e) {
-            Tails.logger.catching(e);
+    public PlayerDataMapMessage(PacketBuffer buf) 
+    {
+        String tailInfoJson = buf.readString();
+        try 
+        {
+            this.outfitMap = Tails.GSON.fromJson(tailInfoJson, new TypeToken<Map<UUID, Outfit>>() {}.getType());
+        } catch (JsonSyntaxException e) 
+        {
+            Tails.LOGGER.catching(e);
         }
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        String tailInfoJson = Tails.gson.toJson(this.outfitMap);
-        ByteBufUtils.writeUTF8String(buf, tailInfoJson);
+    public void encode(PacketBuffer buf)
+    {
+        String tailInfoJson = Tails.GSON.toJson(this.outfitMap);
+        buf.writeString(tailInfoJson);
     }
 
-    public static class Handler implements IMessageHandler<PlayerDataMapMessage, IMessage> {
-
-        @Override
-        public IMessage onMessage(PlayerDataMapMessage message, MessageContext ctx) {
-            for (Map.Entry<UUID, Outfit> entry : message.outfitMap.entrySet()) {
+    public void handle(Supplier<Context> ctx) 
+    {
+        ctx.get().enqueueWork(() -> 
+        {
+            for (Map.Entry<UUID, Outfit> entry : outfitMap.entrySet()) 
+            {
                 Tails.proxy.setActiveOutfit(entry.getKey(), entry.getValue());
             }
-            return null;
-        }
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

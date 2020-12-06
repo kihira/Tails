@@ -35,7 +35,7 @@ public class Shader {
             vertSrc.put(bytes);
             vertSrc.position(0);
         } catch (IOException e) {
-            Tails.logger.error("Failed to load vertex shader " + vertShader, e);
+            Tails.LOGGER.error("Failed to load vertex shader " + vertShader, e);
             return;
         }
         try (InputStream is = mc.getResourceManager().getResource(fragRes).getInputStream()) {
@@ -44,7 +44,7 @@ public class Shader {
             fragSrc.put(bytes);
             fragSrc.position(0);
         } catch (IOException e) {
-            Tails.logger.error("Failed to load fragment shader " + vertShader, e);
+            Tails.LOGGER.error("Failed to load fragment shader " + vertShader, e);
             return;
         }
 
@@ -74,7 +74,7 @@ public class Shader {
         int err = OpenGlHelper.glGetProgrami(program, GL20.GL_LINK_STATUS);
         if (err != GL11.GL_TRUE) {
             String msg = OpenGlHelper.glGetProgramInfoLog(program, 1024);
-            Tails.logger.error("Failed to link program: " + msg);
+            Tails.LOGGER.error("Failed to link program: " + msg);
         }
 
         // Cleanup shaders
@@ -114,7 +114,7 @@ public class Shader {
         int err = OpenGlHelper.glGetShaderi(shader, OpenGlHelper.GL_COMPILE_STATUS);
         if (err != GL11.GL_TRUE) {
             String msg = OpenGlHelper.glGetShaderInfoLog(shader, 1024);
-            Tails.logger.error("Failed to compile shader: " + msg);
+            Tails.LOGGER.error("Failed to compile shader: " + msg);
         }
     }
 }

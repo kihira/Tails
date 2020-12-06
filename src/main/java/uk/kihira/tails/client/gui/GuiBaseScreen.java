@@ -1,15 +1,13 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GuiBaseScreen extends GuiScreen {
+public abstract class GuiBaseScreen extends Screen {
     private int prevMouseX;
     private int prevMouseY;
     private float mouseIdleTicks;

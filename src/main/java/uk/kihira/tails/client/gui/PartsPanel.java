@@ -1,14 +1,7 @@
 package uk.kihira.tails.client.gui;
 
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
-import net.minecraftforge.fml.client.config.GuiUtils;
 import uk.kihira.gltf.Model;
 import uk.kihira.tails.client.*;
 import uk.kihira.tails.client.outfit.OutfitPart;

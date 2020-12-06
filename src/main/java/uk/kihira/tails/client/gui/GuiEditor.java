@@ -1,7 +1,7 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Tails;
@@ -49,7 +49,7 @@ public class GuiEditor extends GuiBase
         // todo should a new UUID be generated?
         // if one isn't generated, won't be able to properly cache data on clients.
         // but then again, we would probably be sent the entire json blob when trying to get the player outfit anyway
-        outfit = Tails.gson.fromJson(Tails.gson.toJson(originalOutfit), Outfit.class);
+        outfit = Tails.GSON.fromJson(Tails.GSON.toJson(originalOutfit), Outfit.class);
         if (outfit == null)
         {
             outfit = new Outfit();

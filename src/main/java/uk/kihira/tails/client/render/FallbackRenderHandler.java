@@ -1,15 +1,12 @@
 package uk.kihira.tails.client.render;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uk.kihira.gltf.Model;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.outfit.OutfitPart;
@@ -19,11 +16,13 @@ import uk.kihira.tails.common.Tails;
 
 import java.util.UUID;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 /**
  * Legacy renderer that uses the player render event.
  * This is used for compatibility with certain mods
  */
-@SideOnly(Side.CLIENT)
 public class FallbackRenderHandler {
 
     private static RenderPlayerEvent.Pre currentEvent = null;
@@ -31,11 +30,13 @@ public class FallbackRenderHandler {
     private static ResourceLocation currentPlayerTexture = null;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onPlayerRenderTick(RenderPlayerEvent.Pre e) {
-        UUID uuid = e.getEntityPlayer().getGameProfile().getId();
-        if (Tails.proxy.hasActiveOutfit(uuid) && !e.getEntityPlayer().isInvisible()) {
+    public void onPlayerRenderTick(RenderPlayerEvent.Pre e) 
+    {
+        UUID uuid = e.getPlayer().getGameProfile().getId();
+        if (Tails.proxy.hasActiveOutfit(uuid) && !e.getPlayer().isInvisible()) 
+        {
             currentOutfit = Tails.proxy.getActiveOutfit(uuid);
-            currentPlayerTexture = ((AbstractClientPlayer) e.getEntityPlayer()).getLocationSkin();
+            currentPlayerTexture = ((ClientPlayerEntity) e.getPlayer()).getLocationSkin();
             currentEvent = e;
         }
     }
@@ -48,30 +49,31 @@ public class FallbackRenderHandler {
         currentEvent = null;
     }
 
-    @SideOnly(Side.CLIENT)
-    public static class ModelRendererWrapper extends ModelRenderer {
-
+    public static class ModelRendererWrapper extends ModelRenderer 
+    {
         private final MountPoint mountPoint;
 
-        public ModelRendererWrapper(ModelBase model, MountPoint mountPoint) {
+        public ModelRendererWrapper(net.minecraft.client.renderer.model.Model model, MountPoint mountPoint) 
+        {
             super(model);
             this.mountPoint = mountPoint;
             addBox(0, 0, 0, 0, 0, 0); //Adds in a blank box as it's required in certain cases such as rendering arrows in entities
         }
 
         @Override
-        public void render(float scale) {
+        public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn) 
+        {
             if (currentEvent != null && currentOutfit != null && currentPlayerTexture != null) {
                 for (OutfitPart part : currentOutfit.parts) {
                     if (part.mountPoint != mountPoint) return;
 
-                    Model model = null;
-                    // Model model = PartRegistry.getModel(part.basePart);
-                    if (model != null) {
+                    Model model = PartRegistry.getModel(part.basePart);
+                    if (model != null) 
+                    {
                         model.render();
                     }
 
-                    Minecraft.getMinecraft().renderEngine.bindTexture(currentPlayerTexture);
+                    // TODO Minecraft.getInstance().renderEngine.bindTexture(currentPlayerTexture);
                 }
             }
         }

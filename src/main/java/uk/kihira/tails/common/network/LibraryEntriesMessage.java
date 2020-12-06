@@ -2,17 +2,16 @@ package uk.kihira.tails.common.network;
 
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import io.netty.buffer.ByteBuf;
 import uk.kihira.tails.common.LibraryEntryData;
 import uk.kihira.tails.common.Tails;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.List;
+import java.util.function.Supplier;
 
-public class LibraryEntriesMessage implements IMessage {
+public class LibraryEntriesMessage {
 
     private List<LibraryEntryData> entries;
     private boolean delete; //Only used when sending to server
@@ -23,51 +22,56 @@ public class LibraryEntriesMessage implements IMessage {
         this.delete = delete;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        String dataJson = ByteBufUtils.readUTF8String(buf);
-        try {
-            entries = Tails.gson.fromJson(dataJson, new TypeToken<List<LibraryEntryData>>() {}.getType());
-        } catch (JsonParseException e) {
-            e.printStackTrace();
+    public LibraryEntriesMessage(PacketBuffer buf) 
+    {
+        try 
+        {
+            this.entries = Tails.GSON.fromJson(buf.readString(), new TypeToken<List<LibraryEntryData>>() {}.getType());
+        } catch (JsonParseException e) 
+        {
+            Tails.LOGGER.catching(e);
         }
-        delete = buf.readBoolean();
+        this.delete = buf.readBoolean();
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeUTF8String(buf, Tails.gson.toJson(entries, new TypeToken<List<LibraryEntryData>>() {}.getType()));
-        buf.writeBoolean(delete);
+    public void encode(PacketBuffer buf) 
+    {
+        buf.writeString(Tails.GSON.toJson(this.entries, new TypeToken<List<LibraryEntryData>>() {}.getType()));
+        buf.writeBoolean(this.delete);
     }
 
-    public static class Handler implements IMessageHandler<LibraryEntriesMessage, IMessage> {
-
-        @Override
-        public IMessage onMessage(LibraryEntriesMessage message, MessageContext ctx) {
-            //Client
-            if (ctx.side.isClient()) {
+    public void handle(Supplier<Context> ctx) 
+    {
+        ctx.get().enqueueWork(() -> 
+        {
+            if (ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) 
+            {
                 //Yeah this isn't exactly a nice way of doing this.
-                for (LibraryEntryData entry : message.entries) {
+                for (LibraryEntryData entry : this.entries) 
+                {
                     entry.remoteEntry = true;
                 }
 
                 //We add server entries to the uk.kihira.tails.client
                 Tails.proxy.getLibraryManager().removeRemoteEntries();
-                Tails.proxy.getLibraryManager().addEntries(message.entries);
+                Tails.proxy.getLibraryManager().addEntries(this.entries);
             }
             //Server
-            else {
-                if (message.delete) {
-                    Tails.logger.debug("Removing Library Entries: " + message.entries.size());
-                    Tails.proxy.getLibraryManager().libraryEntries.removeAll(message.entries);
+            else 
+            {
+                if (this.delete) 
+                {
+                    Tails.LOGGER.debug("Removing Library Entries: %d", this.entries.size());
+                    Tails.proxy.getLibraryManager().libraryEntries.removeAll(this.entries);
                 }
-                else {
-                    Tails.logger.debug("Adding Library Entries: " + message.entries.size());
-                    Tails.proxy.getLibraryManager().addEntries(message.entries);
+                else 
+                {
+                    Tails.LOGGER.debug("Adding Library Entries: %d", this.entries.size());
+                    Tails.proxy.getLibraryManager().addEntries(this.entries);
                 }
                 Tails.proxy.getLibraryManager().saveLibrary();
             }
-            return null;
-        }
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

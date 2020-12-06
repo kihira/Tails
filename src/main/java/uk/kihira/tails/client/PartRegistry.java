@@ -2,10 +2,8 @@ package uk.kihira.tails.client;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,7 +56,7 @@ public final class PartRegistry
             {
                 try (FileReader reader = new FileReader(path.toFile()))
                 {
-                    addPart(Tails.gson.fromJson(reader, Part.class));
+                    addPart(Tails.GSON.fromJson(reader, Part.class));
                 }
                 catch (IOException e)
                 {
@@ -153,7 +151,7 @@ public final class PartRegistry
             {
                 try (FileReader reader = new FileReader(path.toFile()))
                 {
-                    return Optional.ofNullable(Tails.gson.fromJson(reader, Part.class));
+                    return Optional.ofNullable(Tails.GSON.fromJson(reader, Part.class));
                 }
                 catch (IOException e)
                 {
@@ -173,7 +171,7 @@ public final class PartRegistry
         Path path = Paths.get(Minecraft.getMinecraft().gameDir.getPath(), PARTS_CACHE_FOLDER, part.id.toString() + ".json");
         try (FileWriter writer = new FileWriter(path.toFile()))
         {
-            IOUtils.write(Tails.gson.toJson(part), writer);
+            IOUtils.write(Tails.GSON.toJson(part), writer);
         }
         catch (IOException e)
         {
@@ -254,10 +252,10 @@ public final class PartRegistry
     public static void loadAllPartsFromResources()
     {
         ResourceLocation resLoc = new ResourceLocation(Tails.MOD_ID, "parts.json");
-        try (InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream())
+        try (InputStream is = Minecraft.getInstance().getResourceManager().getResource(resLoc).getInputStream())
         {
             InputStreamReader reader = new InputStreamReader(is);
-            List<UUID> parts = Tails.gson.fromJson(reader, new TypeToken<List<UUID>>(){}.getType());
+            List<UUID> parts = Tails.GSON.fromJson(reader, new TypeToken<List<UUID>>(){}.getType());
 
             CompletableFuture.allOf(parts.stream()
                     .map(uuid -> CompletableFuture.runAsync(() -> PartRegistry.loadPartFromResources(uuid)))
@@ -266,7 +264,7 @@ public final class PartRegistry
         }
         catch (IOException e)
         {
-            Tails.logger.error("Cannot load parts list", e);
+            Tails.LOGGER.error("Cannot load parts list", e);
         }
     }
 
@@ -277,12 +275,12 @@ public final class PartRegistry
      */
     private static void loadPartFromResources(final UUID uuid)
     {
-        IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
+        IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
         ResourceLocation resLoc = new ResourceLocation(Tails.MOD_ID, "part/" + uuid + ".json");
         try (InputStream is = resourceManager.getResource(resLoc).getInputStream())
         {
             InputStreamReader reader = new InputStreamReader(is);
-            addPart(Tails.gson.fromJson(reader, Part.class));
+            addPart(Tails.GSON.fromJson(reader, Part.class));
 
             // Copy model to cache
             ResourceLocation modelResLoc = new ResourceLocation(Tails.MOD_ID, "model/" + uuid + ".glb");

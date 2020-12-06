@@ -2,64 +2,74 @@ package uk.kihira.tails.common.network;
 
 import com.google.common.base.Strings;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.util.UUIDTypeAdapter;
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Tails;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
-public class PlayerDataMessage implements IMessage {
-
+public final class PlayerDataMessage 
+{
     private UUID uuid;
     private Outfit outfit;
     private boolean shouldRemove;
 
     public PlayerDataMessage() {}
-    public PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) {
+    public PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove)
+    {
         this.uuid = uuid;
         this.outfit = outfit;
         this.shouldRemove = shouldRemove;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        uuid = UUIDTypeAdapter.fromString(ByteBufUtils.readUTF8String(buf));
-        String tailInfoJson = ByteBufUtils.readUTF8String(buf);
-        if (!Strings.isNullOrEmpty(tailInfoJson)) {
-            try {
-                outfit = Tails.gson.fromJson(tailInfoJson, Outfit.class);
-            } catch (JsonSyntaxException e) {
-                Tails.logger.warn(e);
+    public PlayerDataMessage(PacketBuffer buf) 
+    {
+        this.uuid = buf.readUniqueId();
+        String tailInfoJson = buf.readString();
+        if (!Strings.isNullOrEmpty(tailInfoJson)) 
+        {
+            try 
+            {
+                this.outfit = Tails.GSON.fromJson(tailInfoJson, Outfit.class);
+            } catch (JsonSyntaxException e) 
+            {
+                Tails.LOGGER.catching(e);
             }
         }
-        else outfit = null;
+        else 
+        {
+            this.outfit = null;
+        }
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeUTF8String(buf, UUIDTypeAdapter.fromUUID(uuid));
-        String tailInfoJson = outfit == null ? "" : Tails.gson.toJson(this.outfit);
-        ByteBufUtils.writeUTF8String(buf, tailInfoJson);
+    public void encode(PacketBuffer buf) 
+    {
+        buf.writeUniqueId(this.uuid);
+        buf.writeString(outfit == null ? "" : Tails.GSON.toJson(this.outfit));
     }
 
-    public static class Handler implements IMessageHandler<PlayerDataMessage, IMessage> {
-
-        @Override
-        public IMessage onMessage(PlayerDataMessage message, MessageContext ctx) {
-            if (message.shouldRemove) Tails.proxy.removeActiveOutfit(message.uuid);
-            else if (message.outfit != null) {
-                Tails.proxy.setActiveOutfit(message.uuid, message.outfit);
+    public void handle(Supplier<Context> ctx) 
+    {
+        ctx.get().enqueueWork(() ->
+        {
+            if (this.shouldRemove)
+            {
+                Tails.proxy.removeActiveOutfit(this.uuid);
+            } 
+            else if (this.outfit != null) 
+            {
+                Tails.proxy.setActiveOutfit(this.uuid, this.outfit);
                 //Tell other clients about the change
-                if (ctx.side.isServer()) {
-                    Tails.networkWrapper.sendToAll(new PlayerDataMessage(message.uuid, message.outfit, false));
+                if (ctx.get().getDirection() == NetworkDirection.PLAY_TO_SERVER) 
+                {
+                    TailsPacketHandler.networkWrapper.send(PacketDistributor.ALL.noArg(), new PlayerDataMessage(this.uuid, this.outfit, false));
                 }
             }
-            return null;
-        }
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

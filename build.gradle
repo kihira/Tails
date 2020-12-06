@@ -1,34 +1,29 @@
 buildscript {
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        mavenCentral()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
-
-ext {
-    massive = "2"
-    major = "0"
-    minor = "0"
-    mcVersion = "1.12.2"
-    forgeVersion = "14.23.5.2768"
-}
+apply plugin: 'eclipse'
 
 dependencies {
+    minecraft 'net.minecraftforge:forge:1.16.4-35.1.0'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
 }
 
-sourceCompatibility='1.8'
-targetCompatibility='1.8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 group= "uk.kihira.tails"
 archivesBaseName = "Tails"
-version = "${project.mcVersion}-${project.massive}.${project.major}.${project.minor}"
+version = "2.0.0"
 
 if (System.getenv("BRANCH_NAME") != null && System.getenv("BRANCH_NAME") != "master") {
     version += "-${System.getenv("BRANCH_NAME")}"
@@ -38,56 +33,81 @@ if (System.getenv("BUILD_NUMBER") != null) {
 }
 
 minecraft {
-    version = "${project.mcVersion}-${project.forgeVersion}"
-    runDir = "run"
-    mappings = "stable_39"
+    mappings channel: 'snapshot', version: '20201028-1.16.3'
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                tails {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                tails {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            args '--mod', 'tails', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                tails {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
-//noinspection GroovyAssignabilityCheck
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
-
-idea { module { inheritOutputDirs = true } }
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 test {
 	useJUnitPlatform()
 }
 
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'dev'
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "Tails",
+            "Specification-Vendor": "Kihira",
+            "Specification-Version": "1", 
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"Kihira",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
 
-artifacts {
-    archives sourceJar
-    archives deobfJar
-}
+jar.finalizedBy('reobfJar') 
+publish.dependsOn('reobfJar')
 
 publishing {
     publications {
         java(MavenPublication) {
-            artifactId = "Tails"
-            artifacts = [
-                "$buildDir/libs/$project.archivesBaseName-${project.version}.jar",
-                sourceJar,
-                deobfJar
-            ]
+            artifactId "Tails"
+            artifact jar
         }
     }
 
