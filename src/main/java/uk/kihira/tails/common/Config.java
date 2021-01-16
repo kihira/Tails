@@ -47,6 +47,6 @@ public final class Config
         }*/
 
         configuration = builder.build();
-        configuration.save();
+        //configuration.save();
     }
 }

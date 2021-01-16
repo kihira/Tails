@@ -1,19 +1,13 @@
 package uk.kihira.tails.proxy;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraftforge.common.MinecraftForge;
 import uk.kihira.tails.client.ClientEventHandler;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.PartRenderer;
-import uk.kihira.tails.client.render.FallbackRenderHandler;
 import uk.kihira.tails.client.render.LayerPart;
-import uk.kihira.tails.common.Config;
 import uk.kihira.tails.common.LibraryManager;
-import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.common.network.*;
 
 import java.util.Map;
 
@@ -30,12 +24,6 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
-    public void postInit() 
-    {
-        setupRenderers();
-    }
-
-    @Override
     protected void registerHandlers()
     {
         ClientEventHandler eventHandler = new ClientEventHandler();
@@ -44,17 +32,22 @@ public class ClientProxy extends CommonProxy
         //super.registerHandlers();
     }
 
+    @Override
+    public void onResourceManagerReload()
+    {
+        setupRenderers();
+    }
     /**
      * Sets up the various part renders on the player model.
      * Renderers used depends upon legacy setting
      */
     private void setupRenderers()
     {
-        boolean legacyRenderer = Config.forceLegacyRendering.get();
+/*        boolean legacyRenderer = Config.forceLegacyRendering.get();
         if (legacyRenderer)
         {
             Tails.LOGGER.info("Legacy Renderer has been forced enabled");
-        }
+        }*/
         // todo Fix smart moving compat
 //        else if (Loader.isModLoaded("SmartMoving"))
 //        {
@@ -65,7 +58,7 @@ public class ClientProxy extends CommonProxy
 
         Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
 
-        if (legacyRenderer) 
+/*        if (legacyRenderer)
         {
             MinecraftForge.EVENT_BUS.register(new FallbackRenderHandler());
 
@@ -85,7 +78,7 @@ public class ClientProxy extends CommonProxy
             model.bipedRightArm.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.RIGHT_ARM));
             model.bipedLeftLeg.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.LEFT_LEG));
             model.bipedRightLeg.addChild(new FallbackRenderHandler.ModelRendererWrapper(model, MountPoint.RIGHT_LEG));
-        } else 
+        } else */
         {
             // Default
             PlayerRenderer renderPlayer = skinMap.get("default");

@@ -24,7 +24,7 @@ public class CommonProxy
         libraryManager = new LibraryManager();
     }
 
-    public void postInit() { }
+    public void onResourceManagerReload() {}
 
     protected void registerMessages() 
     {
