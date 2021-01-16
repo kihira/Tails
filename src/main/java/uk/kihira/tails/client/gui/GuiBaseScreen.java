@@ -39,7 +39,7 @@ public abstract class GuiBaseScreen extends Screen
             {
                 if (prevMouseX == mouseX && prevMouseY == mouseY) mouseIdleTicks += partialTicks;
                 else if (mouseIdleTicks > 0f) mouseIdleTicks = 0f;
-                drawHoveringText(((ITooltip) btn).getTooltip(mouseX, mouseY, mouseIdleTicks), mouseX, mouseY);
+                // todo drawHoveringText(((ITooltip) btn).getTooltip(mouseX, mouseY, mouseIdleTicks), mouseX, mouseY);
                 prevMouseX = mouseX;
                 prevMouseY = mouseY;
                 break;
@@ -55,7 +55,7 @@ public abstract class GuiBaseScreen extends Screen
             {
                 if (!button.active)
                 {
-                    Screen.renderTooltip(matrixStack, Minecraft.getInstance().fontRenderer.trimStringToWidth(new StringTextComponent(tooltips), Math.max(this.width / 2 - 43, 170)), mouseX, mouseY);
+                    // todo Screen.renderTooltip(matrixStack, Minecraft.getInstance().fontRenderer.trimStringToWidth(new StringTextComponent(tooltips), Math.max(this.width / 2 - 43, 170)), mouseX, mouseY);
                 }
             });
         }
@@ -71,13 +71,14 @@ public abstract class GuiBaseScreen extends Screen
             return false;
         }
 
-        @Override
+        // TODO
+/*        @Override
         public void drawButtonForegroundLayer(int x, int y)
         {
             ArrayList<String> list = new ArrayList<>(this.tooltip);
             list.add((!this.enabled ? TextFormatting.GREEN + TextFormatting.ITALIC.toString() + "Enabled" : TextFormatting.RED + TextFormatting.ITALIC.toString() + "Disabled"));
             drawHoveringText(list, x, y);
-        }
+        }*/
     }
 
     public static boolean isMouseOver(double mouseX, double mouseY, double x, double y, double width, double height)

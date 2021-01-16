@@ -83,6 +83,6 @@ public class ClientEventHandler
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) 
     {
-        ((ClientProxy) Tails.proxy).partRenderer.doRender();
+        ((ClientProxy) Tails.proxy).partRenderer.doRender(event.getMatrixStack());
     }
 }

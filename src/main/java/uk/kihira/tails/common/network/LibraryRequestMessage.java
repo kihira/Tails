@@ -9,6 +9,7 @@ import uk.kihira.tails.common.Tails;
 // TODO Is this still needed?
 public class LibraryRequestMessage
 {
+    public LibraryRequestMessage() {}
     public LibraryRequestMessage(PacketBuffer buf) {}
 
     public void encode(PacketBuffer buf) {}

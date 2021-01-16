@@ -4,15 +4,14 @@ import java.util.function.Supplier;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
+import uk.kihira.tails.common.Config;
 import uk.kihira.tails.common.Tails;
 
 public class ServerCapabilitiesMessage 
 {
+    private final boolean library;
 
-    private boolean library;
-
-    public ServerCapabilitiesMessage() {}
-    public ServerCapabilitiesMessage(boolean library) 
+    public ServerCapabilitiesMessage(boolean library)
     {
         this.library = library;
     }
@@ -29,10 +28,7 @@ public class ServerCapabilitiesMessage
 
     public void handle(Supplier<Context> ctx) 
     {
-        ctx.get().enqueueWork(() ->
-        {
-            Tails.libraryEnabled = this.library;
-        });
+        ctx.get().enqueueWork(() -> Config.libraryEnabled.set(this.library));
         ctx.get().setPacketHandled(true);
     }
 }

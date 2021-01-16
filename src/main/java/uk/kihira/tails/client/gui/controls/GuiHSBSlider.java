@@ -1,6 +1,5 @@
 package uk.kihira.tails.client.gui.controls;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.text.StringTextComponent;
@@ -179,10 +178,10 @@ public class GuiHSBSlider extends Slider implements ITooltip
         float f1 = 0.00390625F;
         BufferBuilder renderer = Tessellator.getInstance().getBuffer();
         renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        renderer.pos((double) (x + 0), (double) (y + tarHeight), (double) this.zLevel).tex((double) ((float) (u + 0) * f), (double) ((float) (v + srcHeight) * f1)).endVertex();
-        renderer.pos((double) (x + tarWidth), (double) (y + tarHeight), (double) this.zLevel).tex((double) ((float) (u + srcWidth) * f), (double) ((float) (v + srcHeight) * f1)).endVertex();
-        renderer.pos((double) (x + tarWidth), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (u + srcWidth) * f), (double) ((float) (v + 0) * f1)).endVertex();
-        renderer.pos((double) (x + 0), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (u + 0) * f), (double) ((float) (v + 0) * f1)).endVertex();
+        renderer.pos(x + 0, y + tarHeight, 0).tex(((float) (u + 0) * f), ((float) (v + srcHeight) * f1)).endVertex();
+        renderer.pos(x + tarWidth, y + tarHeight, 0).tex(((float) (u + srcWidth) * f), ((float) (v + srcHeight) * f1)).endVertex();
+        renderer.pos(x + tarWidth, y + 0, 0).tex(((float) (u + srcWidth) * f), ((float) (v + 0) * f1)).endVertex();
+        renderer.pos(x + 0, y + 0, 0).tex(((float) (u + 0) * f), ((float) (v + 0) * f1)).endVertex();
         Tessellator.getInstance().draw();
     }
 

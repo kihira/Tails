@@ -55,11 +55,12 @@ public class ClientProxy extends CommonProxy
         {
             Tails.LOGGER.info("Legacy Renderer has been forced enabled");
         }
-        else if (Loader.isModLoaded("SmartMoving")) 
-        {
-            Tails.LOGGER.info("Legacy Renderer enabled automatically for mod compatibility");
-            legacyRenderer = true;
-        }
+        // todo Fix smart moving compat
+//        else if (Loader.isModLoaded("SmartMoving"))
+//        {
+//            Tails.LOGGER.info("Legacy Renderer enabled automatically for mod compatibility");
+//            legacyRenderer = true;
+//        }
         partRenderer = new PartRenderer();
 
         Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
@@ -88,21 +89,21 @@ public class ClientProxy extends CommonProxy
         {
             // Default
             PlayerRenderer renderPlayer = skinMap.get("default");
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedHead, partRenderer, MountPoint.HEAD));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedBody, partRenderer, MountPoint.CHEST));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedLeftArm, partRenderer, MountPoint.LEFT_ARM));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedRightArm, partRenderer, MountPoint.RIGHT_ARM));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedLeftLeg, partRenderer, MountPoint.LEFT_LEG));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedRightLeg, partRenderer, MountPoint.RIGHT_LEG));
+            renderPlayer.addLayer(new LayerPart(renderPlayer, renderPlayer.getEntityModel().bipedHead, partRenderer, MountPoint.HEAD));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedBody, partRenderer, MountPoint.CHEST));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedLeftArm, partRenderer, MountPoint.LEFT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedRightArm, partRenderer, MountPoint.RIGHT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedLeftLeg, partRenderer, MountPoint.LEFT_LEG));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedRightLeg, partRenderer, MountPoint.RIGHT_LEG));
 
             // Slim
             renderPlayer = skinMap.get("slim");
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedHead, partRenderer, MountPoint.HEAD));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedBody, partRenderer, MountPoint.CHEST));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedLeftArm, partRenderer, MountPoint.LEFT_ARM));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedRightArm, partRenderer, MountPoint.RIGHT_ARM));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedLeftLeg, partRenderer, MountPoint.LEFT_LEG));
-            renderPlayer.addLayer(new LayerPart(renderPlayer.getEntityModel().bipedRightLeg, partRenderer, MountPoint.RIGHT_LEG));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedHead, partRenderer, MountPoint.HEAD));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedBody, partRenderer, MountPoint.CHEST));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedLeftArm, partRenderer, MountPoint.LEFT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedRightArm, partRenderer, MountPoint.RIGHT_ARM));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedLeftLeg, partRenderer, MountPoint.LEFT_LEG));
+            renderPlayer.addLayer(new LayerPart(renderPlayer,renderPlayer.getEntityModel().bipedRightLeg, partRenderer, MountPoint.RIGHT_LEG));
         }
     }
 }

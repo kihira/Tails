@@ -2,19 +2,16 @@ package uk.kihira.tails.client.gui.dialog;
 
 import com.google.common.base.Strings;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import uk.kihira.tails.client.gui.GuiBase;
 import uk.kihira.tails.client.gui.Panel;
 import org.apache.commons.lang3.Validate;
 
-import java.io.IOException;
-
 public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
 {
     protected boolean dragging;
-    private int mouseXStart;
-    private int mouseYStart;
+    private double mouseXStart;
+    private double mouseYStart;
 
     protected String title;
 
@@ -28,12 +25,6 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
     {
         super(parent, left, top, width, height);
         Validate.isInstanceOf(IDialogCallback.class, parent);
-    }
-
-    @Override
-    protected void actionPerformed(Button button)
-    {
-        parent.buttonPressed(this, button);
     }
 
     @Override
@@ -51,15 +42,19 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
+    {
         //Only if they grab the top
-        if (mouseButton == 0 && mouseY < 12) {
+        if (mouseButton == 0 && mouseY < 12)
+        {
             dragging = true;
             mouseXStart = mouseX;
             mouseYStart = mouseY;
+            return true;
         }
-        else {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+        else
+        {
+            return super.mouseClicked(mouseX, mouseY, mouseButton);
         }
     }
 
@@ -73,7 +68,7 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
         }
     }*/
 
-    @Override
+/*    @Override
     public void mouseClickMove(int mouseX, int mouseY, int mouseButton, long pressTime) {
         if (dragging) {
             if (mouseX != mouseXStart) {
@@ -90,5 +85,5 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
         else {
             super.mouseClickMove(mouseX, mouseY, mouseButton, pressTime);
         }
-    }
+    }*/
 }

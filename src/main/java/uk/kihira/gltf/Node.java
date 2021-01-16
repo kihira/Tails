@@ -56,7 +56,7 @@ public final class Node implements IDisposable
             this.matrix.setIdentity();
             this.matrix.translate(this.translation);
             this.matrix.mul(this.rotation);
-            this.matrix.scale(this.scale);
+            // todo this.matrix.scale(this.scale);
         }
 
         matrixStack.push();

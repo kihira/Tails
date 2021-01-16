@@ -6,7 +6,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import uk.kihira.tails.client.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
 
 import java.util.List;
 
@@ -14,14 +13,14 @@ import java.util.List;
 public class GuiList<T extends AbstractList.AbstractListEntry<T>> extends AbstractList<T>
 {
     private final IListCallback<T> parent;
-    private final List<T> entries;
 
     public GuiList(IListCallback<T> parent, int width, int height, int top, int bottom, int slotHeight, List<T> entries)
     {
         super(Minecraft.getInstance(), width, height, top, bottom, slotHeight);
         this.parent = parent;
-        this.entries = entries;
         this.x0 = -3;
+
+        entries.forEach(this::addEntry);
     }
 
     @Override
@@ -44,18 +43,8 @@ public class GuiList<T extends AbstractList.AbstractListEntry<T>> extends Abstra
         return this.width - 8;
     }
 
-    public int getCurrentIndex()
+    public void setDefault()
     {
-        return this.currentIndex;
-    }
-
-    public void setCurrentIndex(int currentIndex)
-    {
-        this.currentIndex = currentIndex;
-    }
-
-    public List<T> getEntries()
-    {
-        return this.entries;
+        setSelected(getEntry(0));
     }
 }

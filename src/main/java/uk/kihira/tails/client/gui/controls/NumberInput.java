@@ -2,7 +2,6 @@ package uk.kihira.tails.client.gui.controls;
 
 import com.google.common.base.Strings;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.math.MathHelper;
@@ -31,8 +30,6 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
 
     private final int xPos;
     private final int yPos;
-    private final int width;
-    private final int height = 15;
 
     private final float min;
     private final float max;
@@ -54,6 +51,8 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
 
     public NumberInput(int x, int y, int width, float minValue, float maxValue, float increment, @Nullable IControlCallback<IControl<Float>, Float> callback)
     {
+        super(x, y, width, 15, StringTextComponent.EMPTY);
+
         this.xPos = x;
         this.yPos = y;
         this.width = width;
@@ -64,18 +63,24 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
         df.setRoundingMode(RoundingMode.FLOOR);
 
         numInput = new TextFieldWidget(Minecraft.getInstance().fontRenderer, xPos + 1, yPos + 1, width - btnWidth - 2, height - 2, StringTextComponent.EMPTY);
-        numInput.setValidator(input -> {
+        numInput.setValidator(input ->
+        {
             if (input == null) return true;
             int dotCount = 0;
             char[] in = input.toCharArray();
-            for (int i = 0; i < in.length; i++) {
+            for (int i = 0; i < in.length; i++)
+            {
                 char c = in[i];
-                if (c == '-' && i != 0) {
+                if (c == '-' && i != 0)
+                {
                     return false;
-                } else if (c == '.') {
+                } else if (c == '.')
+                {
                     dotCount++;
                     if (dotCount > 1) return false;
-                } else if (Arrays.binarySearch(VALID_CHARS, c) < 0) {
+                }
+                else if (Arrays.binarySearch(VALID_CHARS, c) < 0)
+                {
                     return false;
                 }
             }
@@ -83,15 +88,16 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
         });
         setValue(0f);
 
-        this.btnXPos = xPos + numInput.width + 2;
+        this.btnXPos = xPos + numInput.getWidth() + 2;
         this.btnHeight = height / 2;
     }
 
     public void draw(int mouseX, int mouseY)
     {
-        numInput.drawTextBox();
-        drawRect(btnXPos, yPos, btnXPos + btnWidth, yPos + btnHeight, 0xFFFFFFFF); // Increment
-        drawRect(btnXPos, yPos + btnHeight, btnXPos + btnWidth, yPos + height, 0xAAAAAAFF); // Decrement
+        // todo
+        //numInput.drawTextBox();
+        //drawRect(btnXPos, yPos, btnXPos + btnWidth, yPos + btnHeight, 0xFFFFFFFF); // Increment
+        //drawRect(btnXPos, yPos + btnHeight, btnXPos + btnWidth, yPos + height, 0xAAAAAAFF); // Decrement
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -106,40 +112,51 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
         }
 
         float inc = increment;
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) inc *= SHIFT_MOD;
-        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) inc *= CTRL_MOD;
+        // todo
+//        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) inc *= SHIFT_MOD;
+//        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) inc *= CTRL_MOD;
 
         // Increase
-        if (GuiBaseScreen.isMouseOver(mouseX, mouseY, xPos + numInput.width, yPos, btnWidth, btnHeight)) {
+        if (GuiBaseScreen.isMouseOver(mouseX, mouseY, xPos + numInput.getWidth(), yPos, btnWidth, btnHeight)) {
             setValue(num + inc);
         }
         // Decrease
-        else if (GuiBaseScreen.isMouseOver(mouseX, mouseY, xPos + numInput.width, yPos + btnHeight, btnWidth, btnHeight)) {
+        else if (GuiBaseScreen.isMouseOver(mouseX, mouseY, xPos + numInput.getWidth(), yPos + btnHeight, btnWidth, btnHeight)) {
             setValue(num - inc);
         }
     }
 
-    public void keyTyped(char key, int keycode) {
-        numInput.textboxKeyTyped(key, keycode);
+    public boolean charTyped(char codePoint, int modifiers)
+    {
+        return numInput.charTyped(codePoint, modifiers);
     }
 
     @Override
-    public void setValue(Float newValue) {
+    public void setValue(Float newValue)
+    {
         newValue = MathHelper.clamp(newValue, min, max);
-        if (callback != null && !callback.onValueChange(this, num, newValue)) return;
+        if (callback != null && !callback.onValueChange(this, num, newValue))
+        {
+            return;
+        }
 
         num = newValue;
         numInput.setText(df.format(num));
     }
 
     @Override
-    public Float getValue() {
+    public Float getValue()
+    {
         return num;
     }
 
     @Override
-    public List<String> getTooltip(int mouseX, int mouseY, float mouseIdleTime) {
-        if (mouseIdleTime < .5f) return new ArrayList<>();
+    public List<String> getTooltip(int mouseX, int mouseY, float mouseIdleTime)
+    {
+        if (mouseIdleTime < .5f)
+        {
+            return new ArrayList<>();
+        }
         List<String> tooltip = new ArrayList<>();
         tooltip.add(String.format("Click arrows to change by %s", increment));
         tooltip.add(String.format("Hold SHIFT to change by %s, CTRL to change by %s", increment * 10f, increment * 0.1f));

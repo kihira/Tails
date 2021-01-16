@@ -169,9 +169,9 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     }
 
     @Override
-    public void keyTyped(char letter, int keyCode)
+    public boolean charTyped(char codePoint, int modifiers)
     {
-        this.hexText.charTyped(letter, keyCode);
+        this.hexText.charTyped(codePoint, modifiers);
 
         try
         {
@@ -185,47 +185,49 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
         updateTints(false);
 
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE && this.selectingColour)
+        if (codePoint == GLFW.GLFW_KEY_ESCAPE && this.selectingColour)
         {
             setSelectingColour(false);
+            return true;
         }
         else
         {
-            super.keyTyped(letter, keyCode);
+            return super.charTyped(codePoint, modifiers);
         }
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
         if (this.selectingColour && mouseButton == 0)
         {
-            currTintColour = getColourAtPoint(Minecraft.getInstance().mouseHelper.getMouseX(), Minecraft.getInstance().mouseHelper.getMouseX()); //Ignore alpha
+            this.currTintColour = getColourAtPoint(Minecraft.getInstance().mouseHelper.getMouseX(), Minecraft.getInstance().mouseHelper.getMouseX()); //Ignore alpha
             setSelectingColour(false);
             updateTints(true);
+            return true;
         }
         else
         {
-            hexText.mouseClicked(mouseX, mouseY, mouseButton);
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+            this.hexText.mouseClicked(mouseX, mouseY, mouseButton);
+            return super.mouseClicked(mouseX, mouseY, mouseButton);
         }
     }
 
     @Override
     public void onValueChangeHSBSlider(GuiHSBSlider source, double sliderValue)
     {
-        if (source == rgbSliders[0] || source == rgbSliders[1] || source == rgbSliders[2])
+        if (source == this.rgbSliders[0] || source == this.rgbSliders[1] || source == this.rgbSliders[2])
         {
-            currTintColour = new Color(
-                    (int) (rgbSliders[0].getValue() * 255F),
-                    (int) (rgbSliders[1].getValue() * 255F),
-                    (int) (rgbSliders[2].getValue() * 255F)).getRGB();
+            this.currTintColour = new Color(
+                    (int) (this.rgbSliders[0].getValue() * 255F),
+                    (int) (this.rgbSliders[1].getValue() * 255F),
+                    (int) (this.rgbSliders[2].getValue() * 255F)).getRGB();
         }
         else
         {
-            float[] hsbvals = {(float) hsbSliders[0].getValue(), (float) hsbSliders[1].getValue(), (float) hsbSliders[2].getValue()};
+            float[] hsbvals = {(float) this.hsbSliders[0].getValue(), (float) this.hsbSliders[1].getValue(), (float) this.hsbSliders[2].getValue()};
             hsbvals[source.getType().ordinal()] = (float) sliderValue;
-            currTintColour = Color.getHSBColor(hsbvals[0], hsbvals[1], hsbvals[2]).getRGB();
+            this.currTintColour = Color.getHSBColor(hsbvals[0], hsbvals[1], hsbvals[2]).getRGB();
         }
         updateTints(true);
     }
@@ -262,19 +264,19 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         byte[] pixelData;
         int pixels = 1;
 
-        if (pixelBuffer == null)
+        if (this.pixelBuffer == null)
         {
-            pixelBuffer = BufferUtils.createByteBuffer(pixels);
+            this.pixelBuffer = BufferUtils.createByteBuffer(pixels);
         }
         pixelData = new byte[pixels];
 
         GlStateManager.pixelStore(GL11.GL_PACK_ALIGNMENT, 1);
         GlStateManager.pixelStore(GL11.GL_UNPACK_ALIGNMENT, 1);
-        pixelBuffer.clear();
+        this.pixelBuffer.clear();
 
-        GlStateManager.readPixels((int) x, (int) y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);
+        GlStateManager.readPixels((int) x, (int) y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, this.pixelBuffer);
 
-        pixelBuffer.get(pixelData);
+        this.pixelBuffer.get(pixelData);
 
         return pixelData[0];
     }
@@ -288,7 +290,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             try
             {
                 final int cursorSize = 16;
-                BufferedImage bufferedImage = ImageIO.read(this.minecraft.getResourceManager().getResource(IconButton.ICONS_TEXTURES).getInputStream());
+                BufferedImage bufferedImage = ImageIO.read(getMinecraft().getResourceManager().getResource(IconButton.ICONS_TEXTURES).getInputStream());
                 int[] pixelData;
                 int pixels = cursorSize * cursorSize;
                 pixelData = new int[pixels];
@@ -326,10 +328,10 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
      */
     void updateTints(boolean updateHex)
     {
-        hexText.setTextColor(currTintColour);
+        this.hexText.setTextColor(this.currTintColour);
         if (updateHex)
         {
-            hexText.setText(Integer.toHexString(currTintColour));
+            this.hexText.setText(Integer.toHexString(this.currTintColour));
         }
 
         //RGB Sliders

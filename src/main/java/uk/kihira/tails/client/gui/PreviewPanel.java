@@ -18,7 +18,8 @@ class PreviewPanel extends Panel<GuiEditor>
     private int prevMouseX = -1;
     private boolean doRender;
 
-    PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom) {
+    PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom)
+    {
         super(parent, left, top, right, bottom);
     }
 
@@ -62,7 +63,8 @@ class PreviewPanel extends Panel<GuiEditor>
 
     }
 
-    @Override
+    // todo
+/*    @Override
     public void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick)
     {
         if (lastButtonClicked == 0)
@@ -74,13 +76,13 @@ class PreviewPanel extends Panel<GuiEditor>
             }
             this.prevMouseX = mouseX;
         }
-    }
+    }*/
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseReleased(double mouseX, double mouseY, int mouseButton)
     {
         this.prevMouseX = -1;
-        super.mouseReleased(mouseX, mouseY, mouseButton);
+        return super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     private static void drawEntity(MatrixStack matrixStack, int x, int y, int scale, float yaw, float pitch, ClientPlayerEntity entity)
@@ -106,12 +108,13 @@ class PreviewPanel extends Panel<GuiEditor>
         matrixStack.rotate(Vector3f.YP.rotationDegrees(yaw));
         GlStateManager.color4f(1f, 1f, 1f, 1f);
 
+        // todo
         RenderHelper.enableStandardItemLighting();
-        renderManager.setPlayerViewY(180f);
-        renderManager.renderEntity(entity, 0d, 0d, 0d, 0f, 1f, false);
+        //renderManager.setPlayerViewY(180f);
+        //renderManager.renderEntity(entity, 0d, 0d, 0d, 0f, 1f, false);
         RenderHelper.disableStandardItemLighting();
-        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        //OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        //OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
         matrixStack.pop();
 

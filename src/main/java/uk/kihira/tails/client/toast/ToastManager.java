@@ -29,31 +29,21 @@ public final class ToastManager
     {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
         int stringWidth = fontRenderer.getStringWidth(text);
-        toasts.add(new Toast(x, y, stringWidth + 10,  stringWidth * 3, text));
+        this.toasts.add(new Toast(x, y, stringWidth + 10,  stringWidth * 3, text));
     }
 
     public void createCenteredToast(int x, int y, int maxWidth, String text)
     {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
         int stringWidth = fontRenderer.getStringWidth(text);
-        if (stringWidth > maxWidth) {
-            List<IReorderingProcessor> strings = fontRenderer.trimStringToWidth(new StringTextComponent(text), maxWidth);
-            toasts.add(new Toast(x - (maxWidth / 2) - 5, y, maxWidth + 10, text.length() * 3, strings.toArray(new IReorderingProcessor[0])));
-        }
-        else {
-            toasts.add(new Toast(x - (stringWidth / 2) - 5, y, stringWidth + 10, text.length() * 3, text));
-        }
-    }
-
-    @SubscribeEvent
-    public void onMouseEvent(MouseEvent event)
-    {
-        for (Toast toast : toasts) 
+        if (stringWidth > maxWidth)
         {
-            if (toast.mouseOver) 
-            {
-                toast.onMouseEvent(event);
-            }
+            List<IReorderingProcessor> strings = fontRenderer.trimStringToWidth(new StringTextComponent(text), maxWidth);
+            // TODO toasts.add(new Toast(x - (maxWidth / 2) - 5, y, maxWidth + 10, text.length() * 3, strings.toArray(new IReorderingProcessor[0])));
+        }
+        else
+        {
+            this.toasts.add(new Toast(x - (stringWidth / 2) - 5, y, stringWidth + 10, text.length() * 3, text));
         }
     }
 

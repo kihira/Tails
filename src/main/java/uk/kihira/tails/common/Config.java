@@ -1,5 +1,6 @@
 package uk.kihira.tails.common;
 
+import com.google.gson.Gson;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -34,15 +35,16 @@ public final class Config
         {
             Tails.setLocalOutfit(new Outfit());
         }
-        try 
+        // todo
+/*        try
         {
-            localOutfit = GSON.fromJson(Tails.configuration.getString("Local Player Outfit",
+            localOutfit = Gson.fromJson(Tails.configuration.getString("Local Player Outfit",
                     Configuration.CATEGORY_GENERAL, "{}", "Local Players outfit. Delete to remove all customisation data. Do not try to edit manually"), Outfit.class);
 
         } catch (JsonSyntaxException e) {
             Tails.configuration.getCategory(Configuration.CATEGORY_GENERAL).remove("Local Player Data");
             Tails.LOGGER.error("Failed to load local player data: Invalid JSON syntax! Invalid data being removed");
-        }
+        }*/
 
         configuration = builder.build();
         configuration.save();

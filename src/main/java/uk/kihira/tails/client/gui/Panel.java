@@ -1,12 +1,12 @@
 package uk.kihira.tails.client.gui;
 
+import net.minecraft.util.text.StringTextComponent;
 import org.apache.commons.lang3.Validate;
 
 import java.io.IOException;
 
 public abstract class Panel<T extends GuiBase> extends GuiBaseScreen
 {
-
     protected final T parent;
     public int left;
     public int top;
@@ -17,6 +17,7 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen
 
     public Panel(T parent, int x, int y, int width, int height)
     {
+        super(StringTextComponent.EMPTY);
         Validate.isInstanceOf(GuiBase.class, parent);
 
         this.parent = parent;
@@ -26,43 +27,23 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen
         this.bottom = y + height;
     }
 
-    public void resize(int x, int y, int newWidth, int newHeight) {
-        left = x;
-        top = y;
-        right = x + newWidth;
-        bottom = y + newHeight;
+    public void resize(int x, int y, int newWidth, int newHeight)
+    {
+        this.left = x;
+        this.top = y;
+        this.right = x + newWidth;
+        this.bottom = y + newHeight;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(int height)
+    {
         this.height = height;
-        bottom = top + height;
+        this.bottom = this.top + height;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(int width)
+    {
         this.width = width;
-        right = left + width;
+        this.right = this.left + width;
     }
-
-    //All this stuff is to make them public
-    public void keyTyped(char key, int keyCode) {}
-
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
-        super.mouseReleased(mouseX, mouseY, mouseButton);
-    }
-
-    public void mouseClickMove(int mouseX, int mouseY, int mouseButton, long pressTime) {
-        super.mouseClickMove(mouseX, mouseY, mouseButton, pressTime);
-    }
-
-    /**
-     * Handles mouse input if required
-     * This is ALWAYS called regardless of if the mouse is in the bounds or not
-     * It is also generally the first method to be called
-     * Does not call super as we never want to call super from a panel for this method
-     */
-    public void handleMouseInput() {}
 }

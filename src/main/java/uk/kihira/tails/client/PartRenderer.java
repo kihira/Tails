@@ -81,7 +81,7 @@ public class PartRenderer
     /**
      * Renders the entire queue of parts
      */
-    public void doRender()
+    public void doRender(MatrixStack matrixStack)
     {
         if (renders.size() == 0) return;
 
@@ -110,7 +110,7 @@ public class PartRenderer
             // Load texture and model matrix
             Minecraft.getInstance().getTextureManager().bindTexture(outfitPart.textureLoc);
             GL11.glLoadMatrixf(entry.getValue());
-            model.render();
+            model.render(matrixStack);
 
             if (Tails.DEBUG)
             {

@@ -2,11 +2,16 @@ package uk.kihira.tails.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.list.AbstractList;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
 import uk.kihira.gltf.Model;
@@ -15,15 +20,15 @@ import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.proxy.ClientProxy;
 
-import java.io.IOException;
 import java.util.stream.Collectors;
 
+@OnlyIn(Dist.CLIENT)
 public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsPanel.PartEntry>
 {
     private static final float Z_POSITION = 100f;
     private static final float PART_SCALE = 40f;
 
-    private GuiList<PartEntry> partList;
+    private GuiList<PartsPanel.PartEntry> partList;
     private ExtendedButton mountPointButton;
     private MountPoint mountPoint; // todo temporary until UI rework. Tabs with search?
     private float rotation;
@@ -33,8 +38,8 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     PartsPanel(GuiEditor parent, int left, int top, int right, int bottom)
     {
         super(parent, left, top, right, bottom);
-        alwaysReceiveMouse = true;
-        mountPoint = MountPoint.CHEST;
+        this.alwaysReceiveMouse = true;
+        this.mountPoint = MountPoint.CHEST;
     }
 
     @Override
@@ -64,7 +69,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
 
         RenderSystem.color4f(1f, 1f, 1f, 1f);
         drawCenteredString(matrixStack, this.font, I18n.format("tails.gui.parts"), this.width / 2, 5, GuiEditor.TEXT_COLOUR);
-        this.partList.drawScreen(mouseX, mouseY, partialTicks);
+        this.partList.render(matrixStack, mouseX, mouseY, partialTicks);
 
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
@@ -83,27 +88,21 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
         partList.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int state)
+    public boolean mouseReleased(double mouseX, double mouseY, int state)
     {
-        super.mouseReleased(mouseX, mouseY, state);
         partList.mouseReleased(mouseX, mouseY, state);
+        return super.mouseReleased(mouseX, mouseY, state);
     }
 
     @Override
-    public void handleMouseInput()
-    {
-        partList.handleMouseInput();
-    }
-
-    @Override
-    public boolean onEntrySelected(GuiList guiList, int index, PartEntry entry)
+    public boolean onEntrySelected(GuiList<PartEntry> guiList, int index, PartEntry entry)
     {
         return true;
     }
@@ -112,19 +111,19 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     {
         this.partList = new GuiList<>(
                 this,
-                width,
-                height - listTop,
-                listTop,
-                height,
+                this.width,
+                this.height - this.listTop,
+                this.listTop,
+                this.height,
                 55,
-                PartRegistry.getPartsByMountPoint(mountPoint).map(PartEntry::new).collect(Collectors.toList()));
+                PartRegistry.getPartsByMountPoint(this.mountPoint).map(PartEntry::new).collect(Collectors.toList()));
         // this.partList.width = width;
         selectDefaultListEntry();
     }
 
     void selectDefaultListEntry()
     {
-        partList.setCurrentIndex(0);
+        this.partList.setDefault();
     }
 
     private void renderPart(MatrixStack matrixStack, int x, int y, OutfitPart part)
@@ -140,7 +139,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         {
             matrixStack.rotate(Vector3f.YP.rotationDegrees(this.rotation));
             matrixStack.scale(PART_SCALE, PART_SCALE, PART_SCALE);
-            ((ClientProxy) Tails.proxy).partRenderer.render(part);
+            ((ClientProxy) Tails.proxy).partRenderer.render(matrixStack, part);
         }
         else
         {
@@ -151,7 +150,8 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         matrixStack.pop();
     }
 
-    class PartEntry implements GuiListExtended.IGuiListEntry
+    @OnlyIn(Dist.CLIENT)
+    class PartEntry extends AbstractList.AbstractListEntry<PartEntry>
     {
         private static final int ADD_X = 1;
         private static final int ADD_Y = 40;
@@ -169,48 +169,43 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         }
 
         @Override
-        public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
-            final boolean isCurrentSelectedPart = partList.getCurrentIndex() == slotIndex;
+        public void render(MatrixStack matrixStack, int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks)
+        {
+            final boolean isCurrentSelectedPart = this == partList.getSelected();
 
-            renderPart(right - 40, y + (slotHeight / 2), outfitPart);
-            ClientUtils.drawStringMultiLine(fontRenderer, part.name, 5, y + 17, GuiEditor.TEXT_COLOUR);
+            renderPart(matrixStack, right - 40, y + (slotHeight / 2), this.outfitPart);
+            ClientUtils.drawStringMultiLine(matrixStack, font, this.part.name, 5, y + 17, GuiEditor.TEXT_COLOUR);
 
             if (isCurrentSelectedPart)
             {
                 //Yeah its not nice but eh, works
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(5, y + 27, 0);
-                GlStateManager.scale(.6f, .6f, 1f);
+                matrixStack.push();
+                matrixStack.translate(5, y + 27, 0);
+                matrixStack.scale(.6f, .6f, 1f);
 
-                fontRenderer.drawString(I18n.format("gui.author"), 0, 0, GuiEditor.TEXT_COLOUR);
-                GlStateManager.translate(0, 10, 0);
-                fontRenderer.drawString(TextFormatting.AQUA + part.author, 0, 0, GuiEditor.TEXT_COLOUR);
-                GlStateManager.popMatrix();
+                font.drawString(matrixStack, I18n.format("gui.author"), 0, 0, GuiEditor.TEXT_COLOUR);
+                matrixStack.translate(0, 10, 0);
+                font.drawString(matrixStack, TextFormatting.AQUA + part.author, 0, 0, GuiEditor.TEXT_COLOUR);
+                matrixStack.pop();
 
                 // Draw "add" button
-                GuiUtils.drawGradientRect(0, x + ADD_X, y + ADD_Y, x + ADD_X + ADD_WIDTH, y + ADD_Y + ADD_HEIGHT, ADD_COLOUR, ADD_COLOUR);
-                fontRenderer.drawString("+", x + ADD_X + (ADD_WIDTH / 4), y + ADD_Y + (ADD_HEIGHT / 4), GuiEditor.TEXT_COLOUR);
+                GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0, x + ADD_X, y + ADD_Y, x + ADD_X + ADD_WIDTH, y + ADD_Y + ADD_HEIGHT, ADD_COLOUR, ADD_COLOUR);
+                font.drawString(matrixStack, "+", x + ADD_X + (ADD_WIDTH / 4), y + ADD_Y + (ADD_HEIGHT / 4), GuiEditor.TEXT_COLOUR);
                 //GuiUtils.drawContinuousTexturedBox(new ResourceLocation("textures/gui/widgets.png"), x+ADD_X, y+ADD_Y, 0, 66, ADD_WIDTH, ADD_HEIGHT, 200, 20, 2, zLevel);
             }
         }
 
         @Override
-        public void updatePosition(int slotIndex, int x, int y, float partialTicks) { }
-
-        @Override
-        public boolean mousePressed(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY)
+        public boolean mouseClicked(double mouseX, double mouseY, int button)
         {
-            if (GuiBaseScreen.isMouseOver(relativeX, relativeY, ADD_X, ADD_Y, ADD_WIDTH, ADD_HEIGHT))
+            if (GuiBaseScreen.isMouseOver(mouseX, mouseY, ADD_X, ADD_Y, ADD_WIDTH, ADD_HEIGHT))
             {
                 parent.addOutfitPart(new OutfitPart(part));
-                mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                getMinecraft().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1f));
 
                 return true;
             }
             return false;
         }
-
-        @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) { }
     }
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
@@ -20,7 +21,6 @@ import java.util.List;
 public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<LibraryListEntry>
 {
     private static final LibrarySorter SORTER = new LibrarySorter();
-    private static final int ALL_BUTTON = 0;
 
     private GuiList<LibraryListEntry> list;
     private TextFieldWidget searchField;
@@ -34,8 +34,8 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     {
         initList();
 
-        this.addButton(new ExtendedButton(3, height - 18, width - 6, 15, new TranslationTextComponent("gui.button.all"), this::onAllButtonPressed));
-        this.searchField = new TextFieldWidget(1, this.font, 5, height - 31, width - 10, 10);
+        this.addButton(new ExtendedButton(3, this.height - 18, this.width - 6, 15, new TranslationTextComponent("gui.button.all"), this::onAllButtonPressed));
+        this.searchField = new TextFieldWidget(this.font, 5, this.height - 31, this.width - 10, 10, StringTextComponent.EMPTY);
         super.init();
     }
 
@@ -46,9 +46,9 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
 
         // todo render call still needed?
         this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.list.drawScreen(mouseX, mouseY, partialTicks);
+        this.list.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        this.minecraft.textureManager.bindTexture(IconButton.ICONS_TEXTURES);
+        getMinecraft().textureManager.bindTexture(IconButton.ICONS_TEXTURES);
         matrixStack.push();
         GlStateManager.color4f(1f, 1f, 1f, 1f);
         matrixStack.translate(this.width - 16, this.height - 32, 0);
@@ -65,47 +65,42 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-        list.mouseClicked(mouseX, mouseY, mouseButton);
+        this.list.mouseClicked(mouseX, mouseY, mouseButton);
         this.searchField.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseReleased(double mouseX, double mouseY, int mouseButton)
     {
-        super.mouseReleased(mouseX, mouseY, mouseButton);
-        list.mouseReleased(mouseX, mouseY, mouseButton);
+        this.list.mouseReleased(mouseX, mouseY, mouseButton);
+        return super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public void handleMouseInput()
+    public boolean charTyped(char codePoint, int modifiers)
     {
-        list.handleMouseInput();
-    }
-
-    @Override
-    public void keyTyped(char key, int keyCode)
-    {
-        searchField.textboxKeyTyped(key, keyCode);
-        if (searchField.getVisible() && searchField.isFocused())
+        this.searchField.charTyped(codePoint, codePoint);
+        if (this.searchField.getVisible() && this.searchField.isFocused())
         {
-            List<LibraryListEntry> newEntries = filterListEntries(searchField.getText().toLowerCase());
+            List<LibraryListEntry> newEntries = filterListEntries(this.searchField.getText().toLowerCase());
             newEntries.add(0, new LibraryListEntry.NewLibraryListEntry(this, null));
-            list.getEntries().clear();
-            list.getEntries().addAll(newEntries);
+            // todo
+            ///this.list.getEntries().clear();
+            //this.list.getEntries().addAll(newEntries);
         }
-        super.keyTyped(key, keyCode);
+        return super.charTyped(codePoint, modifiers);
     }
 
     @Override
-    public boolean onEntrySelected(GuiList guiList, int index, LibraryListEntry entry)
+    public boolean onEntrySelected(GuiList<LibraryListEntry> guiList, int index, LibraryListEntry entry)
     {
         if (!(entry instanceof LibraryListEntry.NewLibraryListEntry))
         {
-            parent.libraryInfoPanel.setEntry(entry);
-            parent.setOutfit(entry.data.outfit);
+            this.parent.libraryInfoPanel.setEntry(entry);
+            this.parent.setOutfit(entry.data.outfit);
         }
         return true;
     }
@@ -123,20 +118,21 @@ public class LibraryPanel extends Panel<GuiEditor> implements IListCallback<Libr
 
         libraryEntries.sort(SORTER);
 
-        list = new GuiList<>(this, width, height - 34, 0, height - 34, 50, libraryEntries);
+        this.list = new GuiList<>(this, this.width, this.height - 34, 0, this.height - 34, 50, libraryEntries);
     }
 
     public void addSelectedEntry(LibraryListEntry entry)
     {
-        list.getEntries().add(entry);
-        list.setCurrentIndex(list.getEntries().size() - 1);
-        parent.libraryInfoPanel.setEntry(entry);
+        // todo
+        //this.list.getEntries().add(entry);
+        //this.list.setCurrentIndex(this.list.getEntries().size() - 1);
+        this.parent.libraryInfoPanel.setEntry(entry);
     }
 
     public void removeEntry(LibraryListEntry entry)
     {
         Tails.proxy.getLibraryManager().removeEntry(entry.data);
-        list.getEntries().remove(entry);
+        //todo this.list.getEntries().remove(entry);
     }
 
     private List<LibraryListEntry> filterListEntries(String filter)

@@ -124,7 +124,7 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
         xPosInput.mouseClicked(mouseX, mouseY, mouseButton);
         yPosInput.mouseClicked(mouseX, mouseY, mouseButton);
@@ -138,25 +138,25 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         yScaleInput.mouseClicked(mouseX, mouseY, mouseButton);
         zScaleInput.mouseClicked(mouseX, mouseY, mouseButton);
 
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public void keyTyped(char key, int keyCode)
+    public boolean charTyped(char codePoint, int modifiers)
     {
-        xPosInput.keyTyped(key, keyCode);
-        yPosInput.keyTyped(key, keyCode);
-        zPosInput.keyTyped(key, keyCode);
+        xPosInput.charTyped(codePoint, modifiers);
+        yPosInput.charTyped(codePoint, modifiers);
+        zPosInput.charTyped(codePoint, modifiers);
 
-        xRotInput.keyTyped(key, keyCode);
-        yRotInput.keyTyped(key, keyCode);
-        zRotInput.keyTyped(key, keyCode);
+        xRotInput.charTyped(codePoint, modifiers);
+        yRotInput.charTyped(codePoint, modifiers);
+        zRotInput.charTyped(codePoint, modifiers);
 
-        xScaleInput.keyTyped(key, keyCode);
-        yScaleInput.keyTyped(key, keyCode);
-        zScaleInput.keyTyped(key, keyCode);
+        xScaleInput.charTyped(codePoint, modifiers);
+        yScaleInput.charTyped(codePoint, modifiers);
+        zScaleInput.charTyped(codePoint, modifiers);
 
-        super.keyTyped(key, keyCode);
+        return super.charTyped(codePoint, modifiers);
     }
 
     @Override
