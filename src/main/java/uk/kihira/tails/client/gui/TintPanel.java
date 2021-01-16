@@ -1,16 +1,19 @@
 package uk.kihira.tails.client.gui;
 
 import com.google.common.base.Strings;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.MouseHelper;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Cursor;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import uk.kihira.tails.client.Colour;
@@ -24,24 +27,15 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Optional;
-
 
 public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback, IControlCallback<GuiSlider, Float>
 {
     private static final int TINT_1_BUTTON_ID = 0;
     private static final int TINT_2_BUTTON_ID = 1;
     private static final int TINT_3_BUTTON_ID = 2;
-    private static final int HEX_TEXT_ID = -1;
-    private static final int RED_SATURATION_SLIDER = 5;
-    private static final int GREEN_SATURATION_SLIDER = 6;
-    private static final int BLUE_SATURATION_SLIDER = 7;
-    private static final int HUE_SLIDER = 15;
-    private static final int SATURATION_SLIDER = 16;
-    private static final int BRIGHTNESS_SLIDER = 17;
-    private static final int RESET_BUTTON_ID = 8;
-    private static final int COLOR_PICKER_BUTTON_ID = 21;
 
     private static final int SLIDER_WIDTH = 120;
     private static final int SLIDER_HEIGHT = 10;
@@ -52,150 +46,146 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
     private int currTintEdit = 0;
     private int currTintColour = GuiEditor.TEXT_COLOUR;
-    private GuiTextField hexText;
+    private TextFieldWidget hexText;
     private GuiHSBSlider[] hsbSliders;
     private GuiHSBSlider[] rgbSliders;
-    private GuiIconButton tintReset;
-    private GuiIconButton colourPicker;
-    private IntBuffer pixelBuffer;
+    private IconButton tintReset;
+    private IconButton colourPicker;
+    private ByteBuffer pixelBuffer;
     private boolean selectingColour = false;
 
     TintPanel(GuiEditor parent, int left, int top, int width, int height)
     {
         super(parent, left, top, width, height);
-        alwaysReceiveMouse = true;
+        this.alwaysReceiveMouse = true;
     }
 
     @Override
-    public void initGui()
+    public void init()
     {
         final int tintButtonY = 20;
 
         // Edit tint buttons
-        buttonList.add(new TintButton(TINT_1_BUTTON_ID, 10, tintButtonY, TINT_1_BUTTON_ID, Colour.BLUE));
-        buttonList.add(new TintButton(TINT_2_BUTTON_ID, 40, tintButtonY, TINT_2_BUTTON_ID, Colour.RED));
-        buttonList.add(new TintButton(TINT_3_BUTTON_ID, 70, tintButtonY, TINT_3_BUTTON_ID, Colour.GREEN));
+        this.addButton(new TintButton(10, tintButtonY, TINT_1_BUTTON_ID, Colour.BLUE, this::onTintButtonPushed));
+        this.addButton(new TintButton(40, tintButtonY, TINT_2_BUTTON_ID, Colour.RED, this::onTintButtonPushed));
+        this.addButton(new TintButton(70, tintButtonY, TINT_3_BUTTON_ID, Colour.GREEN, this::onTintButtonPushed));
 
         //Tint edit pane
-        hexText = new GuiTextField(HEX_TEXT_ID, fontRenderer, 30, EDIT_PANEL_TOP + 20, 73, 10);
+        hexText = new TextFieldWidget(this.font, 30, EDIT_PANEL_TOP + 20, 73, 10, StringTextComponent.EMPTY);
         hexText.setMaxStringLength(6);
 
         //RGB sliders
         rgbSliders = new GuiHSBSlider[3];
-        rgbSliders[0] = new GuiHSBSlider(RED_SATURATION_SLIDER, 5, EDIT_PANEL_TOP + 70, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.red.tooltip"));
-        rgbSliders[1] = new GuiHSBSlider(GREEN_SATURATION_SLIDER, 5, EDIT_PANEL_TOP + 80, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.green.tooltip"));
-        rgbSliders[2] = new GuiHSBSlider(BLUE_SATURATION_SLIDER, 5, EDIT_PANEL_TOP + 90, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.blue.tooltip"));
+        rgbSliders[0] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 70, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.red.tooltip"));
+        rgbSliders[1] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 80, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.green.tooltip"));
+        rgbSliders[2] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 90, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.blue.tooltip"));
         rgbSliders[0].setHue(0f);
         rgbSliders[1].setHue(1f / 3f);
         rgbSliders[2].setHue(2f / 3f);
 
-        buttonList.add(rgbSliders[0]);
-        buttonList.add(rgbSliders[1]);
-        buttonList.add(rgbSliders[2]);
+        addButton(rgbSliders[0]);
+        addButton(rgbSliders[1]);
+        addButton(rgbSliders[2]);
 
         //HBS sliders
         hsbSliders = new GuiHSBSlider[3];
-        hsbSliders[0] = new GuiHSBSlider(HUE_SLIDER, 5, EDIT_PANEL_TOP + 35, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.HUE, I18n.format("gui.slider.hue.tooltip"));
-        hsbSliders[1] = new GuiHSBSlider(SATURATION_SLIDER, 5, EDIT_PANEL_TOP + 45, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.saturation.tooltip"));
-        hsbSliders[2] = new GuiHSBSlider(BRIGHTNESS_SLIDER, 5, EDIT_PANEL_TOP + 55, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.BRIGHTNESS, I18n.format("gui.slider.brightness.tooltip"));
+        hsbSliders[0] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 35, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.HUE, I18n.format("gui.slider.hue.tooltip"));
+        hsbSliders[1] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 45, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, I18n.format("gui.slider.saturation.tooltip"));
+        hsbSliders[2] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 55, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.BRIGHTNESS, I18n.format("gui.slider.brightness.tooltip"));
 
-        buttonList.add(hsbSliders[0]);
-        buttonList.add(hsbSliders[1]);
-        buttonList.add(hsbSliders[2]);
+        addButton(hsbSliders[0]);
+        addButton(hsbSliders[1]);
+        addButton(hsbSliders[2]);
 
         //Reset/Save
-        buttonList.add(tintReset = new GuiIconButton(RESET_BUTTON_ID, width - 20, EDIT_PANEL_TOP + 5, GuiIconButton.Icons.UNDO, I18n.format("gui.button.reset")));
-        tintReset.enabled = false;
+        addButton(tintReset = new IconButton(width - 20, EDIT_PANEL_TOP + 5, IconButton.Icons.UNDO, this::onResetButtonPressed, I18n.format("gui.button.reset")));
+        tintReset.active = false;
 
         //Colour Picker
-        buttonList.add(colourPicker = new GuiIconButton(COLOR_PICKER_BUTTON_ID, width - 36, EDIT_PANEL_TOP + 5, GuiIconButton.Icons.EYEDROPPER, I18n.format("gui.button.picker.0"), I18n.format("gui.button.picker.1")));
+        addButton(colourPicker = new IconButton(width - 36, EDIT_PANEL_TOP + 5, IconButton.Icons.EYEDROPPER, this::onColourPickerButtonPressed, I18n.format("gui.button.picker.0"), I18n.format("gui.button.picker.1")));
         colourPicker.visible = false;
 
         updateTints(true);
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        drawRect(0, 0, width, height, Colour.DARK_GREY);
-        drawRect(0, EDIT_PANEL_TOP, width, height, Colour.LIGHT_GRAY); // tint button pos + tint button size + tint button border size
-        drawString(fontRenderer, I18n.format("gui.tint"), 5, 3, GuiEditor.TEXT_COLOUR);
+        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0, 0, 0, this.width, this.height, Colour.DARK_GREY, Colour.DARK_GREY);
+        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0,0, EDIT_PANEL_TOP, this.width, this.height, Colour.LIGHT_GRAY, Colour.LIGHT_GRAY); // tint button pos + tint button size + tint button border size
+        drawString(matrixStack, this.font, I18n.format("gui.tint"), 5, 3, GuiEditor.TEXT_COLOUR);
 
         //Editing tint pane
-        if (currTintEdit >= 0)
+        if (this.currTintEdit >= 0)
         {
-            drawHorizontalLine(0, width, EDIT_PANEL_TOP, Colour.BLACK);
-            fontRenderer.drawString(I18n.format("gui.tint.edit", currTintEdit + 1), 5, EDIT_PANEL_TOP + 5, GuiEditor.TEXT_COLOUR);
+            this.hLine(matrixStack, 0, this.width, EDIT_PANEL_TOP, Colour.BLACK);
+            drawString(matrixStack, this.font, I18n.format("gui.tint.edit", this.currTintEdit + 1), 5, EDIT_PANEL_TOP + 5, GuiEditor.TEXT_COLOUR);
 
-            fontRenderer.drawString(I18n.format("gui.hex") + ":", 5, EDIT_PANEL_TOP + 21, GuiEditor.TEXT_COLOUR);
-            hexText.drawTextBox();
+            drawString(matrixStack, this.font, I18n.format("gui.hex") + ":", 5, EDIT_PANEL_TOP + 21, GuiEditor.TEXT_COLOUR);
+            this.hexText.render(matrixStack, mouseX, mouseY, partialTicks);
         }
 
         // Draw preview of colour hovered over
-        if (selectingColour)
+        if (this.selectingColour)
         {
-            int x = mouseX + COLOUR_PREVIEW_OFFSET;
-            int y = mouseY + COLOUR_PREVIEW_OFFSET;
-            drawRect(x, y, x + COLOUR_PREVIEW_SIZE, y + COLOUR_PREVIEW_SIZE, getColourAtPoint(Mouse.getX(), Mouse.getY()));
+            final int x = mouseX + COLOUR_PREVIEW_OFFSET;
+            final int y = mouseY + COLOUR_PREVIEW_OFFSET;
+            final int colour = getColourAtPoint(Minecraft.getInstance().mouseHelper.getMouseX(), Minecraft.getInstance().mouseHelper.getMouseY());
+            GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0, x, y, x + COLOUR_PREVIEW_SIZE, y + COLOUR_PREVIEW_SIZE, colour, colour);
         }
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
-    @Override
-    protected void actionPerformed(GuiButton button)
+    private void onTintButtonPushed(Button button)
+    {
+        currTintEdit = ((TintButton) button).getTintId();
+        currTintColour = tintToArgb(parent.getCurrentOutfitPart().tint[currTintEdit]);
+        updateTints(true);
+        tintReset.active = false;
+        colourPicker.active = true;
+    }
+
+    private void onResetButtonPressed(Button button)
     {
         final OutfitPart currentPart = parent.getCurrentOutfitPart();
         if (currentPart == null) return;
 
-        // Tint buttons
-        if (button.id >= TINT_1_BUTTON_ID && button.id <= TINT_3_BUTTON_ID)
+        final Optional<Part> basePart = PartRegistry.getPart(currentPart.basePart);
+        if (!basePart.isPresent())
         {
-            currTintEdit = button.id;
-            currTintColour = tintToArgb(parent.getCurrentOutfitPart().tint[currTintEdit]);
-            updateTints(true);
-            tintReset.enabled = false;
-            colourPicker.enabled = true;
+            Tails.LOGGER.error("Current outfit part does not have a base part available, this is an invalid state!");
+            return;
         }
-        // Reset Tint
-        else if (button.id == RESET_BUTTON_ID)
-        {
-            final Optional<Part> basePart = PartRegistry.getPart(currentPart.basePart);
-            if (!basePart.isPresent())
-            {
-                Tails.LOGGER.error("Current outfit part does not have a base part available, this is an invalid state!");
-                return;
-            }
 
-            currTintColour = tintToArgb(basePart.get().tint[currTintEdit]);
-            updateTints(true);
-            tintReset.enabled = false;
-        }
-        // Colour Picker
-        else if (button.id == COLOR_PICKER_BUTTON_ID)
-        {
-            setSelectingColour(true);
-        }
+        currTintColour = tintToArgb(basePart.get().tint[currTintEdit]);
+        updateTints(true);
+        tintReset.active = false;
+    }
+
+    private void onColourPickerButtonPressed(Button button)
+    {
+        setSelectingColour(true);
     }
 
     @Override
     public void keyTyped(char letter, int keyCode)
     {
-        hexText.textboxKeyTyped(letter, keyCode);
+        this.hexText.charTyped(letter, keyCode);
 
         try
         {
             //Gets the current colour from the hex text
-            if (!Strings.isNullOrEmpty(hexText.getText()))
+            if (!Strings.isNullOrEmpty(this.hexText.getText()))
             {
-                this.currTintColour = Integer.parseInt(hexText.getText(), 16);
+                this.currTintColour = Integer.parseInt(this.hexText.getText(), 16);
             }
         }
         catch (NumberFormatException ignored) { }
 
         updateTints(false);
 
-        if (keyCode == Keyboard.KEY_ESCAPE && selectingColour)
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE && this.selectingColour)
         {
             setSelectingColour(false);
         }
@@ -208,9 +198,9 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
-        if (selectingColour && mouseButton == 0)
+        if (this.selectingColour && mouseButton == 0)
         {
-            currTintColour = getColourAtPoint(Mouse.getEventX(), Mouse.getEventY()); //Ignore alpha
+            currTintColour = getColourAtPoint(Minecraft.getInstance().mouseHelper.getMouseX(), Minecraft.getInstance().mouseHelper.getMouseX()); //Ignore alpha
             setSelectingColour(false);
             updateTints(true);
         }
@@ -267,22 +257,22 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         return tint;
     }
 
-    private int getColourAtPoint(int x, int y)
+    private int getColourAtPoint(double x, double y)
     {
-        int[] pixelData;
+        byte[] pixelData;
         int pixels = 1;
 
         if (pixelBuffer == null)
         {
-            pixelBuffer = BufferUtils.createIntBuffer(pixels);
+            pixelBuffer = BufferUtils.createByteBuffer(pixels);
         }
-        pixelData = new int[pixels];
+        pixelData = new byte[pixels];
 
-        GlStateManager.glPixelStorei(GL11.GL_PACK_ALIGNMENT, 1);
-        GlStateManager.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        GlStateManager.pixelStore(GL11.GL_PACK_ALIGNMENT, 1);
+        GlStateManager.pixelStore(GL11.GL_UNPACK_ALIGNMENT, 1);
         pixelBuffer.clear();
 
-        GlStateManager.glReadPixels(x, y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);
+        GlStateManager.readPixels((int) x, (int) y, 1, 1, GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, pixelBuffer);
 
         pixelBuffer.get(pixelData);
 
@@ -298,34 +288,34 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             try
             {
                 final int cursorSize = 16;
-                BufferedImage bufferedImage = ImageIO.read(mc.getResourceManager().getResource(GuiIconButton.ICONS_TEXTURES).getInputStream());
+                BufferedImage bufferedImage = ImageIO.read(this.minecraft.getResourceManager().getResource(IconButton.ICONS_TEXTURES).getInputStream());
                 int[] pixelData;
                 int pixels = cursorSize * cursorSize;
                 pixelData = new int[pixels];
                 IntBuffer buffer = IntBuffer.wrap(bufferedImage.getRGB(
-                        GuiIconButton.Icons.EYEDROPPER.u,
-                        GuiIconButton.Icons.EYEDROPPER.v + cursorSize,
+                        IconButton.Icons.EYEDROPPER.u,
+                        IconButton.Icons.EYEDROPPER.v + cursorSize,
                         cursorSize,
                         cursorSize,
                         pixelData,
                         0,
                         cursorSize));
-                Cursor cursor = new Cursor(cursorSize, cursorSize, 0, 15, 1, buffer, null);
 
-                Mouse.setNativeCursor(cursor);
-
+                // TODO Fix custom cursor
+//                int cursor = GLFW.glfwCreateCursor(buffer, 0, 15);
+//                GLFW.glfwSetCursor(Minecraft.getInstance().getMainWindow().getHandle(), cursor);
             }
-            catch (LWJGLException | IOException e)
+            catch (IOException e)
             {
-                e.printStackTrace();
+                Tails.LOGGER.error(e);
             }
         }
         else {
-            try {
-                Mouse.setNativeCursor(null);
-            } catch (LWJGLException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                Mouse.setNativeCursor(null);
+//            } catch (LWJGLException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 
@@ -365,14 +355,14 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             colourPicker.visible = true;
         }
         else
-            {
+        {
             rgbSliders[0].visible = rgbSliders[1].visible = rgbSliders[2].visible = false;
             hsbSliders[0].visible = hsbSliders[1].visible = hsbSliders[2].visible = false;
             tintReset.visible = false;
             colourPicker.visible = false;
         }
 
-        tintReset.enabled = true;
+        tintReset.active = true;
 
         if (parent.getCurrentOutfitPart() != null)
         {
@@ -386,7 +376,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         return true;
     }
 
-    private class TintButton extends GuiButton
+    private class TintButton extends Button
     {
         static final int BTN_SIZE = 20;
         private static final int HIGHLIGHT_COLOR = 0xFFCCC23D;
@@ -396,41 +386,52 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         private final int tintId;
         private final int defaultColour;
 
-        TintButton(int buttonId, int x, int y, int tintId, int defaultColour)
+        TintButton(int x, int y, int tintId, int defaultColour, Button.IPressable pressedAction)
         {
-            super(buttonId, x, y, BTN_SIZE, BTN_SIZE, I18n.format("gui.tint"));
+            super(x, y, BTN_SIZE, BTN_SIZE, new TranslationTextComponent("gui.tint"), pressedAction);
             this.tintId = tintId;
             this.defaultColour = defaultColour;
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
+        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
         {
-            hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-
             if (currTintEdit == tintId)
             {
-                drawRect(x - OUTLINE_BORDER,
+                GuiUtils.drawGradientRect(
+                        matrixStack.getLast().getMatrix(),
+                        0,
+                        x - OUTLINE_BORDER,
                         y - OUTLINE_BORDER,
                         x + width + OUTLINE_BORDER,
                         y + height + OUTLINE_BORDER,
+                        Colour.LIGHT_GRAY,
                         Colour.LIGHT_GRAY);
-                drawHorizontalLine(x - OUTLINE_BORDER, x + width + OUTLINE_BORDER - 1, y - OUTLINE_BORDER, Colour.BLACK);
-                drawVerticalLine(x - OUTLINE_BORDER, y - OUTLINE_BORDER, y + height + OUTLINE_BORDER, Colour.BLACK);
-                drawVerticalLine(x + width + OUTLINE_BORDER - 1, y - OUTLINE_BORDER, y + height + OUTLINE_BORDER, Colour.BLACK);
+                this.hLine(matrixStack, x - OUTLINE_BORDER, x + width + OUTLINE_BORDER - 1, y - OUTLINE_BORDER, Colour.BLACK);
+                this.vLine(matrixStack, x - OUTLINE_BORDER, y - OUTLINE_BORDER, y + height + OUTLINE_BORDER, Colour.BLACK);
+                this.vLine(matrixStack, x + width + OUTLINE_BORDER - 1, y - OUTLINE_BORDER, y + height + OUTLINE_BORDER, Colour.BLACK);
             }
-            else if (hovered)
+            else if (this.isHovered)
             {
-                drawRect(x - HIGHLIGHT_BORDER,
+                GuiUtils.drawGradientRect(
+                        matrixStack.getLast().getMatrix(),
+                        0,
+                        x - HIGHLIGHT_BORDER,
                         y - HIGHLIGHT_BORDER,
                         x + width + HIGHLIGHT_BORDER,
                         y + height + HIGHLIGHT_BORDER,
+                        HIGHLIGHT_COLOR,
                         HIGHLIGHT_COLOR);
             }
 
             final OutfitPart currentPart = parent.getCurrentOutfitPart();
             final int colour = currentPart != null ? tintToArgb(currentPart.tint[tintId]) : defaultColour;
-            drawRect(x, y, x + width, y + height, colour);
+            GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0, x, y, x + width, y + height, colour, colour);
+        }
+
+        public int getTintId()
+        {
+            return tintId;
         }
     }
 }

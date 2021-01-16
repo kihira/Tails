@@ -51,7 +51,7 @@ public class CommonProxy
     {
         if (hasActiveOutfit(uuid)) 
         {
-            if (FMLCommonHandler.instance().getEffectiveSide().isServer()) 
+            //if (FMLCommonHandler.instance().getEffectiveSide().isServer())
             {
                 //todo Tell client to remove textures
                 TailsPacketHandler.networkWrapper.send(PacketDistributor.ALL.noArg(), new PlayerDataMessage(uuid, this.activeOutfits.get(uuid), true));

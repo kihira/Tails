@@ -1,79 +1,85 @@
 package uk.kihira.tails.client.gui;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.resources.I18n;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
 import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.client.outfit.Outfit;
+import uk.kihira.tails.common.Config;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
+import uk.kihira.tails.common.network.TailsPacketHandler;
 
-public class ControlsPanel extends Panel<GuiEditor> {
-    private static final int MODE_BUTTON_ID = 0;
-    private static final int RESET_BUTTON_ID = 1;
-    private static final int DONE_BUTTON_ID = 2;
-
-    ControlsPanel(GuiEditor parent, int left, int top, int right, int bottom) {
+public class ControlsPanel extends Panel<GuiEditor>
+{
+    ControlsPanel(GuiEditor parent, int left, int top, int right, int bottom)
+    {
         super(parent, left, top, right, bottom);
     }
 
     @Override
-    public void initGui() {
+    public void init()
+    {
         //Mode Switch
-        buttonList.add(new GuiButton(MODE_BUTTON_ID, 3, height - 25, 46, 20, I18n.format("gui.button.mode.library")));
+        this.addButton(new ExtendedButton(3, this.height - 25, 46, 20, new TranslationTextComponent("gui.button.mode.library"), this::onModeSwitchButtonPressed));
         //Reset/Save
-        buttonList.add(new GuiButton(RESET_BUTTON_ID, width/2 - 23, height - 25, 46, 20, I18n.format("gui.button.reset")));
-        buttonList.add(new GuiButton(DONE_BUTTON_ID, width - 49, height - 25, 46, 20, I18n.format("gui.done")));
+        this.addButton(new ExtendedButton(this.width / 2 - 23, this.height - 25, 46, 20, new TranslationTextComponent("gui.button.reset"), this::onResetAllButtonPressed));
+        this.addButton(new ExtendedButton(this.width - 49, this.height - 25, 46, 20, new TranslationTextComponent("gui.done"), this::onSaveAllButtonPressed));
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        drawRect(0, 0, width, height, GuiEditor.DARK_GREY);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    {
+        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0, 0, 0, this.width, this.height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
-    @Override
-    protected void actionPerformed(GuiButton button) {
+    private void onModeSwitchButtonPressed(Button button)
+    {
         Outfit outfit = parent.getOutfit();
-        // Mode Switch
-        if (button.id == MODE_BUTTON_ID) {
-            //TODO change parts data when switching? clear libraryinfo panel?
-            boolean libraryMode = button.displayString.equals(I18n.format("gui.button.mode.library"));
-            parent.partsPanel.enabled = !libraryMode;
-            parent.tintPanel.enabled = !libraryMode;
+        //TODO change parts data when switching? clear libraryinfo panel?
+        boolean libraryMode = button.getMessage().equals(new TranslationTextComponent("gui.button.mode.library"));
+        parent.partsPanel.enabled = !libraryMode;
+        parent.tintPanel.enabled = !libraryMode;
 
-            parent.libraryInfoPanel.enabled = libraryMode;
-            parent.libraryPanel.enabled = libraryMode;
+        parent.libraryInfoPanel.enabled = libraryMode;
+        parent.libraryPanel.enabled = libraryMode;
 
-            parent.partsPanel.selectDefaultListEntry();
-            parent.libraryPanel.initList();
-            parent.libraryInfoPanel.setEntry(null);
-            parent.refreshTintPane();
+        parent.partsPanel.selectDefaultListEntry();
+        parent.libraryPanel.initList();
+        parent.libraryInfoPanel.setEntry(null);
+        parent.refreshTintPane();
 
-            if (!libraryMode) {
-                Tails.setLocalOutfit(outfit);
-            }
-            parent.setOutfit(Tails.localOutfit);
-
-            button.displayString = (libraryMode ? I18n.format("gui.button.mode.editor") : I18n.format("gui.button.mode.library"));
-        }
-        //Reset All
-        else if (button.id == RESET_BUTTON_ID) {
-            parent.partsPanel.selectDefaultListEntry();
-            parent.libraryPanel.initList();
-            parent.libraryInfoPanel.setEntry(null);
-            parent.refreshTintPane();
-            parent.setActiveOutfitPart(null);
-        }
-        //Save All
-        else if (button.id == DONE_BUTTON_ID) {
-            //Update part info, set local and send it to the server
+        if (!libraryMode)
+        {
             Tails.setLocalOutfit(outfit);
-            Tails.proxy.setActiveOutfit(mc.player.getPersistentID(), outfit);
-            Tails.networkWrapper.sendToServer(new PlayerDataMessage(mc.getSession().getProfile().getId(), outfit, false));
-            ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, TextFormatting.GREEN + "Saved!");
-            this.mc.displayGuiScreen(null);
         }
+        parent.setOutfit(Config.localOutfit.get());
+
+        button.setMessage(new TranslationTextComponent(libraryMode ? "gui.button.mode.editor" : "gui.button.mode.library"));
+    }
+
+    private void onResetAllButtonPressed(Button button)
+    {
+        parent.partsPanel.selectDefaultListEntry();
+        parent.libraryPanel.initList();
+        parent.libraryInfoPanel.setEntry(null);
+        parent.refreshTintPane();
+        parent.setActiveOutfitPart(null);
+    }
+
+    private void onSaveAllButtonPressed(Button button)
+    {
+        Outfit outfit = parent.getOutfit();
+        //Update part info, set local and send it to the server
+        Tails.setLocalOutfit(outfit);
+        Tails.proxy.setActiveOutfit(this.minecraft.player.getUniqueID(), outfit);
+        TailsPacketHandler.networkWrapper.sendToServer(new PlayerDataMessage(this.minecraft.getSession().getProfile().getId(), outfit, false));
+        ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, TextFormatting.GREEN + "Saved!");
+        this.minecraft.displayGuiScreen(null);
     }
 }

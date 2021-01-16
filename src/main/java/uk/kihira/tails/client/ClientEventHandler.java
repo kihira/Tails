@@ -5,19 +5,20 @@ import net.minecraft.client.gui.screen.IngameMenuScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uk.kihira.tails.client.gui.GuiEditor;
+import uk.kihira.tails.common.Config;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
+import uk.kihira.tails.common.network.TailsPacketHandler;
 import uk.kihira.tails.proxy.ClientProxy;
 
 public class ClientEventHandler 
 {
-    private static final int TAILS_BUTTON_ID = 1234;
-
     private boolean sentPartInfoToServer = false;
     private boolean clearAllPartInfo = false;
 
@@ -42,21 +43,22 @@ public class ClientEventHandler
      *** Tails syncing ***
      */
     @SubscribeEvent
-    public void onConnectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+    public void onConnectToServer(ClientPlayerNetworkEvent.LoggedInEvent event)
+    {
         //Add local player texture to map
-        if (Tails.localOutfit != null) {
-            Tails.proxy.setActiveOutfit(Minecraft.getInstance().getSession().getProfile().getId(), Tails.localOutfit);
+        if (Config.localOutfit != null) {
+            Tails.proxy.setActiveOutfit(Minecraft.getInstance().getSession().getProfile().getId(), Config.localOutfit.get());
         }
     }
 
     @SubscribeEvent
-    public void onDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) 
+    public void onDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent e)
     {
         Tails.hasRemote = false;
         sentPartInfoToServer = false;
         clearAllPartInfo = true;
 
-        Tails.instance.loadConfig();
+        Config.loadConfig();
     }
 
     @SubscribeEvent
@@ -72,7 +74,7 @@ public class ClientEventHandler
             //World can't be null if we want to send a packet it seems
             else if (!sentPartInfoToServer && Minecraft.getInstance().world != null) 
             {
-                Tails.networkWrapper.sendToServer(new PlayerDataMessage(Minecraft.getInstance().getSession().getProfile().getId(), Tails.localOutfit, false));
+                TailsPacketHandler.networkWrapper.sendToServer(new PlayerDataMessage(Minecraft.getInstance().getSession().getProfile().getId(), Config.localOutfit.get(), false));
                 sentPartInfoToServer = true;
             }
         }

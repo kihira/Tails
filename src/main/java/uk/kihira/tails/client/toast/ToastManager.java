@@ -3,7 +3,8 @@ package uk.kihira.tails.client.toast;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.profiler.IProfiler;
-import net.minecraft.profiler.Profiler;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -36,8 +37,8 @@ public final class ToastManager
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
         int stringWidth = fontRenderer.getStringWidth(text);
         if (stringWidth > maxWidth) {
-            List<String> strings = fontRenderer.listFormattedStringToWidth(text, maxWidth);
-            toasts.add(new Toast(x - (maxWidth / 2) - 5, y, maxWidth + 10, text.length() * 3, strings.toArray(new String[strings.size()])));
+            List<IReorderingProcessor> strings = fontRenderer.trimStringToWidth(new StringTextComponent(text), maxWidth);
+            toasts.add(new Toast(x - (maxWidth / 2) - 5, y, maxWidth + 10, text.length() * 3, strings.toArray(new IReorderingProcessor[0])));
         }
         else {
             toasts.add(new Toast(x - (stringWidth / 2) - 5, y, stringWidth + 10, text.length() * 3, text));
@@ -61,15 +62,7 @@ public final class ToastManager
     {
         if (event.phase == TickEvent.Phase.END)
         {
-            Iterator<Toast> toasts = this.toasts.iterator();
-            while (toasts.hasNext())
-            {
-                Toast toast = toasts.next();
-                if (toast.time-- <= 0)
-                { 
-                    toasts.remove();
-                }
-            }
+            this.toasts.removeIf(toast -> toast.time-- <= 0);
         }
     }
 

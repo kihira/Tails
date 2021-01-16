@@ -1,25 +1,27 @@
 package uk.kihira.tails.client.gui;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public abstract class GuiBase extends GuiBaseScreen {
+public abstract class GuiBase extends GuiBaseScreen
+{
 
     //0 is bottom layer
-    private final ArrayList<ArrayList<Panel>> layers = new ArrayList<>();
+    private final ArrayList<ArrayList<Panel<?>>> layers = new ArrayList<>();
 
-    GuiBase(int layerCount) {
-        for (int i = 0; i < layerCount; i++) {
+    GuiBase(int layerCount)
+    {
+        for (int i = 0; i < layerCount; i++)
+        {
             layers.add(new ArrayList<>());
         }
     }
 
-    ArrayList<Panel> getLayer(int layer) {
+    ArrayList<Panel<?>> getLayer(int layer)
+    {
         return layers.get(layer);
     }
 
@@ -27,7 +29,7 @@ public abstract class GuiBase extends GuiBaseScreen {
      * Gets all layers that exist in this GUI
      * @return The layers
      */
-    final Collection<ArrayList<Panel>> getAllLayers()
+    final Collection<ArrayList<Panel<?>>> getAllLayers()
     {
         return layers;
     }
@@ -36,9 +38,9 @@ public abstract class GuiBase extends GuiBaseScreen {
      * Gets all the panels across all the layers
      * @return All the panels
      */
-    final Collection<Panel> getAllPanels()
+    final Collection<Panel<?>> getAllPanels()
     {
-        ArrayList<Panel> panels = new ArrayList<>();
+        ArrayList<Panel<?>> panels = new ArrayList<>();
         getAllLayers().forEach(panels::addAll);
         return panels;
     }

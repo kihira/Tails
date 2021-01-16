@@ -4,7 +4,8 @@ import org.apache.commons.lang3.Validate;
 
 import java.io.IOException;
 
-public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
+public abstract class Panel<T extends GuiBase> extends GuiBaseScreen
+{
 
     protected final T parent;
     public int left;
@@ -14,7 +15,8 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen {
     public boolean alwaysReceiveMouse = false;
     public boolean enabled = true;
 
-    public Panel(T parent, int x, int y, int width, int height) {
+    public Panel(T parent, int x, int y, int width, int height)
+    {
         Validate.isInstanceOf(GuiBase.class, parent);
 
         this.parent = parent;

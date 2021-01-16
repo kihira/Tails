@@ -5,13 +5,13 @@
 package uk.kihira.tails.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.opengl.GL11;
 
-public class RenderHelper {
-
-    public static void startGlScissor(int x, int y, int width, int height) {
-        Minecraft mc = Minecraft.getMinecraft();
+public class RenderHelper
+{
+    public static void startGlScissor(int x, int y, int width, int height)
+    {
+        Minecraft mc = Minecraft.getInstance();
         ScaledResolution reso = new ScaledResolution(mc);
 
         double scaleW = (double)mc.displayWidth / reso.getScaledWidth_double();
@@ -21,7 +21,8 @@ public class RenderHelper {
         GL11.glScissor((int)Math.floor((double)x * scaleW), (int)Math.floor((double)mc.displayHeight - ((double)(y + height) * scaleH)), (int)Math.floor((double)(x + width) * scaleW) - (int)Math.floor((double)x * scaleW), (int)Math.floor((double)mc.displayHeight - ((double)y * scaleH)) - (int)Math.floor((double)mc.displayHeight - ((double)(y + height) * scaleH))); //starts from lower left corner (minecraft starts from upper left)
     }
 
-    public static void endGlScissor() {
+    public static void endGlScissor()
+    {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 }

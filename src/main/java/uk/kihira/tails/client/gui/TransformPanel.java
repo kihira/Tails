@@ -1,6 +1,12 @@
 package uk.kihira.tails.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
 import uk.kihira.tails.client.Colour;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.outfit.OutfitPart;
@@ -39,7 +45,7 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     private NumberInput yScaleInput;
     private NumberInput zScaleInput;
 
-    private GuiButtonExt mountPointButton;
+    private ExtendedButton mountPointButton;
 
     TransformPanel(GuiEditor parent, int x, int y, int width, int height)
     {
@@ -47,7 +53,7 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     }
 
     @Override
-    public void initGui()
+    public void init()
     {
         final int firstInputX = 3;
         final int secondInputX = 52;
@@ -68,60 +74,53 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         String mountPoint = MountPoint.values()[0].name();
         final OutfitPart outfitPart = parent.getCurrentOutfitPart();
         if (outfitPart != null) mountPoint = outfitPart.mountPoint.name();
-        mountPoint = I18n.format("tails.mountpoint." + mountPoint);
 
-        buttonList.add(mountPointButton = new GuiButtonExt(0, 5, spacing * 7, width - 10, 20, mountPoint));
+        this.addButton(mountPointButton = new ExtendedButton(5, spacing * 7, width - 10, 20, new TranslationTextComponent("tails.mountpoint." + mountPoint), this::onChangeMountPointButtonPressed));
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        drawHorizontalLine(0, width, 0, Colour.BLACK);
+        this.hLine(matrixStack, 0, width, 0, Colour.BLACK);
 
-        zLevel = -100;
-        drawGradientRect(0, 0, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
-        zLevel = 0;
+        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), -100,0, 0, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
 
         // Rotation
-        fontRenderer.drawString(I18n.format("tails.gui.rotation"), 5, fontRenderer.FONT_HEIGHT / 2, GuiEditor.TEXT_COLOUR);
+        this.font.drawString(matrixStack, I18n.format("tails.gui.rotation"), 5, this.font.FONT_HEIGHT / 2f, GuiEditor.TEXT_COLOUR);
         xRotInput.draw(mouseX, mouseY);
         yRotInput.draw(mouseX, mouseY);
         zRotInput.draw(mouseX, mouseY);
 
         // Position
-        fontRenderer.drawString(I18n.format("tails.gui.position"), 5, spacing * 2 + fontRenderer.FONT_HEIGHT / 2, GuiEditor.TEXT_COLOUR);
+        this.font.drawString(matrixStack, I18n.format("tails.gui.position"), 5, spacing * 2 + this.font.FONT_HEIGHT / 2f, GuiEditor.TEXT_COLOUR);
         xPosInput.draw(mouseX, mouseY);
         yPosInput.draw(mouseX, mouseY);
         zPosInput.draw(mouseX, mouseY);
 
         // Scale
-        fontRenderer.drawString(I18n.format("tails.gui.scale"), 5, spacing * 4 + fontRenderer.FONT_HEIGHT / 2, GuiEditor.TEXT_COLOUR);
+        this.font.drawString(matrixStack, I18n.format("tails.gui.scale"), 5, spacing * 4 + this.font.FONT_HEIGHT / 2f, GuiEditor.TEXT_COLOUR);
         xScaleInput.draw(mouseX, mouseY);
         yScaleInput.draw(mouseX, mouseY);
         zScaleInput.draw(mouseX, mouseY);
 
         // Mount point
-        fontRenderer.drawString(I18n.format("tails.gui.mountpoint"), 5, spacing * 6 + fontRenderer.FONT_HEIGHT / 2, GuiEditor.TEXT_COLOUR);
+        this.font.drawString(matrixStack, I18n.format("tails.gui.mountpoint"), 5, spacing * 6 + this.font.FONT_HEIGHT / 2f, GuiEditor.TEXT_COLOUR);
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
-    @Override
-    protected void actionPerformed(GuiButton button)
+    protected void onChangeMountPointButtonPressed(Button button)
     {
-        if (button.id == mountPointButton.id)
-        {
-            final OutfitPart outfitPart = parent.getCurrentOutfitPart();
-            if (outfitPart == null) return;
+        final OutfitPart outfitPart = parent.getCurrentOutfitPart();
+        if (outfitPart == null) return;
 
-            // Move to next enum for MointPoint or back to 0 if at the end
-            final int mountPointOrdinalNext = outfitPart.mountPoint.ordinal() + 1;
-            final int mountPointOrdinal = mountPointOrdinalNext >= MountPoint.values().length ? 0 : mountPointOrdinalNext;
+        // Move to next enum for MointPoint or back to 0 if at the end
+        final int mountPointOrdinalNext = outfitPart.mountPoint.ordinal() + 1;
+        final int mountPointOrdinal = mountPointOrdinalNext >= MountPoint.values().length ? 0 : mountPointOrdinalNext;
 
-            outfitPart.mountPoint = MountPoint.values()[mountPointOrdinal];
+        outfitPart.mountPoint = MountPoint.values()[mountPointOrdinal];
 
-            mountPointButton.displayString = I18n.format("tails.mountpoint." + outfitPart.mountPoint.name());
-        }
+        mountPointButton.setMessage(new TranslationTextComponent("tails.mountpoint." + outfitPart.mountPoint.name()));
     }
 
     @Override

@@ -1,7 +1,14 @@
 package uk.kihira.tails.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
 import uk.kihira.gltf.Model;
 import uk.kihira.tails.client.*;
 import uk.kihira.tails.client.outfit.OutfitPart;
@@ -17,7 +24,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     private static final float PART_SCALE = 40f;
 
     private GuiList<PartEntry> partList;
-    private GuiButton mountPointButton;
+    private ExtendedButton mountPointButton;
     private MountPoint mountPoint; // todo temporary until UI rework. Tabs with search?
     private float rotation;
 
@@ -31,51 +38,48 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     @Override
-    public void initGui()
+    public void init()
     {
         initPartList();
 
-        buttonList.add(mountPointButton = new GuiButtonExt(
-                0,
-                width / 2 - 25,
+        addButton(this.mountPointButton = new ExtendedButton(
+                this.width / 2 - 25,
                 16,
                 50,
                 16,
-                I18n.format("tails.mountpoint." + mountPoint.name())
-        ));
+                new TranslationTextComponent("tails.mountpoint." + mountPoint.name()),
+                this::onMountPointButtonPressed)
+        );
+
+        super.init();
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        rotation += partialTicks;
-
-        zLevel = -100;
-        drawGradientRect(0, 0, width, listTop, GuiEditor.SOFT_BLACK, GuiEditor.SOFT_BLACK);
-        drawGradientRect(0, listTop, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
-
-        zLevel = 0;
-        GlStateManager.color(1f, 1f, 1f, 1f);
-        drawCenteredString(fontRenderer, I18n.format("tails.gui.parts"), width / 2, 5, GuiEditor.TEXT_COLOUR);
-        partList.drawScreen(mouseX, mouseY, partialTicks);
-
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        if (button.id == mountPointButton.id)
-        {
-            // Move to next enum for MointPoint or back to 0 if at the end
-            final int mountPointOrdinalNext = mountPoint.ordinal() + 1;
-            final int mountPointOrdinal = mountPointOrdinalNext >= MountPoint.values().length ? 0 : mountPointOrdinalNext;
+        this.rotation += partialTicks;
 
-            mountPoint = MountPoint.values()[mountPointOrdinal];
+        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(),  -100,0, 0, this.width, this.listTop, GuiEditor.SOFT_BLACK, GuiEditor.SOFT_BLACK);
+        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(),  -100,0, this.listTop, this.width, this.height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
 
-            initPartList();
+        RenderSystem.color4f(1f, 1f, 1f, 1f);
+        drawCenteredString(matrixStack, this.font, I18n.format("tails.gui.parts"), this.width / 2, 5, GuiEditor.TEXT_COLOUR);
+        this.partList.drawScreen(mouseX, mouseY, partialTicks);
 
-            mountPointButton.displayString = I18n.format("tails.mountpoint." + mountPoint.name());
-        }
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    }
+
+    private void onMountPointButtonPressed(Button button)
+    {
+        // Move to next enum for MointPoint or back to 0 if at the end
+        final int mountPointOrdinalNext = this.mountPoint.ordinal() + 1;
+        final int mountPointOrdinal = mountPointOrdinalNext >= MountPoint.values().length ? 0 : mountPointOrdinalNext;
+
+        this.mountPoint = MountPoint.values()[mountPointOrdinal];
+
+        initPartList();
+
+        this.mountPointButton.setMessage(new TranslationTextComponent("tails.mountpoint." + mountPoint.name()));
     }
 
     @Override
@@ -99,11 +103,13 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
     }
 
     @Override
-    public boolean onEntrySelected(GuiList guiList, int index, PartEntry entry) {
+    public boolean onEntrySelected(GuiList guiList, int index, PartEntry entry)
+    {
         return true;
     }
 
-    private void initPartList() {
+    private void initPartList()
+    {
         this.partList = new GuiList<>(
                 this,
                 width,
@@ -121,9 +127,10 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         partList.setCurrentIndex(0);
     }
 
-    private void renderPart(int x, int y, OutfitPart part) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, Z_POSITION);
+    private void renderPart(MatrixStack matrixStack, int x, int y, OutfitPart part)
+    {
+        matrixStack.push();
+        matrixStack.translate(x, y, Z_POSITION);
 
         Part basePart = part.getPart();
         if (basePart == null) return;
@@ -131,20 +138,21 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         Model model = basePart.getModel();
         if (model != null)
         {
-            GlStateManager.rotate(rotation, 0f, 1f, 0f);
-            GlStateManager.scale(PART_SCALE, PART_SCALE, PART_SCALE);
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(this.rotation));
+            matrixStack.scale(PART_SCALE, PART_SCALE, PART_SCALE);
             ((ClientProxy) Tails.proxy).partRenderer.render(part);
         }
         else
         {
-            drawTexturedModalRect(x - 16, y - 16, 0, 0, 32, 32);
+            GuiUtils.drawTexturedModalRect(matrixStack, x - 16, y - 16, 0, 0, 32, 32, 0);
             // todo render loading circle
         }
 
-        GlStateManager.popMatrix();
+        matrixStack.pop();
     }
 
-    class PartEntry implements GuiListExtended.IGuiListEntry {
+    class PartEntry implements GuiListExtended.IGuiListEntry
+    {
         private static final int ADD_X = 1;
         private static final int ADD_Y = 40;
         private static final int ADD_WIDTH = 10;

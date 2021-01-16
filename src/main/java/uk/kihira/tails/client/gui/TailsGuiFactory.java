@@ -1,12 +1,7 @@
 package uk.kihira.tails.client.gui;
 
-import net.minecraftforge.fml.client.IModGuiFactory;
-import net.minecraftforge.fml.client.config.GuiConfig;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.common.config.ConfigElement;
-import net.minecraftforge.common.config.Configuration;
 
 import java.util.Set;
 

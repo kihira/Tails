@@ -1,10 +1,11 @@
 package uk.kihira.gltf;
 
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Quaternion;
-import org.lwjgl.util.vector.Vector3f;
 import uk.kihira.tails.common.IDisposable;
 
 import javax.annotation.Nullable;
@@ -14,9 +15,9 @@ import java.util.ArrayList;
 /**
  * NodeImpl can just directly refer to geometries as we don't need to store weights
  */
-public final class Node implements IDisposable {
-    private final Matrix4f matrix;
-    private final FloatBuffer fb;
+public final class Node implements IDisposable
+{
+    private Matrix4f matrix;
     private boolean isStatic; // This is set to true if there is no animation (ie a matrix is present in the gltf file)
     private Mesh mesh;
     private final ArrayList<Node> children;
@@ -26,66 +27,65 @@ public final class Node implements IDisposable {
     public Quaternion rotation;
     public Vector3f scale;
 
-    private Node(@Nullable ArrayList<Node> children) {
-        this.fb = BufferUtils.createFloatBuffer(16);
+    private Node(@Nullable ArrayList<Node> children)
+    {
         this.matrix = new Matrix4f();
         this.children = children;
     }
 
-    Node(@Nullable ArrayList<Node> children, float[] matrix) {
+    Node(@Nullable ArrayList<Node> children, float[] matrix)
+    {
         this(children);
         this.isStatic = true;
-        this.matrix.load(FloatBuffer.wrap(matrix));
-        this.matrix.store(fb);
-        fb.rewind();
+        this.matrix = new Matrix4f(matrix);
     }
 
-    Node(@Nullable ArrayList<Node> children, float[] translation, float[] rotation, float[] scale) {
+    Node(@Nullable ArrayList<Node> children, float[] translation, float[] rotation, float[] scale)
+    {
         this(children);
         this.translation = new Vector3f(translation[0], translation[1], translation[2]);
         this.rotation = new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
         this.scale = new Vector3f(scale[0], scale[1], scale[2]);
     }
 
-    public void render() {
+    public void render(MatrixStack matrixStack)
+    {
         // Generate matrix if this is not static
-        if (!isStatic) {
-            matrix.setIdentity();
-            matrix.translate(translation);
-            Matrix4f.mul(matrix, getRotateMatrix(), matrix);
-            matrix.scale(scale);
-            matrix.store(fb);
-            fb.rewind();
+        if (!this.isStatic)
+        {
+            this.matrix.setIdentity();
+            this.matrix.translate(this.translation);
+            this.matrix.mul(this.rotation);
+            this.matrix.scale(this.scale);
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.multMatrix(fb);
+        matrixStack.push();
+        matrixStack.getLast().getMatrix().mul(matrix);
 
-        if (mesh != null) {
+        if (mesh != null)
+        {
             mesh.render();
         }
 
-        if (children != null) {
-            children.forEach(Node::render);
+        if (children != null)
+        {
+            for (Node child: children)
+            {
+                child.render(matrixStack);
+            }
         }
 
-        GlStateManager.popMatrix();
+        matrixStack.pop();
     }
 
-    private Matrix4f getRotateMatrix() {
-        Matrix4f rotMatrix = new Matrix4f();
-        GlStateManager.quatToGlMatrix(fb, rotation);
-        rotMatrix.load(fb);
-        fb.clear();
-        return rotMatrix;
-    }
-
-    public void setMesh(Mesh mesh) {
+    public void setMesh(Mesh mesh)
+    {
         this.mesh = mesh;
     }
 
     @Override
-    public void dispose() {
+    public void dispose()
+    {
         mesh.dispose();
     }
 }

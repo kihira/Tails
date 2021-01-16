@@ -34,14 +34,14 @@ public class Tails
 
     public static boolean hasRemote;
 
-    @SidedProxy(clientSide = "uk.kihira.tails.proxy.ClientProxy", serverSide = "uk.kihira.tails.proxy.CommonProxy")
+    //@SidedProxy(clientSide = "uk.kihira.tails.proxy.ClientProxy", serverSide = "uk.kihira.tails.proxy.CommonProxy")
     public static CommonProxy proxy;
-    @Mod.Instance(value = "tails")
-    public static Tails instance;
 
     public Tails()
     {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigChange);
     }
 
     private void setup(final FMLCommonSetupEvent event)
@@ -57,8 +57,7 @@ public class Tails
         Config.loadConfig();
     }
 
-    @SubscribeEvent
-    public void onConfigChange(ModConfigEvent event) 
+    public void onConfigChange(final ModConfigEvent event)
     {
         if (event.getConfig().getModId().equals(Tails.MOD_ID)) 
         {
@@ -66,7 +65,7 @@ public class Tails
         }
     }
 
-    public static void setLocalOutfit(Outfit outfit) 
+    public static void setLocalOutfit(final Outfit outfit)
     {
         Config.localOutfit.set(outfit);
         Config.configuration.save();

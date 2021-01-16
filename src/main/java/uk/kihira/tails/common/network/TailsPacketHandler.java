@@ -20,12 +20,12 @@ public final class TailsPacketHandler
         if (serverVersion.equals(NetworkRegistry.ABSENT) || serverVersion.equals(NetworkRegistry.ACCEPTVANILLA))
         {
             Tails.LOGGER.info("Connecting to vanilla server, or mod is missing from server");
-            Tails.instance.hasRemote = false; // TODO better pattern
+            Tails.hasRemote = false; // TODO better pattern
         }
         else if (serverVersion.equals(PROTOCOL_VERSION))
         {
             Tails.LOGGER.info("Connecting to server that has Tails mod installed and acceptable version");
-            Tails.instance.hasRemote = true;
+            Tails.hasRemote = true;
         }
         else
         {

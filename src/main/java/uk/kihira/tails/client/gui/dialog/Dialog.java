@@ -1,46 +1,53 @@
 package uk.kihira.tails.client.gui.dialog;
 
 import com.google.common.base.Strings;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import uk.kihira.tails.client.gui.GuiBase;
 import uk.kihira.tails.client.gui.Panel;
-import net.minecraft.client.gui.GuiButton;
 import org.apache.commons.lang3.Validate;
 
 import java.io.IOException;
 
-public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T> {
-
+public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
+{
     protected boolean dragging;
     private int mouseXStart;
     private int mouseYStart;
 
     protected String title;
 
-    public Dialog(T parent, String title, int left, int top, int width, int height) {
+    public Dialog(T parent, String title, int left, int top, int width, int height)
+    {
         this(parent, left, top, width, height);
         this.title = title;
     }
 
-    public Dialog(T parent, int left, int top, int width, int height) {
+    public Dialog(T parent, int left, int top, int width, int height)
+    {
         super(parent, left, top, width, height);
         Validate.isInstanceOf(IDialogCallback.class, parent);
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
+    protected void actionPerformed(Button button)
+    {
         parent.buttonPressed(this, button);
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float p_73863_3_) {
-        drawGradientRect(0, 0, width, height, 0xFF808080, 0xFF808080);
-        drawGradientRect(1, 12, width - 1, height - 1, 0xFF000000, 0xFF000000);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    {
+        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0, 0, 0, this.width, this.height, 0xFF808080, 0xFF808080);
+        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0, 1, 12, this.width - 1, this.height - 1, 0xFF000000, 0xFF000000);
 
-        if (!Strings.isNullOrEmpty(title)) {
-            drawString(fontRenderer, title, 2, 2, 0xFFFFFFFF);
+        if (!Strings.isNullOrEmpty(this.title))
+        {
+            drawString(matrixStack, this.font, this.title, 2, 2, 0xFFFFFFFF);
         }
 
-        super.drawScreen(mouseX, mouseY, p_73863_3_);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override

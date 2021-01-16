@@ -1,5 +1,6 @@
 package uk.kihira.gltf;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import uk.kihira.gltf.animation.Animation;
@@ -8,7 +9,8 @@ import uk.kihira.tails.common.IDisposable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Model implements IDisposable {
+public class Model implements IDisposable
+{
     private final ArrayList<Node> allNodes;
     private final ArrayList<Node> rootNodes;
     private final HashMap<String, Animation> animations;
@@ -21,17 +23,20 @@ public class Model implements IDisposable {
         this.textures = textures;
     }
 
-    public void render() {
-        for (Node node : rootNodes) {
-            node.render();
+    public void render(MatrixStack matrixStack)
+    {
+        for (Node node : rootNodes)
+        {
+            node.render(matrixStack);
         }
     }
 
-    public void dispose() {
+    public void dispose()
+    {
         allNodes.forEach(Node::dispose);
 
         // Textures
-        textures.forEach(texture -> Minecraft.getMinecraft().getTextureManager().deleteTexture(texture));
+        textures.forEach(texture -> Minecraft.getInstance().getTextureManager().deleteTexture(texture));
         textures.clear();
     }
 }

@@ -2,12 +2,13 @@ package uk.kihira.tails.client.gui.controls;
 
 import com.google.common.base.Strings;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import uk.kihira.tails.client.gui.GuiBaseScreen;
 import uk.kihira.tails.client.gui.IControl;
 import uk.kihira.tails.client.gui.IControlCallback;
@@ -21,9 +22,10 @@ import java.util.Arrays;
 import java.util.List;
 
 // todo tooltips only work for guibuttons
-@SideOnly(Side.CLIENT)
-public class NumberInput extends Gui implements IControl<Float>, ITooltip {
-    private static final char[] VALID_CHARS = new char[]{'-', '.', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'}; //todo might need to sort first, need to check
+@OnlyIn(Dist.CLIENT)
+public class NumberInput extends Widget implements IControl<Float>, ITooltip
+{
+    private static final char[] VALID_CHARS = new char[]{'-', '.', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
     private static final float SHIFT_MOD = 10f;
     private static final float CTRL_MOD = 0.1f;
 
@@ -41,15 +43,17 @@ public class NumberInput extends Gui implements IControl<Float>, ITooltip {
     private final int btnHeight;
 
     private final DecimalFormat df = new DecimalFormat("###.##");
-    private final GuiTextField numInput;
+    private final TextFieldWidget numInput;
     private float num = 0f;
     private IControlCallback<IControl<Float>, Float> callback;
 
-    static {
+    static
+    {
         Arrays.sort(VALID_CHARS);
     }
 
-    public NumberInput(int x, int y, int width, float minValue, float maxValue, float increment, @Nullable IControlCallback<IControl<Float>, Float> callback) {
+    public NumberInput(int x, int y, int width, float minValue, float maxValue, float increment, @Nullable IControlCallback<IControl<Float>, Float> callback)
+    {
         this.xPos = x;
         this.yPos = y;
         this.width = width;
@@ -59,7 +63,7 @@ public class NumberInput extends Gui implements IControl<Float>, ITooltip {
         this.callback = callback;
         df.setRoundingMode(RoundingMode.FLOOR);
 
-        numInput = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, xPos + 1, yPos + 1, width - btnWidth - 2, height - 2);
+        numInput = new TextFieldWidget(Minecraft.getInstance().fontRenderer, xPos + 1, yPos + 1, width - btnWidth - 2, height - 2, StringTextComponent.EMPTY);
         numInput.setValidator(input -> {
             if (input == null) return true;
             int dotCount = 0;
@@ -83,13 +87,15 @@ public class NumberInput extends Gui implements IControl<Float>, ITooltip {
         this.btnHeight = height / 2;
     }
 
-    public void draw(int mouseX, int mouseY) {
+    public void draw(int mouseX, int mouseY)
+    {
         numInput.drawTextBox();
         drawRect(btnXPos, yPos, btnXPos + btnWidth, yPos + btnHeight, 0xFFFFFFFF); // Increment
         drawRect(btnXPos, yPos + btnHeight, btnXPos + btnWidth, yPos + height, 0xAAAAAAFF); // Decrement
     }
 
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    {
         boolean focused = numInput.isFocused();
         numInput.mouseClicked(mouseX, mouseY, mouseButton);
         // Only update num when input loses focus
