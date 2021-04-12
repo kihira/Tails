@@ -1,0 +1,58 @@
+gui.button.livepreview=바로보기
+gui.button.livepreview.0.tooltip=꼬리의 색을 변경한 결과를 바로 보여줍니다
+gui.button.openfolder.tooltip=스킨을 내보낼 폴더를 엽니다
+gui.button.openfolder=내보내기 위치 열기
+gui.button.editor=꼬리 에디터
+gui.button.reset=초기화하기
+gui.button.save=저장하기
+gui.button.edit=수정하기
+gui.button.help.camera=회전하려면 화면을 클릭해서 드래그하세요
+gui.button.reset.camera=카메라 초기화
+gui.button.picker.0=스포이트
+gui.button.picker.1=사용하고자 하는 색을 화면상에서 고르세요
+gui.button.favourite=즐겨찾기
+gui.button.delete=제거하기
+gui.button.upload=서버에 업로드하기
+gui.button.savelocal=로컬 라이브러리에 저장하기
+gui.button.mode.library=라이브러리
+gui.button.mode.editor=편집기
+gui.button.all=전체
+
+gui.slider.red.tooltip=빨강
+gui.slider.green.tooltip=초록
+gui.slider.blue.tooltip=파랑
+gui.slider.hue.tooltip=색조
+gui.slider.saturation.tooltip=채도
+gui.slider.brightness.tooltip=명도
+
+# GUI Library Strings
+gui.library.create=새로움 모음 만들기
+gui.library.entry.default=새로운 모음
+gui.library.entry=라이브러리 모음
+gui.library.info.created=제작자
+gui.library.info.createdate=제작 날자
+
+gui.tint=색조
+gui.tint.edit=색조 %s 수정하기
+gui.hex=Hex
+gui.texture=텍스쳐 선택하기
+gui.author=제작자:
+tails.gui.parts=부위
+
+tails.upload.unavailable=이 기능은 아직 작동하지 않습니다!
+tails.upload.tooltip=마인크래프트 스킨 서버에 스킨을 올려보세요 (마인크래프트 홈페이지를 통해 로그인 해야합니다)
+tails.uploading=업로드중...
+tails.upload.success=업로드 성공! 브라우저를 확인하세요
+tails.upload.failed=업로드 실패! imgur 또는 마인크래프트 홈페이지가 다운된 걸까요?
+tails.upload.ratelimit=업로드 실패! 업로드 한계에 도달했습니다, 너무 자주 업로드 하셨나요?
+tails.gui.position=좌표
+tails.gui.rotation=회전
+tails.gui.scale=크기
+tails.gui.mountpoint=접속점
+
+tails.mountpoint.HEAD=머리
+tails.mountpoint.CHEST=몸통
+tails.mountpoint.LEFT_ARM=왼쪽 팔
+tails.mountpoint.RIGHT_ARM=오른쪽 팔
+tails.mountpoint.LEFT_LEG=왼쪽 다리
+tails.mountpoint.RIGHT_LEG=오른쪽 다리
