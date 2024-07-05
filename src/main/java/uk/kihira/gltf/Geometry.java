@@ -67,13 +67,12 @@ public final class Geometry implements IDisposable
             PartRenderer.glBindVertexArray(vao);
         }
         else
-            {
+        {
             bind(); // Binds the buffers and pointers
         }
 
         if (indicesBuffer != null)
         {
-
             GL11.glDrawElements(drawMode, indicesBuffer.getCount(), indicesBuffer.getComponentType().gl, indicesBuffer.getOffset());
         }
         else

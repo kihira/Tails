@@ -11,6 +11,9 @@ varying vec4 Color;
 vec4 ambient;
 vec4 diffuse;
 
+uniform mat4 ModelViewMat;
+uniform mat4 ProjMat;
+
 void directional_light(in int light, in vec3 normal) {
   ambient += gl_LightSource[light].ambient;
   diffuse += gl_LightSource[light].diffuse * max(0, dot(normal, normalize(vec3(gl_LightSource[light].position))));
@@ -26,5 +29,5 @@ void main() {
   directional_light(1, Normal);
   Color = gl_LightModel.ambient + ambient * gl_FrontMaterial.ambient + diffuse * gl_FrontMaterial.diffuse + gl_FrontMaterial.specular;
 
-  gl_Position = gl_ModelViewProjectionMatrix * vec4(pos, 1);
+  gl_Position = ProjMat * ModelViewMat * vec4(pos, 1);
 }

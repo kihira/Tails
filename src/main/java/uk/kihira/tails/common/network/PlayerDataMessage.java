@@ -1,75 +1,85 @@
 package uk.kihira.tails.common.network;
 
-import com.google.common.base.Strings;
-import com.google.gson.JsonSyntaxException;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Tails;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
-import java.util.function.Supplier;
 
-public final class PlayerDataMessage 
+public record PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) implements CustomPacketPayload
 {
-    private UUID uuid;
-    private Outfit outfit;
-    private boolean shouldRemove;
+    public static final ResourceLocation ID = new ResourceLocation(Tails.MOD_ID, PlayerDataMessage.class.getName());
 
-    public PlayerDataMessage() {}
-    public PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove)
+    public PlayerDataMessage(final FriendlyByteBuf buffer)
     {
-        this.uuid = uuid;
-        this.outfit = outfit;
-        this.shouldRemove = shouldRemove;
+        this(buffer.readUUID(), Tails.GSON.fromJson(buffer.readUtf(), Outfit.class), buffer.readBoolean());
     }
 
-    public PlayerDataMessage(PacketBuffer buf) 
+    @Override
+    public void write(final FriendlyByteBuf buffer)
     {
-        this.uuid = buf.readUniqueId();
-        String tailInfoJson = buf.readString();
-        if (!Strings.isNullOrEmpty(tailInfoJson)) 
+        buffer.writeUUID(uuid());
+        buffer.writeUtf(Tails.GSON.toJson(outfit()));
+        buffer.writeBoolean(shouldRemove());
+    }
+
+    @Nonnull
+    @Override
+    public ResourceLocation id()
+    {
+        return ID;
+    }
+
+    public static void handleDataClient(final PlayerDataMessage data, final PlayPayloadContext context)
+    {
+        context.workHandler().submitAsync(() ->
+            {
+                processMessage(data);
+            })
+            .exceptionally(e ->
+            {
+                context.packetHandler().disconnect(Component.translatable("tails.networking.failed", e.getMessage()));
+                return null;
+            });
+    }
+
+    public static void handleDataServer(final PlayerDataMessage data, final PlayPayloadContext context)
+    {
+        // Only allow players to set their own data
+        if (context.player().isEmpty() || context.player().get().getUUID() != data.uuid())
         {
-            try 
-            {
-                this.outfit = Tails.GSON.fromJson(tailInfoJson, Outfit.class);
-            } catch (JsonSyntaxException e) 
-            {
-                Tails.LOGGER.catching(e);
-            }
+            context.packetHandler().disconnect(Component.translatable("tails.networking.failed"));
+            return;
         }
-        else 
-        {
-            this.outfit = null;
-        }
-    }
 
-    public void encode(PacketBuffer buf) 
-    {
-        buf.writeUniqueId(this.uuid);
-        buf.writeString(outfit == null ? "" : Tails.GSON.toJson(this.outfit));
-    }
-
-    public void handle(Supplier<Context> ctx) 
-    {
-        ctx.get().enqueueWork(() ->
-        {
-            if (this.shouldRemove)
-            {
-                Tails.proxy.removeActiveOutfit(this.uuid);
-            } 
-            else if (this.outfit != null) 
-            {
-                Tails.proxy.setActiveOutfit(this.uuid, this.outfit);
-                //Tell other clients about the change
-                if (ctx.get().getDirection() == NetworkDirection.PLAY_TO_SERVER) 
+        context.workHandler().submitAsync(() ->
                 {
-                    TailsPacketHandler.networkWrapper.send(PacketDistributor.ALL.noArg(), new PlayerDataMessage(this.uuid, this.outfit, false));
-                }
-            }
-        });
-        ctx.get().setPacketHandled(true);
+                    processMessage(data);
+                })
+                .exceptionally(e ->
+                {
+                    context.packetHandler().disconnect(Component.translatable("tails.networking.failed", e.getMessage()));
+                    return null;
+                });
+    }
+
+    private static void processMessage(final PlayerDataMessage data)
+    {
+        if (data.shouldRemove())
+        {
+            Tails.proxy.removeActiveOutfit(data.uuid());
+        }
+        else if (data.outfit() != null)
+        {
+            Tails.proxy.setActiveOutfit(data.uuid(), data.outfit());
+        }
+        // Forward packet onto all clients
+        PacketDistributor.ALL.noArg().send(data);
     }
 }

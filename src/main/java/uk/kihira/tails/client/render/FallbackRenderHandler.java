@@ -1,12 +1,11 @@
+/*
 package uk.kihira.tails.client.render;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import uk.kihira.gltf.Model;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.outfit.OutfitPart;
@@ -17,13 +16,12 @@ import uk.kihira.tails.common.Tails;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-
+*/
 /**
  * Legacy renderer that uses the player render event.
  * This is used for compatibility with certain mods
- */
+ *//*
+
 public class FallbackRenderHandler
 {
     private static RenderPlayerEvent.Pre currentEvent = null;
@@ -51,11 +49,11 @@ public class FallbackRenderHandler
         currentEvent = null;
     }
 
-    public static class ModelRendererWrapper extends ModelRenderer 
+    public static class ModelRendererWrapper extends ModelRenderer
     {
         private final MountPoint mountPoint;
 
-        public ModelRendererWrapper(net.minecraft.client.renderer.model.Model model, MountPoint mountPoint) 
+        public ModelRendererWrapper(net.minecraft.client.model.Model model, MountPoint mountPoint)
         {
             super(model);
             this.mountPoint = mountPoint;
@@ -80,3 +78,4 @@ public class FallbackRenderHandler
         }
     }
 }
+*/

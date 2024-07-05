@@ -1,11 +1,12 @@
 package uk.kihira.tails.client.gui.dialog;
 
 import com.google.common.base.Strings;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import uk.kihira.tails.client.gui.GuiBase;
 import uk.kihira.tails.client.gui.Panel;
 import org.apache.commons.lang3.Validate;
+
+import javax.annotation.Nonnull;
 
 public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
 {
@@ -28,17 +29,17 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
-        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0, 0, 0, this.width, this.height, 0xFF808080, 0xFF808080);
-        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), 0, 1, 12, this.width - 1, this.height - 1, 0xFF000000, 0xFF000000);
+        graphics.fillGradient(0, 0, 0, this.width, this.height, 0xFF808080, 0xFF808080);
+        graphics.fillGradient(0, 1, 12, this.width - 1, this.height - 1, 0xFF000000, 0xFF000000);
 
         if (!Strings.isNullOrEmpty(this.title))
         {
-            drawString(matrixStack, this.font, this.title, 2, 2, 0xFFFFFFFF);
+            graphics.drawString(this.font, this.title, 2, 2, 0xFFFFFFFF);
         }
 
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

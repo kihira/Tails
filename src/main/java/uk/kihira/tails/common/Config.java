@@ -1,52 +1,65 @@
 package uk.kihira.tails.common;
 
-import com.google.gson.Gson;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraft.util.StringUtil;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.client.outfit.Outfit;
+import uk.kihira.tails.client.outfit.OutfitPart;
 
+import java.io.IOException;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+
+@Mod.EventBusSubscriber(modid = Tails.MOD_ID, bus = Bus.MOD)
 public final class Config 
 {
-    public static BooleanValue forceLegacyRendering;
-    public static BooleanValue libraryEnabled;
-    public static ConfigValue<Outfit> localOutfit;
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    public static ForgeConfigSpec configuration;
+    private static final ModConfigSpec.BooleanValue FORCE_LEGACY_RENDERING = BUILDER
+            .comment("Forces the legacy renderer which may have better compatibility with other mods")
+            .define("forceLegacyRenderer", false);
 
-    public static void loadConfig() 
+    private static final ModConfigSpec.BooleanValue LIBRARY_ENABLED = BUILDER
+            .comment("Whether to enable the library system for sharing tails. This mostly matters on servers")
+            .define("enableLibrary", true);
+
+    private static final ModConfigSpec.ConfigValue<String> LOCAL_OUTFIT = BUILDER
+            .comment("Local Players outfit. Delete to remove all customisation data. Do not try to edit manually")
+            .define("localPlayerOutfit", "");
+
+    static final ModConfigSpec SPEC = BUILDER.build();
+
+    public static boolean forceLegacyRendering;
+    public static boolean libraryEnabled;
+    public static Outfit localOutfit;
+
+    @SubscribeEvent
+    private static void onLoad(final ModConfigEvent event)
     {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        forceLegacyRendering = FORCE_LEGACY_RENDERING.get();
+        libraryEnabled = LIBRARY_ENABLED.get();
+        localOutfit = StringUtil.isNullOrEmpty(LOCAL_OUTFIT.get()) ? null : Tails.GSON.fromJson(LOCAL_OUTFIT.get(), Outfit.class);
 
-        forceLegacyRendering = builder
-                .comment("Forces the legacy renderer which may have better compatibility with other mods")
-                .define("forceLegacyRenderer", false);
-
-        libraryEnabled = builder
-                .comment("Whether to enable the library system for sharing tails. This mostly matters on servers.")
-                .define("enableLibrary", true);
-
-        localOutfit = builder
-                .comment("Local Players outfit. Delete to remove all customisation data. Do not try to edit manually")
-                .define("localPlayerOutfit", new Outfit());
-        
-        //Load default if none exists
-        if (localOutfit == null) 
+        if (localOutfit == null)
         {
-            Tails.setLocalOutfit(new Outfit());
+            // todo temp hacks
+            try {
+                PartRegistry.loadAllPartsFromResources().get();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+
+            var outfit = new Outfit();
+            outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19")).get()));
+            Tails.setLocalOutfit(outfit);
         }
-        // todo
-/*        try
-        {
-            localOutfit = Gson.fromJson(Tails.configuration.getString("Local Player Outfit",
-                    Configuration.CATEGORY_GENERAL, "{}", "Local Players outfit. Delete to remove all customisation data. Do not try to edit manually"), Outfit.class);
 
-        } catch (JsonSyntaxException e) {
-            Tails.configuration.getCategory(Configuration.CATEGORY_GENERAL).remove("Local Player Data");
-            Tails.LOGGER.error("Failed to load local player data: Invalid JSON syntax! Invalid data being removed");
-        }*/
-
-        configuration = builder.build();
-        //configuration.save();
+        SPEC.save();
     }
 }

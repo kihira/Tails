@@ -6,7 +6,8 @@ import uk.kihira.tails.common.IDisposable;
 
 import java.nio.ByteBuffer;
 
-public class BufferView implements IDisposable {
+public class BufferView implements IDisposable
+{
     /**
      * The length of the bufferView in bytes.
      */
@@ -34,33 +35,40 @@ public class BufferView implements IDisposable {
     /**
      * NON SPEC
      */
-    private int vbo = -1;
-    private ByteBuffer data;
+    private transient int vbo = -1;
+    private transient ByteBuffer data;
 
-    public void setData(ByteBuffer buffer) {
+    public void setData(ByteBuffer buffer)
+    {
         dispose();
         data = buffer;
     }
 
-    public void bind() {
-        if (vbo == -1) {
-            vbo = GlStateManager.genBuffers();
-            GlStateManager.bindBuffer(target, vbo);
-            GlStateManager.bufferData(target, data, GL15.GL_STATIC_DRAW);
+    public void bind()
+    {
+        if (vbo == -1)
+        {
+            vbo = GlStateManager._glGenBuffers();
+            GlStateManager._glBindBuffer(target, vbo);
+            GlStateManager._glBufferData(target, data, GL15.GL_STATIC_DRAW);
         }
-        else {
-            GlStateManager.bindBuffer(target, vbo);
+        else
+        {
+            GlStateManager._glBindBuffer(target, vbo);
         }
     }
 
-    public ByteBuffer getData() {
+    public ByteBuffer getData()
+    {
         return data;
     }
 
     @Override
-	public void dispose() {
-        if (vbo != -1) {
-            GlStateManager.deleteBuffers(vbo);
+	public void dispose()
+    {
+        if (vbo != -1)
+        {
+            GlStateManager._glDeleteBuffers(vbo);
             vbo = -1;
         }
 	}

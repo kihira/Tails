@@ -1,19 +1,15 @@
 package uk.kihira.tails.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
-import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import uk.kihira.tails.client.Colour;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.gui.controls.NumberInput;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 
 public class TransformPanel extends Panel<GuiEditor> implements IControlCallback<IControl<Float>, Float>, IOutfitPartSelected
 {
@@ -59,57 +55,45 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         final int secondInputX = 52;
         final int thirdInputX = 101;
 
-        xRotInput = new NumberInput(firstInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this);
-        yRotInput = new NumberInput(secondInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this);
-        zRotInput = new NumberInput(thirdInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this);
+        addRenderableWidget(xRotInput = new NumberInput(firstInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
+        addRenderableWidget(yRotInput = new NumberInput(secondInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
+        addRenderableWidget(zRotInput = new NumberInput(thirdInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
 
-        xPosInput = new NumberInput(firstInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this);
-        yPosInput = new NumberInput(secondInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this);
-        zPosInput = new NumberInput(thirdInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this);
+        addRenderableWidget(xPosInput = new NumberInput(firstInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
+        addRenderableWidget(yPosInput = new NumberInput(secondInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
+        addRenderableWidget(zPosInput = new NumberInput(thirdInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
 
-        xScaleInput = new NumberInput(firstInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this);
-        yScaleInput = new NumberInput(secondInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this);
-        zScaleInput = new NumberInput(thirdInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this);
+        addRenderableWidget(xScaleInput = new NumberInput(firstInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
+        addRenderableWidget(yScaleInput = new NumberInput(secondInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
+        addRenderableWidget(zScaleInput = new NumberInput(thirdInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
 
         String mountPoint = MountPoint.values()[0].name();
         final OutfitPart outfitPart = parent.getCurrentOutfitPart();
         if (outfitPart != null) mountPoint = outfitPart.mountPoint.name();
 
-        this.addButton(mountPointButton = new ExtendedButton(5, spacing * 7, width - 10, 20, new TranslationTextComponent("tails.mountpoint." + mountPoint), this::onChangeMountPointButtonPressed));
+        this.addRenderableWidget(mountPointButton = new ExtendedButton(5, spacing * 7, width - 10, 20, Component.translatable("tails.mountpoint." + mountPoint), this::onChangeMountPointButtonPressed));
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
-        this.hLine(matrixStack, 0, width, 0, Colour.BLACK);
+        graphics.hLine(0, width, 0, Colour.BLACK);
 
-        GuiUtils.drawGradientRect(matrixStack.getLast().getMatrix(), -100,0, 0, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
+        graphics.fillGradient(-100,0, 0, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
 
         // Rotation
-        this.font.drawString(matrixStack, I18n.format("tails.gui.rotation"), 5, this.font.FONT_HEIGHT / 2f, GuiEditor.TEXT_COLOUR);
-        xRotInput.draw(mouseX, mouseY);
-        yRotInput.draw(mouseX, mouseY);
-        zRotInput.draw(mouseX, mouseY);
-
+        graphics.drawString(this.font, Component.translatable("tails.gui.rotation"), 5, this.font.lineHeight / 2, GuiEditor.TEXT_COLOUR);
         // Position
-        this.font.drawString(matrixStack, I18n.format("tails.gui.position"), 5, spacing * 2 + this.font.FONT_HEIGHT / 2f, GuiEditor.TEXT_COLOUR);
-        xPosInput.draw(mouseX, mouseY);
-        yPosInput.draw(mouseX, mouseY);
-        zPosInput.draw(mouseX, mouseY);
-
+        graphics.drawString(this.font, Component.translatable("tails.gui.position"), 5, spacing * 2 + this.font.lineHeight / 2, GuiEditor.TEXT_COLOUR);
         // Scale
-        this.font.drawString(matrixStack, I18n.format("tails.gui.scale"), 5, spacing * 4 + this.font.FONT_HEIGHT / 2f, GuiEditor.TEXT_COLOUR);
-        xScaleInput.draw(mouseX, mouseY);
-        yScaleInput.draw(mouseX, mouseY);
-        zScaleInput.draw(mouseX, mouseY);
-
+        graphics.drawString(this.font, Component.translatable("tails.gui.scale"), 5, spacing * 4 + this.font.lineHeight / 2, GuiEditor.TEXT_COLOUR);
         // Mount point
-        this.font.drawString(matrixStack, I18n.format("tails.gui.mountpoint"), 5, spacing * 6 + this.font.FONT_HEIGHT / 2f, GuiEditor.TEXT_COLOUR);
+        graphics.drawString(this.font, Component.translatable("tails.gui.mountpoint"), 5, spacing * 6 + this.font.lineHeight / 2, GuiEditor.TEXT_COLOUR);
 
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
-    protected void onChangeMountPointButtonPressed(Button button)
+    protected void onChangeMountPointButtonPressed(GuiEventListener button)
     {
         final OutfitPart outfitPart = parent.getCurrentOutfitPart();
         if (outfitPart == null) return;
@@ -120,43 +104,7 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
 
         outfitPart.mountPoint = MountPoint.values()[mountPointOrdinal];
 
-        mountPointButton.setMessage(new TranslationTextComponent("tails.mountpoint." + outfitPart.mountPoint.name()));
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
-    {
-        xPosInput.mouseClicked(mouseX, mouseY, mouseButton);
-        yPosInput.mouseClicked(mouseX, mouseY, mouseButton);
-        zPosInput.mouseClicked(mouseX, mouseY, mouseButton);
-
-        xRotInput.mouseClicked(mouseX, mouseY, mouseButton);
-        yRotInput.mouseClicked(mouseX, mouseY, mouseButton);
-        zRotInput.mouseClicked(mouseX, mouseY, mouseButton);
-
-        xScaleInput.mouseClicked(mouseX, mouseY, mouseButton);
-        yScaleInput.mouseClicked(mouseX, mouseY, mouseButton);
-        zScaleInput.mouseClicked(mouseX, mouseY, mouseButton);
-
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public boolean charTyped(char codePoint, int modifiers)
-    {
-        xPosInput.charTyped(codePoint, modifiers);
-        yPosInput.charTyped(codePoint, modifiers);
-        zPosInput.charTyped(codePoint, modifiers);
-
-        xRotInput.charTyped(codePoint, modifiers);
-        yRotInput.charTyped(codePoint, modifiers);
-        zRotInput.charTyped(codePoint, modifiers);
-
-        xScaleInput.charTyped(codePoint, modifiers);
-        yScaleInput.charTyped(codePoint, modifiers);
-        zScaleInput.charTyped(codePoint, modifiers);
-
-        return super.charTyped(codePoint, modifiers);
+        mountPointButton.setMessage(Component.translatable("tails.mountpoint." + outfitPart.mountPoint.name()));
     }
 
     @Override

@@ -1,11 +1,10 @@
 package uk.kihira.tails.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,7 +13,7 @@ public abstract class GuiBase extends GuiBaseScreen
     //0 is bottom layer
     private final ArrayList<ArrayList<Panel<?>>> layers = new ArrayList<>();
 
-    GuiBase(ITextComponent titleIn, int layerCount)
+    GuiBase(Component titleIn, int layerCount)
     {
         super(titleIn);
 
@@ -73,7 +72,7 @@ public abstract class GuiBase extends GuiBaseScreen
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
         for (ArrayList<Panel<?>> layer : layers)
         {
@@ -81,18 +80,18 @@ public abstract class GuiBase extends GuiBaseScreen
             {
                 if (panel.enabled)
                 {
-                    matrixStack.push();
-                    matrixStack.translate(panel.left, panel.top, 0);
-                    RenderSystem.color4f(1f, 1f, 1f, 1f);
-                    panel.render(matrixStack, mouseX - panel.left, mouseY - panel.top, partialTicks);
-                    RenderSystem.disableLighting();
-                    matrixStack.pop();
+                    graphics.pose().pushPose();
+                    graphics.pose().translate(panel.left, panel.top, 0);
+                    //RenderSystem.color4f(1f, 1f, 1f, 1f);
+                    panel.render(graphics, mouseX - panel.left, mouseY - panel.top, partialTicks);
+                    //RenderSystem.disableLighting();
+                    graphics.pose().popPose();
                 }
             }
         }
 
-        RenderSystem.color4f(1f, 1f, 1f, 1f);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        //RenderSystem.color4f(1f, 1f, 1f, 1f);
+        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

@@ -12,7 +12,6 @@ public class Channel {
     public final FloatBuffer outputData;
     public final Node node;
     public final AnimationPath path;
-    public final float length;
 
     public Channel(Sampler sampler, Type outputType, FloatBuffer inputData, FloatBuffer outputData, Node node, AnimationPath path) {
         this.sampler = sampler;
@@ -21,6 +20,5 @@ public class Channel {
         this.outputData = outputData;
         this.node = node;
         this.path = path;
-        this.length = inputData.get(inputData.limit());
     }
 }

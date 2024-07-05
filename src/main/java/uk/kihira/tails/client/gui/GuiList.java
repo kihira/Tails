@@ -1,40 +1,40 @@
 package uk.kihira.tails.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.list.AbstractList;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import uk.kihira.tails.client.RenderHelper;
 import net.minecraft.client.Minecraft;
 
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiList<T extends AbstractList.AbstractListEntry<T>> extends AbstractList<T>
+public class GuiList<E extends ObjectSelectionList.Entry<E>> extends ObjectSelectionList<E>
 {
-    private final IListCallback<T> parent;
+    private final IListCallback<E> parent;
 
-    public GuiList(IListCallback<T> parent, int width, int height, int top, int bottom, int slotHeight, List<T> entries)
+    public GuiList(IListCallback<E> parent, int width, int top, int bottom, int slotHeight, List<E> entries)
     {
-        super(Minecraft.getInstance(), width, height, top, bottom, slotHeight);
+        super(Minecraft.getInstance(), width, bottom - top, top, slotHeight);
         this.parent = parent;
-        this.x0 = -3;
+        this.setX(-3);
 
         entries.forEach(this::addEntry);
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
-        RenderHelper.startGlScissor(this.x0, this.y0, this.width + 3, this.height);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        RenderHelper.startGlScissor(this.getX(), this.getY(), this.width + 3, this.height);
+        super.render(graphics, mouseX, mouseY, partialTicks);
         RenderHelper.endGlScissor();
     }
 
     @Override
     protected int getScrollbarPosition()
     {
-        return this.x1 - 6;
+        return this.getRowWidth() - 6;
     }
 
     @Override

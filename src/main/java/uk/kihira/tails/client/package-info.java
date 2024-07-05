@@ -1,5 +1,6 @@
 @ParametersAreNonnullByDefault
-@mcp.MethodsReturnNonnullByDefault
+@MethodsReturnNonnullByDefault
 package uk.kihira.tails.client;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import javax.annotation.ParametersAreNonnullByDefault;

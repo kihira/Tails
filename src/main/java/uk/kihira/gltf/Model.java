@@ -1,8 +1,8 @@
 package uk.kihira.gltf;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import org.joml.Matrix4fStack;
 import uk.kihira.gltf.animation.Animation;
 import uk.kihira.tails.common.IDisposable;
 
@@ -23,7 +23,7 @@ public class Model implements IDisposable
         this.textures = textures;
     }
 
-    public void render(MatrixStack matrixStack)
+    public void render(Matrix4fStack matrixStack)
     {
         for (Node node : rootNodes)
         {
@@ -31,12 +31,17 @@ public class Model implements IDisposable
         }
     }
 
+    public HashMap<String, Animation> getAnimations()
+    {
+        return animations;
+    }
+
     public void dispose()
     {
         allNodes.forEach(Node::dispose);
 
         // Textures
-        textures.forEach(texture -> Minecraft.getInstance().getTextureManager().deleteTexture(texture));
+        textures.forEach(texture -> Minecraft.getInstance().getTextureManager().release(texture));
         textures.clear();
     }
 }

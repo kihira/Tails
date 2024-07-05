@@ -2,12 +2,13 @@ package uk.kihira.gltf;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import uk.kihira.gltf.animation.Animation;
 import uk.kihira.gltf.animation.AnimationPath;
@@ -31,7 +32,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class GltfLoader {
+public class GltfLoader
+{
+    public static final int GLTF_MAGIC = 0x46546C67;
+    public static final int GLTF_VERSION = 2;
+
     private static final Gson gson = new Gson();
     private static final int JSON_CHUNK = 0x4E4F534A;
     private static final int BIN_CHUNK = 0x004E4942;
@@ -42,36 +47,54 @@ public class GltfLoader {
     private static final TreeMap<Integer, Node> nodeCache = new TreeMap<>();
     private static final ArrayList<Mesh> meshCache = new ArrayList<>();
 
-    public static Model LoadGlbFile(File file) throws IOException {
-        DataInputStream stream = new DataInputStream(new FileInputStream(file));
-        int magic = readUnsignedInt(stream);
-        int version = readUnsignedInt(stream);
-        int length = readUnsignedInt(stream);
+    public static Model LoadGlbFile(File file) throws IOException
+    {
+        try (DataInputStream stream = new DataInputStream(new FileInputStream(file)))
+        {
+            return LoadGlb(stream, Tails.LOGGER);
+        }
+    }
 
-        if (magic != 0x46546C67) throw new IllegalArgumentException("File specified is not in the GLB format!");
-        if (version != 2) throw new IllegalArgumentException("GLB File is not version 2");
+    public static Model LoadGlb(DataInputStream stream, Logger log) throws IOException
+    {
+        int magic = readUnsignedInt(stream);
+        if (magic != GLTF_MAGIC)
+        {
+            throw new IllegalArgumentException("File specified is not in the GLB format!");
+        }
+
+        int version = readUnsignedInt(stream);
+        if (version != GLTF_VERSION)
+        {
+            throw new IllegalArgumentException("GLB File is not version 2");
+        }
+
+        int length = readUnsignedInt(stream);
 
         // First chunk is always JSON
         int chunkLength = readUnsignedInt(stream);
         int chunkType = readUnsignedInt(stream);
         byte[] data = new byte[chunkLength];
-        if (stream.read(data, 0, chunkLength) != chunkLength) {
+        if (stream.read(data, 0, chunkLength) != chunkLength)
+        {
             throw new IOException("Failed to read GLB file");
         }
-        if (chunkType != JSON_CHUNK) {
+        if (chunkType != JSON_CHUNK)
+        {
             throw new IOException("Expected JSON data but didn't get it");
         }
-        JsonParser parser = new JsonParser();
-        JsonObject root = parser.parse(new String(data)).getAsJsonObject();
+        JsonObject root = JsonParser.parseString(new String(data)).getAsJsonObject();
 
         // Load BIN data
         chunkLength = readUnsignedInt(stream);
         chunkType = readUnsignedInt(stream);
         data = new byte[chunkLength];
-        if (stream.read(data, 0, chunkLength) != chunkLength) {
+        if (stream.read(data, 0, chunkLength) != chunkLength)
+        {
             throw new IOException("Failed to read GLB file");
         }
-        if (chunkType != BIN_CHUNK) {
+        if (chunkType != BIN_CHUNK)
+        {
             throw new IOException("Expected BIN data but didn't get it");
         }
         ByteBuffer binData = BufferUtils.createByteBuffer(data.length);
@@ -91,7 +114,7 @@ public class GltfLoader {
         // Load buffer views
         for (JsonElement element : root.get("bufferViews").getAsJsonArray()) {
             BufferView bufferView = gson.fromJson(element, BufferView.class);
-            bufferView.setData((ByteBuffer) binData.slice().position(bufferView.byteOffset).limit(bufferView.byteOffset + bufferView.byteLength));
+            bufferView.setData(binData.slice().position(bufferView.byteOffset).limit(bufferView.byteOffset + bufferView.byteLength));
             bufferViews.add(bufferView);
         }
 
@@ -123,20 +146,20 @@ public class GltfLoader {
                 {
                     DynamicTexture texture = new DynamicTexture(NativeImage.read(is));
                     // TODO we're assuming that we have one texture, and giving it the same name/id as the main model file. This is the same one as defined in the part definition file
-                    ResourceLocation texResLoc = new ResourceLocation( Tails.MOD_ID, FilenameUtils.getBaseName(file.getName()));
+                    ResourceLocation texResLoc = new ResourceLocation( Tails.MOD_ID, FilenameUtils.getBaseName(""/*file.getName()*/));
 
-                    Minecraft.getInstance().getTextureManager().loadTexture(texResLoc, texture);
+                    Minecraft.getInstance().getTextureManager().register(texResLoc, texture);
                     textures.add(texResLoc);
                 } catch (IOException e) 
                 {
-                    Tails.LOGGER.error("Failed to load texture " + name, e);
+                    log.error("Failed to load texture " + name, e);
                 }
             });
         }
         else {
             // todo default texture
-            textures.add(TextureManager.RESOURCE_LOCATION_EMPTY);
-            Tails.LOGGER.warn("No texture exists for model: " + file.getName());
+            textures.add(TextureManager.INTENTIONAL_MISSING_TEXTURE);
+            log.warn("No texture exists for model: " + ""/*file.getName()*/);
         }
 
         // Load nodes
@@ -258,7 +281,8 @@ public class GltfLoader {
         return node;
     }
 
-    private static int readUnsignedInt(DataInputStream stream) throws IOException {
+    private static int readUnsignedInt(DataInputStream stream) throws IOException
+    {
         return Integer.reverseBytes(stream.readInt());
     }
 }
