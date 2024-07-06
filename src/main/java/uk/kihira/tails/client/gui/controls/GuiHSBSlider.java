@@ -1,19 +1,19 @@
 package uk.kihira.tails.client.gui.controls;
 
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.gui.widget.ExtendedSlider;
 import uk.kihira.tails.client.gui.ITooltip;
 import uk.kihira.tails.common.Tails;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.gui.widget.Slider;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.awt.*;
@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
-public class GuiHSBSlider extends Slider implements ITooltip 
+public class GuiHSBSlider extends ExtendedSlider implements ITooltip
 {
     private static final ResourceLocation SLIDER_TEXTURE = new ResourceLocation(Tails.MOD_ID, "texture/gui/controls/slider_hue.png");
     
@@ -33,7 +33,7 @@ public class GuiHSBSlider extends Slider implements ITooltip
     
     public GuiHSBSlider(int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type)
     {
-        super(xPos, yPos, width, height, StringTextComponent.EMPTY, StringTextComponent.EMPTY, 0, 256 * 6 - 5, 0, false, false, (button) -> {});
+        super(xPos, yPos, width, height, Component.empty(), Component.empty(), 0, 256 * 6 - 5, 0, 1, 0, false);
         this.type = type;
         this.hueValue = 0;
         this.briValue = 0;
@@ -45,14 +45,14 @@ public class GuiHSBSlider extends Slider implements ITooltip
         this(xPos, yPos, width, height, callback, type);
         this.tooltips = Arrays.asList(tooltips);
     }
-    
+
     @Override
-    public void renderBg(MatrixStack matrixStack, Minecraft mc, int mouseX, int mouseY)
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         if (this.visible) 
         {
-            GuiUtils.drawContinuousTexturedBox(matrixStack, WIDGETS_LOCATION, this.x, this.y, 0, 46, this.width, this.height, 200, 20, 2, 3, 2, 2, 0);
-            Minecraft.getInstance().textureManager.bindTexture(SLIDER_TEXTURE);
+            //graphics.blitSprite(WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46, this.width, this.height, 200, 20, 2, 3, 2, 2, 0);
+            Minecraft.getInstance().textureManager.bindForSetup(SLIDER_TEXTURE);
             
             if (this.type == HSBSliderType.SATURATION)
             {
@@ -60,8 +60,8 @@ public class GuiHSBSlider extends Slider implements ITooltip
                 float red = (float) hueColour.getRed() / 255;
                 float green = (float) hueColour.getGreen() / 255;
                 float blue = (float) hueColour.getBlue() / 255;
-                GlStateManager.color4f(red, green, blue, 1.0F);
-                drawTexturedModalRectScaled(x + 1, y + 1, 0, 176, 256, 20, this.width - 2, this.height - 2);
+                graphics.setColor(red, green, blue, 1.0F);
+                drawTexturedModalRectScaled(this.getX() + 1, this.getY() + 1, 0, 176, 256, 20, this.width - 2, this.height - 2);
             }
             
             int srcY = 236;
@@ -80,37 +80,35 @@ public class GuiHSBSlider extends Slider implements ITooltip
                 float red = (float) hueColour.getRed() / 255;
                 float green = (float) hueColour.getGreen() / 255;
                 float blue = (float) hueColour.getBlue() / 255;
-                GlStateManager.color4f(red, green, blue, 1.0F);
-                drawTexturedModalRectScaled(x + 1, y + 1, 0, srcY, 231, 20, this.width - 2, this.height - 2);
-                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                graphics.setColor(red, green, blue, 1.0F);
+                drawTexturedModalRectScaled(this.getX() + 1, this.getY() + 1, 0, srcY, 231, 20, this.width - 2, this.height - 2);
+                graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
             } 
             else
             {
-                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                drawTexturedModalRectScaled(x + 1, y + 1, 0, srcY, 256, 20, this.width - 2, this.height - 2);
+                graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+                drawTexturedModalRectScaled(this.getX() + 1, this.getY() + 1, 0, srcY, 256, 20, this.width - 2, this.height - 2);
             }
 
-            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
             //RenderHelper.startGlScissor(x, y, width, height);
-            Minecraft.getInstance().textureManager.bindTexture(SLIDER_TEXTURE);
-            GuiUtils.drawTexturedModalRect(matrixStack, this.x + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.y, 0, 0, 7, 4, 0);
-            GuiUtils.drawTexturedModalRect(matrixStack, this.x + (int)(this.sliderValue * (float)(this.width - 3) - 2), this.y + this.height - 4, 7, 0, 7, 4, 0);
+            //graphics.blitSprite(SLIDER_TEXTURE, this.getX() + (int)(this.value * (float)(this.width - 3) - 2), this.getY(), 0, 0, 7, 4, 0);
+            //graphics.blitSprite(SLIDER_TEXTURE, this.getX() + (int)(this.value * (float)(this.width - 3) - 2), this.getY() + this.height - 4, 7, 0, 7, 4, 0);
             //RenderHelper.endGlScissor();
             
-            if (this.dragging)
+/*            if (this.dragging)
             {
-                this.sliderValue = (x - (this.x + 4)) / (float)(this.width - 8);
-                updateSlider();
+                this.setValue((this.getX() - (this.getX() + 4)) / (double)(this.width - 8));
 
                 if (callback != null)
                 {
-                    callback.onValueChangeHSBSlider(this, this.sliderValue);
+                    callback.onValueChangeHSBSlider(this, this.value);
                 }
-            }
+            }*/
         }
     }
-    
-    public HSBSliderType getType() 
+
+    public HSBSliderType getType()
     {
         return type;
     }
@@ -118,7 +116,7 @@ public class GuiHSBSlider extends Slider implements ITooltip
     @Override
     public double getValue() 
     {
-        return sliderValue;
+        return value;
     }
 
     /**
@@ -130,8 +128,7 @@ public class GuiHSBSlider extends Slider implements ITooltip
     {
         assert(value >= 0f && value <= 1f);
 
-        this.sliderValue = value;
-        updateSlider();
+        this.value = value;
     }
 
     /**
@@ -140,13 +137,11 @@ public class GuiHSBSlider extends Slider implements ITooltip
      */
     public void setValueWithCallback(double value)
     {
-        assert(value >= 0f && value <= 1f);
+        this.setValue(value);
 
-        this.sliderValue = value;
-        updateSlider();
-
-        if (callback != null) {
-            callback.onValueChangeHSBSlider(this, this.sliderValue);
+        if (callback != null)
+        {
+            callback.onValueChangeHSBSlider(this, this.value);
         }
     }
 
@@ -176,13 +171,13 @@ public class GuiHSBSlider extends Slider implements ITooltip
     {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
-        BufferBuilder renderer = Tessellator.getInstance().getBuffer();
-        renderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        renderer.pos(x + 0, y + tarHeight, 0).tex(((float) (u + 0) * f), ((float) (v + srcHeight) * f1)).endVertex();
-        renderer.pos(x + tarWidth, y + tarHeight, 0).tex(((float) (u + srcWidth) * f), ((float) (v + srcHeight) * f1)).endVertex();
-        renderer.pos(x + tarWidth, y + 0, 0).tex(((float) (u + srcWidth) * f), ((float) (v + 0) * f1)).endVertex();
-        renderer.pos(x + 0, y + 0, 0).tex(((float) (u + 0) * f), ((float) (v + 0) * f1)).endVertex();
-        Tessellator.getInstance().draw();
+        BufferBuilder renderer = Tesselator.getInstance().getBuilder();
+        renderer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        renderer.vertex(x + 0, y + tarHeight, 0).uv(((float) (u + 0) * f), ((float) (v + srcHeight) * f1)).endVertex();
+        renderer.vertex(x + tarWidth, y + tarHeight, 0).uv(((float) (u + srcWidth) * f), ((float) (v + srcHeight) * f1)).endVertex();
+        renderer.vertex(x + tarWidth, y + 0, 0).uv(((float) (u + srcWidth) * f), ((float) (v + 0) * f1)).endVertex();
+        renderer.vertex(x + 0, y + 0, 0).uv(((float) (u + 0) * f), ((float) (v + 0) * f1)).endVertex();
+        Tesselator.getInstance().end();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package uk.kihira.tails.client.outfit;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.PartRegistry;

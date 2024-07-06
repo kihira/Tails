@@ -1,55 +1,52 @@
 package uk.kihira.tails.client.render;
 
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.IHasArm;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.PartRenderer;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Tails;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import com.mojang.blaze3d.matrix.MatrixStack;
 
 import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
-public class LayerPart extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>
+public class LayerPart<T extends Player, M extends PlayerModel<T>> extends RenderLayer<T, M>
 {
-    private final ModelRenderer modelRenderer;
     private final PartRenderer partRenderer;
     private final MountPoint mountPoint;
     private final boolean mpmCompat = false;
 
-    public LayerPart(IEntityRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> entityRender, ModelRenderer modelRenderer, PartRenderer partRenderer, MountPoint mountPoint)
+    public LayerPart(LivingEntityRenderer<T, M> entityRender, ModelPart modelPart, PartRenderer partRenderer, MountPoint mountPoint)
     {
         super(entityRender);
 
-        this.modelRenderer = modelRenderer;
         this.partRenderer = partRenderer;
         this.mountPoint = mountPoint;
-        // TODO this.mpmCompat = Loader.isModLoaded("moreplayermodels");
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn,
-            AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks,
-            float ageInTicks, float netHeadYaw, float headPitch) {
-        UUID uuid = PlayerEntity.getUUID(entitylivingbaseIn.getGameProfile());
+    public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, T player, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch)
+    {
+        var uuid = player.getGameProfile().getId();
         if (Tails.proxy.hasActiveOutfit(uuid)) {
             Outfit outfit = Tails.proxy.getActiveOutfit(uuid);
             if (outfit == null || outfit.parts == null) 
@@ -59,25 +56,25 @@ public class LayerPart extends LayerRenderer<AbstractClientPlayerEntity, PlayerM
 
             for (OutfitPart part : outfit.parts) {
                 if (part.mountPoint == mountPoint) {
-                    matrixStackIn.push();
+                    poseStack.pushPose();
 
-                    if (mountPoint == MountPoint.HEAD && entitylivingbaseIn.isSneaking())
+                    if (mountPoint == MountPoint.HEAD && player.isCrouching())
                     {
-                        matrixStackIn.translate(0f, 0.2F, 0f);
+                        poseStack.translate(0f, 0.2F, 0f);
                     }
                     if (mpmCompat) 
                     {
-                        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(netHeadYaw));
-                        matrixStackIn.rotate(Vector3f.XP.rotationDegrees(headPitch));
+                        poseStack.rotateAround(Axis.YP.rotationDegrees(netHeadYaw), 0, 0, 0);
+                        poseStack.rotateAround(Axis.XP.rotationDegrees(headPitch), 0, 0, 0);
                     }
                     else
                     {
-                        matrixStackIn.rotate(Vector3f.XP.rotationDegrees(headPitch * 0.017453292F));
-                        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(netHeadYaw * 0.017453292F));
+                        poseStack.rotateAround(Axis.XP.rotationDegrees(headPitch * 0.017453292F), 0, 0, 0);
+                        poseStack.rotateAround(Axis.YP.rotationDegrees(netHeadYaw * 0.017453292F), 0, 0, 0);
                     }
 
-                    partRenderer.render(matrixStackIn, part);
-                    matrixStackIn.pop();
+                    partRenderer.render(poseStack, part);
+                    poseStack.popPose();
                 }
             }
         }

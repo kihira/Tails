@@ -1,14 +1,15 @@
 package uk.kihira.tails.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import org.joml.Matrix4fStack;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.system.MemoryUtil;
 import uk.kihira.gltf.Model;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.common.Tails;
@@ -36,6 +37,8 @@ public class PartRenderer
         renders = new HashMap<>(16);
         shader = new Shader("threetint_vert", "threetint_frag");
         shader.registerUniform("tints");
+        shader.registerUniform("ModelViewMat");
+        shader.registerUniform("ProjMat");
     }
 
     /**
@@ -45,7 +48,7 @@ public class PartRenderer
      */
     private FloatBuffer getFloatBuffer()
     {
-        if (bufferPool.size() == 0) {
+        if (bufferPool.isEmpty()) {
             return BufferUtils.createFloatBuffer(16);
         } else return bufferPool.pop();
     }
@@ -61,19 +64,20 @@ public class PartRenderer
     /**
      * Queues up a part to be rendered
      */
-    public void render(MatrixStack matrixStack, OutfitPart part)
+    public void render(PoseStack poseStack, OutfitPart part)
     {
-        GL11.glPushMatrix();
-        matrixStack.push();
-        matrixStack.translate(part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(part.rotation[0]));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(part.rotation[1]));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(part.rotation[2] + 180f)); // todo need to find out why its being rotated 180 degrees so this fix is no longer required
-        matrixStack.scale(part.scale[0], part.scale[1], part.scale[2]);
+        poseStack.pushPose();
+        //matrixStack.translate(part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
+        poseStack.rotateAround(Axis.XP.rotationDegrees(part.rotation[0]), part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
+        poseStack.rotateAround(Axis.YP.rotationDegrees(part.rotation[1]), part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
+        poseStack.rotateAround(Axis.YP.rotationDegrees(part.rotation[2] + 180f), part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]); // todo need to find out why its being rotated 180 degrees so this fix is no longer required
+        poseStack.scale(part.scale[0], part.scale[1], part.scale[2]);
+        poseStack.scale(0.1f, 0.1f, 0.1f);
+
 
         FloatBuffer fb = getFloatBuffer();
-        GL11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, fb);
-        GL11.glPopMatrix();
+        poseStack.last().pose().get(fb);
+        poseStack.popPose();
 
         renders.put(part, fb);
     }
@@ -81,16 +85,21 @@ public class PartRenderer
     /**
      * Renders the entire queue of parts
      */
-    public void doRender(MatrixStack matrixStack)
+    public void doRender(PoseStack poseStack)
     {
-        if (renders.size() == 0) return;
+        RenderSystem.assertOnRenderThread();
+        if (renders.isEmpty())
+        {
+            return;
+        }
 
         // Prepare OpenGL for rendering
-        RenderHelper.enableStandardItemLighting();
-        GlStateManager.enableDepthTest();
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        //RenderSystem.enableStandardItemLighting();
+        //GlStateManager._enableDepthTest();
         GL11.glGetFloatv(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixWorld);
         shader.use();
+
+        var modelViewMatrix = RenderSystem.getModelViewMatrix();
 
         for (HashMap.Entry<OutfitPart, FloatBuffer> entry : renders.entrySet())
         {
@@ -105,16 +114,30 @@ public class PartRenderer
             tintBuffer.put(outfitPart.tint[1]);
             tintBuffer.put(outfitPart.tint[2]);
             tintBuffer.flip();
-            GlStateManager.uniform3f(shader.getUniform("tints"), tintBuffer);
+            GlStateManager._glUniform3(shader.getUniform("tints"), tintBuffer);
+
+            FloatBuffer fb = MemoryUtil.memAllocFloat(16);
+            RenderSystem.getModelViewMatrix().get(fb);
+            GlStateManager._glUniformMatrix4(shader.getUniform("ModelViewMat"), false, entry.getValue());
+
+            fb.clear();
+            RenderSystem.getProjectionMatrix().get(fb);
+            GlStateManager._glUniformMatrix4(shader.getUniform("ProjMat"), false, fb);
 
             // Load texture and model matrix
-            Minecraft.getInstance().getTextureManager().bindTexture(outfitPart.textureLoc);
-            GL11.glLoadMatrixf(entry.getValue());
+            //Minecraft.getInstance().getTextureManager().bindForSetup(outfitPart.textureLoc);
+            //GL11.glLoadMatrixf(entry.getValue());
+            //RenderSystem.getModelViewMatrix().set(new Matrix4f(entry.getValue()));
+            RenderSystem.applyModelViewMatrix();
+
+            var matrixStack = new Matrix4fStack(16);
             model.render(matrixStack);
+            //poseStack.mulPoseMatrix(matrixStack);
+            matrixStack.clear();
 
             if (Tails.DEBUG)
             {
-                renderDebugGizmo();
+                //renderDebugGizmo();
             }
 
             freeFloatBuffer(entry.getValue());
@@ -124,9 +147,11 @@ public class PartRenderer
 
         unbindBuffersAndShader();
 
-        GlStateManager.disableDepthTest();
-        RenderHelper.disableStandardItemLighting();
-        GL11.glLoadMatrixf(modelViewMatrixWorld);
+        //GlStateManager._disableDepthTest();
+        //RenderHelper.disableStandardItemLighting();
+        //GL11.glLoadMatrixf(modelViewMatrixWorld);
+        RenderSystem.getModelViewMatrix().set(modelViewMatrix);
+        RenderSystem.applyModelViewMatrix();
     }
 
     private void renderDebugGizmo()
@@ -142,9 +167,9 @@ public class PartRenderer
      */
     private void unbindBuffersAndShader()
     {
-        GlStateManager.useProgram(0);
+        GlStateManager._glUseProgram(0);
         glBindVertexArray(0);
-        GlStateManager.bindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        GlStateManager._glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     }
 
     /*

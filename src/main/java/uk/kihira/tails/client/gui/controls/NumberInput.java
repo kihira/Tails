@@ -2,12 +2,14 @@ package uk.kihira.tails.client.gui.controls;
 
 import com.google.common.base.Strings;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractStringWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.FocusableTextWidget;
+import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.joml.Math;
 import uk.kihira.tails.client.gui.GuiBaseScreen;
 import uk.kihira.tails.client.gui.IControl;
 import uk.kihira.tails.client.gui.IControlCallback;
@@ -22,7 +24,7 @@ import java.util.List;
 
 // todo tooltips only work for guibuttons
 @OnlyIn(Dist.CLIENT)
-public class NumberInput extends Widget implements IControl<Float>, ITooltip
+public class NumberInput extends AbstractStringWidget implements IControl<Float>, ITooltip
 {
     private static final char[] VALID_CHARS = new char[]{'-', '.', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
     private static final float SHIFT_MOD = 10f;
@@ -36,11 +38,11 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
     private final float increment;
 
     private final int btnWidth = 10;
-    private final int btnXPos;
+    private final int btnXPos = 0;
     private final int btnHeight;
 
     private final DecimalFormat df = new DecimalFormat("###.##");
-    private final TextFieldWidget numInput;
+    private final FocusableTextWidget numInput = null;
     private float num = 0f;
     private IControlCallback<IControl<Float>, Float> callback;
 
@@ -51,7 +53,7 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
 
     public NumberInput(int x, int y, int width, float minValue, float maxValue, float increment, @Nullable IControlCallback<IControl<Float>, Float> callback)
     {
-        super(x, y, width, 15, StringTextComponent.EMPTY);
+        super(x, y, width, 15, Component.empty(), Minecraft.getInstance().font);
 
         this.xPos = x;
         this.yPos = y;
@@ -62,7 +64,7 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
         this.callback = callback;
         df.setRoundingMode(RoundingMode.FLOOR);
 
-        numInput = new TextFieldWidget(Minecraft.getInstance().fontRenderer, xPos + 1, yPos + 1, width - btnWidth - 2, height - 2, StringTextComponent.EMPTY);
+/*        numInput = new FocusableTextWidget(Minecraft.getInstance().font, xPos + 1, yPos + 1, width - btnWidth - 2, height - 2, Component.empty());
         numInput.setValidator(input ->
         {
             if (input == null) return true;
@@ -85,17 +87,18 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
                 }
             }
             return true;
-        });
+        });*/
         setValue(0f);
 
-        this.btnXPos = xPos + numInput.getWidth() + 2;
+        //this.btnXPos = xPos + numInput.getWidth() + 2;
         this.btnHeight = height / 2;
     }
 
-    public void draw(int mouseX, int mouseY)
+    @Override
+    protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick)
     {
         // todo
-        //numInput.drawTextBox();
+        numInput.renderWidget(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
         //drawRect(btnXPos, yPos, btnXPos + btnWidth, yPos + btnHeight, 0xFFFFFFFF); // Increment
         //drawRect(btnXPos, yPos + btnHeight, btnXPos + btnWidth, yPos + height, 0xAAAAAAFF); // Decrement
     }
@@ -106,9 +109,16 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
         numInput.mouseClicked(mouseX, mouseY, mouseButton);
         // Only update num when input loses focus
         if (focused && !numInput.isFocused()) {
-            if (!Strings.isNullOrEmpty(numInput.getText())) setValue(Float.valueOf(numInput.getText()));
-            else setValue(0f);
-            numInput.setCursorPosition(0);
+            var value = numInput.getMessage().getString();
+            if (!Strings.isNullOrEmpty(value))
+            {
+                setValue(Float.valueOf(value));
+            }
+            else
+            {
+                setValue(0f);
+            }
+            //numInput.setCursorPosition(0);
         }
 
         float inc = increment;
@@ -134,14 +144,14 @@ public class NumberInput extends Widget implements IControl<Float>, ITooltip
     @Override
     public void setValue(Float newValue)
     {
-        newValue = MathHelper.clamp(newValue, min, max);
+        newValue = Math.clamp(newValue, min, max);
         if (callback != null && !callback.onValueChange(this, num, newValue))
         {
             return;
         }
 
         num = newValue;
-        numInput.setText(df.format(num));
+        numInput.setMessage(Component.literal(df.format(num)));
     }
 
     @Override

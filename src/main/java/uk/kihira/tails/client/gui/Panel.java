@@ -1,9 +1,7 @@
 package uk.kihira.tails.client.gui;
 
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.Validate;
-
-import java.io.IOException;
 
 public abstract class Panel<T extends GuiBase> extends GuiBaseScreen
 {
@@ -17,7 +15,7 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen
 
     public Panel(T parent, int x, int y, int width, int height)
     {
-        super(StringTextComponent.EMPTY);
+        super(Component.empty());
         Validate.isInstanceOf(GuiBase.class, parent);
 
         this.parent = parent;

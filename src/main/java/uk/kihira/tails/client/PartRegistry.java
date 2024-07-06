@@ -1,8 +1,7 @@
 package uk.kihira.tails.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 /**
@@ -45,7 +43,7 @@ public final class PartRegistry
      */
     public static void loadAllPartsFromCache() throws IOException
     {
-        Path cachePath = Paths.get(Minecraft.getInstance().gameDir.getPath(), PARTS_CACHE_FOLDER);
+        Path cachePath = Paths.get(Minecraft.getInstance().gameDirectory.getPath(), PARTS_CACHE_FOLDER);
         try (Stream<Path> paths = Files.walk(cachePath))
         {
             paths.filter(Files::isRegularFile).forEach(path ->
@@ -64,7 +62,7 @@ public final class PartRegistry
 
     private static void initCache()
     {
-        String gameDir = Minecraft.getInstance().gameDir.getPath();
+        String gameDir = Minecraft.getInstance().gameDirectory.getPath();
         Path partCachePath = Paths.get(gameDir, PARTS_CACHE_FOLDER);
         Path modelCachePath = Paths.get(gameDir, MODEL_CACHE_FOLDER);
 
@@ -111,7 +109,7 @@ public final class PartRegistry
                         .orElseGet(() -> loadPartFromApiAndSaveToCache(partId)))
                 .exceptionally(ex ->
                 {
-                    LOGGER.error("Failed to load part " + partId.toString(), ex);
+                    LOGGER.error("Failed to load part {}", partId);
                     return null;
                 });
     }
@@ -141,7 +139,7 @@ public final class PartRegistry
     {
         return CompletableFuture.supplyAsync(() ->
         {
-            Path path = Paths.get(Minecraft.getInstance().gameDir.getPath(), PARTS_CACHE_FOLDER, partId.toString() + ".json");
+            Path path = Paths.get(Minecraft.getInstance().gameDirectory.getPath(), PARTS_CACHE_FOLDER, partId.toString() + ".json");
 
             if (Files.exists(path))
             {
@@ -151,7 +149,7 @@ public final class PartRegistry
                 }
                 catch (IOException e)
                 {
-                    LOGGER.error("Failed to load part " + partId + " from cache", e);
+                    LOGGER.error("Failed to load part {} from cache", partId);
                 }
             }
             return Optional.empty();
@@ -164,14 +162,14 @@ public final class PartRegistry
      */
     private static void savePartToCache(@Nonnull Part part)
     {
-        Path path = Paths.get(Minecraft.getInstance().gameDir.getPath(), PARTS_CACHE_FOLDER, part.id.toString() + ".json");
+        Path path = Paths.get(Minecraft.getInstance().gameDirectory.getPath(), PARTS_CACHE_FOLDER, part.id.toString() + ".json");
         try (FileWriter writer = new FileWriter(path.toFile()))
         {
             IOUtils.write(Tails.GSON.toJson(part), writer);
         }
         catch (IOException e)
         {
-            LOGGER.error(String.format("Failed to save part %s (%s) to cache", part.name, part.id), e);
+            LOGGER.error("Failed to save part {} ({}) to cache", part.name, part.id);
         }
     }
 
@@ -207,7 +205,7 @@ public final class PartRegistry
     {
         return CompletableFuture.supplyAsync(() ->
         {
-            Path path = Paths.get(Minecraft.getInstance().gameDir.getPath(), MODEL_CACHE_FOLDER, uuid.toString() + ".glb");
+            var path = Paths.get(Minecraft.getInstance().gameDirectory.getPath(), MODEL_CACHE_FOLDER, uuid + ".glb");
 
             if (Files.exists(path))
             {
@@ -227,23 +225,25 @@ public final class PartRegistry
         })
         .exceptionally(ex ->
         {
-            LOGGER.error("Failed to load model " + uuid.toString(), ex);
+            LOGGER.error("Failed to load model " + uuid, ex);
             return null;
         });
     }
 
     /**
      * Loads all parts from the resources directory into the cache and memory
+     *
+     * @return
      */
-    public static void loadAllPartsFromResources()
+    public static CompletableFuture<Void> loadAllPartsFromResources()
     {
-        ResourceLocation resLoc = new ResourceLocation(Tails.MOD_ID, "parts.json");
-        try (InputStream is = Minecraft.getInstance().getResourceManager().getResource(resLoc).getInputStream())
+        var resLoc = new ResourceLocation(Tails.MOD_ID, "parts.json");
+        try (var is = Minecraft.getInstance().getResourceManager().getResource(resLoc).get().open())
         {
-            InputStreamReader reader = new InputStreamReader(is);
+            var reader = new InputStreamReader(is);
             List<UUID> parts = Tails.GSON.fromJson(reader, new TypeToken<List<UUID>>(){}.getType());
 
-            CompletableFuture.allOf(parts.stream()
+            return CompletableFuture.allOf(parts.stream()
                     .map(uuid -> CompletableFuture.runAsync(() -> PartRegistry.loadPartFromResources(uuid)))
                     .toArray(CompletableFuture[]::new))
                     .thenRun(() -> LOGGER.info("Loaded %d parts from resources", parts.size()));
@@ -252,6 +252,7 @@ public final class PartRegistry
         {
             Tails.LOGGER.error("Cannot load parts list", e);
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     /**
@@ -261,18 +262,18 @@ public final class PartRegistry
      */
     private static void loadPartFromResources(final UUID uuid)
     {
-        IResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        ResourceLocation resLoc = new ResourceLocation(Tails.MOD_ID, "part/" + uuid + ".json");
-        try (InputStream is = resourceManager.getResource(resLoc).getInputStream())
+        var resourceManager = Minecraft.getInstance().getResourceManager();
+        var resLoc = new ResourceLocation(Tails.MOD_ID, "part/" + uuid + ".json");
+        try (InputStream is = resourceManager.getResource(resLoc).get().open())
         {
             InputStreamReader reader = new InputStreamReader(is);
             addPart(Tails.GSON.fromJson(reader, Part.class));
 
             // Copy model to cache
-            ResourceLocation modelResLoc = new ResourceLocation(Tails.MOD_ID, "model/" + uuid + ".glb");
-            Path path = Paths.get(Minecraft.getInstance().gameDir.getPath(), MODEL_CACHE_FOLDER, uuid.toString() + ".glb");
-            try (InputStream modelStream = resourceManager.getResource(modelResLoc).getInputStream();
-                 FileOutputStream outputStream = new FileOutputStream(path.toFile()))
+            var modelResLoc = new ResourceLocation(Tails.MOD_ID, "model/" + uuid + ".glb");
+            var path = Paths.get(Minecraft.getInstance().gameDirectory.getPath(), MODEL_CACHE_FOLDER, uuid + ".glb");
+            try (var modelStream = resourceManager.getResource(modelResLoc).get().open();
+                 var outputStream = new FileOutputStream(path.toFile()))
             {
                 IOUtils.copy(modelStream, outputStream);
             }

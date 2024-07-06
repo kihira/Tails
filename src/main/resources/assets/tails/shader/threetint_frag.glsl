@@ -9,13 +9,6 @@ uniform vec3[3] tints; // Normalised set of tints
 
 void main() {
   vec4 texCol = texture2D(tex, TexCoord);
-/*
-  Experimental version using alpha as the tone instead of red channel
-  float tone = texCol.a;
-  float red = tints[0].r * texCol.r + tints[1].r * texCol.g + tints[2].r * texCol.b;
-  float green = tints[0].g * texCol.r + tints[1].g * texCol.g + tints[2].g * texCol.b;
-  float blue = tints[0].b * texCol.r + tints[1].b * texCol.g + tints[2].b * texCol.b;
-  */
 
   float tone = texCol.r;
   float w1 = 1.0 - (texCol.g + texCol.b);

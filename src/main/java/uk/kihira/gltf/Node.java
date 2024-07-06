@@ -1,11 +1,6 @@
 package uk.kihira.gltf;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
-import org.lwjgl.BufferUtils;
+import org.joml.*;
 import uk.kihira.tails.common.IDisposable;
 
 import javax.annotation.Nullable;
@@ -24,7 +19,7 @@ public final class Node implements IDisposable
 
     // These must be defined if we have an animation
     public Vector3f translation;
-    public Quaternion rotation;
+    public Quaternionf rotation;
     public Vector3f scale;
 
     private Node(@Nullable ArrayList<Node> children)
@@ -37,30 +32,29 @@ public final class Node implements IDisposable
     {
         this(children);
         this.isStatic = true;
-        this.matrix = new Matrix4f(matrix);
+        this.matrix = new Matrix4f(FloatBuffer.wrap(matrix));
     }
 
     Node(@Nullable ArrayList<Node> children, float[] translation, float[] rotation, float[] scale)
     {
         this(children);
         this.translation = new Vector3f(translation[0], translation[1], translation[2]);
-        this.rotation = new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
+        this.rotation = new Quaternionf(rotation[0], rotation[1], rotation[2], rotation[3]);
         this.scale = new Vector3f(scale[0], scale[1], scale[2]);
     }
 
-    public void render(MatrixStack matrixStack)
+    public void render(Matrix4fStack matrixStack)
     {
         // Generate matrix if this is not static
         if (!this.isStatic)
         {
-            this.matrix.setIdentity();
-            this.matrix.translate(this.translation);
-            this.matrix.mul(this.rotation);
-            // todo this.matrix.scale(this.scale);
+            this.matrix.translation(this.translation);
+            this.matrix.rotate(this.rotation);
+            //this.matrix.scale(this.scale);
         }
 
-        matrixStack.push();
-        matrixStack.getLast().getMatrix().mul(matrix);
+        matrixStack.pushMatrix();
+        matrixStack.mul(matrix);
 
         if (mesh != null)
         {
@@ -75,7 +69,7 @@ public final class Node implements IDisposable
             }
         }
 
-        matrixStack.pop();
+        matrixStack.popMatrix();
     }
 
     public void setMesh(Mesh mesh)

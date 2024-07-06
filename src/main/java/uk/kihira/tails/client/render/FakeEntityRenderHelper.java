@@ -1,8 +1,9 @@
+/*
 package uk.kihira.tails.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 import uk.kihira.tails.api.IRenderHelper;
 import uk.kihira.tails.client.outfit.OutfitPart;
 
@@ -27,3 +28,4 @@ public class FakeEntityRenderHelper implements IRenderHelper {
         }
     }
 }
+*/

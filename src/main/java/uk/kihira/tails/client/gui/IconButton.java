@@ -1,14 +1,14 @@
 package uk.kihira.tails.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.lwjgl.opengl.GL11;
 import uk.kihira.tails.common.Tails;
 
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class IconButton extends Button
+public class IconButton extends ExtendedButton
 {
     static final ResourceLocation ICONS_TEXTURES = new ResourceLocation(Tails.MOD_ID, "texture/gui/icons.png");
     private static final int ICON_WIDTH = 16;
@@ -25,26 +25,20 @@ public class IconButton extends Button
     final Icons icon;
     private final List<String> tooltip;
 
-    public IconButton(int x, int y, Icons icon, Button.IPressable pressedAction, String... tooltips)
+    public IconButton(int x, int y, Icons icon, OnPress pressedAction, String... tooltips)
     {
-        super(x, y, ICON_WIDTH, ICON_HEIGHT, new StringTextComponent(""), pressedAction);
+        super(x, y, ICON_WIDTH, ICON_HEIGHT, Component.empty(), pressedAction);
         this.icon = icon;
         this.tooltip = Arrays.asList(tooltips);
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
         if (this.visible)
         {
-            Minecraft.getInstance().getTextureManager().bindTexture(ICONS_TEXTURES);
-            GlStateManager.color4f(1.f, 1.f, 1.f, 1.f);
-            GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-
-            int textureOffset = getYImage(this.isHovered);
-
-            GuiUtils.drawTexturedModalRect(matrixStack, x, y, icon.u, icon.v + (textureOffset * ICON_WIDTH), ICON_WIDTH, ICON_HEIGHT, 0);
+            //int textureOffset = getYImage(this.isHovered);
+            //graphics.blitSprite(ICONS_TEXTURES, this.getX(), this.getY(), icon.u, icon.v + (textureOffset * ICON_WIDTH), ICON_WIDTH, ICON_HEIGHT, 0);
         }
     }
 
@@ -52,7 +46,7 @@ public class IconButton extends Button
     {
         public boolean toggled;
 
-        public IconToggleButton(int x, int y, Icons icon, Button.IPressable pressedAction, String... tooltips)
+        public IconToggleButton(int x, int y, Icons icon, OnPress pressedAction, String... tooltips)
         {
             super(x, y, icon, pressedAction, tooltips);
         }
@@ -60,7 +54,7 @@ public class IconButton extends Button
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button)
         {
-            if (this.visible && GuiBaseScreen.isMouseOver(mouseX, mouseY, this.x, this.y, this.width, this.height))
+            if (this.visible && GuiBaseScreen.isMouseOver(mouseX, mouseY, this.getX(), this.getY(), this.width, this.height))
             {
                 this.toggled = !this.toggled;
                 return true;
@@ -69,19 +63,18 @@ public class IconButton extends Button
         }
 
         @Override
-        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+        public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
         {
             if (visible && toggled)
             {
-                Minecraft.getInstance().getTextureManager().bindTexture(ICONS_TEXTURES);
-                GlStateManager.color4f(1.f, 1.f, 1.f, 1.f);
+/*                GlStateManager.color4f(1.f, 1.f, 1.f, 1.f);
                 GlStateManager.enableBlend();
-                GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-                GuiUtils.drawTexturedModalRect(matrixStack, x, y, icon.u, icon.v + ICON_WIDTH * 2, ICON_WIDTH, ICON_HEIGHT, 0);
+                GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);*/
+                //graphics.blitSprite(ICONS_TEXTURES, this.getX(), this.getY(), icon.u, icon.v + ICON_WIDTH * 2, ICON_WIDTH, ICON_HEIGHT, 0);
             }
             else
             {
-                super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+                super.renderWidget(graphics, mouseX, mouseY, partialTicks);
             }
         }
     }

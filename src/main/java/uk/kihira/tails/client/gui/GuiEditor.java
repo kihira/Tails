@@ -1,14 +1,11 @@
 package uk.kihira.tails.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Config;
 import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.proxy.ClientProxy;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -36,17 +33,15 @@ public class GuiEditor extends GuiBase
     private TransformPanel transformPanel;
     private PreviewPanel previewPanel;
     private ControlsPanel controlsPanel;
-    public LibraryPanel libraryPanel;
-    public LibraryInfoPanel libraryInfoPanel;
 
     public GuiEditor()
     {
-        super(new TranslationTextComponent("tails.editor.title"), 4);
+        super(Component.translatable("tails.editor.title"), 4);
 
-        this.playerUUID = PlayerEntity.getUUID(getMinecraft().getSession().getProfile());
+        this.playerUUID = this.getMinecraft().getGameProfile().getId();
 
         // Load outfit or create empty one
-        this.originalOutfit = Config.localOutfit.get() == null ? new Outfit() : Config.localOutfit.get();
+        this.originalOutfit = Config.localOutfit == null ? new Outfit() : Config.localOutfit;
 
         // Copy outfit for modifying and set as our current outfit
         // todo should a new UUID be generated?
@@ -88,13 +83,6 @@ public class GuiEditor extends GuiBase
                     previewWindowEdgeOffset,
                     this.height - texSelectHeight)
             );
-            layer1.add(this.libraryPanel = new LibraryPanel(
-                    this,
-                    0,
-                    0,
-                    previewWindowEdgeOffset,
-                    this.height)
-            );
             layer1.add(this.tintPanel = new TintPanel(
                     this,
                     previewWindowRight,
@@ -109,14 +97,6 @@ public class GuiEditor extends GuiBase
                     this.width - previewWindowRight,
                     this.height - TINT_PANEL_HEIGHT)
             );
-            layer1.add(this.libraryInfoPanel =
-                    new LibraryInfoPanel(
-                            this,
-                            previewWindowRight,
-                            0,
-                            this.width - previewWindowRight,
-                            this.height - 60)
-            );
             layer1.add(this.controlsPanel = new ControlsPanel(
                     this,
                     previewWindowEdgeOffset,
@@ -124,17 +104,12 @@ public class GuiEditor extends GuiBase
                     previewWindowRight - previewWindowEdgeOffset,
                     this.height - previewWindowBottom)
             );
-
-            this.libraryInfoPanel.enabled = false;
-            this.libraryPanel.enabled = false;
         }
         else
         {
             this.tintPanel.resize(previewWindowRight, 0, this.width - previewWindowRight, TINT_PANEL_HEIGHT);
             this.transformPanel.resize(previewWindowRight, TINT_PANEL_HEIGHT,this.width - previewWindowRight, this.height - TINT_PANEL_HEIGHT);
-            this.libraryInfoPanel.resize(previewWindowRight, 0, this.width - previewWindowRight, this.height - 60);
             this.partsPanel.resize(0, 0, previewWindowEdgeOffset, this.height - texSelectHeight);
-            this.libraryPanel.resize(0, 0, previewWindowEdgeOffset, this.height);
             this.previewPanel.resize(previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
             this.controlsPanel.resize(previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, this.height - previewWindowBottom);
         }
@@ -143,18 +118,18 @@ public class GuiEditor extends GuiBase
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         // Render any parts that have been queued up whilst in GUI as RenderWorldLast is called before GUIs
-        ((ClientProxy) Tails.proxy).partRenderer.doRender(matrixStack);
+        //((ClientProxy) Tails.proxy).partRenderer.doRender(guiGraphics.pose());
     }
 
     @Override
     public void onClose()
     {
-        Tails.proxy.setActiveOutfit(playerUUID, Config.localOutfit.get());
+        Tails.proxy.setActiveOutfit(playerUUID, Config.localOutfit);
         super.onClose();
     }
 
@@ -170,7 +145,7 @@ public class GuiEditor extends GuiBase
     void setActiveOutfitPart(@Nullable OutfitPart outfitPart)
     {
         // todo should maintain a list of IOutfitPartSelected instead
-        getAllPanels().forEach((final Panel panel) -> {
+        getAllPanels().forEach((final Panel<?> panel) -> {
             if (panel instanceof IOutfitPartSelected)
             {
                 ((IOutfitPartSelected) panel).OnOutfitPartSelected(outfitPart);

@@ -1,37 +1,27 @@
 package uk.kihira.tails.common.network;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 import uk.kihira.tails.common.Tails;
 
+@Mod.EventBusSubscriber(modid = Tails.MOD_ID, bus = Bus.MOD)
 public final class TailsPacketHandler 
 {
     private static final String PROTOCOL_VERSION = "1";
 
-    public static final SimpleChannel networkWrapper = NetworkRegistry.newSimpleChannel(
-        new ResourceLocation(Tails.MOD_ID, "main"),
-        () -> PROTOCOL_VERSION,
-        PROTOCOL_VERSION::equals,
-        TailsPacketHandler::versionCheck);
+    @SubscribeEvent
+    public static void register(final RegisterPayloadHandlerEvent event) {
+        final IPayloadRegistrar registrar = event.registrar(Tails.MOD_ID)
+                .versioned(PROTOCOL_VERSION)
+                .optional();
 
-    private static boolean versionCheck(String serverVersion) 
-    {
-        if (serverVersion.equals(NetworkRegistry.ABSENT) || serverVersion.equals(NetworkRegistry.ACCEPTVANILLA))
-        {
-            Tails.LOGGER.info("Connecting to vanilla server, or mod is missing from server");
-            Tails.hasRemote = false; // TODO better pattern
-        }
-        else if (serverVersion.equals(PROTOCOL_VERSION))
-        {
-            Tails.LOGGER.info("Connecting to server that has Tails mod installed and acceptable version");
-            Tails.hasRemote = true;
-        }
-        else
-        {
-            Tails.LOGGER.warn("Unknown server version %s!", serverVersion);
-        }
-
-        return true;
+/*        registrar.play(PlayerDataMessage.ID, PlayerDataMessage::new, handler -> handler
+                .client(PlayerDataMessage::handleDataClient)
+                .server(PlayerDataMessage::handleDataServer));
+        registrar.play(PlayerDataMapMessage.ID, PlayerDataMapMessage::new, handler -> handler
+                .client(PlayerDataMapMessage::handleDataClient));*/
     }
 }
