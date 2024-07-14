@@ -1,0 +1,65 @@
+package uk.kihira.tails.client.model;
+
+import net.minecraft.client.model.Model;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+
+import java.util.function.Function;
+
+public abstract class PartModel extends Model
+{
+    public PartModel(Function<ResourceLocation, RenderType> pRenderType)
+    {
+        super(pRenderType);
+    }
+
+    public abstract void setupAnim(Entity entity, float pLimbSwing, float pLimbSwingAmount, float partialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch);
+
+    protected static float getAnimationTime(double cycleTime, Entity entity)
+    {
+        //Returns between 0-360 in radians depending on far in the "cycle" we are.
+        //TODO could probably use ageInTicks as an alternative in the future
+        // This currently needs to have cycleTime as a double, most likely due to precision as otherwise the number effectively doesn't update
+        return ((float)(((entity.hashCode() + System.currentTimeMillis()) % cycleTime) / cycleTime) * 2f * Mth.PI);
+    }
+
+    protected float[] getMotionAngles(Player player, float partialTicks)
+    {
+        var deltaMovement = ((AbstractClientPlayer) player).getDeltaMovementLerped(partialTicks);
+       // double xMotion = player.prevChasingPosX + (player.chasingPosX - player.prevChasingPosX) * partialTicks - (player.xOld + (player.position().x - player.xOld) * partialTicks);
+       // double yMotion = player.prevChasingPosY + (player.chasingPosY - player.prevChasingPosY) * partialTicks - (player.yOld + (player.position().y - player.yOld) * partialTicks); //Positive when falling, negative when climbing
+        //double zMotion = player.prevChasingPosZ + (player.chasingPosZ - player.prevChasingPosZ) * partialTicks - (player.zOld + (player.position().z - player.zOld) * partialTicks);
+        double xMotion = deltaMovement.x;
+        double yMotion = -deltaMovement.y;
+        double zMotion = deltaMovement.z;
+        var bodyYaw = Mth.rotLerp(partialTicks, player.yBodyRotO, player.yBodyRot);
+        //Pretty sure renderYawOffset is actually the way the body is "pointing"
+        //In degrees, not bound 0-360, be warned!
+        var bodyYawSin = Mth.sin(bodyYaw * Mth.PI / 180F);
+        var bodyYawCos = -Mth.cos(bodyYaw * Mth.PI / 180F);
+        float xOffset = Mth.clamp((float) yMotion * 10F, -6F, 32F);
+        float f1 = (float)(xMotion * bodyYawSin + zMotion * bodyYawCos) * 100F;
+        float f2 = (float)(xMotion * bodyYawCos - zMotion * bodyYawSin) * 100F;
+
+        if (f1 < 0F) {
+            f1 = 0F;
+        }
+
+        return new float[] {
+                (float) Math.toRadians(f1 / 2.5F + (xOffset + getTailBob(player, partialTicks))),
+                (float) Math.toRadians(-f2 / 20F),
+                (float) Math.toRadians(f2 / 2F)
+        };
+    }
+
+    protected float getTailBob(Player player, float partialTicks)
+    {
+        //float cameraYaw = player.oBob + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
+        float cameraYaw = Mth.lerp(partialTicks, player.oBob, player.bob);
+        return Mth.sin(Mth.lerp(partialTicks, player.walkDistO, player.walkDist) * 6F) * 12F * cameraYaw;
+    }
+}

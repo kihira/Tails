@@ -21,6 +21,7 @@ import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import uk.kihira.tails.client.gui.GuiEditor;
 import uk.kihira.tails.client.render.LayerPart;
+import uk.kihira.tails.client.render.LegacyLayerPart;
 import uk.kihira.tails.common.Config;
 import uk.kihira.tails.common.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
@@ -115,23 +116,23 @@ public class ClientEventHandler
             {
                 // Default
                 var renderPlayer = (PlayerRenderer) event.getSkin(PlayerSkin.Model.WIDE);
-                var model = (PlayerModel<AbstractClientPlayer>)renderPlayer.getModel();
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.head, partRenderer, MountPoint.HEAD));
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.body, partRenderer, MountPoint.CHEST));
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.leftArm, partRenderer, MountPoint.LEFT_ARM));
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.rightArm, partRenderer, MountPoint.RIGHT_ARM));
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.leftLeg, partRenderer, MountPoint.LEFT_LEG));
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.rightLeg, partRenderer, MountPoint.RIGHT_LEG));
+                var model = renderPlayer.getModel();
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.head, MountPoint.HEAD));
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.body, MountPoint.CHEST));
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftArm, MountPoint.LEFT_ARM));
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightArm, MountPoint.RIGHT_ARM));
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftLeg, MountPoint.LEFT_LEG));
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightLeg, MountPoint.RIGHT_LEG));
 
                 // Slim
                 renderPlayer = event.getSkin(PlayerSkin.Model.SLIM);
-                model = (PlayerModel<AbstractClientPlayer>)renderPlayer.getModel();
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.head, partRenderer, MountPoint.HEAD));
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.body, partRenderer, MountPoint.CHEST));
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.leftArm, partRenderer, MountPoint.LEFT_ARM));
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.rightArm, partRenderer, MountPoint.RIGHT_ARM));
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.leftLeg, partRenderer, MountPoint.LEFT_LEG));
-                renderPlayer.addLayer(new LayerPart(renderPlayer, model.rightLeg, partRenderer, MountPoint.RIGHT_LEG));
+                model = renderPlayer.getModel();
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.head, MountPoint.HEAD));
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.body, MountPoint.CHEST));
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftArm, MountPoint.LEFT_ARM));
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightArm, MountPoint.RIGHT_ARM));
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftLeg, MountPoint.LEFT_LEG));
+                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightLeg, MountPoint.RIGHT_LEG));
             }
         }
     }

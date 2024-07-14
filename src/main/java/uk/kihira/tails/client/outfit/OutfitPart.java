@@ -35,7 +35,7 @@ public class OutfitPart {
         this.tint = part.tint;
         this.texture = part.textures[0];
 
-        this.textureLoc = new ResourceLocation(Tails.MOD_ID, this.texture.toString());
+        this.textureLoc = new ResourceLocation(Tails.MOD_ID, String.format("texture/parts/%s/%s.png", part.id, this.texture.toString()));
     }
 
     /**
