@@ -66,30 +66,53 @@ public class FoxTailModel extends PartModel
     @Override
     public void setupAnim(Entity entity, float pLimbSwing, float pLimbSwingAmount, float partialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch)
     {
-        var timestep = getAnimationTime(4000F, entity);
+        var timestep = getAnimationTime(AVERAGE_SPEED, entity);
+
         var yOffset = 1f;
-        var xOffset = 1f;
         var xAngleOffset = 0f;
-        var yAngleOffset = 0f;
+        var swayDampen = 0f;
         var zAngleOffset = 0f;
-        var yAngleMultiplier = 1f; //Used to suppress sway when running
         if (entity instanceof AbstractClientPlayer player)
         {
-            var angles = getMotionAngles(player, partialTick);
+            var deltaMovement = player.getDeltaMovementLerped(partialTick);
+
+            xAngleOffset = (float) deltaMovement.horizontalDistance(); // Good for when running
+            //xAngleOffset = (float) -deltaMovement.y * 0.5f; // Need to invert
+
+            xAngleOffset = Mth.clamp(xAngleOffset, -1f, 0.35f); // Limit lifting of tail
+            swayDampen = (1 - (xAngleOffset * LOW_SWAY_DAMPEN)); //Used to suppress sway when running TODO: Ideally this should be a curve
+
+            var bodyYaw = Mth.rotLerp(partialTick, player.yBodyRotO, player.yBodyRot);
+            var bodyYawSin = Mth.sin(bodyYaw * Mth.PI / 180f);
+            var bodyYawCos = -Mth.cos(bodyYaw * Mth.PI / 180f);
+            float f2 = (float)(deltaMovement.x * bodyYawCos - deltaMovement.z * bodyYawSin) * 100F;
+            zAngleOffset = (float) -Math.toRadians(f2) * 3f;
+
+            zAngleOffset = Mth.clamp(zAngleOffset, -0.5f, 0.5f);
+
+/*            var angles = getMotionAngles(player, partialTick);
             xAngleOffset = angles[0];
             yAngleOffset = angles[1];
             zAngleOffset = angles[2];
 
             xAngleOffset = Mth.clamp(xAngleOffset * 0.6f, -1f, 0.45f);
             zAngleOffset = Mth.clamp(zAngleOffset, -0.5f, 0.5f);
-            yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
+            swayDampen = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running*/
         }
 
-        this.tailBase.setRotation(xAngleOffset, (((-zAngleOffset / 2F) + (Mth.cos(timestep + yOffset) / 8F)) * yAngleMultiplier) + yAngleOffset, -zAngleOffset / 8F);
-        this.tail1.setRotation(-0.2617993877991494f + xAngleOffset + Math.abs(zAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 1 + yOffset) / 8F) * yAngleMultiplier, -zAngleOffset / 8F);
-        this.tail2.setRotation(-0.2617993877991494f + (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 1.5F + yOffset) / 8F) * yAngleMultiplier, -zAngleOffset / 8F);
-        this.tail3.setRotation(-0.4363323129985824f + (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 2 + yOffset) / 20F) * yAngleMultiplier, -zAngleOffset / 20F);
-        this.tail4.setRotation(0.2617993877991494f - (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 3 + yOffset) / 8F) * yAngleMultiplier, 0F);
-        this.tail5.setRotation(0.2617993877991494f - (xAngleOffset / 2.5F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 4 + yOffset) / 8F) * yAngleMultiplier, 0F);
+        this.tailBase.setRotation(xAngleOffset, (((-zAngleOffset / 2F) + (Mth.cos(timestep + yOffset) / 8F)) * swayDampen), -zAngleOffset / 8F);
+        this.tail1.setRotation(-0.2617993877991494f + xAngleOffset + Math.abs(zAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 1 + yOffset) / 8F) * swayDampen, -zAngleOffset / 8F);
+        this.tail2.setRotation(-0.2617993877991494f + (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 1.5F + yOffset) / 8F) * swayDampen, -zAngleOffset / 8F);
+        this.tail3.setRotation(-0.4363323129985824f + (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 2 + yOffset) / 20F) * swayDampen, -zAngleOffset / 20F);
+        this.tail4.setRotation(0.2617993877991494f - (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 3 + yOffset) / 8F) * swayDampen, 0F);
+        this.tail5.setRotation(0.2617993877991494f - (xAngleOffset / 2.5F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 4 + yOffset) / 8F) * swayDampen, 0F);
     }
+
+    private static final float HEAVY_SWAP_DAMPEN = 4f;
+    private static final float MEDIUM_SWAY_DAMPEN = 3f;
+    private static final float LOW_SWAY_DAMPEN = 2f;
+
+    private static final float SLOW_SPEED = 4000f;
+    private static final float AVERAGE_SPEED = 3000f;
+    private static final float FAST_SPEED = 2000f;
 }
