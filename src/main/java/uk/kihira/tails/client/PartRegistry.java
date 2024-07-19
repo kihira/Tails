@@ -7,7 +7,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import uk.kihira.gltf.GltfLoader;
-import uk.kihira.gltf.Model;
+import uk.kihira.gltf.GltfModel;
+import uk.kihira.tails.client.model.FoxTailModel;
+import uk.kihira.tails.client.model.GltfPartModel;
+import uk.kihira.tails.client.model.PartModel;
 import uk.kihira.tails.common.Tails;
 
 import com.google.gson.reflect.TypeToken;
@@ -35,7 +38,23 @@ public final class PartRegistry
     private static final String PARTS_CACHE_FOLDER = "tails/cache/part";
 
     private static final LazyLoadAssetRegistry<UUID, Part> parts = new LazyLoadAssetRegistry<>(LOGGER, PartRegistry::loadPart, null, null);
-    private static final LazyLoadAssetRegistry<UUID, Model> models = new LazyLoadAssetRegistry<>(LOGGER, PartRegistry::loadModel, null, null);
+    private static final LazyLoadAssetRegistry<UUID, PartModel> models = new LazyLoadAssetRegistry<>(LOGGER, PartRegistry::loadModel, null, null);
+
+    static
+    {
+        registerPartWithModel(
+                new Part(
+                    UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19"),
+                    "Fluffy Tail",
+                    "Kihira",
+                    MountPoint.CHEST,
+                    new float[] {0, 1, 0},
+                    new float[] {0, 0, 0},
+                    new float[] {1, 1, 1},
+                    new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
+                    new PartTexture[]{ new PartTexture(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19"), "Default", "Kihira") }),
+                new FoxTailModel(FoxTailModel.createBodyLayer().bakeRoot()));
+    }
 
     /**
      * Loads the cache from disk locally 
@@ -50,7 +69,7 @@ public final class PartRegistry
             {
                 try (FileReader reader = new FileReader(path.toFile()))
                 {
-                    addPart(Tails.GSON.fromJson(reader, Part.class));
+                    registerPart(Tails.GSON.fromJson(reader, Part.class));
                 }
                 catch (IOException e)
                 {
@@ -109,7 +128,7 @@ public final class PartRegistry
                         .orElseGet(() -> loadPartFromApiAndSaveToCache(partId)))
                 .exceptionally(ex ->
                 {
-                    LOGGER.error("Failed to load part {}", partId);
+                    LOGGER.error("Failed to load part %s", partId);
                     return null;
                 });
     }
@@ -149,7 +168,7 @@ public final class PartRegistry
                 }
                 catch (IOException e)
                 {
-                    LOGGER.error("Failed to load part {} from cache", partId);
+                    LOGGER.error("Failed to load part %s from cache", partId);
                 }
             }
             return Optional.empty();
@@ -169,7 +188,7 @@ public final class PartRegistry
         }
         catch (IOException e)
         {
-            LOGGER.error("Failed to save part {} ({}) to cache", part.name, part.id);
+            LOGGER.error("Failed to save part %s (%s) to cache", part.name, part.id);
         }
     }
 
@@ -184,7 +203,7 @@ public final class PartRegistry
     }
 
     /**
-     * Gets the {@link Model} for the associated ID, or loads it if it is not yet created.
+     * Gets the {@link GltfModel} for the associated ID, or loads it if it is not yet created.
      * <p>
      * A step-by-step procedure is followed to attempt to load the model as outlined:
      * - If the model has been loaded already, this is returned from {@link PartRegistry#models}
@@ -196,12 +215,12 @@ public final class PartRegistry
      * @param uuid The ID of the model
      * @return The model if loaded, or null if not
      */
-    public static Optional<Model> getModel(final UUID uuid)
+    public static Optional<PartModel> getModel(final UUID uuid)
     {
         return models.get(uuid);
     }
 
-    private static CompletableFuture<Model> loadModel(final UUID uuid)
+    private static CompletableFuture<PartModel> loadModel(final UUID uuid)
     {
         return CompletableFuture.supplyAsync(() ->
         {
@@ -209,10 +228,12 @@ public final class PartRegistry
 
             if (Files.exists(path))
             {
-                try {
+                try
+                {
                     // todo seperate loading and OpenGL calls
-                    return GltfLoader.LoadGlbFile(path.toFile());
-                } catch (IOException e) {
+                    return (PartModel) new GltfPartModel(GltfLoader.LoadGlbFile(path.toFile()));
+                } catch (IOException e)
+                {
                     e.printStackTrace();
                 }
             }
@@ -267,7 +288,7 @@ public final class PartRegistry
         try (InputStream is = resourceManager.getResource(resLoc).get().open())
         {
             InputStreamReader reader = new InputStreamReader(is);
-            addPart(Tails.GSON.fromJson(reader, Part.class));
+            registerPart(Tails.GSON.fromJson(reader, Part.class));
 
             // Copy model to cache
             var modelResLoc = new ResourceLocation(Tails.MOD_ID, "model/" + uuid + ".glb");
@@ -284,8 +305,14 @@ public final class PartRegistry
         }
     }
 
-    private static void addPart(Part part)
+    private static void registerPart(Part part)
     {
         parts.put(part.id, part);
+    }
+
+    private static <M extends PartModel> void registerPartWithModel(Part part, M model)
+    {
+        registerPart(part);
+        models.put(part.id, model);
     }
 }

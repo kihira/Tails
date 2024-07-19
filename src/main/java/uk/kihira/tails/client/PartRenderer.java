@@ -10,7 +10,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
-import uk.kihira.gltf.Model;
+import uk.kihira.gltf.GltfModel;
+import uk.kihira.tails.client.model.GltfPartModel;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.common.Tails;
 
@@ -106,8 +107,8 @@ public class PartRenderer
             OutfitPart outfitPart = entry.getKey();
             Part basePart = outfitPart.getPart();
             if (basePart == null) continue;
-            Model model = basePart.getModel();
-            if (model == null) continue;
+            var model = basePart.getModel();
+
 
             // Set tint colors
             tintBuffer.put(outfitPart.tint[0]);
@@ -131,7 +132,7 @@ public class PartRenderer
             RenderSystem.applyModelViewMatrix();
 
             var matrixStack = new Matrix4fStack(16);
-            model.render(matrixStack);
+            // TODO model.render(matrixStack);
             //poseStack.mulPoseMatrix(matrixStack);
             matrixStack.clear();
 

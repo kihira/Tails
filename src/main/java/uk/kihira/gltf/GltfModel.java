@@ -9,14 +9,14 @@ import uk.kihira.tails.common.IDisposable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Model implements IDisposable
+public class GltfModel implements IDisposable
 {
     private final ArrayList<Node> allNodes;
     private final ArrayList<Node> rootNodes;
     private final HashMap<String, Animation> animations;
     private final ArrayList<ResourceLocation> textures;
 
-    public Model(ArrayList<Node> allNodes, ArrayList<Node> rootNodes, HashMap<String, Animation> animations, ArrayList<ResourceLocation> textures) {
+    public GltfModel(ArrayList<Node> allNodes, ArrayList<Node> rootNodes, HashMap<String, Animation> animations, ArrayList<ResourceLocation> textures) {
         this.allNodes = allNodes;
         this.rootNodes = rootNodes;
         this.animations = animations;

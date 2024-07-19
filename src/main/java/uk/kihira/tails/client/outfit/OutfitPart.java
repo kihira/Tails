@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.PartRegistry;
+import uk.kihira.tails.client.PartTexture;
 import uk.kihira.tails.common.Tails;
 
 import javax.annotation.Nullable;
@@ -13,20 +14,22 @@ import java.util.UUID;
 /**
  * Represents a part that is in an outfit
  */
-public class OutfitPart {
+public class OutfitPart
+{
     public final UUID basePart;
     public MountPoint mountPoint;
     public float[] mountOffset; // [x,y,z]
     public float[] rotation; // [x,y,z]
     public float[] scale; // [x,y,z]
     public float[][] tint; // [[r,g,b],[r,g,b]]
-    public UUID texture;
+    public PartTexture texture;
 
     // Client only fields
     private transient Part part;
     public transient ResourceLocation textureLoc;
 
-    public OutfitPart(Part part) {
+    public OutfitPart(Part part)
+    {
         this.basePart = part.id;
         this.mountPoint = part.mountPoint;
         this.mountOffset = part.mountOffset;
@@ -35,7 +38,7 @@ public class OutfitPart {
         this.tint = part.tint;
         this.texture = part.textures[0];
 
-        this.textureLoc = new ResourceLocation(Tails.MOD_ID, String.format("texture/parts/%s/%s.png", part.id, this.texture.toString()));
+        this.textureLoc = new ResourceLocation(Tails.MOD_ID, String.format("texture/parts/%s/%s.png", part.id, this.texture.id()));
     }
 
     /**

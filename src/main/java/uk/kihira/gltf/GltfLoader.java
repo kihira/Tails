@@ -20,8 +20,6 @@ import uk.kihira.gltf.spec.MeshPrimitive;
 import uk.kihira.tails.common.ByteBufferInputStream;
 import uk.kihira.tails.common.Tails;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,7 +45,7 @@ public class GltfLoader
     private static final TreeMap<Integer, Node> nodeCache = new TreeMap<>();
     private static final ArrayList<Mesh> meshCache = new ArrayList<>();
 
-    public static Model LoadGlbFile(File file) throws IOException
+    public static GltfModel LoadGlbFile(File file) throws IOException
     {
         try (DataInputStream stream = new DataInputStream(new FileInputStream(file)))
         {
@@ -55,7 +53,7 @@ public class GltfLoader
         }
     }
 
-    public static Model LoadGlb(DataInputStream stream, Logger log) throws IOException
+    public static GltfModel LoadGlb(DataInputStream stream, Logger log) throws IOException
     {
         int magic = readUnsignedInt(stream);
         if (magic != GLTF_MAGIC)
@@ -197,7 +195,7 @@ public class GltfLoader
             }
         }
 
-        return new Model(new ArrayList<>(nodeCache.values()), rootNodes, animations, textures);
+        return new GltfModel(new ArrayList<>(nodeCache.values()), rootNodes, animations, textures);
     }
 
     public static void clearCache() {

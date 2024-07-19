@@ -40,7 +40,7 @@ public class GltfTest
             assertNotNull(is, "Test resource failed to load");
 
             // Validate animations
-            Model model = LoadGlb(new DataInputStream(is), log);
+            GltfModel model = LoadGlb(new DataInputStream(is), log);
             HashMap<String, Animation> animations = model.getAnimations();
             assertThat(animations).containsOnlyKeys("default");
 

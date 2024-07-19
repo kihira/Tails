@@ -1,6 +1,5 @@
 package uk.kihira.tails.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,7 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
-import uk.kihira.gltf.Model;
+import uk.kihira.gltf.GltfModel;
 import uk.kihira.tails.client.*;
 import uk.kihira.tails.client.outfit.OutfitPart;
 
@@ -129,7 +128,7 @@ public class PartsPanel extends Panel<GuiEditor> implements IListCallback<PartsP
         Part basePart = part.getPart();
         if (basePart == null) return;
 
-        Model model = basePart.getModel();
+        var model = basePart.getModel();
         if (model != null)
         {
             poseStack.rotateAround(Axis.YP.rotationDegrees(this.rotation), 0, 0, 0);

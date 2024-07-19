@@ -32,14 +32,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class LegacyLayerPart<T extends Player, M extends PlayerModel<T>> extends RenderLayer<T, M>
 {
     private final MountPoint mountPoint;
-    private final FoxTailModel foxTailModel;
 
     public LegacyLayerPart(LivingEntityRenderer<T, M> entityRender, ModelPart modelPart, MountPoint mountPoint)
     {
         super(entityRender);
 
         this.mountPoint = mountPoint;
-        this.foxTailModel = new FoxTailModel(FoxTailModel.createBodyLayer().bakeRoot());
     }
 
     @Override
@@ -55,8 +53,15 @@ public class LegacyLayerPart<T extends Player, M extends PlayerModel<T>> extends
 
             for (OutfitPart part : outfit.parts)
             {
-                if (part.mountPoint == mountPoint)
+                var basePart = part.getPart();
+                if (basePart != null && part.mountPoint == mountPoint)
                 {
+                    var model = part.getPart().getModel();
+                    if (model == null)
+                    {
+                        return;
+                    }
+
                     poseStack.pushPose();
 
                     if (mountPoint == MountPoint.HEAD && player.isCrouching())
@@ -74,8 +79,8 @@ public class LegacyLayerPart<T extends Player, M extends PlayerModel<T>> extends
                     poseStack.scale(part.scale[0], part.scale[1], part.scale[2]);
 
                     VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.armorCutoutNoCull(part.textureLoc));
-                    foxTailModel.setupAnim(player, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
-                    foxTailModel.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                    model.setupAnim(player, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
+                    model.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
                     poseStack.popPose();
                 }
             }
