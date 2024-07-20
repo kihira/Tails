@@ -23,11 +23,11 @@ public class IconButton extends ExtendedButton
     private static final int ICON_HEIGHT = 16;
 
     final Icons icon;
-    private final List<String> tooltip;
+    private final List<Component> tooltip;
 
-    public IconButton(int x, int y, Icons icon, OnPress pressedAction, String... tooltips)
+    public IconButton(int x, int y, Icons icon, OnPress pressedAction, Component component, Component... tooltips)
     {
-        super(x, y, ICON_WIDTH, ICON_HEIGHT, Component.empty(), pressedAction);
+        super(x, y, ICON_WIDTH, ICON_HEIGHT, component, pressedAction);
         this.icon = icon;
         this.tooltip = Arrays.asList(tooltips);
     }
@@ -46,9 +46,9 @@ public class IconButton extends ExtendedButton
     {
         public boolean toggled;
 
-        public IconToggleButton(int x, int y, Icons icon, OnPress pressedAction, String... tooltips)
+        public IconToggleButton(int x, int y, Icons icon, OnPress pressedAction, Component component, Component... tooltips)
         {
-            super(x, y, icon, pressedAction, tooltips);
+            super(x, y, icon, pressedAction, component, tooltips);
         }
 
         @Override

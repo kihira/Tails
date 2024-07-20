@@ -26,9 +26,7 @@ public class GuiList<E extends ObjectSelectionList.Entry<E>> extends ObjectSelec
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
-        RenderHelper.startGlScissor(this.getX(), this.getY(), this.width + 3, this.height);
-        super.render(graphics, mouseX, mouseY, partialTicks);
-        RenderHelper.endGlScissor();
+        super.renderWidget(graphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

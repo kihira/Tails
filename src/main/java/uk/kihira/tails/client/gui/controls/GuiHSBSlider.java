@@ -31,18 +31,18 @@ public class GuiHSBSlider extends ExtendedSlider implements ITooltip
     private float briValue;
     private List<String> tooltips;
     
-    public GuiHSBSlider(int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type)
+    public GuiHSBSlider(int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type, Component component)
     {
-        super(xPos, yPos, width, height, Component.empty(), Component.empty(), 0, 256 * 6 - 5, 0, 1, 0, false);
+        super(xPos, yPos, width, height, component, Component.empty(), 0, 256 * 6 - 5, 0, 1, 0, false);
         this.type = type;
         this.hueValue = 0;
         this.briValue = 0;
         this.callback = callback;
     }
 
-    public GuiHSBSlider(int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type, String ... tooltips)
+    public GuiHSBSlider(int xPos, int yPos, int width, int height, IHSBSliderCallback callback, HSBSliderType type, Component component, String ... tooltips)
     {
-        this(xPos, yPos, width, height, callback, type);
+        this(xPos, yPos, width, height, callback, type, component);
         this.tooltips = Arrays.asList(tooltips);
     }
 

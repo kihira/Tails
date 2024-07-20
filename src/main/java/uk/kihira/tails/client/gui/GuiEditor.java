@@ -37,7 +37,11 @@ public class GuiEditor extends GuiBase
     public GuiEditor()
     {
         super(Component.translatable("tails.editor.title"), 4);
+    }
 
+    @Override
+    public void init()
+    {
         this.playerUUID = this.getMinecraft().getGameProfile().getId();
 
         // Load outfit or create empty one
@@ -53,11 +57,7 @@ public class GuiEditor extends GuiBase
             this.outfit = new Outfit();
         }
         setOutfit(this.outfit);
-    }
 
-    @Override
-    public void init()
-    {
         final int previewWindowEdgeOffset = 150;
         final int previewWindowRight = this.width - previewWindowEdgeOffset;
         final int previewWindowBottom = this.height - 30;

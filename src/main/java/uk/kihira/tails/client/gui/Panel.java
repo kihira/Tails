@@ -1,5 +1,6 @@
 package uk.kihira.tails.client.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.Validate;
 
@@ -18,12 +19,19 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen
         super(Component.empty());
         Validate.isInstanceOf(GuiBase.class, parent);
 
+        this.minecraft = Minecraft.getInstance();
+        this.font = this.minecraft.font;
+
         this.parent = parent;
         this.left = x;
         this.top = y;
         this.right = x + width;
         this.bottom = y + height;
     }
+
+    // Override to make it public so we can call it, very much a hack for now
+    @Override
+    public void init() {}
 
     public void resize(int x, int y, int newWidth, int newHeight)
     {

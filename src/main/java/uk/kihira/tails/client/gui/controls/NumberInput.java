@@ -42,7 +42,7 @@ public class NumberInput extends AbstractStringWidget implements IControl<Float>
     private final int btnHeight;
 
     private final DecimalFormat df = new DecimalFormat("###.##");
-    private final FocusableTextWidget numInput = null;
+    private FocusableTextWidget numInput = null;
     private float num = 0f;
     private IControlCallback<IControl<Float>, Float> callback;
 
@@ -64,8 +64,8 @@ public class NumberInput extends AbstractStringWidget implements IControl<Float>
         this.callback = callback;
         df.setRoundingMode(RoundingMode.FLOOR);
 
-/*        numInput = new FocusableTextWidget(Minecraft.getInstance().font, xPos + 1, yPos + 1, width - btnWidth - 2, height - 2, Component.empty());
-        numInput.setValidator(input ->
+        numInput = new FocusableTextWidget(width - btnWidth - 2, Component.empty(), this.getFont());
+        /*numInput.setValidator(input ->
         {
             if (input == null) return true;
             int dotCount = 0;

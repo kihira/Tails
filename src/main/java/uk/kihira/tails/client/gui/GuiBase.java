@@ -49,6 +49,15 @@ public abstract class GuiBase extends GuiBaseScreen
     }
 
     @Override
+    public void init()
+    {
+        super.init();
+        for (Panel<?> panel : getAllPanels()) {
+            panel.init();
+        }
+    }
+
+    @Override
     public void resize(Minecraft minecraft, int width, int height)
     {
         super.resize(minecraft, width, height);
@@ -66,7 +75,7 @@ public abstract class GuiBase extends GuiBaseScreen
 //                panel.resize(minecraft, scaledRes.width, scaledRed.height);
 //                mc.displayWidth = displayWidth;
 //                mc.displayHeight = displayHeight;
-                panel.resize(minecraft, panel.right - panel.left, panel.bottom - panel.top);
+                //panel.resize(panel.right - panel.left, panel.bottom - panel.top);
             }
         }
     }

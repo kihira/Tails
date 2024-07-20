@@ -68,14 +68,14 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         this.addRenderableWidget(new TintButton(70, tintButtonY, TINT_3_BUTTON_ID, Colour.GREEN, this::onTintButtonPushed));
 
         //Tint edit pane
-        //hexText = new FocusableTextWidget(this.font, 30, EDIT_PANEL_TOP + 20, 73, 10, Component.empty());
+        hexText = new FocusableTextWidget(73, Component.empty(), this.font);
         hexText.setMaxWidth(6);
 
         //RGB sliders
         rgbSliders = new GuiHSBSlider[3];
-/*        rgbSliders[0] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 70, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, Component.translatable("gui.slider.red.tooltip"));
+        rgbSliders[0] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 70, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, Component.translatable("gui.slider.red.tooltip"));
         rgbSliders[1] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 80, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, Component.translatable("gui.slider.green.tooltip"));
-        rgbSliders[2] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 90, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, Component.translatable("gui.slider.blue.tooltip"));*/
+        rgbSliders[2] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 90, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, Component.translatable("gui.slider.blue.tooltip"));
         rgbSliders[0].setHue(0f);
         rgbSliders[1].setHue(1f / 3f);
         rgbSliders[2].setHue(2f / 3f);
@@ -86,20 +86,20 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
         //HBS sliders
         hsbSliders = new GuiHSBSlider[3];
-/*        hsbSliders[0] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 35, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.HUE, Component.translatable("gui.slider.hue.tooltip"));
+        hsbSliders[0] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 35, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.HUE, Component.translatable("gui.slider.hue.tooltip"));
         hsbSliders[1] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 45, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.SATURATION, Component.translatable("gui.slider.saturation.tooltip"));
-        hsbSliders[2] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 55, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.BRIGHTNESS, Component.translatable("gui.slider.brightness.tooltip"));*/
+        hsbSliders[2] = new GuiHSBSlider(5, EDIT_PANEL_TOP + 55, SLIDER_WIDTH, SLIDER_HEIGHT, this, GuiHSBSlider.HSBSliderType.BRIGHTNESS, Component.translatable("gui.slider.brightness.tooltip"));
 
         addRenderableWidget(hsbSliders[0]);
         addRenderableWidget(hsbSliders[1]);
         addRenderableWidget(hsbSliders[2]);
 
         //Reset/Save
-        //addRenderableWidget(tintReset = new IconButton(width - 20, EDIT_PANEL_TOP + 5, IconButton.Icons.UNDO, this::onResetButtonPressed, Component.translatable("gui.button.reset")));
+        addRenderableWidget(tintReset = new IconButton(width - 20, EDIT_PANEL_TOP + 5, IconButton.Icons.UNDO, this::onResetButtonPressed, Component.translatable("gui.button.reset")));
         tintReset.active = false;
 
         //Colour Picker
-        //addRenderableWidget(colourPicker = new IconButton(width - 36, EDIT_PANEL_TOP + 5, IconButton.Icons.EYEDROPPER, this::onColourPickerButtonPressed, Component.translatable("gui.button.picker.0"), Component.translatable("gui.button.picker.1")));
+        addRenderableWidget(colourPicker = new IconButton(width - 36, EDIT_PANEL_TOP + 5, IconButton.Icons.EYEDROPPER, this::onColourPickerButtonPressed, Component.translatable("gui.button.picker.0"), Component.translatable("gui.button.picker.1")));
         colourPicker.visible = false;
 
         updateTints(true);
