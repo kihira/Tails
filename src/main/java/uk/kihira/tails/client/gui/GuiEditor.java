@@ -1,6 +1,9 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.outfit.Outfit;
@@ -11,7 +14,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class GuiEditor extends GuiBase
+public class GuiEditor extends Screen
 {
     static final int TEXT_COLOUR = 0xFFFFFF;
     static final int HOZ_LINE_COLOUR = 0xFF000000;
@@ -29,19 +32,31 @@ public class GuiEditor extends GuiBase
     private UUID playerUUID;
 
     TintPanel tintPanel;
-    PartsPanel partsPanel;
+    PartsListWidget partsListWidget;
     private TransformPanel transformPanel;
     private PreviewPanel previewPanel;
     private ControlsPanel controlsPanel;
 
     public GuiEditor()
     {
-        super(Component.translatable("tails.editor.title"), 4);
+        super(Component.translatable("tails.editor.title"));
     }
 
     @Override
     public void init()
     {
+/*        var layout = new GridLayout();
+        layout.defaultCellSetting().padding(4, 4, 4, 0);
+
+        var rowHelper = layout.createRowHelper(3);
+        rowHelper.addChild(this.partsListWidget = new PartsListWidget(this, 110, this.height-20, 10), 1);
+
+        layout.arrangeElements();
+        FrameLayout.alignInRectangle(layout, 0, 0, this.width, this.height, 1f, 0f);
+        layout.visitWidgets(this::addRenderableWidget);*/
+
+        addRenderableWidget(this.partsListWidget = new PartsListWidget(this, 110, this.height-20, 10));
+
         this.playerUUID = this.getMinecraft().getGameProfile().getId();
 
         // Load outfit or create empty one
@@ -63,7 +78,7 @@ public class GuiEditor extends GuiBase
         final int previewWindowBottom = this.height - 30;
         final int texSelectHeight = 35;
 
-        //Not an ideal solution but keeps everything from resetting on resize
+/*        //Not an ideal solution but keeps everything from resetting on resize
         if (this.tintPanel == null)
         {
             final ArrayList<Panel<?>> layer0 = getLayer(0);
@@ -112,7 +127,7 @@ public class GuiEditor extends GuiBase
             this.partsPanel.resize(0, 0, previewWindowEdgeOffset, this.height - texSelectHeight);
             this.previewPanel.resize(previewWindowEdgeOffset, 0, previewWindowRight - previewWindowEdgeOffset, previewWindowBottom);
             this.controlsPanel.resize(previewWindowEdgeOffset, previewWindowBottom, previewWindowRight - previewWindowEdgeOffset, this.height - previewWindowBottom);
-        }
+        }*/
 
         super.init();
     }
@@ -120,6 +135,7 @@ public class GuiEditor extends GuiBase
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
+        this.partsListWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         // Render any parts that have been queued up whilst in GUI as RenderWorldLast is called before GUIs
@@ -145,12 +161,12 @@ public class GuiEditor extends GuiBase
     void setActiveOutfitPart(@Nullable OutfitPart outfitPart)
     {
         // todo should maintain a list of IOutfitPartSelected instead
-        getAllPanels().forEach((final Panel<?> panel) -> {
+/*        getAllPanels().forEach((final Panel<?> panel) -> {
             if (panel instanceof IOutfitPartSelected)
             {
                 ((IOutfitPartSelected) panel).OnOutfitPartSelected(outfitPart);
             }
-        });
+        });*/
 
         currentOutfitPart = outfitPart;
     }

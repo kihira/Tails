@@ -34,7 +34,7 @@ public class ControlsPanel extends Panel<GuiEditor>
 
     private void onResetAllButtonPressed(GuiEventListener button)
     {
-        parent.partsPanel.selectDefaultListEntry();
+        //parent.partsListWidget.selectDefaultListEntry();
         parent.refreshTintPane();
         parent.setActiveOutfitPart(null);
     }

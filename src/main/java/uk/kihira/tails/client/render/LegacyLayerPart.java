@@ -78,9 +78,13 @@ public class LegacyLayerPart<T extends Player, M extends PlayerModel<T>> extends
                     poseStack.rotateAround(Axis.ZP.rotationDegrees(part.rotation[2]), 0, 0, 0);
                     poseStack.scale(part.scale[0], part.scale[1], part.scale[2]);
 
-                    VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.armorCutoutNoCull(part.textureLoc));
-                    model.setupAnim(player, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
-                    model.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                    // TODO should this ever be null?
+                    if (part.textureLoc != null)
+                    {
+                        VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.armorCutoutNoCull(part.textureLoc));
+                        model.setupAnim(player, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
+                        model.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                    }
                     poseStack.popPose();
                 }
             }

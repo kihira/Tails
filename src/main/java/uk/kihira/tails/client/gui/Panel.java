@@ -1,10 +1,10 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.Validate;
 
-public abstract class Panel<T extends GuiBase> extends GuiBaseScreen
+public abstract class Panel<T extends Screen> extends GuiBaseScreen
 {
     protected final T parent;
     public int left;
@@ -17,7 +17,7 @@ public abstract class Panel<T extends GuiBase> extends GuiBaseScreen
     public Panel(T parent, int x, int y, int width, int height)
     {
         super(Component.empty());
-        Validate.isInstanceOf(GuiBase.class, parent);
+        //Validate.isInstanceOf(GuiBase.class, parent);
 
         this.minecraft = Minecraft.getInstance();
         this.font = this.minecraft.font;
