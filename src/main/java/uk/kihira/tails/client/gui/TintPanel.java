@@ -110,11 +110,11 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         addChild(hsbSliders[2]);
 
         //Reset/Save
-        addChild(tintReset = new IconButton(this.getX() + width - 20, this.getY() + EDIT_PANEL_TOP + 5, IconButton.Icons.UNDO, this::onResetButtonPressed, Component.translatable("gui.button.reset")));
+        addChild(tintReset = new IconButton(this.getRight() - 20, this.getY() + EDIT_PANEL_TOP + 5, IconButton.Icons.UNDO, this::onResetButtonPressed, Component.translatable("gui.button.reset")));
         tintReset.active = false;
 
         //Colour Picker
-        addChild(colourPicker = new IconButton(this.getX() + width - 36, this.getY() + EDIT_PANEL_TOP + 5, IconButton.Icons.EYEDROPPER, this::onColourPickerButtonPressed, Component.translatable("gui.button.picker.0"), Component.translatable("gui.button.picker.1")));
+        addChild(colourPicker = new IconButton(this.getRight() - 36, this.getY() + EDIT_PANEL_TOP + 5, IconButton.Icons.EYEDROPPER, this::onColourPickerButtonPressed, Component.translatable("gui.button.picker.0"), Component.translatable("gui.button.picker.1")));
         colourPicker.visible = false;
 
         updateTints(true);

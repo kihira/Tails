@@ -1,8 +1,8 @@
-/*
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import uk.kihira.tails.client.Colour;
@@ -47,51 +47,51 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     TransformPanel(GuiEditor parent, int x, int y, int width, int height)
     {
         super(parent, x, y, width, height);
-    }
 
-    @Override
-    public void init()
-    {
         final int firstInputX = 3;
         final int secondInputX = 52;
         final int thirdInputX = 101;
 
-        addRenderableWidget(xRotInput = new NumberInput(firstInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
-        addRenderableWidget(yRotInput = new NumberInput(secondInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
-        addRenderableWidget(zRotInput = new NumberInput(thirdInputX, spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
+        addChild(xRotInput = new NumberInput(this.getX() + firstInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
+        addChild(yRotInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
+        addChild(zRotInput = new NumberInput(this.getX() + thirdInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
 
-        addRenderableWidget(xPosInput = new NumberInput(firstInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
-        addRenderableWidget(yPosInput = new NumberInput(secondInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
-        addRenderableWidget(zPosInput = new NumberInput(thirdInputX, spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
+        addChild(xPosInput = new NumberInput(this.getX() + firstInputX, this.getY() + spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
+        addChild(yPosInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
+        addChild(zPosInput = new NumberInput(this.getX() + thirdInputX, this.getY() + spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
 
-        addRenderableWidget(xScaleInput = new NumberInput(firstInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
-        addRenderableWidget(yScaleInput = new NumberInput(secondInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
-        addRenderableWidget(zScaleInput = new NumberInput(thirdInputX, spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
+        addChild(xScaleInput = new NumberInput(this.getX() + firstInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
+        addChild(yScaleInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
+        addChild(zScaleInput = new NumberInput(this.getX() + thirdInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
 
         String mountPoint = MountPoint.values()[0].name();
         final OutfitPart outfitPart = parent.getCurrentOutfitPart();
         if (outfitPart != null) mountPoint = outfitPart.mountPoint.name();
 
-        this.addRenderableWidget(mountPointButton = new ExtendedButton(5, spacing * 7, width - 10, 20, Component.translatable("tails.mountpoint." + mountPoint), this::onChangeMountPointButtonPressed));
+        addChild(mountPointButton = new ExtendedButton( this.getX() + 5,  this.getY() + spacing * 7, width - 10, 20, Component.translatable("tails.mountpoint." + mountPoint), this::onChangeMountPointButtonPressed));
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
-        graphics.hLine(0, width, 0, Colour.BLACK);
-
-        graphics.fillGradient(-100,0, 0, width, height, GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
+        graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), GuiEditor.DARK_GREY);
+        graphics.hLine(this.getX(), this.getRight(), this.getY(), Colour.BLACK);
 
         // Rotation
-        graphics.drawString(this.font, Component.translatable("tails.gui.rotation"), 5, this.font.lineHeight / 2, GuiEditor.TEXT_COLOUR);
+        graphics.drawString(this.font(), Component.translatable("tails.gui.rotation"),  this.getX() + 5, this.getY() + this.font().lineHeight / 2, GuiEditor.TEXT_COLOUR);
         // Position
-        graphics.drawString(this.font, Component.translatable("tails.gui.position"), 5, spacing * 2 + this.font.lineHeight / 2, GuiEditor.TEXT_COLOUR);
+        graphics.drawString(this.font(), Component.translatable("tails.gui.position"), this.getX() + 5, this.getY() + spacing * 2 + this.font().lineHeight / 2, GuiEditor.TEXT_COLOUR);
         // Scale
-        graphics.drawString(this.font, Component.translatable("tails.gui.scale"), 5, spacing * 4 + this.font.lineHeight / 2, GuiEditor.TEXT_COLOUR);
+        graphics.drawString(this.font(), Component.translatable("tails.gui.scale"), this.getX() + 5, this.getY() + spacing * 4 + this.font().lineHeight / 2, GuiEditor.TEXT_COLOUR);
         // Mount point
-        graphics.drawString(this.font, Component.translatable("tails.gui.mountpoint"), 5, spacing * 6 + this.font.lineHeight / 2, GuiEditor.TEXT_COLOUR);
+        graphics.drawString(this.font(), Component.translatable("tails.gui.mountpoint"), this.getX() + 5, this.getY() + spacing * 6 + this.font().lineHeight / 2, GuiEditor.TEXT_COLOUR);
 
-        super.render(graphics, mouseX, mouseY, partialTicks);
+        super.renderWidget(graphics, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {
+
     }
 
     protected void onChangeMountPointButtonPressed(GuiEventListener button)
@@ -99,7 +99,7 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         final OutfitPart outfitPart = parent.getCurrentOutfitPart();
         if (outfitPart == null) return;
 
-        // Move to next enum for MointPoint or back to 0 if at the end
+        // Move to next enum for MountPoint or back to 0 if at the end
         final int mountPointOrdinalNext = outfitPart.mountPoint.ordinal() + 1;
         final int mountPointOrdinal = mountPointOrdinalNext >= MountPoint.values().length ? 0 : mountPointOrdinalNext;
 
@@ -131,7 +131,7 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     }
 
     @Override
-    public void OnOutfitPartSelected(@Nullable OutfitPart part)
+    public void onOutfitPartSelected(@Nullable OutfitPart part)
     {
         if (part == null) return;
 
@@ -148,4 +148,3 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         zScaleInput.setValue(part.scale[2]);
     }
 }
-*/

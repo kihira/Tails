@@ -12,5 +12,5 @@ public interface IOutfitPartSelected
      *
      * @param part The part that was just selected
      */
-    void OnOutfitPartSelected(@Nullable final OutfitPart part);
+    void onOutfitPartSelected(@Nullable final OutfitPart part);
 }

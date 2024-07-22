@@ -1,15 +1,12 @@
 package uk.kihira.tails.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
-import org.lwjgl.opengl.GL11;
 import uk.kihira.tails.common.Tails;
 
 import java.util.Arrays;
@@ -37,8 +34,9 @@ public class IconButton extends ExtendedButton
     {
         if (this.visible)
         {
-            //int textureOffset = getYImage(this.isHovered);
-            //graphics.blitSprite(ICONS_TEXTURES, this.getX(), this.getY(), icon.u, icon.v + (textureOffset * ICON_WIDTH), ICON_WIDTH, ICON_HEIGHT, 0);
+            // TODO int textureOffset = getYImage(this.isHovered);
+            var textureOffset = 0;
+            graphics.blit(ICONS_TEXTURES, this.getX(), this.getY(), icon.u, icon.v + (textureOffset * ICON_WIDTH), ICON_WIDTH, ICON_HEIGHT);
         }
     }
 
@@ -67,10 +65,9 @@ public class IconButton extends ExtendedButton
         {
             if (visible && toggled)
             {
-/*                GlStateManager.color4f(1.f, 1.f, 1.f, 1.f);
-                GlStateManager.enableBlend();
-                GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);*/
-                //graphics.blitSprite(ICONS_TEXTURES, this.getX(), this.getY(), icon.u, icon.v + ICON_WIDTH * 2, ICON_WIDTH, ICON_HEIGHT, 0);
+                graphics.setColor(1.f, 1.f, 1.f, 1.f);
+                RenderSystem.enableBlend();
+                graphics.blit(ICONS_TEXTURES, this.getX(), this.getY(), icon.u, icon.v + ICON_WIDTH * 2, ICON_WIDTH, ICON_HEIGHT);
             }
             else
             {

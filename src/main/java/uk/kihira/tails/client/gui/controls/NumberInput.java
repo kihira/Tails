@@ -3,13 +3,14 @@ package uk.kihira.tails.client.gui.controls;
 import com.google.common.base.Strings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractStringWidget;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.FocusableTextWidget;
+import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Math;
+import uk.kihira.tails.client.Colour;
 import uk.kihira.tails.client.gui.GuiBaseScreen;
 import uk.kihira.tails.client.gui.IControl;
 import uk.kihira.tails.client.gui.IControlCallback;
@@ -24,25 +25,22 @@ import java.util.List;
 
 // todo tooltips only work for guibuttons
 @OnlyIn(Dist.CLIENT)
-public class NumberInput extends AbstractStringWidget implements IControl<Float>, ITooltip
+public class NumberInput extends AbstractContainerWidget implements IControl<Float>, ITooltip
 {
     private static final char[] VALID_CHARS = new char[]{'-', '.', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
     private static final float SHIFT_MOD = 10f;
     private static final float CTRL_MOD = 0.1f;
 
-    private final int xPos;
-    private final int yPos;
-
     private final float min;
     private final float max;
     private final float increment;
 
-    private final int btnWidth = 10;
-    private final int btnXPos = 0;
+    private final int btnWidth = 7;
+    private final int btnXPos;
     private final int btnHeight;
 
     private final DecimalFormat df = new DecimalFormat("###.##");
-    private FocusableTextWidget numInput = null;
+    private EditBox numInput = null;
     private float num = 0f;
     private IControlCallback<IControl<Float>, Float> callback;
 
@@ -53,19 +51,16 @@ public class NumberInput extends AbstractStringWidget implements IControl<Float>
 
     public NumberInput(int x, int y, int width, float minValue, float maxValue, float increment, @Nullable IControlCallback<IControl<Float>, Float> callback)
     {
-        super(x, y, width, 15, Component.empty(), Minecraft.getInstance().font);
+        super(x, y, width, 15, Component.empty());
 
-        this.xPos = x;
-        this.yPos = y;
-        this.width = width;
         this.min = minValue;
         this.max = maxValue;
         this.increment = increment;
         this.callback = callback;
         df.setRoundingMode(RoundingMode.FLOOR);
 
-        numInput = new FocusableTextWidget(width - btnWidth - 2, Component.empty(), this.getFont());
-        /*numInput.setValidator(input ->
+        numInput = new EditBox(Minecraft.getInstance().font, this.getX() + btnWidth, this.getY(), width - btnWidth, height, Component.empty());
+        numInput.setFilter(input ->
         {
             if (input == null) return true;
             int dotCount = 0;
@@ -87,20 +82,36 @@ public class NumberInput extends AbstractStringWidget implements IControl<Float>
                 }
             }
             return true;
-        });*/
+        });
         setValue(0f);
 
-        //this.btnXPos = xPos + numInput.getWidth() + 2;
+        this.btnXPos = numInput.getWidth() + 1;
         this.btnHeight = height / 2;
     }
 
     @Override
-    protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick)
+    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        // todo
-        numInput.renderWidget(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
-        //drawRect(btnXPos, yPos, btnXPos + btnWidth, yPos + btnHeight, 0xFFFFFFFF); // Increment
-        //drawRect(btnXPos, yPos + btnHeight, btnXPos + btnWidth, yPos + height, 0xAAAAAAFF); // Decrement
+        numInput.renderWidget(graphics, mouseX, mouseY, partialTick);
+        graphics.fill(this.getX() + btnXPos, this.getY(), this.getX() + btnXPos + btnWidth, this.getY() + btnHeight, Colour.WHITE); // Increment
+        graphics.fill(this.getX() + btnXPos, this.getY() + btnHeight, this.getX() + btnXPos + btnWidth, this.getBottom(), 0xFFAAAAAA); // Decrement
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {
+
+    }
+
+    @Override
+    public void onClick(double mouseX, double mouseY, int button) {
+        super.onClick(mouseX, mouseY, button);
+    }
+
+    @Override
+    public void setFocused(boolean p_313936_)
+    {
+        this.numInput.setFocused(p_313936_);
+        super.setFocused(p_313936_);
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -127,13 +138,20 @@ public class NumberInput extends AbstractStringWidget implements IControl<Float>
 //        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) inc *= CTRL_MOD;
 
         // Increase
-        if (GuiBaseScreen.isMouseOver(mouseX, mouseY, xPos + numInput.getWidth(), yPos, btnWidth, btnHeight)) {
+        if (GuiBaseScreen.isMouseOver(mouseX, mouseY, this.getX() + numInput.getWidth(), this.getY(), btnWidth, btnHeight)) {
             setValue(num + inc);
         }
         // Decrease
-        else if (GuiBaseScreen.isMouseOver(mouseX, mouseY, xPos + numInput.getWidth(), yPos + btnHeight, btnWidth, btnHeight)) {
+        else if (GuiBaseScreen.isMouseOver(mouseX, mouseY, this.getX() + numInput.getWidth(), this.getY() + btnHeight, btnWidth, btnHeight)) {
             setValue(num - inc);
         }
+    }
+
+    // TODO is this the best way going forwards? will work fine for now
+    @Override
+    public List<? extends GuiEventListener> children()
+    {
+        return List.of(this.numInput);
     }
 
     public boolean charTyped(char codePoint, int modifiers)
@@ -151,7 +169,7 @@ public class NumberInput extends AbstractStringWidget implements IControl<Float>
         }
 
         num = newValue;
-        numInput.setMessage(Component.literal(df.format(num)));
+        numInput.setValue(df.format(num));
     }
 
     @Override
