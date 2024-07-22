@@ -1,3 +1,4 @@
+/*
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -147,3 +148,4 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         zScaleInput.setValue(part.scale[2]);
     }
 }
+*/

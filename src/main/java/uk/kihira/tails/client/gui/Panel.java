@@ -1,10 +1,18 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-public abstract class Panel<T extends Screen> extends GuiBaseScreen
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Panel<T extends Screen> extends AbstractContainerWidget
 {
     protected final T parent;
     public int left;
@@ -14,24 +22,25 @@ public abstract class Panel<T extends Screen> extends GuiBaseScreen
     public boolean alwaysReceiveMouse = false;
     public boolean enabled = true;
 
+    protected List<AbstractWidget> children;
+
     public Panel(T parent, int x, int y, int width, int height)
     {
-        super(Component.empty());
-        //Validate.isInstanceOf(GuiBase.class, parent);
-
-        this.minecraft = Minecraft.getInstance();
-        this.font = this.minecraft.font;
+        super(x, y, width, height, Component.empty());
 
         this.parent = parent;
         this.left = x;
         this.top = y;
         this.right = x + width;
         this.bottom = y + height;
+
+        this.children = new ArrayList<>();
     }
 
-    // Override to make it public so we can call it, very much a hack for now
-    @Override
-    public void init() {}
+    public void addChild(AbstractWidget child)
+    {
+        this.children.add(child);
+    }
 
     public void resize(int x, int y, int newWidth, int newHeight)
     {
@@ -41,12 +50,39 @@ public abstract class Panel<T extends Screen> extends GuiBaseScreen
         this.bottom = y + newHeight;
     }
 
+    protected Font font()
+    {
+        return this.parent.getMinecraft().font;
+    }
+
+    protected Minecraft minecraft()
+    {
+        return this.parent.getMinecraft();
+    }
+
+    @Override
+    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+    {
+        for (var child : children)
+        {
+            child.render(graphics, mouseX, mouseY, partialTicks);
+        }
+    }
+
+    @Override
+    public List<? extends GuiEventListener> children()
+    {
+        return children;
+    }
+
+    @Override
     public void setHeight(int height)
     {
         this.height = height;
         this.bottom = this.top + height;
     }
 
+    @Override
     public void setWidth(int width)
     {
         this.width = width;

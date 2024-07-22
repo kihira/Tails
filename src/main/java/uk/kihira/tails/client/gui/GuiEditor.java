@@ -33,9 +33,9 @@ public class GuiEditor extends Screen
 
     TintPanel tintPanel;
     PartsListWidget partsListWidget;
-    private TransformPanel transformPanel;
-    private PreviewPanel previewPanel;
-    private ControlsPanel controlsPanel;
+    //private TransformPanel transformPanel;
+    //private PreviewPanel previewPanel;
+    //private ControlsPanel controlsPanel;
 
     public GuiEditor()
     {
@@ -77,6 +77,14 @@ public class GuiEditor extends Screen
         final int previewWindowRight = this.width - previewWindowEdgeOffset;
         final int previewWindowBottom = this.height - 30;
         final int texSelectHeight = 35;
+
+        this.tintPanel = new TintPanel(
+                this,
+                previewWindowRight,
+                0,
+                this.width - previewWindowRight,
+                TINT_PANEL_HEIGHT);
+        addRenderableWidget(this.tintPanel);
 
 /*        //Not an ideal solution but keeps everything from resetting on resize
         if (this.tintPanel == null)

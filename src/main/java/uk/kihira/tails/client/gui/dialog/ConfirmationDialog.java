@@ -1,3 +1,4 @@
+/*
 package uk.kihira.tails.client.gui.dialog;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -45,3 +46,4 @@ public class ConfirmationDialog<T extends GuiBase & IDialogCallback> extends Dia
         //parent.panels.remove(this); TODO CME
     }
 }
+*/

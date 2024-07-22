@@ -1,3 +1,4 @@
+/*
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -46,7 +47,10 @@ public class ControlsPanel extends Panel<GuiEditor>
         Tails.setLocalOutfit(outfit);
         Tails.proxy.setActiveOutfit(this.getMinecraft().getGameProfile().getId(), outfit);
         PacketDistributor.SERVER.noArg().send(new PlayerDataMessage(this.getMinecraft().getGameProfile().getId(), outfit, false));
-        ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, /*TextFormatting.GREEN + */"Saved!");
+        ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, */
+/*TextFormatting.GREEN + *//*
+"Saved!");
         this.getMinecraft().setScreen(null);
     }
 }
+*/

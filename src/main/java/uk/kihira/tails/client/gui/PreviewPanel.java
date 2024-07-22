@@ -1,3 +1,4 @@
+/*
 package uk.kihira.tails.client.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -27,11 +28,13 @@ class PreviewPanel extends Panel<GuiEditor>
     @Override
     public void init()
     {
+*/
 /*        this.doRender = Minecraft.getInstance().options.getPointOfView().func_243192_a(); // third person camera
         if (!this.doRender)
         {
             return;
-        }*/
+        }*//*
+
 
         // Reset Camera
         //addRenderableWidget(new IconButton(width - 18, 22, IconButton.Icons.UNDO, this::onUndoButtonPressed, Component.translatable("gui.button.reset.camera")));
@@ -65,6 +68,7 @@ class PreviewPanel extends Panel<GuiEditor>
     }
 
     // todo
+*/
 /*    @Override
     public void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick)
     {
@@ -77,7 +81,8 @@ class PreviewPanel extends Panel<GuiEditor>
             }
             this.prevMouseX = mouseX;
         }
-    }*/
+    }*//*
+
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int mouseButton)
@@ -88,6 +93,7 @@ class PreviewPanel extends Panel<GuiEditor>
 
     private static void drawEntity(PoseStack poseStack, int x, int y, int scale, float yaw, float pitch, AbstractClientPlayer entity)
     {
+*/
 /*        float prevHeadYaw = entity.rotationYawHead;
         float prevRotYaw = entity.rotationYaw;
         float prevRotPitch = entity.rotationPitch;
@@ -118,6 +124,8 @@ class PreviewPanel extends Panel<GuiEditor>
 
         entity.rotationYawHead = prevHeadYaw;
         entity.rotationYaw = prevRotYaw;
-        entity.rotationPitch = prevRotPitch;*/
+        entity.rotationPitch = prevRotPitch;*//*
+
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package uk.kihira.tails.client.gui.dialog;
 
 import com.google.common.base.Strings;
@@ -59,6 +60,7 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
         }
     }
 
+*/
 /*    @Override
     TODO public void mouseMovedOrUp(int mouseX, int mouseY, int mouseButton) {
         if (dragging && mouseButton == 0) {
@@ -67,8 +69,10 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
         else {
             super.mouseMovedOrUp(mouseX, mouseY, mouseButton);
         }
-    }*/
+    }*//*
 
+
+*/
 /*    @Override
     public void mouseClickMove(int mouseX, int mouseY, int mouseButton, long pressTime) {
         if (dragging) {
@@ -86,5 +90,7 @@ public class Dialog<T extends GuiBase & IDialogCallback> extends Panel<T>
         else {
             super.mouseClickMove(mouseX, mouseY, mouseButton, pressTime);
         }
-    }*/
+    }*//*
+
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package uk.kihira.tails.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -28,19 +29,23 @@ public abstract class GuiBase extends GuiBaseScreen
         return layers.get(layer);
     }
 
-    /**
+    */
+/**
      * Gets all layers that exist in this GUI
      * @return The layers
-     */
+     *//*
+
     final Collection<ArrayList<Panel<?>>> getAllLayers()
     {
         return layers;
     }
 
-    /**
+    */
+/**
      * Gets all the panels across all the layers
      * @return All the panels
-     */
+     *//*
+
     final Collection<Panel<?>> getAllPanels()
     {
         ArrayList<Panel<?>> panels = new ArrayList<>();
@@ -152,6 +157,7 @@ public abstract class GuiBase extends GuiBaseScreen
     }
 
     // todo
+*/
 /*    @Override
     protected void mouseClickMove(int mouseX, int mouseY, int mouseButton, long pressTime) {
         for (ArrayList<Panel> layer : layers) {
@@ -162,9 +168,11 @@ public abstract class GuiBase extends GuiBaseScreen
             }
         }
         super.mouseClickMove(mouseX, mouseY, mouseButton, pressTime);
-    }*/
+    }*//*
+
 
     // todo
+*/
 /*    @Override
     public void handleMouseInput() throws IOException {
         for (ArrayList<Panel> layer : layers) {
@@ -175,7 +183,8 @@ public abstract class GuiBase extends GuiBaseScreen
             }
         }
         super.handleMouseInput();
-    }*/
+    }*//*
+
 
     @Override
     public void onClose()
@@ -190,15 +199,18 @@ public abstract class GuiBase extends GuiBaseScreen
         super.onClose();
     }
 
-    /**
+    */
+/**
      * Whether the indicated panel should receive the current mouse event based
      * @param mouseX The mouse's x position
      * @param mouseY The mouse's y position
      * @param panel The panel
      * @return Whether it should receive them
-     */
+     *//*
+
     private boolean shouldReceiveMouse(double mouseX, double mouseY, Panel<?> panel)
     {
         return panel.enabled && mouseX > panel.left && mouseX < panel.right && mouseY > panel.top && mouseY < panel.bottom || panel.alwaysReceiveMouse;
     }
 }
+*/
