@@ -1,59 +1,49 @@
-/*
 package uk.kihira.tails.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.level.block.Rotation;
-import org.joml.Vector3f;
+import net.minecraft.util.Mth;
 
 class PreviewPanel extends Panel<GuiEditor>
 {
-    private float yaw = 0f;
-    private float pitch = 10f;
-    private int prevMouseX = -1;
+    private double yaw = 0d;
+    private double pitch = 0d;
+    private double zoom  = 30;
     private boolean doRender;
+
+    private static final int MAX_ZOOM = 100;
+    private static final int MIN_ZOOM = 10;
 
     PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom)
     {
         super(parent, left, top, right, bottom);
-    }
 
-    @Override
-    public void init()
-    {
-*/
-/*        this.doRender = Minecraft.getInstance().options.getPointOfView().func_243192_a(); // third person camera
-        if (!this.doRender)
+        //this.doRender = Minecraft.getInstance().options.getPointOfView().func_243192_a(); // third person camera
+/*        if (!this.doRender)
         {
             return;
-        }*//*
-
+        }*/
 
         // Reset Camera
-        //addRenderableWidget(new IconButton(width - 18, 22, IconButton.Icons.UNDO, this::onUndoButtonPressed, Component.translatable("gui.button.reset.camera")));
+        addChild(new IconButton(this.getRight() - 18,  this.getY() + 22, IconButton.Icons.UNDO, this::onUndoButtonPressed, Component.translatable("gui.button.reset.camera")));
         // Help
-        //addRenderableWidget(new IconButton(width - 18, 4, IconButton.Icons.QUESTION, this::onHelpButtonPressed, Component.translatable("gui.button.help.camera")));
+        addChild(new IconButton(this.getRight() - 18, this.getY() + 4, IconButton.Icons.QUESTION, this::onHelpButtonPressed, Component.translatable("gui.button.help.camera")));
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
-        if (!this.doRender)
-        {
-            return;
-        }
-        graphics.fillGradient(-1000, 0, 0, this.width, this.height, GuiEditor.GREY, GuiEditor.GREY);
+        graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), GuiEditor.GREY);
 
-        drawEntity(graphics.pose(), this.width / 2, this.height / 2 + Minecraft.getInstance().getWindow().getGuiScaledHeight() / 8, Minecraft.getInstance().getWindow().getGuiScaledHeight() / 4, this.yaw, this.pitch, this.getMinecraft().player);
+        InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, this.getX(), this.getY(), this.getRight(), this.getBottom(), Mth.floor(this.zoom), 0f, (float) this.yaw, (float) this.pitch, minecraft().player);
 
-        super.render(graphics, mouseX, mouseY, partialTicks);
+        super.renderWidget(graphics, mouseX, mouseY, partialTicks);
     }
 
     private void onUndoButtonPressed(GuiEventListener button)
@@ -67,33 +57,38 @@ class PreviewPanel extends Panel<GuiEditor>
 
     }
 
-    // todo
-*/
-/*    @Override
-    public void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick)
+    @Override
+    public boolean mouseClicked(double p_313764_, double p_313832_, int p_313688_)
     {
-        if (lastButtonClicked == 0)
-        {
-            //Yaw
-            if (this.prevMouseX != -1)
-            {
-                this.yaw += (mouseX - this.prevMouseX) * 1.5f;
-            }
-            this.prevMouseX = mouseX;
-        }
-    }*//*
-
+        return true;
+    }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int mouseButton)
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY)
     {
-        this.prevMouseX = -1;
-        return super.mouseReleased(mouseX, mouseY, mouseButton);
+        if (button == 0)
+        {
+            this.yaw -= dragX * .1f;
+            this.pitch -= dragY * .1f;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseScrolled(double pMouseX, double pMouseY, double pScrollX, double pScrollY)
+    {
+        this.zoom = Mth.clamp(this.zoom + pScrollY, MIN_ZOOM, MAX_ZOOM);
+        return true;
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput)
+    {
+
     }
 
     private static void drawEntity(PoseStack poseStack, int x, int y, int scale, float yaw, float pitch, AbstractClientPlayer entity)
     {
-*/
 /*        float prevHeadYaw = entity.rotationYawHead;
         float prevRotYaw = entity.rotationYaw;
         float prevRotPitch = entity.rotationPitch;
@@ -124,8 +119,6 @@ class PreviewPanel extends Panel<GuiEditor>
 
         entity.rotationYawHead = prevHeadYaw;
         entity.rotationYaw = prevRotYaw;
-        entity.rotationPitch = prevRotPitch;*//*
-
+        entity.rotationPitch = prevRotPitch;*/
     }
 }
-*/
