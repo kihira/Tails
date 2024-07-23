@@ -35,7 +35,7 @@ public class GuiEditor extends Screen
     PartsListWidget partsListWidget;
     private TransformPanel transformPanel;
     private PreviewPanel previewPanel;
-    //private ControlsPanel controlsPanel;
+    private ControlsPanel controlsPanel;
 
     public GuiEditor()
     {
@@ -96,6 +96,12 @@ public class GuiEditor extends Screen
                 0,
                 previewWindowRight - previewWindowEdgeOffset,
                 previewWindowBottom));
+        addRenderableWidget(this.controlsPanel = new ControlsPanel(
+                this,
+                previewWindowEdgeOffset,
+                previewWindowBottom,
+                previewWindowRight - previewWindowEdgeOffset,
+                this.height - previewWindowBottom));
 
 /*        //Not an ideal solution but keeps everything from resetting on resize
         if (this.tintPanel == null)
@@ -103,40 +109,12 @@ public class GuiEditor extends Screen
             final ArrayList<Panel<?>> layer0 = getLayer(0);
             final ArrayList<Panel<?>> layer1 = getLayer(1);
 
-            layer0.add(this.previewPanel = new PreviewPanel(
-                    this,
-                    previewWindowEdgeOffset,
-                    0,
-                    previewWindowRight - previewWindowEdgeOffset,
-                    previewWindowBottom)
-            );
             layer1.add(this.partsPanel = new PartsPanel(
                     this,
                     0,
                     0,
                     previewWindowEdgeOffset,
                     this.height - texSelectHeight)
-            );
-            layer1.add(this.tintPanel = new TintPanel(
-                    this,
-                    previewWindowRight,
-                    0,
-                    this.width - previewWindowRight,
-                    TINT_PANEL_HEIGHT)
-            );
-            layer1.add(this.transformPanel = new TransformPanel(
-                    this,
-                    previewWindowRight,
-                    TINT_PANEL_HEIGHT,
-                    this.width - previewWindowRight,
-                    this.height - TINT_PANEL_HEIGHT)
-            );
-            layer1.add(this.controlsPanel = new ControlsPanel(
-                    this,
-                    previewWindowEdgeOffset,
-                    previewWindowBottom,
-                    previewWindowRight - previewWindowEdgeOffset,
-                    this.height - previewWindowBottom)
             );
         }
         else

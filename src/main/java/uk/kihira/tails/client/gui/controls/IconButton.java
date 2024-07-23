@@ -16,7 +16,7 @@ import java.util.List;
 @OnlyIn(Dist.CLIENT)
 public class IconButton extends ExtendedButton
 {
-    static final ResourceLocation ICONS_TEXTURES = new ResourceLocation(Tails.MOD_ID, "texture/gui/icons.png");
+    public static final ResourceLocation ICONS_TEXTURES = new ResourceLocation(Tails.MOD_ID, "texture/gui/icons.png");
     private static final int ICON_WIDTH = 16;
     private static final int ICON_HEIGHT = 16;
 
