@@ -1,15 +1,14 @@
 package uk.kihira.tails.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.PauseScreen;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
@@ -18,17 +17,16 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.TickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import uk.kihira.tails.client.gui.GuiEditor;
-import uk.kihira.tails.client.render.LayerPart;
 import uk.kihira.tails.client.render.LegacyLayerPart;
 import uk.kihira.tails.common.Config;
 import uk.kihira.tails.common.Tails;
-import uk.kihira.tails.common.network.PlayerDataMessage;
 
 public class ClientEventHandler
 {
     private static PartRenderer partRenderer;
+    public static boolean captureColourUnderMouse = false;
+    public static int mouseColourRGBA;
 
     @EventBusSubscriber(modid = Tails.MOD_ID, bus = Bus.FORGE, value = Dist.CLIENT)
     public static class Forge
@@ -98,6 +96,17 @@ public class ClientEventHandler
             if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL && partRenderer != null)
             {
                 partRenderer.doRender(event.getPoseStack());
+            }
+        }
+
+        @SubscribeEvent
+        public static void onRenderTickEnd(TickEvent.RenderTickEvent event)
+        {
+            if (event.phase == TickEvent.RenderTickEvent.Phase.END && captureColourUnderMouse)
+            {
+                var image = Screenshot.takeScreenshot(Minecraft.getInstance().getMainRenderTarget());
+                mouseColourRGBA = image.getPixelRGBA(Mth.floor(Minecraft.getInstance().mouseHandler.xpos()), Mth.floor(Minecraft.getInstance().mouseHandler.ypos()));
+                image.close();
             }
         }
     }

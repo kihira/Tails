@@ -49,7 +49,6 @@ public class GuiHSBSlider extends ExtendedSlider implements ITooltip
     {
         if (this.visible) 
         {
-            //graphics.blitSprite(WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46, this.width, this.height, 200, 20, 2, 3, 2, 2, 0);
             graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), Colour.BLACK);
 
             // Needed so the saturation overlapping textures works
@@ -96,28 +95,21 @@ public class GuiHSBSlider extends ExtendedSlider implements ITooltip
             graphics.blit(SLIDER_TEXTURE, this.getX() + (int)(this.value * (double)(this.width - 3) - 2), this.getY(), 0, 0, 7, 4);
             graphics.blit(SLIDER_TEXTURE, this.getX() + (int)(this.value * (double)(this.width - 3) - 2), this.getY() + this.height - 4, 7, 0, 7, 4);
             graphics.disableScissor();
-            
-/*            if (this.dragging)
-            {
-                this.setValue((this.getX() - (this.getX() + 4)) / (double)(this.width - 8));
+        }
+    }
 
-                if (callback != null)
-                {
-                    callback.onValueChangeHSBSlider(this, this.value);
-                }
-            }*/
+    @Override
+    protected void applyValue()
+    {
+        if (this.callback != null)
+        {
+            this.callback.onValueChangeHSBSlider(this, this.value);
         }
     }
 
     public HSBSliderType getType()
     {
         return type;
-    }
-    
-    @Override
-    public double getValue() 
-    {
-        return value;
     }
 
     /**
