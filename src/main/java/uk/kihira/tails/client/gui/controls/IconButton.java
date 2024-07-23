@@ -1,4 +1,4 @@
-package uk.kihira.tails.client.gui;
+package uk.kihira.tails.client.gui.controls;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
+import uk.kihira.tails.client.gui.GuiBaseScreen;
 import uk.kihira.tails.common.Tails;
 
 import java.util.Arrays;

@@ -1,7 +1,6 @@
 package uk.kihira.tails.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -9,6 +8,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import uk.kihira.tails.client.gui.controls.IconButton;
 
 class PreviewPanel extends Panel<GuiEditor>
 {

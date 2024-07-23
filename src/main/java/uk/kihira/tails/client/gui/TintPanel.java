@@ -1,6 +1,5 @@
 package uk.kihira.tails.client.gui;
 
-import com.google.common.base.Strings;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -10,12 +9,12 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
-import net.neoforged.neoforge.client.gui.widget.ExtendedSlider;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import uk.kihira.tails.client.Colour;
+import uk.kihira.tails.client.gui.controls.IconButton;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.PartRegistry;
@@ -28,7 +27,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.List;
 import java.util.Optional;
 
 public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback
