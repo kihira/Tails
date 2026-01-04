@@ -1,27 +1,32 @@
 package uk.kihira.tails.common.network;
 
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
-import uk.kihira.tails.common.Tails;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import uk.kihira.tails.Tails;
 
-@Mod.EventBusSubscriber(modid = Tails.MOD_ID, bus = Bus.MOD)
+@EventBusSubscriber(modid = Tails.MOD_ID)
 public final class TailsPacketHandler 
 {
     private static final String PROTOCOL_VERSION = "1";
 
     @SubscribeEvent
-    public static void register(final RegisterPayloadHandlerEvent event) {
-        final IPayloadRegistrar registrar = event.registrar(Tails.MOD_ID)
-                .versioned(PROTOCOL_VERSION)
+    public static void register(RegisterPayloadHandlersEvent event)
+    {
+        final var registrar = event
+                .registrar(PROTOCOL_VERSION)
                 .optional();
 
-/*        registrar.play(PlayerDataMessage.ID, PlayerDataMessage::new, handler -> handler
-                .client(PlayerDataMessage::handleDataClient)
-                .server(PlayerDataMessage::handleDataServer));
-        registrar.play(PlayerDataMapMessage.ID, PlayerDataMapMessage::new, handler -> handler
-                .client(PlayerDataMapMessage::handleDataClient));*/
+        registrar.playBidirectional(PlayerDataMessage.TYPE, PlayerDataMessage.STREAM_CODEC, PlayerDataMessage::handleDataCommon);
+        registrar.playToClient(PlayerDataMapMessage.TYPE, PlayerDataMapMessage.STREAM_CODEC, PlayerDataMapMessage::handleDataClient);
+    }
+
+    // todo move to client only class
+    @SubscribeEvent
+    public static void register(RegisterClientPayloadHandlersEvent event)
+    {
+        event.register(PlayerDataMessage.TYPE, PlayerDataMessage::handleDataCommon);
+        //event.register(PlayerDataMapMessage.TYPE, PlayerDataMapMessage::handleDataClient);
     }
 }

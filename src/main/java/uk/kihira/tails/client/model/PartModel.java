@@ -1,20 +1,29 @@
 package uk.kihira.tails.client.model;
 
 import net.minecraft.client.model.Model;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.Collections;
 import java.util.function.Function;
 
-public abstract class PartModel extends Model
+public abstract class PartModel extends Model<AvatarRenderState>
 {
-    public PartModel(Function<ResourceLocation, RenderType> pRenderType)
+    private static final ModelPart EMPTY_ROOT = new ModelPart(Collections.emptyList(), Collections.emptyMap());
+
+    public PartModel(Function<Identifier, RenderType> renderType)
     {
-        super(pRenderType);
+        super(EMPTY_ROOT, renderType);
+    }
+
+    public PartModel(ModelPart root, Function<Identifier, RenderType> renderType)
+    {
+        super(root, renderType);
     }
 
     public abstract void setupAnim(Entity entity, float pLimbSwing, float pLimbSwingAmount, float partialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch);
@@ -29,7 +38,7 @@ public abstract class PartModel extends Model
 
     protected float[] getMotionAngles(Player player, float partialTicks)
     {
-        var deltaMovement = ((AbstractClientPlayer) player).getDeltaMovementLerped(partialTicks);
+        var deltaMovement = player.getDeltaMovement();
        // double xMotion = player.prevChasingPosX + (player.chasingPosX - player.prevChasingPosX) * partialTicks - (player.xOld + (player.position().x - player.xOld) * partialTicks);
        // double yMotion = player.prevChasingPosY + (player.chasingPosY - player.prevChasingPosY) * partialTicks - (player.yOld + (player.position().y - player.yOld) * partialTicks); //Positive when falling, negative when climbing
         //double zMotion = player.prevChasingPosZ + (player.chasingPosZ - player.prevChasingPosZ) * partialTicks - (player.zOld + (player.position().z - player.zOld) * partialTicks);
@@ -58,8 +67,29 @@ public abstract class PartModel extends Model
 
     protected float getTailBob(Player player, float partialTicks)
     {
-        //float cameraYaw = player.oBob + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
-        float cameraYaw = Mth.lerp(partialTicks, player.oBob, player.bob);
-        return Mth.sin(Mth.lerp(partialTicks, player.walkDistO, player.walkDist) * 6F) * 12F * cameraYaw;
+        // 1.21 removed Player's public bob/walkDist fields. Use the walk animation state instead.
+        // We intentionally keep this as a soft approximation since the exact camera bob value is
+        // now computed in the renderer rather than exposed on the entity.
+
+        // Walk phase in radians-ish; position() is usually increasing with movement.
+        float walkPos;
+        float walkSpeed;
+        try
+        {
+            // WalkAnimationState exists on LivingEntity/Player in modern versions.
+            walkPos = player.walkAnimation.position(partialTicks);
+            walkSpeed = player.walkAnimation.speed(partialTicks);
+        }
+        catch (Throwable ignored)
+        {
+            // Fallback for mappings / unexpected API differences.
+            walkPos = (float) player.tickCount + partialTicks;
+            walkSpeed = (float) player.getDeltaMovement().horizontalDistance();
+        }
+
+        // Convert to something close to the old cameraYaw effect.
+        float cameraYaw = Mth.clamp(walkSpeed, 0.0F, 1.0F);
+
+        return Mth.sin(walkPos * 6F) * 12F * cameraYaw;
     }
 }

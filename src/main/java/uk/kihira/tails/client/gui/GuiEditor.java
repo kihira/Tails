@@ -1,17 +1,14 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.layouts.FrameLayout;
-import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Config;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class GuiEditor extends Screen
@@ -57,10 +54,10 @@ public class GuiEditor extends Screen
 
         addRenderableWidget(this.partsListWidget = new PartsListWidget(this, 110, this.height-20, 10));
 
-        this.playerUUID = this.getMinecraft().getGameProfile().getId();
+        this.playerUUID = this.getMinecraft().getGameProfile().id();
 
         // Load outfit or create empty one
-        this.originalOutfit = Config.localOutfit == null ? new Outfit() : Config.localOutfit;
+        this.originalOutfit = Config.CONFIG.getLocalOutfit() == null ? new Outfit() : Config.CONFIG.getLocalOutfit();
 
         // Copy outfit for modifying and set as our current outfit
         // todo should a new UUID be generated?
@@ -142,7 +139,7 @@ public class GuiEditor extends Screen
     @Override
     public void onClose()
     {
-        Tails.proxy.setActiveOutfit(playerUUID, Config.localOutfit);
+        Tails.proxy.setActiveOutfit(playerUUID, Config.CONFIG.getLocalOutfit());
         super.onClose();
     }
 

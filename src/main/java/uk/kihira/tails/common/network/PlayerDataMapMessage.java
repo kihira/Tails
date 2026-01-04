@@ -1,54 +1,41 @@
 package uk.kihira.tails.common.network;
 
 import com.google.common.reflect.TypeToken;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jspecify.annotations.NonNull;
 import uk.kihira.tails.client.outfit.Outfit;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
-import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.UUID;
 
-public record PlayerDataMapMessage(Map<UUID, Outfit> outfitMap) implements CustomPacketPayload
+public record PlayerDataMapMessage(String outfitMap) implements CustomPacketPayload
 {
-    public static final ResourceLocation ID = new ResourceLocation(Tails.MOD_ID, PlayerDataMapMessage.class.getName());
+    public static final CustomPacketPayload.Type<PlayerDataMapMessage> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Tails.MOD_ID, PlayerDataMapMessage.class.getSimpleName().toLowerCase()));
 
-    public PlayerDataMapMessage(FriendlyByteBuf buffer)
-    {
-        //noinspection unchecked
-        this((Map<UUID, Outfit>) Tails.GSON.fromJson(buffer.readUtf(), new TypeToken<Map<UUID, Outfit>>() {}.getType()));
-    }
+    public static final StreamCodec<ByteBuf, PlayerDataMapMessage> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8,
+            PlayerDataMapMessage::outfitMap,
+            PlayerDataMapMessage::new
+    );
 
     @Override
-    public void write(final FriendlyByteBuf buffer)
+    public @NonNull Type<? extends CustomPacketPayload> type()
     {
-        buffer.writeUtf(Tails.GSON.toJson(outfitMap));
+        return TYPE;
     }
 
-    @Nonnull
-    @Override
-    public ResourceLocation id()
+    public static void handleDataClient(final PlayerDataMapMessage data, final IPayloadContext context)
     {
-        return ID;
-    }
-
-    public static void handleDataClient(final PlayerDataMapMessage data, final PlayPayloadContext context)
-    {
-        context.workHandler().submitAsync(() ->
-            {
-                for (Map.Entry<UUID, Outfit> entry : data.outfitMap().entrySet())
-                {
-                    Tails.proxy.setActiveOutfit(entry.getKey(), entry.getValue());
-                }
-            })
-            .exceptionally(e ->
-            {
-                context.packetHandler().disconnect(Component.translatable("tails.networking.failed", e.getMessage()));
-                return null;
-            });
+        var outfitMap = (Map<UUID, Outfit>) Tails.GSON.fromJson(data.outfitMap, new TypeToken<Map<UUID, Outfit>>() {}.getType());
+        for (Map.Entry<UUID, Outfit> entry : outfitMap.entrySet())
+        {
+            Tails.proxy.setActiveOutfit(entry.getKey(), entry.getValue());
+        }
     }
 }

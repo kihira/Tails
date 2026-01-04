@@ -1,11 +1,11 @@
 package uk.kihira.tails.client.outfit;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.client.PartTexture;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +26,7 @@ public class OutfitPart
 
     // Client only fields
     private transient Part part;
-    public transient ResourceLocation textureLoc;
+    public transient Identifier textureLoc;
 
     public OutfitPart(Part part)
     {
@@ -38,7 +38,7 @@ public class OutfitPart
         this.tint = part.tint;
         this.texture = part.textures[0];
 
-        this.textureLoc = new ResourceLocation(Tails.MOD_ID, String.format("texture/parts/%s/%s.png", part.id, this.texture.id()));
+        this.textureLoc = Identifier.fromNamespaceAndPath(Tails.MOD_ID, String.format("texture/parts/%s/%s.png", part.id, this.texture.id()));
     }
 
     /**

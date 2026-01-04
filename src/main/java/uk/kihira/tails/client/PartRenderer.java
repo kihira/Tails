@@ -1,6 +1,6 @@
 package uk.kihira.tails.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -10,10 +10,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
-import uk.kihira.gltf.GltfModel;
-import uk.kihira.tails.client.model.GltfPartModel;
 import uk.kihira.tails.client.outfit.OutfitPart;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayDeque;
@@ -115,21 +113,21 @@ public class PartRenderer
             tintBuffer.put(outfitPart.tint[1]);
             tintBuffer.put(outfitPart.tint[2]);
             tintBuffer.flip();
-            GlStateManager._glUniform3(shader.getUniform("tints"), tintBuffer);
+            //GlStateManager._glUniform3(shader.getUniform("tints"), tintBuffer);
 
             FloatBuffer fb = MemoryUtil.memAllocFloat(16);
             RenderSystem.getModelViewMatrix().get(fb);
-            GlStateManager._glUniformMatrix4(shader.getUniform("ModelViewMat"), false, entry.getValue());
+            //GlStateManager._glUniformMatrix4(shader.getUniform("ModelViewMat"), false, entry.getValue());
 
             fb.clear();
-            RenderSystem.getProjectionMatrix().get(fb);
-            GlStateManager._glUniformMatrix4(shader.getUniform("ProjMat"), false, fb);
+            //RenderSystem.getProjectionMatrix().get(fb);
+            //GlStateManager._glUniformMatrix4(shader.getUniform("ProjMat"), false, fb);
 
             // Load texture and model matrix
             //Minecraft.getInstance().getTextureManager().bindForSetup(outfitPart.textureLoc);
             //GL11.glLoadMatrixf(entry.getValue());
             //RenderSystem.getModelViewMatrix().set(new Matrix4f(entry.getValue()));
-            RenderSystem.applyModelViewMatrix();
+            //RenderSystem.applyModelViewMatrix();
 
             var matrixStack = new Matrix4fStack(16);
             // TODO model.render(matrixStack);
@@ -152,7 +150,7 @@ public class PartRenderer
         //RenderHelper.disableStandardItemLighting();
         //GL11.glLoadMatrixf(modelViewMatrixWorld);
         RenderSystem.getModelViewMatrix().set(modelViewMatrix);
-        RenderSystem.applyModelViewMatrix();
+        //RenderSystem.applyModelViewMatrix();
     }
 
     private void renderDebugGizmo()

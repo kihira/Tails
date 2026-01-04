@@ -9,7 +9,8 @@ import net.minecraft.client.Minecraft;
 
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
+import static net.minecraft.client.gui.components.debug.DebugScreenEntries.getEntry;
+
 public class GuiList<E extends ObjectSelectionList.Entry<E>> extends ObjectSelectionList<E>
 {
     private final IListCallback<E> parent;
@@ -30,19 +31,8 @@ public class GuiList<E extends ObjectSelectionList.Entry<E>> extends ObjectSelec
     }
 
     @Override
-    protected int getScrollbarPosition()
-    {
-        return this.getRowWidth() - 6;
-    }
-
-    @Override
     public int getRowWidth()
     {
         return this.width - 8;
-    }
-
-    public void setDefault()
-    {
-        setSelected(getEntry(0));
     }
 }

@@ -11,7 +11,7 @@ import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.client.outfit.Outfit;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 import java.util.Optional;
 import java.util.UUID;

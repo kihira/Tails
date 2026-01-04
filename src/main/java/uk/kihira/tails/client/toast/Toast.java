@@ -43,16 +43,16 @@ public class Toast
 
             if (opacity > 0)
             {
-                RenderSystem.enableBlend();
+                //RenderSystem.enableBlend();
                 //RenderSystem.disableLighting();
-                RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+                //RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
                 drawBackdrop(graphics, xPos, yPos, width, height);
                 int colour = 0xFFFFFF | (opacity << 24);
                 for (int i = 0; i < message.size(); i++) {
                     String s = message.get(i);
                     graphics.drawString(fontRenderer, s, (xPos + width / 2) - (fontRenderer.width(s) / 2), yPos + 4 + (fontRenderer.lineHeight * i), colour);
                 }
-                RenderSystem.disableBlend();
+                //RenderSystem.disableBlend();
                 //RenderSystem.color4f(0F, 0F, 0F, 1F);
             }
         }
@@ -65,15 +65,15 @@ public class Toast
 
         //Black back
         int colour = (opacity << 24);
-        graphics.fillGradient(0, x + 1, y, x + width - 1, y + height, colour, colour);
-        graphics.fillGradient(0, x, y + 1, x + 1, y + height - 1, colour, colour);
-        graphics.fillGradient(0, x + width - 1, y + 1, x + width, y + height - 1, colour, colour);
+        graphics.fill(x + 1, y, x + width - 1, y + height, colour);
+        graphics.fill(x, y + 1, x + 1, y + height - 1, colour);
+        graphics.fill(x + width - 1, y + 1, x + width, y + height - 1, colour);
 
         //Border
         colour = 0x28025c | (opacity << 24);
-        graphics.fillGradient(0, x + 1, y + 1, x + width - 1, y + 2, colour, colour);
-        graphics.fillGradient(0, x + 1, y + height - 1, x + width - 1, y + height - 2, colour, colour);
-        graphics.fillGradient(0, x + 1, y + 1, x + 2, y + height - 1, colour, colour);
-        graphics.fillGradient(0, x + width - 1, y + 1, x + width - 2, y + height - 1, colour, colour);
+        graphics.fill(x + 1, y + 1, x + width - 1, y + 2, colour);
+        graphics.fill(x + 1, y + height - 1, x + width - 1, y + height - 2, colour);
+        graphics.fill(x + 1, y + 1, x + 2, y + height - 1, colour);
+        graphics.fill(x + width - 1, y + 1, x + width - 2, y + height - 1, colour);
     }
 }

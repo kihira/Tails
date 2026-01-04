@@ -1,30 +1,21 @@
 package uk.kihira.tails.client;
 
-import com.google.common.base.Strings;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.TextureUtil;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-@OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class Shader
 {
@@ -34,8 +25,8 @@ public class Shader
     public Shader(String vertShader, String fragShader)
     {
         Minecraft mc = Minecraft.getInstance();
-        ResourceLocation vertRes = new ResourceLocation(Tails.MOD_ID, "shader/" + vertShader + ".glsl");
-        ResourceLocation fragRes = new ResourceLocation(Tails.MOD_ID, "shader/" + fragShader + ".glsl");
+        Identifier vertRes = Identifier.fromNamespaceAndPath(Tails.MOD_ID, "shader/" + vertShader + ".glsl");
+        Identifier fragRes = Identifier.fromNamespaceAndPath(Tails.MOD_ID, "shader/" + fragShader + ".glsl");
 
         uniforms = new HashMap<>();
 
@@ -64,12 +55,12 @@ public class Shader
         int vert, frag;
 
         vert = GlStateManager.glCreateShader(GL20.GL_VERTEX_SHADER);
-        GlStateManager.glShaderSource(vert, Collections.singletonList(vertSrc));
+        GlStateManager.glShaderSource(vert, vertSrc);
         GlStateManager.glCompileShader(vert);
         checkShaderCompile(vert);
 
         frag = GlStateManager.glCreateShader(GL20.GL_FRAGMENT_SHADER);
-        GlStateManager.glShaderSource(frag, Collections.singletonList(fragSrc));
+        GlStateManager.glShaderSource(frag, fragSrc);
         GlStateManager.glCompileShader(frag);
         checkShaderCompile(frag);
 
@@ -117,9 +108,9 @@ public class Shader
         return uniforms.get(name);
     }
 
-    public void setTexture(ResourceLocation resourceLocation)
+    public void setTexture(Identifier resourceLocation)
     {
-        Minecraft.getInstance().textureManager.bindForSetup(resourceLocation);
+        Minecraft.getInstance().getTextureManager().registerForNextReload(resourceLocation);
     }
 
     /**

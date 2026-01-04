@@ -2,13 +2,10 @@ package uk.kihira.tails.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.world.entity.Entity;
 import org.joml.Matrix4fStack;
 import uk.kihira.gltf.GltfModel;
-
-import java.util.function.Function;
 
 public class GltfPartModel extends PartModel
 {
@@ -16,7 +13,7 @@ public class GltfPartModel extends PartModel
 
     public GltfPartModel(GltfModel model)
     {
-        super(RenderType::entityCutoutNoCull);
+        super(RenderTypes::entityCutoutNoCull);
         this.model = model;
     }
 
@@ -26,12 +23,13 @@ public class GltfPartModel extends PartModel
 
     }
 
-    @Override
+    // todo can no longer override this, will likely need to override ModelPart render method instead
+/*    @Override
     public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, float pRed, float pGreen, float pBlue, float pAlpha)
     {
         // todo need to actually do this properly
         var stack = new Matrix4fStack();
         stack.pushMatrix().set(pPoseStack.last().pose());
         this.model.render(stack);
-    }
+    }*/
 }

@@ -1,22 +1,21 @@
 package uk.kihira.tails.client.gui.controls;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import uk.kihira.tails.client.gui.GuiBaseScreen;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 import java.util.Arrays;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
 public class IconButton extends ExtendedButton
 {
-    public static final ResourceLocation ICONS_TEXTURES = new ResourceLocation(Tails.MOD_ID, "texture/gui/icons.png");
+    public static final Identifier ICONS_TEXTURES = Identifier.fromNamespaceAndPath(Tails.MOD_ID, "texture/gui/icons.png");
     private static final int ICON_WIDTH = 16;
     private static final int ICON_HEIGHT = 16;
 
@@ -31,13 +30,13 @@ public class IconButton extends ExtendedButton
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+    public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
         if (this.visible)
         {
             // TODO int textureOffset = getYImage(this.isHovered);
             var textureOffset = 0;
-            graphics.blit(ICONS_TEXTURES, this.getX(), this.getY(), icon.u, icon.v + (textureOffset * ICON_WIDTH), ICON_WIDTH, ICON_HEIGHT);
+            graphics.blit(ICONS_TEXTURES, this.getX(), this.getY(), ICON_WIDTH, ICON_HEIGHT, icon.u, icon.v + (textureOffset * ICON_WIDTH), ICON_WIDTH, ICON_HEIGHT);
         }
     }
 
@@ -51,9 +50,9 @@ public class IconButton extends ExtendedButton
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button)
+        public boolean mouseClicked(MouseButtonEvent event, boolean scrolling)
         {
-            if (this.visible && GuiBaseScreen.isMouseOver(mouseX, mouseY, this.getX(), this.getY(), this.width, this.height))
+            if (this.visible && GuiBaseScreen.isMouseOver(event.x(), event.y(), this.getX(), this.getY(), this.width, this.height))
             {
                 this.toggled = !this.toggled;
                 return true;
@@ -62,13 +61,13 @@ public class IconButton extends ExtendedButton
         }
 
         @Override
-        public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+        public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
         {
             if (visible && toggled)
             {
-                graphics.setColor(1.f, 1.f, 1.f, 1.f);
-                RenderSystem.enableBlend();
-                graphics.blit(ICONS_TEXTURES, this.getX(), this.getY(), icon.u, icon.v + ICON_WIDTH * 2, ICON_WIDTH, ICON_HEIGHT);
+                //graphics.setColor(1.f, 1.f, 1.f, 1.f);
+                //RenderSystem.enableBlend();
+                graphics.blit(ICONS_TEXTURES, this.getX(), this.getY(), ICON_WIDTH, ICON_HEIGHT, icon.u, icon.v + ICON_WIDTH * 2, ICON_WIDTH, ICON_HEIGHT);
             }
             else
             {

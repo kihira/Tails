@@ -1,26 +1,32 @@
 package uk.kihira.tails.client;
 
+import com.google.common.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
+import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.PauseScreen;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.client.event.ScreenEvent;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import uk.kihira.tails.client.gui.GuiEditor;
+import uk.kihira.tails.client.render.LayerPart;
 import uk.kihira.tails.client.render.LegacyLayerPart;
 import uk.kihira.tails.common.Config;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
+
+import java.util.function.BiConsumer;
 
 public class ClientEventHandler
 {
@@ -28,7 +34,7 @@ public class ClientEventHandler
     public static boolean captureColourUnderMouse = false;
     public static int mouseColourRGBA;
 
-    @EventBusSubscriber(modid = Tails.MOD_ID, bus = Bus.FORGE, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = Tails.MOD_ID, value = Dist.CLIENT)
     public static class Forge
     {
         private static boolean sentPartInfoToServer = false;
@@ -58,8 +64,8 @@ public class ClientEventHandler
         public static void onConnectToServer(ClientPlayerNetworkEvent.LoggingIn event)
         {
             //Add local player texture to map
-            if (Config.localOutfit != null) {
-                Tails.proxy.setActiveOutfit(Minecraft.getInstance().getGameProfile().getId(), Config.localOutfit);
+            if (Config.CONFIG.getLocalOutfit() != null) {
+                Tails.proxy.setActiveOutfit(Minecraft.getInstance().getGameProfile().id(), Config.CONFIG.getLocalOutfit());
             }
         }
 
@@ -69,6 +75,38 @@ public class ClientEventHandler
             Tails.hasRemote = false;
             sentPartInfoToServer = false;
             clearAllPartInfo = true;
+        }
+
+        @SubscribeEvent
+        public static void onExtractLevelRenderState(ExtractLevelRenderStateEvent event)
+        {
+            //event.getRenderState().setRenderData(LayerPart.OUTFIT_KEY, Tails.proxy.getActiveOutfit(event.getRenderState()));
+        }
+
+        @SubscribeEvent
+        public static void onRegisterRenderStateModifiers(RegisterRenderStateModifiersEvent event)
+        {
+            // This should work but type checking is failing
+/*            TypeToken<AvatarRenderer<AbstractClientPlayer>> rendererType = new TypeToken<>() {};
+            BiConsumer<Avatar, AvatarRenderState> modifier = (player, renderState) -> {
+                var uuid = player.getUUID();
+                if (Tails.proxy.hasActiveOutfit(uuid))
+                {
+                    renderState.setRenderData(LayerPart.OUTFIT_KEY, Tails.proxy.getActiveOutfit(uuid));
+                }
+            };
+            event.registerEntityModifier(rendererType, modifier);*/
+
+            TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>> rendererType = new TypeToken<>() {};
+            BiConsumer<LivingEntity, LivingEntityRenderState> modifier = (entity, renderState) -> {
+                var uuid = entity.getUUID();
+                if (entity instanceof AbstractClientPlayer && Tails.proxy.hasActiveOutfit(uuid))
+                {
+                    renderState.setRenderData(LayerPart.OUTFIT_KEY, Tails.proxy.getActiveOutfit(uuid));
+                }
+            };
+
+            event.registerEntityModifier(rendererType, modifier);
         }
 
 /*        @SubscribeEvent
@@ -91,27 +129,30 @@ public class ClientEventHandler
         }*/
 
         @SubscribeEvent
-        public static void onRenderWorldLast(RenderLevelStageEvent event)
+        public static void onRenderWorldLast(RenderLevelStageEvent.AfterLevel event)
         {
-            if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL && partRenderer != null)
+            if (partRenderer != null)
             {
                 partRenderer.doRender(event.getPoseStack());
             }
         }
 
         @SubscribeEvent
-        public static void onRenderTickEnd(TickEvent.RenderTickEvent event)
+        public static void onRenderTickEnd(RenderFrameEvent.Post event)
         {
-            if (event.phase == TickEvent.RenderTickEvent.Phase.END && captureColourUnderMouse)
+            if (captureColourUnderMouse)
             {
-                var image = Screenshot.takeScreenshot(Minecraft.getInstance().getMainRenderTarget());
-                mouseColourRGBA = image.getPixelRGBA(Mth.floor(Minecraft.getInstance().mouseHandler.xpos()), Mth.floor(Minecraft.getInstance().mouseHandler.ypos()));
-                image.close();
+                Screenshot.takeScreenshot(Minecraft.getInstance().getMainRenderTarget(), image ->
+                {
+                    // TODO get pixel returns ARGB
+                    mouseColourRGBA = image.getPixel(Mth.floor(Minecraft.getInstance().mouseHandler.xpos()), Mth.floor(Minecraft.getInstance().mouseHandler.ypos()));
+                    image.close();
+                });
             }
         }
     }
 
-    @EventBusSubscriber(modid = Tails.MOD_ID, bus = Bus.MOD, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = Tails.MOD_ID, value = Dist.CLIENT)
     public static class Mod
     {
         /**
@@ -123,25 +164,17 @@ public class ClientEventHandler
         {
             partRenderer = new PartRenderer();
             {
-                // Default
-                var renderPlayer = (PlayerRenderer) event.getSkin(PlayerSkin.Model.WIDE);
-                var model = renderPlayer.getModel();
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.head, MountPoint.HEAD));
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.body, MountPoint.CHEST));
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftArm, MountPoint.LEFT_ARM));
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightArm, MountPoint.RIGHT_ARM));
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftLeg, MountPoint.LEFT_LEG));
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightLeg, MountPoint.RIGHT_LEG));
-
-                // Slim
-                renderPlayer = event.getSkin(PlayerSkin.Model.SLIM);
-                model = renderPlayer.getModel();
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.head, MountPoint.HEAD));
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.body, MountPoint.CHEST));
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftArm, MountPoint.LEFT_ARM));
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightArm, MountPoint.RIGHT_ARM));
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftLeg, MountPoint.LEFT_LEG));
-                renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightLeg, MountPoint.RIGHT_LEG));
+                for (var modelType : event.getSkins())
+                {
+                    var renderPlayer = event.getPlayerRenderer(modelType);
+                    var model = renderPlayer.getModel();
+                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.head, MountPoint.HEAD));
+                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.body, MountPoint.CHEST));
+                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftArm, MountPoint.LEFT_ARM));
+                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightArm, MountPoint.RIGHT_ARM));
+                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftLeg, MountPoint.LEFT_LEG));
+                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightLeg, MountPoint.RIGHT_LEG));
+                }
             }
         }
     }

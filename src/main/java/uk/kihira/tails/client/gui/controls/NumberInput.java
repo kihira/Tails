@@ -6,6 +6,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -24,7 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 
 // todo tooltips only work for guibuttons
-@OnlyIn(Dist.CLIENT)
 public class NumberInput extends AbstractContainerWidget implements IControl<Float>, ITooltip
 {
     private static final char[] VALID_CHARS = new char[]{'-', '.', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
@@ -103,21 +104,17 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        super.onClick(mouseX, mouseY, button);
-    }
-
-    @Override
     public void setFocused(boolean p_313936_)
     {
         this.numInput.setFocused(p_313936_);
         super.setFocused(p_313936_);
     }
 
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton)
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean scrolling)
     {
         boolean focused = numInput.isFocused();
-        numInput.mouseClicked(mouseX, mouseY, mouseButton);
+        numInput.mouseClicked(event, scrolling);
         // Only update num when input loses focus
         if (focused && !numInput.isFocused()) {
             var value = numInput.getMessage().getString();
@@ -138,13 +135,15 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
 //        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) inc *= CTRL_MOD;
 
         // Increase
-        if (GuiBaseScreen.isMouseOver(mouseX, mouseY, this.getX() + numInput.getWidth(), this.getY(), btnWidth, btnHeight)) {
+        if (GuiBaseScreen.isMouseOver(event.x(), event.y(), this.getX() + numInput.getWidth(), this.getY(), btnWidth, btnHeight)) {
             setValue(num + inc);
         }
         // Decrease
-        else if (GuiBaseScreen.isMouseOver(mouseX, mouseY, this.getX() + numInput.getWidth(), this.getY() + btnHeight, btnWidth, btnHeight)) {
+        else if (GuiBaseScreen.isMouseOver(event.x(), event.y(), this.getX() + numInput.getWidth(), this.getY() + btnHeight, btnWidth, btnHeight)) {
             setValue(num - inc);
         }
+
+        return super.mouseClicked(event, scrolling);
     }
 
     // TODO is this the best way going forwards? will work fine for now
@@ -154,9 +153,10 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
         return List.of(this.numInput);
     }
 
-    public boolean charTyped(char codePoint, int modifiers)
+    @Override
+    public boolean charTyped(CharacterEvent event)
     {
-        return numInput.charTyped(codePoint, modifiers);
+        return numInput.charTyped(event);
     }
 
     @Override
@@ -189,5 +189,19 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
         tooltip.add(String.format("Click arrows to change by %s", increment));
         tooltip.add(String.format("Hold SHIFT to change by %s, CTRL to change by %s", increment * 10f, increment * 0.1f));
         return tooltip; //todo optimise
+    }
+
+    @Override
+    protected int contentHeight()
+    {
+        //TODO
+        return 0;
+    }
+
+    @Override
+    protected double scrollRate()
+    {
+        //TODO
+        return 0;
     }
 }

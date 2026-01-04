@@ -1,41 +1,32 @@
 package uk.kihira.tails.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextKey;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Vector3f;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.PartRenderer;
 import uk.kihira.tails.client.outfit.Outfit;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import java.util.UUID;
-
-@OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
-public class LayerPart<T extends Player, M extends PlayerModel<T>> extends RenderLayer<T, M>
+public class LayerPart extends RenderLayer<AvatarRenderState, PlayerModel>
 {
     private final PartRenderer partRenderer;
     private final MountPoint mountPoint;
     private final boolean mpmCompat = false;
 
-    public LayerPart(LivingEntityRenderer<T, M> entityRender, ModelPart modelPart, PartRenderer partRenderer, MountPoint mountPoint)
+    public LayerPart(RenderLayerParent<AvatarRenderState, PlayerModel> entityRender, ModelPart modelPart, PartRenderer partRenderer, MountPoint mountPoint)
     {
         super(entityRender);
 
@@ -44,39 +35,39 @@ public class LayerPart<T extends Player, M extends PlayerModel<T>> extends Rende
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, T player, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch)
+    public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int packedLight, AvatarRenderState renderState, float yRot, float xRot)
     {
-        var uuid = player.getGameProfile().getId();
-        if (Tails.proxy.hasActiveOutfit(uuid)) {
-            Outfit outfit = Tails.proxy.getActiveOutfit(uuid);
-            if (outfit == null || outfit.parts == null) 
-            {
-                return;
-            }
+        var outfit = renderState.getRenderData(OUTFIT_KEY);
+        if (outfit == null || outfit.parts == null)
+        {
+            return;
+        }
 
-            for (OutfitPart part : outfit.parts) {
-                if (part.mountPoint == mountPoint) {
-                    poseStack.pushPose();
+        for (OutfitPart part : outfit.parts) {
+            if (part.mountPoint == mountPoint) {
+                poseStack.pushPose();
 
-                    if (mountPoint == MountPoint.HEAD && player.isCrouching())
-                    {
-                        poseStack.translate(0f, 0.2F, 0f);
-                    }
-                    if (mpmCompat) 
-                    {
-                        poseStack.rotateAround(Axis.YP.rotationDegrees(netHeadYaw), 0, 0, 0);
-                        poseStack.rotateAround(Axis.XP.rotationDegrees(headPitch), 0, 0, 0);
-                    }
-                    else
-                    {
-                        poseStack.rotateAround(Axis.XP.rotationDegrees(headPitch * 0.017453292F), 0, 0, 0);
-                        poseStack.rotateAround(Axis.YP.rotationDegrees(netHeadYaw * 0.017453292F), 0, 0, 0);
-                    }
-
-                    partRenderer.render(poseStack, part);
-                    poseStack.popPose();
+                if (mountPoint == MountPoint.HEAD && renderState.isCrouching)
+                {
+                    poseStack.translate(0f, 0.2F, 0f);
                 }
+                // todo
+/*                if (mpmCompat)
+                {
+                    poseStack.rotateAround(Axis.YP.rotationDegrees(netHeadYaw), 0, 0, 0);
+                    poseStack.rotateAround(Axis.XP.rotationDegrees(headPitch), 0, 0, 0);
+                }
+                else
+                {
+                    poseStack.rotateAround(Axis.XP.rotationDegrees(headPitch * 0.017453292F), 0, 0, 0);
+                    poseStack.rotateAround(Axis.YP.rotationDegrees(netHeadYaw * 0.017453292F), 0, 0, 0);
+                }*/
+
+                partRenderer.render(poseStack, part);
+                poseStack.popPose();
             }
         }
     }
+
+    public static final ContextKey<Outfit> OUTFIT_KEY = new ContextKey<>(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "outfit"));
 }

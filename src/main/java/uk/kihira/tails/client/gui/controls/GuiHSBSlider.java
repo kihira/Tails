@@ -1,33 +1,23 @@
 package uk.kihira.tails.client.gui.controls;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.gui.widget.ExtendedSlider;
 import uk.kihira.tails.client.Colour;
 import uk.kihira.tails.client.gui.ITooltip;
-import uk.kihira.tails.common.Tails;
-import net.minecraft.client.Minecraft;
+import uk.kihira.tails.Tails;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class GuiHSBSlider extends ExtendedSlider implements ITooltip
 {
-    private static final ResourceLocation SLIDER_TEXTURE = new ResourceLocation(Tails.MOD_ID, "texture/gui/controls/slider_hue.png");
+    private static final Identifier SLIDER_TEXTURE = Identifier.fromNamespaceAndPath(Tails.MOD_ID, "texture/gui/controls/slider_hue.png");
     
     private final HSBSliderType type;
     private final IHSBSliderCallback callback;
@@ -52,7 +42,7 @@ public class GuiHSBSlider extends ExtendedSlider implements ITooltip
             graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), Colour.BLACK);
 
             // Needed so the saturation overlapping textures works
-            RenderSystem.enableBlend();
+            //RenderSystem.enableBlend();
 
             if (this.type == HSBSliderType.SATURATION)
             {
@@ -60,9 +50,9 @@ public class GuiHSBSlider extends ExtendedSlider implements ITooltip
                 var red = (float) hueColour.getRed() / 255f;
                 var green = (float) hueColour.getGreen() / 255f;
                 var blue = (float) hueColour.getBlue() / 255f;
-                graphics.setColor(red, green, blue, 1.0F);
-                graphics.blit(SLIDER_TEXTURE, this.getX() + 1, this.getY() + 1, this.width - 2, this.height - 2,0, 176, 256, 20, 256, 256);
-                graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+                //graphics.setColor(red, green, blue, 1.0F);
+                //graphics.blit(SLIDER_TEXTURE, this.getX() + 1, this.getY() + 1, this.width - 2, this.height - 2,0, 176, 256, 20, 256, 256);
+                //graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
             }
             
             int srcY = 236;
@@ -82,18 +72,18 @@ public class GuiHSBSlider extends ExtendedSlider implements ITooltip
                 var red = (float) hueColour.getRed() / 255f;
                 var green = (float) hueColour.getGreen() / 255f;
                 var blue = (float) hueColour.getBlue() / 255f;
-                graphics.setColor(red, green, blue, 1F);
-                graphics.blit(SLIDER_TEXTURE, this.getX() + 1, this.getY() + 1, this.width - 2, this.height - 2,0, srcY, 231, 20, 256, 256);
-                graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-            } 
+               //graphics.setColor(red, green, blue, 1F);
+                //graphics.blit(SLIDER_TEXTURE, this.getX() + 1, this.getY() + 1, this.width - 2, this.height - 2, srcY, 231, 20, 256, 256);
+                //graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+            }
             else
             {
-                graphics.blit(SLIDER_TEXTURE, this.getX() + 1, this.getY() + 1, this.width - 2, this.height - 2,0, srcY, 256, 20, 256, 256);
+                //graphics.blit(SLIDER_TEXTURE, this.getX() + 1, this.getY() + 1, this.width - 2, this.height - 2, srcY, 256, 20, 256, 256);
             }
 
             graphics.enableScissor(this.getX(), this.getY(), this.getRight(), this.getBottom());
-            graphics.blit(SLIDER_TEXTURE, this.getX() + (int)(this.value * (double)(this.width - 3) - 2), this.getY(), 0, 0, 7, 4);
-            graphics.blit(SLIDER_TEXTURE, this.getX() + (int)(this.value * (double)(this.width - 3) - 2), this.getY() + this.height - 4, 7, 0, 7, 4);
+            graphics.blit(SLIDER_TEXTURE, this.getX() + (int)(this.value * (double)(this.width - 3) - 2), this.getY(), 7, 4, 0, 0, 7, 4);
+            graphics.blit(SLIDER_TEXTURE, this.getX() + (int)(this.value * (double)(this.width - 3) - 2), this.getY() + this.height - 4, 7, 4, 7, 0, 7, 4);
             graphics.disableScissor();
         }
     }
@@ -150,17 +140,7 @@ public class GuiHSBSlider extends ExtendedSlider implements ITooltip
     
     private void drawTexturedModalRectScaled(GuiGraphics graphics, int x, int y, int u, int v, int srcWidth, int srcHeight, int tarWidth, int tarHeight)
     {
-        Minecraft.getInstance().textureManager.bindForSetup(SLIDER_TEXTURE);
-
-        float f = 0.00390625F;
-        float f1 = 0.00390625F;
-        BufferBuilder renderer = Tesselator.getInstance().getBuilder();
-        renderer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        renderer.vertex(x + 0, y + tarHeight, 0).uv(((float) (u + 0) * f), ((float) (v + srcHeight) * f1)).endVertex();
-        renderer.vertex(x + tarWidth, y + tarHeight, 0).uv(((float) (u + srcWidth) * f), ((float) (v + srcHeight) * f1)).endVertex();
-        renderer.vertex(x + tarWidth, y + 0, 0).uv(((float) (u + srcWidth) * f), ((float) (v + 0) * f1)).endVertex();
-        renderer.vertex(x + 0, y + 0, 0).uv(((float) (u + 0) * f), ((float) (v + 0) * f1)).endVertex();
-        Tesselator.getInstance().end();
+        graphics.blit(SLIDER_TEXTURE, x, y, tarWidth, tarHeight, u, v, srcWidth, srcHeight);
     }
 
     @Override

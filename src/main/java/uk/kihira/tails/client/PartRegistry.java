@@ -1,7 +1,7 @@
 package uk.kihira.tails.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +11,7 @@ import uk.kihira.gltf.GltfModel;
 import uk.kihira.tails.client.model.FoxTailModel;
 import uk.kihira.tails.client.model.GltfPartModel;
 import uk.kihira.tails.client.model.PartModel;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -258,7 +258,7 @@ public final class PartRegistry
      */
     public static CompletableFuture<Void> loadAllPartsFromResources()
     {
-        var resLoc = new ResourceLocation(Tails.MOD_ID, "parts.json");
+        var resLoc = Identifier.fromNamespaceAndPath(Tails.MOD_ID, "parts.json");
         try (var is = Minecraft.getInstance().getResourceManager().getResource(resLoc).get().open())
         {
             var reader = new InputStreamReader(is);
@@ -284,14 +284,14 @@ public final class PartRegistry
     private static void loadPartFromResources(final UUID uuid)
     {
         var resourceManager = Minecraft.getInstance().getResourceManager();
-        var resLoc = new ResourceLocation(Tails.MOD_ID, "part/" + uuid + ".json");
+        var resLoc = Identifier.fromNamespaceAndPath(Tails.MOD_ID, "part/" + uuid + ".json");
         try (InputStream is = resourceManager.getResource(resLoc).get().open())
         {
             InputStreamReader reader = new InputStreamReader(is);
             registerPart(Tails.GSON.fromJson(reader, Part.class));
 
             // Copy model to cache
-            var modelResLoc = new ResourceLocation(Tails.MOD_ID, "model/" + uuid + ".glb");
+            var modelResLoc = Identifier.fromNamespaceAndPath(Tails.MOD_ID, "model/" + uuid + ".glb");
             var path = Paths.get(Minecraft.getInstance().gameDirectory.getPath(), MODEL_CACHE_FOLDER, uuid + ".glb");
             try (var modelStream = resourceManager.getResource(modelResLoc).get().open();
                  var outputStream = new FileOutputStream(path.toFile()))

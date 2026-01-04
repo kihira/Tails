@@ -2,15 +2,14 @@ package uk.kihira.tails.client.toast;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public final class ToastManager
 {
@@ -46,18 +45,15 @@ public final class ToastManager
     }
 
     @SubscribeEvent
-    public void onClientTickPost(TickEvent.ClientTickEvent event)
+    public void onClientTickPost(ClientTickEvent.Post event)
     {
-        if (event.phase == TickEvent.Phase.END)
-        {
-            this.toasts.removeIf(toast -> toast.time-- <= 0);
-        }
+        this.toasts.removeIf(toast -> toast.time-- <= 0);
     }
 
     @SubscribeEvent
     public void onDrawScreenPost(ScreenEvent.Render.Post event)
     {
-        ProfilerFiller profiler = Minecraft.getInstance().getProfiler();
+        ProfilerFiller profiler = Profiler.get();
         profiler.push("toastNotification");
 
         for (Toast toast : toasts)

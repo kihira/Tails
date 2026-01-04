@@ -1,10 +1,12 @@
 package uk.kihira.tails.client.gui;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -58,20 +60,35 @@ class PreviewPanel extends Panel<GuiEditor>
     }
 
     @Override
-    public boolean mouseClicked(double p_313764_, double p_313832_, int p_313688_)
+    public boolean mouseClicked(MouseButtonEvent p_446698_, boolean p_435133_)
     {
         return true;
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY)
+    public boolean mouseDragged(MouseButtonEvent event, double p_313749_, double p_313887_)
     {
-        if (button == 0)
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT)
         {
-            this.yaw -= dragX * .1f;
-            this.pitch -= dragY * .1f;
+            //this.yaw -= dragX * .1f;
+            //this.pitch -= dragY * .1f;
         }
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+
+        return super.mouseDragged(event, p_313749_, p_313887_);
+    }
+
+    @Override
+    protected int contentHeight()
+    {
+        //todo
+        return 0;
+    }
+
+    @Override
+    protected double scrollRate()
+    {
+        //todo
+        return 0;
     }
 
     @Override

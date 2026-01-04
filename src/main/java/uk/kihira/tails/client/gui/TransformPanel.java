@@ -30,19 +30,19 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
 
     private final int spacing = 15;
 
-    private NumberInput xRotInput;
-    private NumberInput yRotInput;
-    private NumberInput zRotInput;
+    private final NumberInput xRotInput;
+    private final NumberInput yRotInput;
+    private final NumberInput zRotInput;
     
-    private NumberInput xPosInput;
-    private NumberInput yPosInput;
-    private NumberInput zPosInput;
+    private final NumberInput xPosInput;
+    private final NumberInput yPosInput;
+    private final NumberInput zPosInput;
     
-    private NumberInput xScaleInput;
-    private NumberInput yScaleInput;
-    private NumberInput zScaleInput;
+    private final NumberInput xScaleInput;
+    private final NumberInput yScaleInput;
+    private final NumberInput zScaleInput;
 
-    private ExtendedButton mountPointButton;
+    private final ExtendedButton mountPointButton;
 
     TransformPanel(GuiEditor parent, int x, int y, int width, int height)
     {
@@ -146,5 +146,19 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         xScaleInput.setValue(part.scale[0]);
         yScaleInput.setValue(part.scale[1]);
         zScaleInput.setValue(part.scale[2]);
+    }
+
+    @Override
+    protected int contentHeight()
+    {
+        //todo
+        return 0;
+    }
+
+    @Override
+    protected double scrollRate()
+    {
+        //todo
+        return 0;
     }
 }

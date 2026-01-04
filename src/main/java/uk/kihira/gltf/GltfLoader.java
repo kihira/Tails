@@ -6,7 +6,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
@@ -18,7 +18,7 @@ import uk.kihira.gltf.spec.Accessor;
 import uk.kihira.gltf.spec.BufferView;
 import uk.kihira.gltf.spec.MeshPrimitive;
 import uk.kihira.tails.common.ByteBufferInputStream;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -130,7 +130,7 @@ public class GltfLoader
         });
 
         // Load textures
-        ArrayList<ResourceLocation> textures = new ArrayList<>();
+        ArrayList<Identifier> textures = new ArrayList<>();
         if (root.has("images")) 
         {
             root.get("images").getAsJsonArray().forEach(imageJson -> 
@@ -139,12 +139,13 @@ public class GltfLoader
                 ByteBuffer bufferView = bufferViews.get(imageObj.get("bufferView").getAsInt()).getData();
                 String mimeType = imageObj.get("mimeType").getAsString();
                 String name = getName(imageObj, "Image_" + textures.size());
+                var identifier = Identifier.fromNamespaceAndPath(Tails.MOD_ID, name);
 
                 try (ByteBufferInputStream is = new ByteBufferInputStream(bufferView)) 
                 {
-                    DynamicTexture texture = new DynamicTexture(NativeImage.read(is));
+                    DynamicTexture texture = new DynamicTexture(identifier::toString, NativeImage.read(is));
                     // TODO we're assuming that we have one texture, and giving it the same name/id as the main model file. This is the same one as defined in the part definition file
-                    ResourceLocation texResLoc = new ResourceLocation( Tails.MOD_ID, FilenameUtils.getBaseName(""/*file.getName()*/));
+                    Identifier texResLoc = Identifier.fromNamespaceAndPath( Tails.MOD_ID, FilenameUtils.getBaseName(""/*file.getName()*/));
 
                     Minecraft.getInstance().getTextureManager().register(texResLoc, texture);
                     textures.add(texResLoc);

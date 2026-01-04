@@ -5,9 +5,10 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import uk.kihira.tails.client.toast.ToastManager;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.common.Config;
+import uk.kihira.tails.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
 
 public class ControlsPanel extends Panel<GuiEditor>
@@ -46,10 +47,24 @@ public class ControlsPanel extends Panel<GuiEditor>
     {
         var outfit = parent.getOutfit();
         //Update part info, set local and send it to the server
-        Tails.setLocalOutfit(outfit);
-        Tails.proxy.setActiveOutfit(this.minecraft().getGameProfile().getId(), outfit);
-        PacketDistributor.SERVER.noArg().send(new PlayerDataMessage(this.minecraft().getGameProfile().getId(), outfit, false));
+        Config.CONFIG.setLocalOutfit(outfit);
+        Tails.proxy.setActiveOutfit(this.minecraft().getGameProfile().id(), outfit);
+        ClientPacketDistributor.sendToServer(new PlayerDataMessage(this.minecraft().getGameProfile().id(), outfit, false));
         ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, /*TextFormatting.GREEN + */"Saved!");
         this.minecraft().setScreen(null);
+    }
+
+    @Override
+    protected int contentHeight()
+    {
+        // todo
+        return 0;
+    }
+
+    @Override
+    protected double scrollRate()
+    {
+        // todo
+        return 0;
     }
 }

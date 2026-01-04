@@ -1,24 +1,20 @@
 package uk.kihira.tails.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 public class FoxTailModel extends PartModel
 {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Tails.MOD_ID, "foxtail"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "foxtail"), "main");
     private final ModelPart tailBase;
     private final ModelPart tail1;
     private final ModelPart tail2;
@@ -28,7 +24,7 @@ public class FoxTailModel extends PartModel
 
     public FoxTailModel(ModelPart root)
     {
-        super(RenderType::entityCutoutNoCull);
+        super(root.getChild("tailBase"), RenderTypes::entityCutoutNoCull);
         this.tailBase = root.getChild("tailBase");
         this.tail1 = tailBase.getChild("tail1");
         this.tail2 = tail1.getChild("tail2");
@@ -58,12 +54,6 @@ public class FoxTailModel extends PartModel
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
-    {
-        tailBase.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
-
-    @Override
     public void setupAnim(Entity entity, float pLimbSwing, float pLimbSwingAmount, float partialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch)
     {
         var timestep = getAnimationTime(AVERAGE_SPEED, entity);
@@ -74,7 +64,7 @@ public class FoxTailModel extends PartModel
         var zAngleOffset = 0f;
         if (entity instanceof AbstractClientPlayer player)
         {
-            var deltaMovement = player.getDeltaMovementLerped(partialTick);
+            var deltaMovement = player.getDeltaMovement();
 
             xAngleOffset = (float) deltaMovement.horizontalDistance(); // Good for when running
             //xAngleOffset = (float) -deltaMovement.y * 0.5f; // Need to invert

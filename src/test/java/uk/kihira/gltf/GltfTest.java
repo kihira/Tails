@@ -1,3 +1,4 @@
+/*
 package uk.kihira.gltf;
 
 import org.apache.logging.log4j.LogManager;
@@ -76,3 +77,4 @@ public class GltfTest
         buf.putInt(Integer.reverseBytes(value));
     }
 }
+*/

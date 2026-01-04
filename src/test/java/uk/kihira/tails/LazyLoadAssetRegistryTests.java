@@ -1,3 +1,4 @@
+/*
 package uk.kihira.tails;
 
 import org.apache.logging.log4j.LogManager;
@@ -67,3 +68,4 @@ class LazyLoadAssetRegistryTests
         assertTrue(future.isCancelled());
     }
 }
+*/

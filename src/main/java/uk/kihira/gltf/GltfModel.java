@@ -1,7 +1,7 @@
 package uk.kihira.gltf;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix4fStack;
 import uk.kihira.gltf.animation.Animation;
 import uk.kihira.tails.common.IDisposable;
@@ -14,9 +14,9 @@ public class GltfModel implements IDisposable
     private final ArrayList<Node> allNodes;
     private final ArrayList<Node> rootNodes;
     private final HashMap<String, Animation> animations;
-    private final ArrayList<ResourceLocation> textures;
+    private final ArrayList<Identifier> textures;
 
-    public GltfModel(ArrayList<Node> allNodes, ArrayList<Node> rootNodes, HashMap<String, Animation> animations, ArrayList<ResourceLocation> textures) {
+    public GltfModel(ArrayList<Node> allNodes, ArrayList<Node> rootNodes, HashMap<String, Animation> animations, ArrayList<Identifier> textures) {
         this.allNodes = allNodes;
         this.rootNodes = rootNodes;
         this.animations = animations;

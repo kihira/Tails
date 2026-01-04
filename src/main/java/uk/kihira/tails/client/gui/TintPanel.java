@@ -1,13 +1,15 @@
 package uk.kihira.tails.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
@@ -19,14 +21,11 @@ import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.HexFormat;
 import java.util.Optional;
 
@@ -128,7 +127,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
-        RenderSystem.enableBlend();
+        //todo RenderSystem.enableBlend();
         graphics.fill(this.getX(), this.getY(), this.getRight(), this.getY() + EDIT_PANEL_TOP, Colour.LIGHT_GRAY);
         graphics.fill(this.getX(), this.getY() + EDIT_PANEL_TOP, this.getRight(), this.getBottom(), Colour.DARK_GREY);
         graphics.drawString(font(), Component.translatable("gui.tint"), this.getX() + 5, this.getY() + 3, GuiEditor.TEXT_COLOUR);
@@ -153,8 +152,8 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             final int x = mouseX + COLOUR_PREVIEW_OFFSET;
             final int y = mouseY + COLOUR_PREVIEW_OFFSET;
             final int colour = getColourAtPoint(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos());
-            graphics.fill(x - 1, y - 1, x + COLOUR_PREVIEW_SIZE + 1, y + COLOUR_PREVIEW_SIZE + 1, 1000, Colour.BLACK);
-            graphics.fill(x, y, x + COLOUR_PREVIEW_SIZE, y + COLOUR_PREVIEW_SIZE, 1001, colour);
+            graphics.fill(x - 1, y - 1, x + COLOUR_PREVIEW_SIZE + 1, y + COLOUR_PREVIEW_SIZE + 1, Colour.BLACK);
+            graphics.fill(x, y, x + COLOUR_PREVIEW_SIZE, y + COLOUR_PREVIEW_SIZE, colour);
         }
 
         super.renderWidget(graphics, mouseX, mouseY, partialTicks);
@@ -192,23 +191,23 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers)
+    public boolean charTyped(CharacterEvent event)
     {
-        if (codePoint == GLFW.GLFW_KEY_ESCAPE && this.selectingColour)
+        if (event.codepoint() == GLFW.GLFW_KEY_ESCAPE && this.selectingColour)
         {
             setSelectingColour(false);
             return true;
         }
         else
         {
-            return super.charTyped(codePoint, modifiers);
+            return super.charTyped(event);
         }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
+    public boolean mouseClicked(MouseButtonEvent event, boolean scrolling)
     {
-        if (this.selectingColour && mouseButton == 0)
+        if (this.selectingColour && event.button() == InputConstants.MOUSE_BUTTON_LEFT)
         {
             this.currTintColour = getColourAtPoint(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos()); //Ignore alpha
             setSelectingColour(false);
@@ -217,8 +216,8 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
         else
         {
-            this.hexText.mouseClicked(mouseX, mouseY, mouseButton);
-            return super.mouseClicked(mouseX, mouseY, mouseButton);
+            this.hexText.mouseClicked(event, scrolling);
+            return super.mouseClicked(event, scrolling);
         }
     }
 
@@ -279,7 +278,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         var r = rgba & 0xFF;
         var g = rgba >> 8 & 0xFF;
         var b = rgba >> 16 & 0xFF;
-        return FastColor.ARGB32.color(255, r, g, b);
+        return ARGB.color(255, r, g, b);
     }
 
     private void setSelectingColour(boolean selectingColour)
@@ -289,11 +288,11 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
         if (selectingColour)
         {
-            GLFW.glfwSetCursor(Minecraft.getInstance().getWindow().getWindow(), cursor);
+            GLFW.glfwSetCursor(Minecraft.getInstance().getWindow().handle(), cursor);
         }
         else
         {
-            GLFW.glfwSetCursor(Minecraft.getInstance().getWindow().getWindow(), 0);
+            GLFW.glfwSetCursor(Minecraft.getInstance().getWindow().handle(), 0);
         }
     }
 
@@ -379,6 +378,20 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
     }
 
+    @Override
+    protected int contentHeight()
+    {
+        //todo
+        return 0;
+    }
+
+    @Override
+    protected double scrollRate()
+    {
+        //todo
+        return 0;
+    }
+
     private class TintButton extends ExtendedButton
     {
         static final int BTN_SIZE = 20;
@@ -397,7 +410,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
 
         @Override
-        public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
             if (currTintEdit == tintId)
             {

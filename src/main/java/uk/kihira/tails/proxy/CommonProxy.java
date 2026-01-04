@@ -2,7 +2,7 @@ package uk.kihira.tails.proxy;
 
 import net.neoforged.neoforge.network.PacketDistributor;
 import uk.kihira.tails.client.outfit.Outfit;
-import uk.kihira.tails.common.Tails;
+import uk.kihira.tails.Tails;
 import uk.kihira.tails.common.network.*;
 
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class CommonProxy
     public void setActiveOutfit(UUID uuid, Outfit outfit) 
     {
         this.activeOutfits.put(uuid, outfit);
-        Tails.LOGGER.debug(String.format("Added outfit for %s: %s", uuid.toString(), outfit));
+        Tails.LOGGER.debug("Added outfit for {}: {}", uuid.toString(), outfit);
     }
 
     public void removeActiveOutfit(UUID uuid) 
@@ -26,10 +26,10 @@ public class CommonProxy
             //if (FMLCommonHandler.instance().getEffectiveSide().isServer())
             {
                 //todo Tell client to remove textures
-                PacketDistributor.ALL.noArg().send(new PlayerDataMessage(uuid, this.activeOutfits.get(uuid), true));
+                PacketDistributor.sendToAllPlayers(new PlayerDataMessage(uuid, this.activeOutfits.get(uuid), true));
             }
             this.activeOutfits.remove(uuid);
-            Tails.LOGGER.debug(String.format("Removed part data for %s", uuid.toString()));
+            Tails.LOGGER.debug("Removed part data for {}", uuid.toString());
         }
     }
 
