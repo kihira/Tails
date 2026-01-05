@@ -38,14 +38,12 @@ public abstract class PartModel extends PlayerModel
         //setupAnim(null, 0, renderState.swimAmount, renderState.partialTick, renderState.ageInTicks, 0, 0);
     }
 
-    public abstract void setupAnim(Entity entity, float pLimbSwing, float pLimbSwingAmount, float partialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch);
-
-    protected static float getAnimationTime(double cycleTime, float ageInTicks)
+    protected static float getAnimationTime(double cycleTime, long offset)
     {
         //Returns between 0-360 in radians depending on far in the "cycle" we are.
         //TODO could probably use ageInTicks as an alternative in the future
         // This currently needs to have cycleTime as a double, most likely due to precision as otherwise the number effectively doesn't update
-        return ((float)(((ageInTicks + System.currentTimeMillis()) % cycleTime) / cycleTime) * 2f * Mth.PI);
+        return ((float)(((offset + System.currentTimeMillis()) % cycleTime) / cycleTime) * 2f * Mth.PI);
     }
 
     protected float[] getMotionAngles(Player player, float partialTicks)
