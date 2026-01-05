@@ -52,11 +52,6 @@ public class Tails
         {
             throw new RuntimeException(e);
         }
-
-        // todo temp
-        var outfit = new Outfit();
-        outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19")).get()));
-        Config.CONFIG.setLocalOutfit(outfit);
     }
 
     private void setup(final FMLCommonSetupEvent event)

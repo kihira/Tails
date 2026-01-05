@@ -1,9 +1,12 @@
 package uk.kihira.tails.client.model;
 
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -12,28 +15,37 @@ import net.minecraft.world.entity.player.Player;
 import java.util.Collections;
 import java.util.function.Function;
 
-public abstract class PartModel extends Model<AvatarRenderState>
+// ties us to only rendering on players but should be fine
+public abstract class PartModel extends PlayerModel
 {
     private static final ModelPart EMPTY_ROOT = new ModelPart(Collections.emptyList(), Collections.emptyMap());
 
-    public PartModel(Function<Identifier, RenderType> renderType)
+    public PartModel()
     {
-        super(EMPTY_ROOT, renderType);
+        super(EMPTY_ROOT, false);
     }
 
-    public PartModel(ModelPart root, Function<Identifier, RenderType> renderType)
+    public PartModel(ModelPart root)
     {
-        super(root, renderType);
+        super(root, false);
+    }
+
+    @Override
+    public void setupAnim(AvatarRenderState renderState)
+    {
+        super.setupAnim(renderState);
+
+        //setupAnim(null, 0, renderState.swimAmount, renderState.partialTick, renderState.ageInTicks, 0, 0);
     }
 
     public abstract void setupAnim(Entity entity, float pLimbSwing, float pLimbSwingAmount, float partialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch);
 
-    protected static float getAnimationTime(double cycleTime, Entity entity)
+    protected static float getAnimationTime(double cycleTime, float ageInTicks)
     {
         //Returns between 0-360 in radians depending on far in the "cycle" we are.
         //TODO could probably use ageInTicks as an alternative in the future
         // This currently needs to have cycleTime as a double, most likely due to precision as otherwise the number effectively doesn't update
-        return ((float)(((entity.hashCode() + System.currentTimeMillis()) % cycleTime) / cycleTime) * 2f * Mth.PI);
+        return ((float)(((ageInTicks + System.currentTimeMillis()) % cycleTime) / cycleTime) * 2f * Mth.PI);
     }
 
     protected float[] getMotionAngles(Player player, float partialTicks)

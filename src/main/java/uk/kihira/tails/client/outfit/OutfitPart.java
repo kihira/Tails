@@ -26,7 +26,7 @@ public class OutfitPart
 
     // Client only fields
     private transient Part part;
-    public transient Identifier textureLoc;
+    public Identifier textureLoc;
 
     public OutfitPart(Part part)
     {

@@ -70,7 +70,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         this.addChild(new TintButton(this.getX() + 40, this.getY() + tintButtonY, TINT_2_BUTTON_ID, Colour.RED, this::onTintButtonPushed));
         this.addChild(new TintButton(this.getX() + 70, this.getY() + tintButtonY, TINT_3_BUTTON_ID, Colour.GREEN, this::onTintButtonPushed));
 
-        //Tint edit pane
+        //Tint edit panel
         this.addChild(hexText = new EditBox(this.font(), this.getX() + 30, this.getY() + EDIT_PANEL_TOP + 20, 73, 10, Component.empty()));
         hexText.setMaxLength(6);
         hexText.setValue(Integer.toHexString(currTintColour));
@@ -87,7 +87,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             }
             catch (NumberFormatException ignored) { }
 
-            updateTints(false);
+            //updateTints(false);
         });
 
         //RGB sliders
@@ -242,7 +242,7 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             hsbvals[source.getType().ordinal()] = (float) sliderValue;
             this.currTintColour = Color.getHSBColor(hsbvals[0], hsbvals[1], hsbvals[2]).getRGB();
         }
-        updateTints(true);
+        //updateTints(true);
     }
 
     /**

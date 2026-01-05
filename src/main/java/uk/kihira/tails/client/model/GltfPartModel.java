@@ -13,7 +13,7 @@ public class GltfPartModel extends PartModel
 
     public GltfPartModel(GltfModel model)
     {
-        super(RenderTypes::entityCutoutNoCull);
+        super();
         this.model = model;
     }
 

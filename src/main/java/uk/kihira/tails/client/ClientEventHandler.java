@@ -21,12 +21,18 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import uk.kihira.tails.client.gui.GuiEditor;
+import uk.kihira.tails.client.model.FoxTailModel;
+import uk.kihira.tails.client.outfit.Outfit;
+import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.render.LayerPart;
 import uk.kihira.tails.client.render.LegacyLayerPart;
 import uk.kihira.tails.common.Config;
 import uk.kihira.tails.Tails;
 
+import java.util.UUID;
 import java.util.function.BiConsumer;
+
+import static uk.kihira.tails.client.PartRegistry.registerPartWithModel;
 
 public class ClientEventHandler
 {
@@ -155,6 +161,13 @@ public class ClientEventHandler
     @EventBusSubscriber(modid = Tails.MOD_ID, value = Dist.CLIENT)
     public static class Mod
     {
+
+        @SubscribeEvent
+        public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event)
+        {
+            event.registerLayerDefinition(FoxTailModel.LAYER_LOCATION, FoxTailModel::createBodyLayer);
+        }
+
         /**
          * Sets up the various part renders on the player model.
          * Renderers used depends upon legacy setting
@@ -162,20 +175,38 @@ public class ClientEventHandler
         @SubscribeEvent
         public static void addLayersEvent(EntityRenderersEvent.AddLayers event)
         {
+            registerPartWithModel(
+                    new Part(
+                            UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19"),
+                            "Fluffy Tail",
+                            "Kihira",
+                            MountPoint.CHEST,
+                            new float[] {0, 1, 0},
+                            new float[] {0, 0, 0},
+                            new float[] {1, 1, 1},
+                            new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
+                            new PartTexture[]{ new PartTexture(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19"), "Default", "Kihira") }),
+                    new FoxTailModel(event.getEntityModels().bakeLayer(FoxTailModel.LAYER_LOCATION)));
+
             partRenderer = new PartRenderer();
             {
                 for (var modelType : event.getSkins())
                 {
                     var renderPlayer = event.getPlayerRenderer(modelType);
                     var model = renderPlayer.getModel();
-                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.head, MountPoint.HEAD));
-                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.body, MountPoint.CHEST));
-                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftArm, MountPoint.LEFT_ARM));
-                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightArm, MountPoint.RIGHT_ARM));
-                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftLeg, MountPoint.LEFT_LEG));
-                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightLeg, MountPoint.RIGHT_LEG));
+                    //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.head, event.getContext().getModelSet(), MountPoint.HEAD));
+                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.body, event.getContext().getModelSet(), MountPoint.CHEST));
+                    //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftArm, event.getContext().getModelSet(), MountPoint.LEFT_ARM));
+                    //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightArm, event.getContext().getModelSet(), MountPoint.RIGHT_ARM));
+                    //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftLeg, event.getContext().getModelSet(), MountPoint.LEFT_LEG));
+                    //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightLeg, event.getContext().getModelSet(), MountPoint.RIGHT_LEG));
                 }
             }
+
+            // todo temp
+            var outfit = new Outfit();
+            outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19")).get()));
+            Config.CONFIG.setLocalOutfit(outfit);
         }
     }
 }

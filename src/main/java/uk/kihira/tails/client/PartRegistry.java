@@ -1,6 +1,10 @@
 package uk.kihira.tails.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.resources.Identifier;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +46,7 @@ public final class PartRegistry
 
     static
     {
-        registerPartWithModel(
+/*        registerPartWithModel(
                 new Part(
                     UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19"),
                     "Fluffy Tail",
@@ -53,7 +57,7 @@ public final class PartRegistry
                     new float[] {1, 1, 1},
                     new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
                     new PartTexture[]{ new PartTexture(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19"), "Default", "Kihira") }),
-                new FoxTailModel(FoxTailModel.createBodyLayer().bakeRoot()));
+                new FoxTailModel(modelSet.bakeLayer(FoxTailModel.LAYER_LOCATION)));*/
     }
 
     /**
@@ -310,7 +314,7 @@ public final class PartRegistry
         parts.put(part.id, part);
     }
 
-    private static <M extends PartModel> void registerPartWithModel(Part part, M model)
+    public static <M extends PartModel> void registerPartWithModel(Part part, M model)
     {
         registerPart(part);
         models.put(part.id, model);
