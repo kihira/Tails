@@ -63,12 +63,11 @@ public class LegacyLayerPart extends RenderLayer<AvatarRenderState, PlayerModel>
                 //poseStack.rotateAround(Axis.XP.rotationDegrees(headPitch * 0.017453292F), 0, 0, 0);
                 //poseStack.rotateAround(Axis.YP.rotationDegrees(netHeadYaw * 0.017453292F), 0, 0, 0);
 
- /*               this.getParentModel().body.translateAndRotate(poseStack);
                 poseStack.translate(part.mountOffset[0], -part.mountOffset[1], part.mountOffset[2]);
                 poseStack.rotateAround(Axis.XP.rotationDegrees(part.rotation[0]), 0, 0, 0);
                 poseStack.rotateAround(Axis.YP.rotationDegrees(part.rotation[1]), 0, 0, 0);
                 poseStack.rotateAround(Axis.ZP.rotationDegrees(part.rotation[2]), 0, 0, 0);
-                poseStack.scale(part.scale[0], part.scale[1], part.scale[2]);*/
+                poseStack.scale(part.scale[0], part.scale[1], part.scale[2]);
 
                 // TODO should this ever be null?
                 if (part.textureLoc != null)

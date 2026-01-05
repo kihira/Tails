@@ -17,12 +17,6 @@ public class GltfPartModel extends PartModel
         this.model = model;
     }
 
-    @Override
-    public void setupAnim(Entity entity, float pLimbSwing, float pLimbSwingAmount, float partialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch)
-    {
-
-    }
-
     // todo can no longer override this, will likely need to override ModelPart render method instead
 /*    @Override
     public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, float pRed, float pGreen, float pBlue, float pAlpha)
