@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class GuiEditor extends Screen
 {
-    static final int TEXT_COLOUR = 0xFFFFFF;
+    static final int TEXT_COLOUR = -1;
     static final int HOZ_LINE_COLOUR = 0xFF000000;
     static final int SOFT_BLACK = 0xEA000000;
     static final int DARK_GREY = 0xFF1A1A1A;

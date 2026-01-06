@@ -1,17 +1,27 @@
 package uk.kihira.tails.client.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import org.joml.Math;
 import uk.kihira.tails.client.*;
+import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.client.outfit.OutfitPart;
+import uk.kihira.tails.client.render.LayerPart;
 
 import javax.annotation.Nonnull;
 
@@ -36,22 +46,23 @@ public class PartsListWidget extends ObjectSelectionList<PartsListWidget.PartEnt
         this.parent = parent;
         this.mountPoint = MountPoint.CHEST;
         this.listWidth = listWidth;
-
-        //setRenderBackground(false);
         initPartList();
+    }
+
+    @Override
+    protected void renderListBackground(GuiGraphics graphics)
+    {
+        graphics.fill(0, 0, this.width, this.listTop, GuiEditor.SOFT_BLACK);
+        graphics.fill(getX(), getY(), getRight(), getBottom(), GuiEditor.DARK_GREY);
     }
 
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
+        super.renderWidget(graphics, mouseX, mouseY, partialTicks);
         this.rotation += partialTicks;
 
-        //graphics.fillGradient(-100,0, 0, this.width, this.listTop, GuiEditor.SOFT_BLACK, GuiEditor.SOFT_BLACK);
-        //graphics.fillGradient(getX(), getY(), getRight(), getBottom(), GuiEditor.DARK_GREY, GuiEditor.DARK_GREY);
-
-        //graphics.drawCenteredString(this.minecraft.font, Component.translatable("tails.gui.parts"), this.width / 2, 5, GuiEditor.TEXT_COLOUR);
-
-        super.renderWidget(graphics, mouseX, mouseY, partialTicks);
+        graphics.drawCenteredString(this.minecraft.font, Component.translatable("tails.gui.parts"), this.width / 2, getY()-5, GuiEditor.TEXT_COLOUR);
     }
 
     @Override
@@ -79,12 +90,12 @@ public class PartsListWidget extends ObjectSelectionList<PartsListWidget.PartEnt
         PartRegistry.getPartsByMountPoint(this.mountPoint).map(PartEntry::new).forEach(this::addEntry);
     }
 
-    private void renderPart(OutfitPart part, GuiGraphics graphics, int x, int y, float partialTick)
+    private void renderPart(OutfitPart part, GuiGraphics graphics, int x, int y, int right, int bottom, float partialTick)
     {
         var poseStack = graphics.pose().pushMatrix();
-        poseStack.translate(x, y)
+/*        poseStack.translate(x, y)
                 .scaling(PART_SCALE, PART_SCALE)
-                .translate(0.f, -1.5f);
+                .translate(0.f, -1.5f);*/
 
         var basePart = part.getPart();
         if (basePart == null) return;
@@ -92,6 +103,30 @@ public class PartsListWidget extends ObjectSelectionList<PartsListWidget.PartEnt
         var model = basePart.getModel();
         if (model != null)
         {
+            var player = this.minecraft.player;
+            var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+            var renderer = dispatcher.getRenderer(player);
+            var renderState = (LivingEntityRenderState) renderer.createRenderState(player, 1f);
+            renderState.lightCoords = 15728880;
+            renderState.shadowPieces.clear();
+            renderState.outlineColor = 0;
+            renderState.isInvisible = true; // todo temp whilst we're still rendering a player?
+
+            // todo create OutfitBuilder?
+            var outfit = new Outfit();
+            outfit.parts.add(part);
+            renderState.setRenderData(LayerPart.OUTFIT_KEY, outfit);
+
+            // TODO position and scale is _fine_ for tails but need it to work for other parts. maybe we just be lazy with
+            // switch for now based on mount point
+            Vector3f position = new Vector3f(0f, 0f, 0f);
+            switch (part.mountPoint)
+            {
+                case HEAD -> position.y = 2f;
+                case CHEST -> position.y = 0.7f;
+            }
+            graphics.submitEntityRenderState(renderState, 20f, position, new Quaternionf().rotationXYZ(Math.toRadians(180f), Math.toRadians(this.rotation), 0f), null, x, y, right, bottom);
+
             //poseStack.rotateAround(Axis.YP.rotationDegrees(this.rotation), 0, 0, 0);
             //poseStack.scale(PART_SCALE, PART_SCALE, PART_SCALE);
 
@@ -118,9 +153,9 @@ public class PartsListWidget extends ObjectSelectionList<PartsListWidget.PartEnt
     public class PartEntry extends ObjectSelectionList.Entry<PartEntry>
     {
         private static final int ADD_X = 1;
-        private static final int ADD_Y = 40;
-        private static final int ADD_WIDTH = 10;
-        private static final int ADD_HEIGHT = 10;
+        private static final int ADD_Y = 38;
+        private static final int ADD_WIDTH = 12;
+        private static final int ADD_HEIGHT = 12;
         private static final int ADD_COLOUR = 0xFF666666;
 
         final OutfitPart outfitPart;
@@ -135,30 +170,28 @@ public class PartsListWidget extends ObjectSelectionList<PartsListWidget.PartEnt
         @Override
         public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovering, float partialTicks)
         {
-            graphics.fillGradient(this.getContentX(), this.getContentY(), this.getContentRight(), this.getContentHeight(), GuiEditor.SOFT_BLACK, GuiEditor.SOFT_BLACK);
-
-            graphics.enableScissor(this.getContentY(), this.getContentX(), this.getContentHeight(), this.getContentRight());
-            renderPart(this.outfitPart, graphics, this.getContentRight() - 30, this.getContentYMiddle(), partialTicks);
-            graphics.disableScissor();
-            graphics.drawString(minecraft.font, this.part.name, this.getContentX()+5, this.getContentY()+17, GuiEditor.TEXT_COLOUR);
+            graphics.drawString(minecraft.font, this.part.name, this.getContentX()+3, this.getContentY()+3, -1);
 
             if (hovering)
             {
                 //Yeah its not nice but eh, works
                 var stack = graphics.pose().pushMatrix();
-                stack.translate(5, this.getContentY() + 27);
+                stack.translate(5, this.getContentY() + 15);
                 stack.scale(.6f, .6f);
 
-                graphics.drawString(minecraft.font, Component.translatable("gui.author"), 0, 0, GuiEditor.TEXT_COLOUR);
+                graphics.drawString(minecraft.font, Component.translatable("gui.author"), 0, 0, -1);
                 stack.translate(minecraft.font.width(Component.translatable("gui.author"))+2, 0);
-                graphics.drawString(minecraft.font,part.author, 0, 0, GuiEditor.TEXT_COLOUR);
+                graphics.drawString(minecraft.font,part.author, 0, 0, -1);
                 stack.popMatrix();
 
                 // Draw "add" button
-                graphics.fill(this.getContentX() + ADD_X, this.getContentY() + ADD_Y, this.getContentX() + ADD_X + ADD_WIDTH, this.getContentY() + ADD_Y + ADD_HEIGHT, ADD_COLOUR);
-                graphics.drawString(minecraft.font, "+", this.getContentX() + ADD_X + (ADD_WIDTH / 4), this.getContentY() + ADD_Y + (ADD_HEIGHT / 4), GuiEditor.TEXT_COLOUR);
-                //graphics.blitSprite(Identifier.withDefaultNamespace("widget/button"), this.getContentX()+ADD_X, this.getContentY()+ADD_Y, ADD_WIDTH, ADD_HEIGHT);
+                //graphics.fill(this.getContentX() + ADD_X, this.getContentY() + ADD_Y, this.getContentX() + ADD_X + ADD_WIDTH, this.getContentY() + ADD_Y + ADD_HEIGHT, ADD_COLOUR);
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.withDefaultNamespace("widget/button"), this.getContentX()+ADD_X, this.getContentY()+ADD_Y, ADD_WIDTH, ADD_HEIGHT);
+                graphics.drawCenteredString(minecraft.font, "+", this.getContentX() + ((ADD_X + ADD_WIDTH) / 2) + 1, this.getContentY() + ADD_Y + (ADD_HEIGHT / 4) - 1, -1);
             }
+
+            graphics.fill(this.getContentXMiddle(), this.getContentY()+14, this.getContentRight(), this.getContentBottom(), GuiEditor.SOFT_BLACK); // TODO keep? useful mostly for debugging render area
+            renderPart(this.outfitPart, graphics, this.getContentXMiddle(), this.getContentY()+14, this.getContentRight(), this.getContentBottom(), partialTicks);
         }
 
         @Override

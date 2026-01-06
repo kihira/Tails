@@ -102,7 +102,8 @@ public class ClientEventHandler
             TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>> rendererType = new TypeToken<>() {};
             BiConsumer<LivingEntity, LivingEntityRenderState> modifier = (entity, renderState) -> {
                 var uuid = entity.getUUID();
-                if (entity instanceof AbstractClientPlayer && Tails.proxy.hasActiveOutfit(uuid))
+                // Exclude entities that already have an outfit as this is likely coming from the part list window
+                if (entity instanceof AbstractClientPlayer && Tails.proxy.hasActiveOutfit(uuid) && renderState.getRenderData(LayerPart.OUTFIT_KEY) == null)
                 {
                     renderState.setRenderData(LayerPart.OUTFIT_KEY, Tails.proxy.getActiveOutfit(uuid));
                 }

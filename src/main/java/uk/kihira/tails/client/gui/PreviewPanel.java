@@ -82,7 +82,7 @@ class PreviewPanel extends Panel<GuiEditor>
         if (event.button() == InputConstants.MOUSE_BUTTON_LEFT)
         {
             this.yaw += dragX * .1f;
-            this.pitch = Math.clamp(Math.toRadians(PITCH_MIN), Math.toRadians(PITCH_MAX), this.pitch + (dragY * .1d));
+            this.pitch = Math.clamp(PITCH_MIN, PITCH_MAX, this.pitch + (dragY * .1d));
         }
 
         return super.mouseDragged(event, dragX, dragY);
