@@ -4,6 +4,8 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import org.joml.Math;
 
 public class SharkTailModel extends PartModel
 {
@@ -67,5 +69,38 @@ public class SharkTailModel extends PartModel
         PartDefinition finTop3 = finTop2.addOrReplaceChild("finTop3", CubeListBuilder.create().texOffs(16, 1).addBox(-1.0F, -2.0F, -1.0F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -4.0F, 0.0F, 0.1367F, 0.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 32);
+    }
+
+    @Override
+    public void setupAnim(AvatarRenderState renderState)
+    {
+        super.setupAnim(renderState);
+
+        float xAngleOffset = 0;
+        float yAngleMultiplier = 1; //Used to suppress sway when running
+        if (!renderState.isPassenger)
+        {
+/*            if (entity instanceof EntityPlayer)
+            {
+                float[] angles = getMotionAngles((EntityPlayer) entity, partialTicks);
+
+                xAngleOffset = Math.clamp(angles[0] / 5F, -1F, 0.45F);
+                yAngleMultiplier = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running
+            }*/
+        }
+        //Mounted
+        else
+        {
+            xAngleOffset = Math.toRadians(12F);
+            yAngleMultiplier = 0.25F;
+        }
+
+        float timestep = getAnimationTime(3000D, renderState.id);
+        this.tailBase.setRotation(-0.6522295414702809F + xAngleOffset * 4F, (Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
+        this.tailBase.setRotation(-0.6522295414702809F + xAngleOffset * 4F, (Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
+        this.tail1.setRotation(0.0013962634015954637F + xAngleOffset * 1F, (Math.cos(timestep - 2) / 5F) * yAngleMultiplier, 0F);
+        this.tail2.setRotation(0.278554548618295F - xAngleOffset * 2F, (Math.cos(timestep - 3) / 5F) * yAngleMultiplier, 0F);
+        this.tail3.setRotation(0.22759093446006054F - xAngleOffset, (Math.cos(timestep - 4) / 5F) * yAngleMultiplier, 0F);
+        this.finBase.setRotation(this.finBase.xRot, (Math.cos(timestep - 10) / 5F) * -yAngleMultiplier, this.finBase.zRot);
     }
 }
