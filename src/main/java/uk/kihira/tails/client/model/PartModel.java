@@ -16,18 +16,23 @@ import java.util.Collections;
 import java.util.function.Function;
 
 // ties us to only rendering on players but should be fine
-public abstract class PartModel extends PlayerModel
+public abstract class PartModel extends HumanoidModel<AvatarRenderState>
 {
     private static final ModelPart EMPTY_ROOT = new ModelPart(Collections.emptyList(), Collections.emptyMap());
 
     public PartModel()
     {
-        super(EMPTY_ROOT, false);
+        super(EMPTY_ROOT, RenderTypes::entityTranslucent);
     }
 
     public PartModel(ModelPart root)
     {
-        super(root, false);
+        super(root, RenderTypes::entityTranslucent);
+    }
+
+    public PartModel(ModelPart root, Function<Identifier, RenderType> renderType)
+    {
+        super(root, renderType);
     }
 
     @Override

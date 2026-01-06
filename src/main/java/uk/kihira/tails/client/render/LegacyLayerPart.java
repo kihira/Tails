@@ -77,7 +77,7 @@ public class LegacyLayerPart extends RenderLayer<AvatarRenderState, PlayerModel>
                     //model.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
                     int i = LivingEntityRenderer.getOverlayCoords(renderState, 0.0F);
-                    nodeCollector.submitModel(model, renderState, poseStack, RenderTypes.entitySolid(part.textureLoc), packedLight, i, renderState.outlineColor, null);
+                    nodeCollector.submitModel(model, renderState, poseStack, RenderTypes.entityTranslucent(part.textureLoc), packedLight, i, renderState.outlineColor, null);
                 }
                 poseStack.popPose();
             }

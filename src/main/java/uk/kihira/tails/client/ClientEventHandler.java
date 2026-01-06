@@ -3,19 +3,15 @@ package uk.kihira.tails.client;
 import com.google.common.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
-import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -23,6 +19,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import uk.kihira.tails.client.gui.GuiEditor;
+import uk.kihira.tails.client.model.DragonTailModel;
 import uk.kihira.tails.client.model.FoxTailModel;
 import uk.kihira.tails.client.model.SharkTailModel;
 import uk.kihira.tails.client.outfit.Outfit;
@@ -165,6 +162,7 @@ public class ClientEventHandler
             // TODO do we want to register a layer for each model? Maybe instead we do it per mount point with an empty model then have it include the part model?
             event.registerLayerDefinition(FOX_TAIL_LAYER_LOCATION, FoxTailModel::createBodyLayer);
             event.registerLayerDefinition(SHARK_TAIL_LAYER_LOCATION, SharkTailModel::createModelLayer);
+            event.registerLayerDefinition(DRAGON_TAIL_LAYER_LOCATION, DragonTailModel::createModelLayer);
         }
 
         /**
@@ -198,6 +196,19 @@ public class ClientEventHandler
                             new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
                             new PartTexture[]{ new PartTexture(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1"), "Default", "Kihira") }),
                     new SharkTailModel(event.getEntityModels().bakeLayer(SHARK_TAIL_LAYER_LOCATION)));
+            registerPartWithModel(
+                    new Part(
+                            UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"),
+                            "Shark Tail",
+                            "Kihira",
+                            MountPoint.CHEST,
+                            new float[] {0, 1, 0},
+                            new float[] {0, 0, 0},
+                            new float[] {1, 1, 1},
+                            new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
+                            // new PartTexture[]{ new PartTexture(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Striped", "Kihira") }),
+                            new PartTexture[]{ new PartTexture(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Default", "Kihira") }),
+                    new DragonTailModel(event.getEntityModels().bakeLayer(DRAGON_TAIL_LAYER_LOCATION)));
 
             partRenderer = new PartRenderer();
             {
@@ -217,11 +228,13 @@ public class ClientEventHandler
             // todo temp
             var outfit = new Outfit();
             //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19")).get())); // fox
-            outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1")).get())); // shark
+            //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1")).get())); // shark
+            outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda")).get())); // dragon
             Config.CONFIG.setLocalOutfit(outfit);
         }
     }
 
     private static final ModelLayerLocation FOX_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "fox_tail"), "chest");
     private static final ModelLayerLocation SHARK_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "shark_tail"), "chest");
+    private static final ModelLayerLocation DRAGON_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "dragon_tail"), "chest");
 }
