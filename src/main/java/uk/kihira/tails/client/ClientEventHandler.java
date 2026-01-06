@@ -23,6 +23,7 @@ import uk.kihira.tails.client.model.DragonTailModel;
 import uk.kihira.tails.client.model.FoxTailModel;
 import uk.kihira.tails.client.model.RacoonTailModel;
 import uk.kihira.tails.client.model.SharkTailModel;
+import uk.kihira.tails.client.model.head.FoxEarsModel;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.render.LayerPart;
@@ -165,6 +166,7 @@ public class ClientEventHandler
             event.registerLayerDefinition(SHARK_TAIL_LAYER_LOCATION, SharkTailModel::createModelLayer);
             event.registerLayerDefinition(DRAGON_TAIL_LAYER_LOCATION, DragonTailModel::createModelLayer);
             event.registerLayerDefinition(RACOON_TAIL_LAYER_LOCATION, RacoonTailModel::createModelLayer);
+            event.registerLayerDefinition(FOX_EARS_LAYER_LOCATION, FoxEarsModel::createModelLayer);
         }
 
         /**
@@ -223,6 +225,18 @@ public class ClientEventHandler
                             new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
                             new PartTexture[]{ new PartTexture(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe"), "Default", "Kihira") }),
                     new RacoonTailModel(event.getEntityModels().bakeLayer(RACOON_TAIL_LAYER_LOCATION)));
+            registerPartWithModel(
+                    new Part(
+                            UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6"),
+                            "Fox Ears",
+                            "Kihira",
+                            MountPoint.HEAD,
+                            new float[] {0, 1, 0},
+                            new float[] {0, 0, 0},
+                            new float[] {1, 1, 1},
+                            new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
+                            new PartTexture[]{ new PartTexture(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6"), "Default", "Kihira") }),
+                    new FoxEarsModel(event.getEntityModels().bakeLayer(FOX_EARS_LAYER_LOCATION)));
 
             partRenderer = new PartRenderer();
             {
@@ -230,7 +244,7 @@ public class ClientEventHandler
                 {
                     var renderPlayer = event.getPlayerRenderer(modelType);
                     var model = renderPlayer.getModel();
-                    //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.head, event.getContext().getModelSet(), MountPoint.HEAD));
+                    renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.head, event.getContext().getModelSet(), MountPoint.HEAD));
                     renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.body, event.getContext().getModelSet(), MountPoint.CHEST));
                     //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftArm, event.getContext().getModelSet(), MountPoint.LEFT_ARM));
                     //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightArm, event.getContext().getModelSet(), MountPoint.RIGHT_ARM));
@@ -245,6 +259,7 @@ public class ClientEventHandler
             //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1")).get())); // shark
             //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda")).get())); // dragon
             outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe")).get())); // racoon
+            outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6")).get())); // fox ears
             Config.CONFIG.setLocalOutfit(outfit);
         }
     }
@@ -252,5 +267,6 @@ public class ClientEventHandler
     private static final ModelLayerLocation FOX_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "fox_tail"), "chest");
     private static final ModelLayerLocation SHARK_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "shark_tail"), "chest");
     private static final ModelLayerLocation DRAGON_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "dragon_tail"), "chest");
-    private static final ModelLayerLocation RACOON_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "racoon_tail"), "main");
+    private static final ModelLayerLocation RACOON_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "racoon_tail"), "chest");
+    private static final ModelLayerLocation FOX_EARS_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "fox_ears"), "head");
 }
