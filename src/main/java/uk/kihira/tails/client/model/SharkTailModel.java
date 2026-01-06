@@ -44,29 +44,48 @@ public class SharkTailModel extends PartModel
         PartDefinition partdefinition = meshdefinition.getRoot().clearRecursively();
         PartDefinition body = partdefinition.getChild("body");
 
-        PartDefinition tailBase = body.addOrReplaceChild("tailBase", CubeListBuilder.create().texOffs(0, 24).addBox(-2.0F, -2.0F, 0.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 23.5F, -0.6F, -0.6458F, 0.0F, 0.0F));
+        PartDefinition tailBase = body.addOrReplaceChild("tailBase",
+                CubeListBuilder.create().texOffs(0, 24).addBox(-2.0F, -2.0F, 0.0F, 4.0F, 4.0F, 4.0F, CubeDeformation.NONE),
+                PartPose.offsetAndRotation(0.0F, 11.0F, -0.6F, -0.6458F, 0.0F, 0.0F));
 
-        PartDefinition tail1 = tailBase.addOrReplaceChild("tail1", CubeListBuilder.create().texOffs(0, 16).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 3.5F));
+        PartDefinition tail1 = tailBase.addOrReplaceChild("tail1",
+                CubeListBuilder.create().texOffs(0, 16).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 5.0F, CubeDeformation.NONE),
+                PartPose.offset(0.0F, 0.0F, 3.5F));
 
-        PartDefinition tail2 = tail1.addOrReplaceChild("tail2", CubeListBuilder.create().texOffs(0, 9).addBox(-1.0F, -1.0F, -0.2F, 2.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 4.5F, 0.2785F, 0.0F, 0.0F));
+        PartDefinition tail2 = tail1.addOrReplaceChild("tail2",
+                CubeListBuilder.create().texOffs(0, 9).addBox(-1.0F, -1.0F, -0.2F, 2.0F, 2.0F, 5.0F, CubeDeformation.NONE),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 4.5F, 0.2785F, 0.0F, 0.0F));
 
-        PartDefinition tail3 = tail2.addOrReplaceChild("tail3", CubeListBuilder.create().texOffs(0, 3).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 4.4F, 0.2269F, 0.0F, 0.0F));
+        PartDefinition tail3 = tail2.addOrReplaceChild("tail3",
+                CubeListBuilder.create().texOffs(0, 3).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 4.0F, CubeDeformation.NONE),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 4.4F, 0.2269F, 0.0F, 0.0F));
 
-        PartDefinition finBase = tail3.addOrReplaceChild("finBase", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 3.0F, -2.595F, 0.0F, -3.1416F));
+        PartDefinition finBase = tail3.addOrReplaceChild("finBase",
+                CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 3.0F, -2.595F, 0.0F, -3.1416F));
 
-        PartDefinition cube_r1 = finBase.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(16, 21).addBox(-0.5F, -3.6F, -4.0F, 1.0F, 7.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.0F, 0.0F, -3.1416F));
+        PartDefinition finBot1 = finBase.addOrReplaceChild("finBot1",
+                CubeListBuilder.create().texOffs(26, 27).addBox(-1.0F, -3.0F, -2.0F, 1.0F, 3.0F, 2.0F, CubeDeformation.NONE),
+                PartPose.offsetAndRotation(0.5F, 0.4F, -4.0F, -0.0911F, 0.0F, 0.0F));
 
-        PartDefinition finBot1 = finBase.addOrReplaceChild("finBot1", CubeListBuilder.create().texOffs(26, 27).addBox(-1.0F, -3.0F, -2.0F, 1.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 0.4F, -4.0F, -0.0911F, 0.0F, 0.0F));
+        PartDefinition finBot2 = finBot1.addOrReplaceChild("finBot2",
+                CubeListBuilder.create().texOffs(26, 21).addBox(-1.0F, -3.0F, -3.0F, 1.0F, 3.0F, 3.0F, CubeDeformation.NONE),
+                PartPose.offsetAndRotation(0.0F, 0.0F, -2.0F, -0.1367F, 0.0F, 0.0F));
 
-        PartDefinition finBot2 = finBot1.addOrReplaceChild("finBot2", CubeListBuilder.create().texOffs(26, 21).addBox(-1.0F, -3.0F, -3.0F, 1.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -2.0F, -0.1367F, 0.0F, 0.0F));
+        PartDefinition finBot3 = finBot2.addOrReplaceChild("finBot3",
+                CubeListBuilder.create().texOffs(26, 17).addBox(-1.0F, -2.0F, -2.0F, 1.0F, 2.0F, 2.0F, CubeDeformation.NONE),
+                PartPose.offsetAndRotation(0.0F, 0.0F, -3.0F, -0.1981F, 0.0F, 0.0F));
 
-        PartDefinition finBot3 = finBot2.addOrReplaceChild("finBot3", CubeListBuilder.create().texOffs(26, 17).addBox(-1.0F, -2.0F, -2.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -3.0F, -0.1981F, 0.0F, 0.0F));
+        PartDefinition finTop1 = finBase.addOrReplaceChild("finTop1",
+                CubeListBuilder.create().texOffs(16, 10).addBox(-0.5F, -2.0F, -2.9F, 1.0F, 2.0F, 3.0F, CubeDeformation.NONE),
+                PartPose.offsetAndRotation(0.0F, -6.5F, -0.1F, 0.0911F, 0.0F, 0.0F));
 
-        PartDefinition finTop1 = finBase.addOrReplaceChild("finTop1", CubeListBuilder.create().texOffs(16, 10).addBox(-0.5F, -2.0F, -2.9F, 1.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.5F, -0.1F, 0.0911F, 0.0F, 0.0F));
+        PartDefinition finTop2 = finTop1.addOrReplaceChild("finTop2",
+                CubeListBuilder.create().texOffs(16, 4).addBox(-1.0F, -4.0F, -2.0F, 1.0F, 4.0F, 2.0F, CubeDeformation.NONE),
+                PartPose.offsetAndRotation(0.5F, -2.0F, 0.1F, 0.1365F, 0.0F, 0.0F));
 
-        PartDefinition finTop2 = finTop1.addOrReplaceChild("finTop2", CubeListBuilder.create().texOffs(16, 4).addBox(-1.0F, -4.0F, -2.0F, 1.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, -2.0F, 0.1F, 0.1365F, 0.0F, 0.0F));
-
-        PartDefinition finTop3 = finTop2.addOrReplaceChild("finTop3", CubeListBuilder.create().texOffs(16, 1).addBox(-1.0F, -2.0F, -1.0F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -4.0F, 0.0F, 0.1367F, 0.0F, 0.0F));
+        PartDefinition finTop3 = finTop2.addOrReplaceChild("finTop3",
+                CubeListBuilder.create().texOffs(16, 1).addBox(-1.0F, -2.0F, -1.0F, 1.0F, 2.0F, 1.0F, CubeDeformation.NONE),
+                PartPose.offsetAndRotation(0.0F, -4.0F, 0.0F, 0.1367F, 0.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 32);
     }

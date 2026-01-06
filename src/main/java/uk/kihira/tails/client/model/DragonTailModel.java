@@ -33,7 +33,7 @@ public class DragonTailModel extends PartModel
 				CubeListBuilder.create()
 						.texOffs(22, 0).addBox(-2.5F, -2.5F, -2.0F, 5.0F, 5.0F, 8.0F, CubeDeformation.NONE)
 						.texOffs(22, 5).addBox(0.0F, -7.25F, -2.0F, 0.0F, 5.0F, 8.0F, CubeDeformation.NONE),
-				PartPose.offsetAndRotation(0.0F, 24.0F, 0.0F, -0.6981F, 0.0F, 0.0F));
+				PartPose.offsetAndRotation(0.0F, 11.0F, 0.0F, -0.6981F, 0.0F, 0.0F));
 
 		PartDefinition tail1 = tailBase.addOrReplaceChild("tail1",
 				CubeListBuilder.create()

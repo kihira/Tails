@@ -31,7 +31,7 @@ public class RacoonTailModel extends PartModel
 
 		PartDefinition tailBase = body.addOrReplaceChild("tailBase",
 				CubeListBuilder.create().texOffs(12, 16).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 2.0F, CubeDeformation.NONE),
-				PartPose.offset(0.0F, 24.0F, 0.0F));
+				PartPose.offset(0.0F, 10.0F, 1.5F));
 
 		PartDefinition tail1 = tailBase.addOrReplaceChild("tail1",
 				CubeListBuilder.create().texOffs(0, 16).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 3.0F, CubeDeformation.NONE),

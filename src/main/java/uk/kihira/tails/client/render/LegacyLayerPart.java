@@ -56,18 +56,14 @@ public class LegacyLayerPart extends RenderLayer<AvatarRenderState, PlayerModel>
 
                 poseStack.pushPose();
 
-                if (mountPoint == MountPoint.HEAD && renderState.isCrouching)
-                {
-                    poseStack.translate(0f, 0.2F, 0f);
-                }
-                //poseStack.rotateAround(Axis.XP.rotationDegrees(headPitch * 0.017453292F), 0, 0, 0);
-                //poseStack.rotateAround(Axis.YP.rotationDegrees(netHeadYaw * 0.017453292F), 0, 0, 0);
-
-                poseStack.translate(part.mountOffset[0], -part.mountOffset[1], part.mountOffset[2]);
+                // todo this doesn't translate right, it doesn't seem to be relative to the offset/pivot point
+                // this likely needs to be done in setupAnim of the model in PartModel which means we need to ensure the
+                // data is in the renderstate. We currently have the outfit but need to associate which part has what data
+/*                poseStack.translate(part.mountOffset[0], -part.mountOffset[1], part.mountOffset[2]);
                 poseStack.rotateAround(Axis.XP.rotationDegrees(part.rotation[0]), 0, 0, 0);
                 poseStack.rotateAround(Axis.YP.rotationDegrees(part.rotation[1]), 0, 0, 0);
                 poseStack.rotateAround(Axis.ZP.rotationDegrees(part.rotation[2]), 0, 0, 0);
-                poseStack.scale(part.scale[0], part.scale[1], part.scale[2]);
+                poseStack.scale(part.scale[0], part.scale[1], part.scale[2]);*/
 
                 // TODO should this ever be null?
                 if (part.textureLoc != null)
