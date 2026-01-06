@@ -1,15 +1,17 @@
 package uk.kihira.tails.client.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import org.joml.Math;
 import uk.kihira.tails.client.gui.controls.IconButton;
 
 class PreviewPanel extends Panel<GuiEditor>
@@ -17,20 +19,15 @@ class PreviewPanel extends Panel<GuiEditor>
     private double yaw = 0d;
     private double pitch = 0d;
     private double zoom  = 30;
-    private boolean doRender;
 
     private static final int MAX_ZOOM = 100;
     private static final int MIN_ZOOM = 10;
+    private static final double PITCH_MIN = Math.toRadians(110d);
+    private static final double PITCH_MAX = Math.toRadians(250d);
 
     PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom)
     {
         super(parent, left, top, right, bottom);
-
-        //this.doRender = Minecraft.getInstance().options.getPointOfView().func_243192_a(); // third person camera
-/*        if (!this.doRender)
-        {
-            return;
-        }*/
 
         // Reset Camera
         addChild(new IconButton(this.getRight() - 18,  this.getY() + 22, IconButton.Icons.UNDO, this::onUndoButtonPressed, Component.translatable("gui.button.reset.camera")));
@@ -43,7 +40,7 @@ class PreviewPanel extends Panel<GuiEditor>
     {
         graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), GuiEditor.GREY);
 
-        InventoryScreen.renderEntityInInventoryFollowsAngle(graphics, this.getX(), this.getY(), this.getRight(), this.getBottom(), Mth.floor(this.zoom), 0f, (float) this.yaw, (float) this.pitch, minecraft().player);
+        renderPlayer(graphics, this.getX(), this.getY(), this.getRight(), this.getBottom(), (float) this.yaw, (float) this.pitch);
 
         super.renderWidget(graphics, mouseX, mouseY, partialTicks);
     }
@@ -59,6 +56,20 @@ class PreviewPanel extends Panel<GuiEditor>
 
     }
 
+    private void renderPlayer(GuiGraphics graphics, int x, int y, int right, int bottom, float yaw, float pitch)
+    {
+        var player = this.minecraft().player;
+        var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        var renderer = dispatcher.getRenderer(player);
+        var renderState = (LivingEntityRenderState) renderer.createRenderState(player, 1f);
+        renderState.lightCoords = 15728880;
+        renderState.shadowPieces.clear();
+        renderState.outlineColor = 0;
+
+        Vector3f position = new Vector3f(0f, renderState.boundingBoxHeight / 2f, 0f);
+        graphics.submitEntityRenderState(renderState, Mth.floor(this.zoom), position, new Quaternionf().rotationXYZ(pitch, yaw, 0f), null, x, y, right, bottom);
+    }
+
     @Override
     public boolean mouseClicked(MouseButtonEvent p_446698_, boolean p_435133_)
     {
@@ -66,15 +77,15 @@ class PreviewPanel extends Panel<GuiEditor>
     }
 
     @Override
-    public boolean mouseDragged(MouseButtonEvent event, double p_313749_, double p_313887_)
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY)
     {
         if (event.button() == InputConstants.MOUSE_BUTTON_LEFT)
         {
-            //this.yaw -= dragX * .1f;
-            //this.pitch -= dragY * .1f;
+            this.yaw += dragX * .1f;
+            this.pitch = Math.clamp(Math.toRadians(PITCH_MIN), Math.toRadians(PITCH_MAX), this.pitch + (dragY * .1d));
         }
 
-        return super.mouseDragged(event, p_313749_, p_313887_);
+        return super.mouseDragged(event, dragX, dragY);
     }
 
     @Override
@@ -102,40 +113,5 @@ class PreviewPanel extends Panel<GuiEditor>
     protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput)
     {
 
-    }
-
-    private static void drawEntity(PoseStack poseStack, int x, int y, int scale, float yaw, float pitch, AbstractClientPlayer entity)
-    {
-/*        float prevHeadYaw = entity.rotationYawHead;
-        float prevRotYaw = entity.rotationYaw;
-        float prevRotPitch = entity.rotationPitch;
-        EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
-
-        entity.setYHeadRot(0);
-        entity.rotate(Rotation.NONE);
-        entity.setPose(Pose.CROUCHING);
-
-        poseStack.pushPose();
-
-        poseStack.translate(x, y, 100f);
-        poseStack.scale(-scale, scale, scale);
-        poseStack.rotateAround(Axis.ZP.rotationDegrees(180f), 0, 0, 0);
-        //poseStack.translate(0d, entity.getYOffset(), 0d);
-        poseStack.rotateAround(Axis.XP.rotationDegrees(pitch), 0, 0, 0);
-        poseStack.rotateAround(Axis.YP.rotationDegrees(yaw), 0, 0, 0);
-
-        // todo
-        RenderHelper.enableStandardItemLighting();
-        //renderManager.setPlayerViewY(180f);
-        //renderManager.renderEntity(entity, 0d, 0d, 0d, 0f, 1f, false);
-        RenderHelper.disableStandardItemLighting();
-        //OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        //OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
-
-        poseStack.popPose();
-
-        entity.rotationYawHead = prevHeadYaw;
-        entity.rotationYaw = prevRotYaw;
-        entity.rotationPitch = prevRotPitch;*/
     }
 }
