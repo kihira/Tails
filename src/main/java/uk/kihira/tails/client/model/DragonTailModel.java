@@ -5,7 +5,6 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import org.joml.Math;
 
 public class DragonTailModel extends PartModel
@@ -83,16 +82,8 @@ public class DragonTailModel extends PartModel
 
 		float timestep = getAnimationTime(4000D, renderState.id);
 		this.tailBase.setRotation(Math.toRadians(-40F) + xAngleOffset * 2F, (Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
-		this.tail1.setRotation(Math.toRadians(-8F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 2) / 5F) * yAngleMultiplier, 0F);
-		this.tail2.setRotation(Math.toRadians(10F) - xAngleOffset / 4F, ((float) Math.cos(timestep - 3) / 5F) * yAngleMultiplier, 0F);
-		this.tail3.setRotation(Math.toRadians(20F) - xAngleOffset, ((float) Math.cos(timestep - 4) / 5F) * yAngleMultiplier, 0F);
-
-/*		if (subtype == 1)
-		{
-			setRotationRadians(tailSubBase, Math.toRadians(-40F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
-			setRotationRadians(tailSub1, Math.toRadians(-8F) + xAngleOffset * 2F, ((float) Math.cos(timestep - 2) / 5F) * yAngleMultiplier, 0F);
-			setRotationRadians(tailSub2, Math.toRadians(10F) - xAngleOffset / 4F, ((float) Math.cos(timestep - 3) / 5F) * yAngleMultiplier, 0F);
-			setRotationRadians(tailSub3, Math.toRadians(20F) - xAngleOffset, ((float) Math.cos(timestep - 4) / 5F) * yAngleMultiplier, 0F);
-		}*/
+		this.tail1.setRotation(Math.toRadians(-8F) + xAngleOffset * 2F, (Math.cos(timestep - 2) / 5F) * yAngleMultiplier, 0F);
+		this.tail2.setRotation(Math.toRadians(10F) - xAngleOffset / 4F, (Math.cos(timestep - 3) / 5F) * yAngleMultiplier, 0F);
+		this.tail3.setRotation(Math.toRadians(20F) - xAngleOffset, (Math.cos(timestep - 4) / 5F) * yAngleMultiplier, 0F);
 	}
 }
