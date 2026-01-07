@@ -17,8 +17,8 @@ import uk.kihira.tails.client.gui.controls.IconButton;
 class PreviewPanel extends Panel<GuiEditor>
 {
     private double yaw = 0d;
-    private double pitch = 0d;
-    private double zoom  = 30;
+    private double pitch = Math.toRadians(180d);
+    private double zoom;
 
     private static final int MAX_ZOOM = 100;
     private static final int MIN_ZOOM = 10;
@@ -28,6 +28,9 @@ class PreviewPanel extends Panel<GuiEditor>
     PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom)
     {
         super(parent, left, top, right, bottom);
+
+        // Scale zoom based on width
+        this.zoom = Math.clamp(MIN_ZOOM, MAX_ZOOM, Math.lerp(MIN_ZOOM, MAX_ZOOM, (float) this.getWidth() /this.getHeight()));
 
         // Reset Camera
         addChild(new IconButton(this.getRight() - 18,  this.getY() + 22, IconButton.Icons.UNDO, this::onUndoButtonPressed, Component.translatable("gui.button.reset.camera")));
@@ -65,6 +68,8 @@ class PreviewPanel extends Panel<GuiEditor>
         renderState.lightCoords = 15728880;
         renderState.shadowPieces.clear();
         renderState.outlineColor = 0;
+        renderState.bodyRot = 0;
+        renderState.yRot = 0;
 
         Vector3f position = new Vector3f(0f, renderState.boundingBoxHeight / 2f, 0f);
         graphics.submitEntityRenderState(renderState, Mth.floor(this.zoom), position, new Quaternionf().rotationXYZ(pitch, yaw, 0f), null, x, y, right, bottom);
