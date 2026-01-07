@@ -61,7 +61,12 @@ public class SharkTailModel extends PartModel
                 PartPose.offsetAndRotation(0.0F, 0.0F, 4.4F, 0.2269F, 0.0F, 0.0F));
 
         PartDefinition finBase = tail3.addOrReplaceChild("finBase",
-                CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 3.0F, -2.595F, 0.0F, -3.1416F));
+                CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 3.0F, -2.595F, 0.0F, -3.1416F));
+
+        PartDefinition cube_r1 = finBase.addOrReplaceChild("cube_r1",
+                CubeListBuilder.create().texOffs(16, 21).addBox(-0.5F, -3.6F, -4.0F, 1.0F, 7.0F, 4.0F, CubeDeformation.NONE),
+                PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.0F, 0.0F, -3.1416F));
 
         PartDefinition finBot1 = finBase.addOrReplaceChild("finBot1",
                 CubeListBuilder.create().texOffs(26, 27).addBox(-1.0F, -3.0F, -2.0F, 1.0F, 3.0F, 2.0F, CubeDeformation.NONE),
@@ -115,7 +120,6 @@ public class SharkTailModel extends PartModel
         }
 
         float timestep = getAnimationTime(3000D, renderState.id);
-        this.tailBase.setRotation(-0.6522295414702809F + xAngleOffset * 4F, (Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
         this.tailBase.setRotation(-0.6522295414702809F + xAngleOffset * 4F, (Math.cos(timestep - 1) / 5F) * yAngleMultiplier, 0F);
         this.tail1.setRotation(0.0013962634015954637F + xAngleOffset * 1F, (Math.cos(timestep - 2) / 5F) * yAngleMultiplier, 0F);
         this.tail2.setRotation(0.278554548618295F - xAngleOffset * 2F, (Math.cos(timestep - 3) / 5F) * yAngleMultiplier, 0F);
