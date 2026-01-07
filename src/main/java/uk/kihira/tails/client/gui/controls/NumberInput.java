@@ -1,6 +1,7 @@
 package uk.kihira.tails.client.gui.controls;
 
 import com.google.common.base.Strings;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
@@ -9,6 +10,8 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import org.joml.Math;
 import uk.kihira.tails.client.Colour;
 import uk.kihira.tails.client.gui.GuiBaseScreen;
@@ -58,7 +61,8 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
         this.callback = callback;
         this.decimalFormat.setRoundingMode(RoundingMode.FLOOR);
 
-        this.numInput = new EditBox(Minecraft.getInstance().font, this.getX() + btnWidth, this.getY(), width - btnWidth, height, Component.empty());
+        this.numInput = new EditBox(Minecraft.getInstance().font, this.getX(), this.getY(), width - btnWidth, height, Component.empty());
+        this.numInput.setMaxLength(6);
         this.numInput.setFilter(input ->
         {
             int dotCount = 0;
@@ -80,11 +84,16 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
                     return false;
                 }
             }
+
             return true;
         });
+        this.numInput.setResponder(value ->
+        {
+        });
+
         setValue(0f);
 
-        this.btnXPos = numInput.getWidth() + 1;
+        this.btnXPos = numInput.getWidth() - 1;
         this.btnHeight = height / 2;
     }
 
@@ -143,12 +152,12 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
         }
 
         // Increase
-        if (GuiBaseScreen.isMouseOver(event.x(), event.y(), this.getX() + this.numInput.getWidth(), this.getY(), this.btnWidth, this.btnHeight))
+        if (GuiBaseScreen.isMouseOver(event.x(), event.y(), this.getX() + this.btnXPos, this.getY(), this.btnWidth, this.btnHeight))
         {
             setValue(this.value + inc);
         }
         // Decrease
-        else if (GuiBaseScreen.isMouseOver(event.x(), event.y(), this.getX() + this.numInput.getWidth(), this.getY() + btnHeight, this.btnWidth, this.btnHeight))
+        else if (GuiBaseScreen.isMouseOver(event.x(), event.y(), this.getX() + this.btnXPos, this.getY() + btnHeight, this.btnWidth, this.btnHeight))
         {
             setValue(this.value - inc);
         }

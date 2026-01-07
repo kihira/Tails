@@ -14,19 +14,20 @@ import javax.annotation.Nullable;
 
 public class TransformPanel extends Panel<GuiEditor> implements IControlCallback<IControl<Float>, Float>, IOutfitPartSelected
 {
-    private static final float MAX_ROTATION = 180;
-    private static final float MIN_ROTATION = -180;
+    private static final float MAX_ROTATION = 180.f;
+    private static final float MIN_ROTATION = -180.f;
     private static final float INC_ROTATION = 1.f;
 
-    private static final float MAX_POSITION = 2;
-    private static final float MIN_POSITION = -2;
+    private static final float MAX_POSITION = 2.f;
+    private static final float MIN_POSITION = -2.f;
     private static final float INC_POSITION = .1f;
 
-    private static final float MAX_SCALE = 2;
+    private static final float MAX_SCALE = 2.f;
     private static final float MIN_SCALE = .5f;
     private static final float INC_SCALE = .1f;
 
-    private static final int WIDTH = 45;
+    // Min width to display ###.## is 47
+    private static final int WIDTH = 47;
 
     private final int spacing = 15;
 
@@ -48,9 +49,10 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     {
         super(parent, x, y, width, height);
 
-        final int firstInputX = 3;
-        final int secondInputX = 52;
-        final int thirdInputX = 101;
+        final int xSpacing = 1;
+        final int firstInputX = 4 + xSpacing;
+        final int secondInputX = firstInputX + WIDTH + xSpacing;
+        final int thirdInputX = secondInputX + WIDTH + xSpacing;
 
         addChild(xRotInput = new NumberInput(this.getX() + firstInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
         addChild(yRotInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
