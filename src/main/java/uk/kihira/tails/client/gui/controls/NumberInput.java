@@ -1,7 +1,6 @@
 package uk.kihira.tails.client.gui.controls;
 
 import com.google.common.base.Strings;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
@@ -10,26 +9,22 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.util.FormattedCharSequence;
 import org.joml.Math;
+import org.jspecify.annotations.Nullable;
 import uk.kihira.tails.client.Colour;
 import uk.kihira.tails.client.gui.GuiBaseScreen;
 import uk.kihira.tails.client.gui.IControl;
 import uk.kihira.tails.client.gui.IControlCallback;
 import uk.kihira.tails.client.gui.ITooltip;
 
-import javax.annotation.Nullable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 // todo tooltips only work for guibuttons
 public class NumberInput extends AbstractContainerWidget implements IControl<Float>, ITooltip
 {
-    private static final char[] VALID_CHARS = new char[]{'-', '.', ',', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
     private static final float SHIFT_MOD = 10f;
     private static final float CTRL_MOD = 0.1f;
 
@@ -43,50 +38,25 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
 
     private final DecimalFormat decimalFormat = new DecimalFormat("###.##");
     private final EditBox numInput;
-    private float value = 0f;
+    private final int maxIntPlaces;
+    private final int maxDecimalPlaces;
     private IControlCallback<IControl<Float>, Float> callback;
 
-    static
-    {
-        Arrays.sort(VALID_CHARS);
-    }
-
-    public NumberInput(int x, int y, int width, float minValue, float maxValue, float increment, @Nullable IControlCallback<IControl<Float>, Float> callback)
+    public NumberInput(int x, int y, int width, float minValue, float maxValue, float increment, int maxIntPlaces, int maxDecimalPlaces, @Nullable IControlCallback<IControl<Float>, Float> callback)
     {
         super(x, y, width, 15, Component.empty());
 
         this.min = minValue;
         this.max = maxValue;
         this.increment = increment;
+        this.maxIntPlaces = maxIntPlaces;
+        this.maxDecimalPlaces = maxDecimalPlaces;
         this.callback = callback;
         this.decimalFormat.setRoundingMode(RoundingMode.FLOOR);
 
         this.numInput = new EditBox(Minecraft.getInstance().font, this.getX(), this.getY(), width - btnWidth, height, Component.empty());
-        this.numInput.setMaxLength(6);
-        this.numInput.setFilter(input ->
-        {
-            int dotCount = 0;
-            var in = input.toCharArray();
-            for (int i = 0; i < in.length; i++)
-            {
-                var c = in[i];
-                if (c == '-' && i != 0)
-                {
-                    return false;
-                }
-                else if (c == '.' || c == ',')
-                {
-                    dotCount++;
-                    if (dotCount > 1) return false;
-                }
-                else if (Arrays.binarySearch(VALID_CHARS, c) < 0)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        });
+        this.numInput.setMaxLength(maxIntPlaces + maxDecimalPlaces + 2); // +1 for decimal point, +1 for negative sign
+        this.numInput.setFilter(this::validateInput);
         this.numInput.setResponder(value ->
         {
         });
@@ -95,6 +65,41 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
 
         this.btnXPos = numInput.getWidth() - 1;
         this.btnHeight = height / 2;
+    }
+
+    // Validates the input string to ensure that is a valid float, and within the specified int/decimal place limits
+    // Does not check min/max value limits here, that's enforced on setValue only
+    private boolean validateInput(String input)
+    {
+        // Allow negative sign on its own just for a better user experience
+        if (input.length() == 1 && input.startsWith("-"))
+        {
+            return true;
+        }
+
+        try
+        {
+            if (Strings.isNullOrEmpty(input))
+            {
+                return true;
+            }
+            Float.parseFloat(input.replace(',', '.'));
+        }
+        catch (NumberFormatException e)
+        {
+            return false;
+        }
+
+        String[] split = input.split("[.,]");
+        String intPart = split[0];
+        String decimalPart = split.length == 2 ? split[1] : "";
+
+        if (intPart.startsWith("-"))
+        {
+            intPart =  intPart.substring(1);
+        }
+
+        return intPart.length() <= this.maxIntPlaces && decimalPart.length() <= this.maxDecimalPlaces;
     }
 
     @Override
@@ -154,12 +159,12 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
         // Increase
         if (GuiBaseScreen.isMouseOver(event.x(), event.y(), this.getX() + this.btnXPos, this.getY(), this.btnWidth, this.btnHeight))
         {
-            setValue(this.value + inc);
+            setValue(this.getValue() + inc);
         }
         // Decrease
         else if (GuiBaseScreen.isMouseOver(event.x(), event.y(), this.getX() + this.btnXPos, this.getY() + btnHeight, this.btnWidth, this.btnHeight))
         {
-            setValue(this.value - inc);
+            setValue(this.getValue() - inc);
         }
 
         return super.mouseClicked(event, scrolling);
@@ -179,22 +184,28 @@ public class NumberInput extends AbstractContainerWidget implements IControl<Flo
     }
 
     @Override
-    public void setValue(Float newValue)
+    public boolean setValue(Float newValue)
     {
-        newValue = Math.clamp(newValue, this.min, this.max);
-        if (this.callback != null && !this.callback.onValueChange(this, this.value, newValue))
+        newValue = Math.clamp(this.min, this.max, newValue);
+        var newValueStr = String.format("%1$" + this.maxIntPlaces + "." + this.maxDecimalPlaces + "f" ,newValue);
+
+        if (!this.validateInput(newValueStr))
         {
-            return;
+            return false;
+        }
+        if (this.callback != null && !this.callback.onValueChange(this, this.getValue(), newValue))
+        {
+            return false;
         }
 
-        this.value = newValue;
-        this.numInput.setValue(this.decimalFormat.format(this.value));
+        this.numInput.setValue(newValueStr);
+        return true;
     }
 
     @Override
     public Float getValue()
     {
-        return value;
+        return Strings.isNullOrEmpty(this.numInput.getValue()) ? 0f : Float.parseFloat(this.numInput.getValue());
     }
 
     @Override

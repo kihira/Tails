@@ -26,7 +26,6 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     private static final float MIN_SCALE = .5f;
     private static final float INC_SCALE = .1f;
 
-    // Min width to display ###.## is 47
     private static final int WIDTH = 47;
 
     private final int spacing = 15;
@@ -54,17 +53,20 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
         final int secondInputX = firstInputX + WIDTH + xSpacing;
         final int thirdInputX = secondInputX + WIDTH + xSpacing;
 
-        addChild(xRotInput = new NumberInput(this.getX() + firstInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
-        addChild(yRotInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
-        addChild(zRotInput = new NumberInput(this.getX() + thirdInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, this));
+        final int maxIntPlacesRot = 3, maxDecimalPlacesRot = 1;
+        final int maxIntPlacesPos = 1, maxDecimalPlacesPos = 2;
+        final int maxIntPlacesScale = 1, maxDecimalPlacesScale = 2;
+        addChild(xRotInput = new NumberInput(this.getX() + firstInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, maxIntPlacesRot, maxDecimalPlacesRot, this));
+        addChild(yRotInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, maxIntPlacesRot, maxDecimalPlacesRot, this));
+        addChild(zRotInput = new NumberInput(this.getX() + thirdInputX, this.getY() + spacing, WIDTH, MIN_ROTATION, MAX_ROTATION, INC_ROTATION, maxIntPlacesRot, maxDecimalPlacesRot, this));
 
-        addChild(xPosInput = new NumberInput(this.getX() + firstInputX, this.getY() + spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
-        addChild(yPosInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
-        addChild(zPosInput = new NumberInput(this.getX() + thirdInputX, this.getY() + spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, this));
+        addChild(xPosInput = new NumberInput(this.getX() + firstInputX, this.getY() + spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, maxIntPlacesPos, maxDecimalPlacesPos, this));
+        addChild(yPosInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, maxIntPlacesPos, maxDecimalPlacesPos, this));
+        addChild(zPosInput = new NumberInput(this.getX() + thirdInputX, this.getY() + spacing * 3, WIDTH, MIN_POSITION, MAX_POSITION, INC_POSITION, maxIntPlacesPos, maxDecimalPlacesPos, this));
 
-        addChild(xScaleInput = new NumberInput(this.getX() + firstInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
-        addChild(yScaleInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
-        addChild(zScaleInput = new NumberInput(this.getX() + thirdInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, this));
+        addChild(xScaleInput = new NumberInput(this.getX() + firstInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, maxIntPlacesScale, maxDecimalPlacesScale, this));
+        addChild(yScaleInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, maxIntPlacesScale, maxDecimalPlacesScale, this));
+        addChild(zScaleInput = new NumberInput(this.getX() + thirdInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, maxIntPlacesScale, maxDecimalPlacesScale, this));
 
         String mountPoint = MountPoint.values()[0].name();
         final OutfitPart outfitPart = parent.getCurrentOutfitPart();
