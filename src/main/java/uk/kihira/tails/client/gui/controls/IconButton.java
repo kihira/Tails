@@ -2,6 +2,8 @@ package uk.kihira.tails.client.gui.controls;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
@@ -22,6 +24,7 @@ public class IconButton extends ExtendedButton
     final Icons icon;
     private final List<Component> tooltip;
 
+    // TODO Investigate if this could be replaced with ImageButton
     public IconButton(int x, int y, Icons icon, OnPress pressedAction, Component component, Component... tooltips)
     {
         super(x, y, ICON_WIDTH, ICON_HEIGHT, component, pressedAction);
@@ -34,9 +37,8 @@ public class IconButton extends ExtendedButton
     {
         if (this.visible)
         {
-            // TODO int textureOffset = getYImage(this.isHovered);
-            var textureOffset = 0;
-            graphics.blit(ICONS_TEXTURES, this.getX(), this.getY(), ICON_WIDTH, ICON_HEIGHT, icon.u, icon.v + (textureOffset * ICON_WIDTH), ICON_WIDTH, ICON_HEIGHT);
+            var textureOffset = this.isHovered ? 32 : this.isActive() ? 16 : 0;
+            graphics.blit(RenderPipelines.GUI_TEXTURED, ICONS_TEXTURES, this.getX(), this.getY(), icon.u, icon.v + (textureOffset * ICON_WIDTH), ICON_WIDTH, ICON_HEIGHT, 256, 256);
         }
     }
 
