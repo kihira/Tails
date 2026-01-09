@@ -39,8 +39,6 @@ public abstract class PartModel extends HumanoidModel<AvatarRenderState>
     public void setupAnim(AvatarRenderState renderState)
     {
         super.setupAnim(renderState);
-
-        //setupAnim(null, 0, renderState.swimAmount, renderState.partialTick, renderState.ageInTicks, 0, 0);
     }
 
     protected static float getAnimationTime(double cycleTime, long offset)
