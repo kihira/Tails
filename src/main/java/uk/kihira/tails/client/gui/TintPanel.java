@@ -1,7 +1,6 @@
 package uk.kihira.tails.client.gui;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.platform.cursor.CursorType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -9,25 +8,21 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
-import uk.kihira.tails.client.ClientEventHandler;
-import uk.kihira.tails.client.Colour;
+import uk.kihira.tails.client.*;
 import uk.kihira.tails.client.gui.controls.IconButton;
 import uk.kihira.tails.client.outfit.OutfitPart;
-import uk.kihira.tails.client.Part;
-import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
 import uk.kihira.tails.Tails;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
-import java.util.HexFormat;
-import java.util.Optional;
+import java.util.*;
 
 public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback
 {
@@ -37,12 +32,12 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
     private static final int SLIDER_WIDTH = 120;
     private static final int SLIDER_HEIGHT = 10;
-    private static final int COLOUR_PREVIEW_SIZE = 10;
-    private static final int COLOUR_PREVIEW_OFFSET = 3;
+    public static final int COLOUR_PREVIEW_SIZE = 10;
+    public static final int COLOUR_PREVIEW_OFFSET = 3;
 
     private static final int EDIT_PANEL_TOP = 43;
 
-    private static long cursor = 0;
+    private static CursorType pickerCursor;
 
     private int currTintEdit = 0;
     private int currTintColour = GuiEditor.TEXT_COLOUR;
@@ -51,16 +46,16 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     private GuiHSBSlider[] rgbSliders;
     private IconButton tintReset;
     private IconButton colourPicker;
-    private boolean selectingColour = false;
 
     TintPanel(GuiEditor parent, int left, int top, int width, int height)
     {
         super(parent, left, top, width, height);
         this.alwaysReceiveMouse = true;
 
-        if (TintPanel.cursor == 0)
+        // Bootstrap cursor if needs be
+        if (TintPanel.pickerCursor == null)
         {
-            createCursor();
+            TintPanel.pickerCursor = new CursorType("tails:picker", createCursor(this.minecraft().getResourceManager()));
         }
 
         final int tintButtonY = 20;
@@ -146,14 +141,14 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
             this.hexText.setVisible(false);
         }
 
-        // Draw preview of colour hovered over
-        if (this.selectingColour)
+        // TODO Optimise?
+        if (ColourPicker.isPickingColour())
         {
-            final int x = mouseX + COLOUR_PREVIEW_OFFSET;
-            final int y = mouseY + COLOUR_PREVIEW_OFFSET;
-            final int colour = getColourAtPoint(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos());
-            graphics.fill(x - 1, y - 1, x + COLOUR_PREVIEW_SIZE + 1, y + COLOUR_PREVIEW_SIZE + 1, Colour.BLACK);
-            graphics.fill(x, y, x + COLOUR_PREVIEW_SIZE, y + COLOUR_PREVIEW_SIZE, colour);
+            graphics.requestCursor(pickerCursor);
+        }
+        else
+        {
+            graphics.requestCursor(CursorType.DEFAULT);
         }
 
         super.renderWidget(graphics, mouseX, mouseY, partialTicks);
@@ -187,42 +182,23 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
 
     private void onColourPickerButtonPressed(GuiEventListener button)
     {
-        setSelectingColour(true);
-    }
-
-    @Override
-    public boolean charTyped(CharacterEvent event)
-    {
-        if (event.codepoint() == GLFW.GLFW_KEY_ESCAPE && this.selectingColour)
+        ColourPicker.startPickingColour(colour ->
         {
-            setSelectingColour(false);
-            return true;
-        }
-        else
-        {
-            return super.charTyped(event);
-        }
+            this.currTintColour = colour;
+            updateTints(true);
+        });
     }
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean scrolling)
     {
-        if (this.selectingColour && event.button() == InputConstants.MOUSE_BUTTON_LEFT)
-        {
-            this.currTintColour = getColourAtPoint(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos()); //Ignore alpha
-            setSelectingColour(false);
-            updateTints(true);
-            return true;
-        }
-        else
-        {
-            this.hexText.mouseClicked(event, scrolling);
-            return super.mouseClicked(event, scrolling);
-        }
+        this.hexText.mouseClicked(event, scrolling);
+        return super.mouseClicked(event, scrolling);
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {
+    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput)
+    {
 
     }
 
@@ -270,30 +246,6 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         tint[1] = ((argb >> 8) & 0xFF) / 255f;
         tint[2] = (argb & 0xFF) / 255f;
         return tint;
-    }
-
-    private int getColourAtPoint(double x, double y)
-    {
-        var rgba = ClientEventHandler.mouseColourRGBA;
-        var r = rgba & 0xFF;
-        var g = rgba >> 8 & 0xFF;
-        var b = rgba >> 16 & 0xFF;
-        return ARGB.color(255, r, g, b);
-    }
-
-    private void setSelectingColour(boolean selectingColour)
-    {
-        this.selectingColour = selectingColour;
-        ClientEventHandler.captureColourUnderMouse = selectingColour;
-
-        if (selectingColour)
-        {
-            GLFW.glfwSetCursor(Minecraft.getInstance().getWindow().handle(), cursor);
-        }
-        else
-        {
-            GLFW.glfwSetCursor(Minecraft.getInstance().getWindow().handle(), 0);
-        }
     }
 
     /**
@@ -347,12 +299,14 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         }
     }
 
-    private void createCursor()
+    private static long createCursor(ResourceManager resourceManager)
     {
+        final int cursorSize = 16;
+        var buffer = BufferUtils.createByteBuffer(cursorSize * cursorSize * 8);
+
         try
         {
-            final int cursorSize = 16;
-            var bufferedImage = ImageIO.read(minecraft().getResourceManager().getResource(IconButton.ICONS_TEXTURES).get().open());
+            var bufferedImage = ImageIO.read(resourceManager.getResource(IconButton.ICONS_TEXTURES).get().open());
             var pixelData = bufferedImage.getRGB(
                     IconButton.Icons.EYEDROPPER.u,
                     IconButton.Icons.EYEDROPPER.v + cursorSize,
@@ -361,21 +315,23 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
                     null,
                     0,
                     cursorSize);
-
-            var buffer = BufferUtils.createByteBuffer(cursorSize * cursorSize * 8);
             buffer.asIntBuffer().put(pixelData);
 
             var cursorImage = GLFWImage.create();
             cursorImage.set(cursorSize, cursorSize, buffer);
 
-            TintPanel.cursor = GLFW.glfwCreateCursor(cursorImage, 0, 15);
-
-            buffer.clear();
+            return GLFW.glfwCreateCursor(cursorImage, 0, 15);
         }
         catch (IOException e)
         {
             Tails.LOGGER.error(e);
         }
+        finally
+        {
+            buffer.clear();
+        }
+
+        return -1;
     }
 
     @Override

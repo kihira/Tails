@@ -1,12 +1,15 @@
 package uk.kihira.tails.client;
 
 import com.google.common.reflect.TypeToken;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DepthTestFunction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
@@ -18,7 +21,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
+import org.lwjgl.glfw.GLFW;
 import uk.kihira.tails.client.gui.GuiEditor;
+import uk.kihira.tails.client.gui.TintPanel;
 import uk.kihira.tails.client.model.DragonTailModel;
 import uk.kihira.tails.client.model.FoxTailModel;
 import uk.kihira.tails.client.model.RacoonTailModel;
@@ -39,8 +44,6 @@ import static uk.kihira.tails.client.PartRegistry.registerPartWithModel;
 public class ClientEventHandler
 {
     private static PartRenderer partRenderer;
-    public static boolean captureColourUnderMouse = false;
-    public static int mouseColourRGBA;
 
     @EventBusSubscriber(modid = Tails.MOD_ID, value = Dist.CLIENT)
     public static class Forge
@@ -139,26 +142,11 @@ public class ClientEventHandler
                 partRenderer.doRender(event.getPoseStack());
             }
         }
-
-        @SubscribeEvent
-        public static void onRenderTickEnd(RenderFrameEvent.Post event)
-        {
-            if (captureColourUnderMouse)
-            {
-                Screenshot.takeScreenshot(Minecraft.getInstance().getMainRenderTarget(), image ->
-                {
-                    // TODO get pixel returns ARGB
-                    mouseColourRGBA = image.getPixel(Mth.floor(Minecraft.getInstance().mouseHandler.xpos()), Mth.floor(Minecraft.getInstance().mouseHandler.ypos()));
-                    image.close();
-                });
-            }
-        }
     }
 
     @EventBusSubscriber(modid = Tails.MOD_ID, value = Dist.CLIENT)
     public static class Mod
     {
-
         @SubscribeEvent
         public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event)
         {
