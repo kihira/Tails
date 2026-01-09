@@ -70,6 +70,7 @@ class PreviewPanel extends Panel<GuiEditor>
         renderState.outlineColor = 0;
         renderState.bodyRot = 0;
         renderState.yRot = 0;
+        renderState.xRot = 0;
 
         Vector3f position = new Vector3f(0f, renderState.boundingBoxHeight / 2f, 0f);
         graphics.submitEntityRenderState(renderState, Mth.floor(this.zoom), position, new Quaternionf().rotationXYZ(pitch, yaw, 0f), null, x, y, right, bottom);
