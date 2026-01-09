@@ -12,7 +12,7 @@ import uk.kihira.tails.client.gui.controls.NumberInput;
 
 import javax.annotation.Nullable;
 
-public class TransformPanel extends Panel<GuiEditor> implements IControlCallback<IControl<Float>, Float>, IOutfitPartSelected
+public class TransformPanel extends Panel<OutfitEditScreen> implements IControlCallback<IControl<Float>, Float>, IOutfitPartSelected
 {
     private static final float MAX_ROTATION = 180.f;
     private static final float MIN_ROTATION = -180.f;
@@ -44,7 +44,7 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
 
     private final ExtendedButton mountPointButton;
 
-    TransformPanel(GuiEditor parent, int x, int y, int width, int height)
+    TransformPanel(OutfitEditScreen parent, int x, int y, int width, int height)
     {
         super(parent, x, y, width, height);
 
@@ -78,17 +78,17 @@ public class TransformPanel extends Panel<GuiEditor> implements IControlCallback
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
-        graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), GuiEditor.DARK_GREY);
+        graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), OutfitEditScreen.DARK_GREY);
         graphics.hLine(this.getX(), this.getRight(), this.getY(), Colour.BLACK);
 
         // Rotation
-        graphics.drawString(this.font(), Component.translatable("tails.gui.rotation"),  this.getX() + 5, this.getY() + this.font().lineHeight / 2, GuiEditor.TEXT_COLOUR);
+        graphics.drawString(this.font(), Component.translatable("tails.gui.rotation"),  this.getX() + 5, this.getY() + this.font().lineHeight / 2, OutfitEditScreen.TEXT_COLOUR);
         // Position
-        graphics.drawString(this.font(), Component.translatable("tails.gui.position"), this.getX() + 5, this.getY() + spacing * 2 + this.font().lineHeight / 2, GuiEditor.TEXT_COLOUR);
+        graphics.drawString(this.font(), Component.translatable("tails.gui.position"), this.getX() + 5, this.getY() + spacing * 2 + this.font().lineHeight / 2, OutfitEditScreen.TEXT_COLOUR);
         // Scale
-        graphics.drawString(this.font(), Component.translatable("tails.gui.scale"), this.getX() + 5, this.getY() + spacing * 4 + this.font().lineHeight / 2, GuiEditor.TEXT_COLOUR);
+        graphics.drawString(this.font(), Component.translatable("tails.gui.scale"), this.getX() + 5, this.getY() + spacing * 4 + this.font().lineHeight / 2, OutfitEditScreen.TEXT_COLOUR);
         // Mount point
-        graphics.drawString(this.font(), Component.translatable("tails.gui.mountpoint"), this.getX() + 5, this.getY() + spacing * 6 + this.font().lineHeight / 2, GuiEditor.TEXT_COLOUR);
+        graphics.drawString(this.font(), Component.translatable("tails.gui.mountpoint"), this.getX() + 5, this.getY() + spacing * 6 + this.font().lineHeight / 2, OutfitEditScreen.TEXT_COLOUR);
 
         super.renderWidget(graphics, mouseX, mouseY, partialTicks);
     }

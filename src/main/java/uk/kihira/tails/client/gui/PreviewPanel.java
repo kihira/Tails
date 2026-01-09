@@ -14,7 +14,7 @@ import org.joml.Vector3f;
 import org.joml.Math;
 import uk.kihira.tails.client.gui.controls.IconButton;
 
-class PreviewPanel extends Panel<GuiEditor>
+class PreviewPanel extends Panel<OutfitEditScreen>
 {
     private double yaw = 0d;
     private double pitch = Math.toRadians(180d);
@@ -25,7 +25,7 @@ class PreviewPanel extends Panel<GuiEditor>
     private static final double PITCH_MIN = Math.toRadians(110d);
     private static final double PITCH_MAX = Math.toRadians(250d);
 
-    PreviewPanel(GuiEditor parent, int left, int top, int right, int bottom)
+    PreviewPanel(OutfitEditScreen parent, int left, int top, int right, int bottom)
     {
         super(parent, left, top, right, bottom);
 
@@ -41,7 +41,7 @@ class PreviewPanel extends Panel<GuiEditor>
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
-        graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), GuiEditor.GREY);
+        graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), OutfitEditScreen.GREY);
 
         renderPlayer(graphics, this.getX(), this.getY(), this.getRight(), this.getBottom(), (float) this.yaw, (float) this.pitch);
 

@@ -11,9 +11,9 @@ import uk.kihira.tails.common.Config;
 import uk.kihira.tails.Tails;
 import uk.kihira.tails.common.network.PlayerDataMessage;
 
-public class ControlsPanel extends Panel<GuiEditor>
+public class ControlsPanel extends Panel<OutfitEditScreen>
 {
-    ControlsPanel(GuiEditor parent, int left, int top, int right, int bottom)
+    ControlsPanel(OutfitEditScreen parent, int left, int top, int right, int bottom)
     {
         super(parent, left, top, right, bottom);
 
@@ -25,7 +25,7 @@ public class ControlsPanel extends Panel<GuiEditor>
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
-        guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), GuiEditor.DARK_GREY);
+        guiGraphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), OutfitEditScreen.DARK_GREY);
 
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
     }

@@ -5,7 +5,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -24,7 +23,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 
-public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSliderCallback
+public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.IHSBSliderCallback
 {
     private static final int TINT_1_BUTTON_ID = 0;
     private static final int TINT_2_BUTTON_ID = 1;
@@ -40,14 +39,14 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
     private static CursorType pickerCursor;
 
     private int currTintEdit = 0;
-    private int currTintColour = GuiEditor.TEXT_COLOUR;
+    private int currTintColour = OutfitEditScreen.TEXT_COLOUR;
     private EditBox hexText;
     private GuiHSBSlider[] hsbSliders;
     private GuiHSBSlider[] rgbSliders;
     private IconButton tintReset;
     private IconButton colourPicker;
 
-    TintPanel(GuiEditor parent, int left, int top, int width, int height)
+    TintPanel(OutfitEditScreen parent, int left, int top, int width, int height)
     {
         super(parent, left, top, width, height);
         this.alwaysReceiveMouse = true;
@@ -125,15 +124,15 @@ public class TintPanel extends Panel<GuiEditor> implements GuiHSBSlider.IHSBSlid
         //todo RenderSystem.enableBlend();
         graphics.fill(this.getX(), this.getY(), this.getRight(), this.getY() + EDIT_PANEL_TOP, Colour.LIGHT_GRAY);
         graphics.fill(this.getX(), this.getY() + EDIT_PANEL_TOP, this.getRight(), this.getBottom(), Colour.DARK_GREY);
-        graphics.drawString(font(), Component.translatable("gui.tint"), this.getX() + 5, this.getY() + 3, GuiEditor.TEXT_COLOUR);
+        graphics.drawString(font(), Component.translatable("gui.tint"), this.getX() + 5, this.getY() + 3, OutfitEditScreen.TEXT_COLOUR);
 
         //Editing tint pane
         if (this.currTintEdit >= 0)
         {
             graphics.hLine(this.getX(), this.getRight(), EDIT_PANEL_TOP, Colour.BLACK);
-            graphics.drawString(font(), Component.translatable("gui.tint.edit", this.currTintEdit + 1), this.getX() + 5, this.getY() + EDIT_PANEL_TOP + 5, GuiEditor.TEXT_COLOUR);
+            graphics.drawString(font(), Component.translatable("gui.tint.edit", this.currTintEdit + 1), this.getX() + 5, this.getY() + EDIT_PANEL_TOP + 5, OutfitEditScreen.TEXT_COLOUR);
 
-            graphics.drawString(font(), Component.translatable("gui.hex").append(":"),  this.getX() + 5,  this.getY() + EDIT_PANEL_TOP + 21, GuiEditor.TEXT_COLOUR);
+            graphics.drawString(font(), Component.translatable("gui.hex").append(":"),  this.getX() + 5,  this.getY() + EDIT_PANEL_TOP + 21, OutfitEditScreen.TEXT_COLOUR);
             this.hexText.setVisible(true);
         }
         else

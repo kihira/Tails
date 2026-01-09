@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,20 @@ public abstract class Panel<T extends Screen> extends AbstractContainerWidget
     }
 
     @Override
-    public List<? extends GuiEventListener> children()
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
+    {
+        for (var child : children)
+        {
+            if (child.mouseScrolled(mouseX, mouseY, scrollX, scrollY))
+            {
+                return true;
+            }
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public @NonNull List<? extends GuiEventListener> children()
     {
         return children;
     }

@@ -11,7 +11,7 @@ import uk.kihira.tails.Tails;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class GuiEditor extends Screen
+public class OutfitEditScreen extends Screen
 {
     static final int TEXT_COLOUR = -1;
     static final int HOZ_LINE_COLOUR = 0xFF000000;
@@ -28,13 +28,13 @@ public class GuiEditor extends Screen
     private OutfitPart currentOutfitPart;
     private UUID playerUUID;
 
-    TintPanel tintPanel;
-    PartsListWidget partsListWidget;
+    private TintPanel tintPanel;
+    private PartsListPanel partsListPanel;
     private TransformPanel transformPanel;
     private PreviewPanel previewPanel;
     private ControlsPanel controlsPanel;
 
-    public GuiEditor()
+    public OutfitEditScreen()
     {
         super(Component.translatable("tails.editor.title"));
     }
@@ -51,8 +51,6 @@ public class GuiEditor extends Screen
         layout.arrangeElements();
         FrameLayout.alignInRectangle(layout, 0, 0, this.width, this.height, 1f, 0f);
         layout.visitWidgets(this::addRenderableWidget);*/
-
-        addRenderableWidget(this.partsListWidget = new PartsListWidget(this, 110, this.height-20, 10));
 
         this.playerUUID = this.getMinecraft().getGameProfile().id();
 
@@ -99,6 +97,7 @@ public class GuiEditor extends Screen
                 previewWindowBottom,
                 previewWindowRight - previewWindowEdgeOffset,
                 this.height - previewWindowBottom));
+        addRenderableWidget(this.partsListPanel = new PartsListPanel(this, 0, 0, previewWindowEdgeOffset, this.height));
 
 /*        //Not an ideal solution but keeps everything from resetting on resize
         if (this.tintPanel == null)
@@ -129,7 +128,6 @@ public class GuiEditor extends Screen
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
-        this.partsListWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         // Render any parts that have been queued up whilst in GUI as RenderWorldLast is called before GUIs

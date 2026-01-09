@@ -1,29 +1,22 @@
 package uk.kihira.tails.client;
 
 import com.google.common.reflect.TypeToken;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
-import org.lwjgl.glfw.GLFW;
-import uk.kihira.tails.client.gui.GuiEditor;
-import uk.kihira.tails.client.gui.TintPanel;
+import uk.kihira.tails.client.gui.OutfitEditScreen;
 import uk.kihira.tails.client.model.DragonTailModel;
 import uk.kihira.tails.client.model.FoxTailModel;
 import uk.kihira.tails.client.model.RacoonTailModel;
@@ -61,7 +54,7 @@ public class ClientEventHandler
             if (screen instanceof PauseScreen)
             {
                 var tailsButton = Button
-                        .builder(Component.translatable("tails.gui.button.editor"), (button) -> screen.getMinecraft().setScreen(new GuiEditor()))
+                        .builder(Component.translatable("tails.gui.button.editor"), (button) -> screen.getMinecraft().setScreen(new OutfitEditScreen()))
                         .bounds((screen.width / 2) - 50, screen.height - 25, 100, 20)
                         .build();
                 event.addListener(tailsButton);
