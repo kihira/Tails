@@ -27,9 +27,9 @@ import javax.annotation.Nonnull;
 
 public class PartsListPanel extends Panel<OutfitEditScreen>
 {
-    private ExtendedButton mountPointButton;
     private MountPoint mountPoint; // todo temporary until UI rework. Tabs with search?
 
+    private final ExtendedButton mountPointButton;
     private final PartsList partsList;
     private final OutfitEditScreen parent;
     private final int listTop = 38;
@@ -42,7 +42,7 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
 
         this.partsList = new PartsList(this.parent.getMinecraft(), this.getWidth(), this.getHeight() - this.listTop, this.getY() + this.listTop);
         this.partsList.setX(0);
-        this.partsList.initPartList();
+        this.partsList.initPartList(this.mountPoint);
         addChild(this.partsList);
 
         final int buttonWidth = 100;
@@ -68,13 +68,13 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
 
     private void onMountPointButtonPressed(GuiEventListener button)
     {
-        // Move to next enum for MointPoint or back to 0 if at the end
+        // Move to next enum for MountPoint or back to 0 if at the end
         final int mountPointOrdinalNext = this.mountPoint.ordinal() + 1;
         final int mountPointOrdinal = mountPointOrdinalNext >= MountPoint.values().length ? 0 : mountPointOrdinalNext;
 
         this.mountPoint = MountPoint.values()[mountPointOrdinal];
 
-        this.partsList.initPartList();
+        this.partsList.initPartList(this.mountPoint);
 
         this.mountPointButton.setMessage(Component.translatable("tails.mountpoint." + mountPoint.name()));
     }
@@ -94,17 +94,11 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
     public class PartsList extends ObjectSelectionList<PartsListPanel.PartsList.PartEntry>
     {
         private static final int ITEM_HEIGHT = 55;
-        private final int listWidth;
-
-        private MountPoint mountPoint; // todo temporary until UI rework. Tabs with search?
         private float rotation;
 
         PartsList(Minecraft minecraft, int listWidth, int height, int y)
         {
             super(minecraft, listWidth, height, y, ITEM_HEIGHT);
-            this.mountPoint = MountPoint.CHEST;
-            this.listWidth = listWidth;
-            initPartList();
         }
 
         @Override
@@ -138,70 +132,15 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
             return this.getRowRight() + 2;
         }
 
-        private void initPartList()
+        private void initPartList(MountPoint mountPoint)
         {
-            this.clearEntries();
-            PartRegistry.getPartsByMountPoint(this.mountPoint).map(PartEntry::new).forEach(this::addEntry);
+            this.replaceEntries(PartRegistry.getPartsByMountPoint(mountPoint).map(PartEntry::new).toList());
         }
 
         @Override
         public void setSelected(PartsListPanel.PartsList.@Nullable PartEntry selected)
         {
             super.setSelected(selected);
-        }
-
-        private void renderPart(OutfitPart part, GuiGraphics graphics, int x, int y, int right, int bottom, float partialTick)
-        {
-            var poseStack = graphics.pose().pushMatrix();
-/*        poseStack.translate(x, y)
-                .scaling(PART_SCALE, PART_SCALE)
-                .translate(0.f, -1.5f);*/
-
-            var basePart = part.getPart();
-            if (basePart == null) return;
-
-            var model = basePart.getModel();
-            if (model != null)
-            {
-                var player = this.minecraft.player;
-                var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-                var renderer = dispatcher.getRenderer(player);
-                var renderState = (LivingEntityRenderState) renderer.createRenderState(player, 1f);
-                renderState.lightCoords = 15728880;
-                renderState.shadowPieces.clear();
-                renderState.outlineColor = 0;
-                renderState.isInvisible = true; // todo temp whilst we're still rendering a player?
-
-                // todo create OutfitBuilder?
-                var outfit = new Outfit();
-                outfit.parts.add(part);
-                renderState.setRenderData(LayerPart.OUTFIT_KEY, outfit);
-
-                // TODO position and scale is _fine_ for tails but need it to work for other parts. maybe we just be lazy with
-                // switch for now based on mount point
-                Vector3f position = new Vector3f(0f, 0f, 0f);
-                switch (part.mountPoint)
-                {
-                    case HEAD -> position.y = 2f;
-                    case CHEST -> position.y = 0.7f;
-                }
-                graphics.submitEntityRenderState(renderState, 20f, position, new Quaternionf().rotationXYZ(Math.toRadians(180f), Math.toRadians(this.rotation), 0f), null, x, y, right, bottom);
-
-                //poseStack.rotateAround(Axis.YP.rotationDegrees(this.rotation), 0, 0, 0);
-                //poseStack.scale(PART_SCALE, PART_SCALE, PART_SCALE);
-
-                //Lighting.setupForEntityInInventory();
-                //model.setupAnim(minecraft.player, 0, 0, partialTick, 0, 0, 0);
-                //model.renderToBuffer(poseStack, graphics.bufferSource().getBuffer(RenderTypes.entityCutoutNoCull(part.textureLoc)), MAGIC_PACKED_LIGHT, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-                //Lighting.setupFor3DItems();
-            }
-            else
-            {
-                //graphics.blitSprite(x - 16, y - 16, 0, 0, 32, 32, 0);
-                // todo render loading circle
-            }
-
-            poseStack.popMatrix();
         }
 
         public class PartEntry extends ObjectSelectionList.Entry<PartEntry>
@@ -269,6 +208,53 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
             public Component getNarration()
             {
                 return Component.translatable("narrator.select", this.part.name);
+            }
+
+            private void renderPart(OutfitPart part, GuiGraphics graphics, int x, int y, int right, int bottom, float partialTick)
+            {
+                var poseStack = graphics.pose().pushMatrix();
+
+                var basePart = part.getPart();
+                if (basePart == null) return;
+
+                var model = basePart.getModel();
+                if (model != null)
+                {
+                    var player = Minecraft.getInstance().player;
+                    var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+                    var renderer = dispatcher.getRenderer(player);
+                    var renderState = (LivingEntityRenderState) renderer.createRenderState(player, partialTick);
+                    renderState.lightCoords = 15728880;
+                    renderState.shadowPieces.clear();
+                    renderState.outlineColor = 0;
+                    renderState.isInvisible = true; // todo temp whilst we're still rendering a player?
+
+                    // todo create OutfitBuilder?
+                    var outfit = new Outfit();
+                    outfit.parts.add(part);
+                    renderState.setRenderData(LayerPart.OUTFIT_KEY, outfit);
+
+                    // TODO position and scale is _fine_ for tails but need it to work for other parts. maybe we just be lazy with
+                    // switch for now based on mount point
+                    Vector3f position = new Vector3f(0f, 0f, 0f);
+                    switch (part.mountPoint)
+                    {
+                        case HEAD -> position.y = 2f;
+                        case CHEST -> position.y = 0.7f;
+                    }
+                    var rot = new Quaternionf().rotationXYZ(Math.toRadians(180f), Math.toRadians(rotation), 0f);
+                    graphics.submitEntityRenderState(renderState, 20f, position, rot, null, x, y, right, bottom);
+
+                    //poseStack.rotateAround(Axis.YP.rotationDegrees(this.rotation), 0, 0, 0);
+                    //poseStack.scale(PART_SCALE, PART_SCALE, PART_SCALE);
+                }
+                else
+                {
+                    //graphics.blitSprite(x - 16, y - 16, 0, 0, 32, 32, 0);
+                    // todo render loading circle
+                }
+
+                poseStack.popMatrix();
             }
         }
     }
