@@ -38,13 +38,15 @@ public class LayerPart extends RenderLayer<AvatarRenderState, PlayerModel>
     public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int packedLight, AvatarRenderState renderState, float yRot, float xRot)
     {
         var outfit = renderState.getRenderData(OUTFIT_KEY);
-        if (outfit == null || outfit.parts == null)
+        if (outfit == null)
         {
             return;
         }
 
-        for (OutfitPart part : outfit.parts) {
-            if (part.mountPoint == mountPoint) {
+        for (OutfitPart part : outfit.getParts())
+        {
+            if (part.mountPoint == mountPoint)
+            {
                 poseStack.pushPose();
 
                 if (mountPoint == MountPoint.HEAD && renderState.isCrouching)

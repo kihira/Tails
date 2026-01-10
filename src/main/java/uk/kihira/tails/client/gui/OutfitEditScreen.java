@@ -169,7 +169,7 @@ public class OutfitEditScreen extends Screen
      */
     void addOutfitPart(OutfitPart outfitPart)
     {
-        outfit.parts.add(outfitPart);
+        this.outfit.addPart(outfitPart);
         setActiveOutfitPart(outfitPart);
     }
 

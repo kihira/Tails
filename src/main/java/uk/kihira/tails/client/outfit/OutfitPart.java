@@ -23,8 +23,8 @@ public class OutfitPart implements AutoCloseable
     public float[] mountOffset; // [x,y,z]
     public float[] rotation; // [x,y,z]
     public float[] scale; // [x,y,z]
-    public Tint[] tint; // [[r,g,b],[r,g,b],[r,g,b]]
-    public PartTexture texture;
+    private final Tint[] tint; // [[r,g,b],[r,g,b],[r,g,b]]
+    private PartTexture texture;
 
     // Client only fields
     private transient Part part;
@@ -50,6 +50,24 @@ public class OutfitPart implements AutoCloseable
         Minecraft.getInstance().getTextureManager().register(this.textureIdentifier, this.tintedTexture);
     }
 
+    public Tint getTint(int index)
+    {
+        if (this.tint != null && index >= 0 && index < this.tint.length)
+        {
+            return this.tint[index];
+        }
+        return null;
+    }
+
+    public void setTint(int index, Tint tint)
+    {
+        if (this.tint != null && index >= 0 && index < this.tint.length)
+        {
+            this.tint[index] = tint;
+            this.tintedTexture.setTints(this.tint[0], this.tint[1], this.tint[2]);
+        }
+    }
+
     /**
      * Gets the {@link Part} that has the ID for {@link #basePart}
      * @return The part
@@ -57,11 +75,11 @@ public class OutfitPart implements AutoCloseable
     @Nullable
     public Part getPart() 
     {
-        if (part == null) 
+        if (this.part == null)
         {
-            part = PartRegistry.getPart(basePart).orElse(null);
+            this.part = PartRegistry.getPart(this.basePart).orElse(null);
         }
-        return part;
+        return this.part;
     }
 
     @Override

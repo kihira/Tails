@@ -32,12 +32,12 @@ public class LegacyLayerPart extends RenderLayer<AvatarRenderState, PlayerModel>
     public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int packedLight, AvatarRenderState renderState, float yRot, float xRot)
     {
         Outfit outfit = renderState.getRenderData(LayerPart.OUTFIT_KEY);
-        if (outfit == null || outfit.parts == null)
+        if (outfit == null)
         {
             return;
         }
 
-        for (OutfitPart part : outfit.parts)
+        for (OutfitPart part : outfit.getParts())
         {
             var basePart = part.getPart();
             if (basePart != null && part.mountPoint == mountPoint)

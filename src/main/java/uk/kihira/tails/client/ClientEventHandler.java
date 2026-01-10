@@ -230,12 +230,12 @@ public class ClientEventHandler
             }
 
             // todo temp
-            var outfit = new Outfit();
+            var outfit = new Outfit()
             //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19")).get())); // fox
             //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1")).get())); // shark
             //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda")).get())); // dragon
-            outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe")).get())); // racoon
-            outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6")).get())); // fox ears
+                .addPart(new OutfitPart(PartRegistry.getPart(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe")).get())) // racoon
+                .addPart(new OutfitPart(PartRegistry.getPart(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6")).get())); // fox ears
             Config.CONFIG.setLocalOutfit(outfit);
         }
     }

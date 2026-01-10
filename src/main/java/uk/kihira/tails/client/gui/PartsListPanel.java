@@ -225,7 +225,7 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
 
                     // todo create OutfitBuilder?
                     var outfit = new Outfit();
-                    outfit.parts.add(part);
+                    outfit.addPart(part);
                     renderState.setRenderData(LayerPart.OUTFIT_KEY, outfit);
 
                     // TODO position and scale is _fine_ for tails but need it to work for other parts. maybe we just be lazy with

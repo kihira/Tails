@@ -122,7 +122,6 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
-        //todo RenderSystem.enableBlend();
         graphics.fill(this.getX(), this.getY(), this.getRight(), this.getY() + EDIT_PANEL_TOP, Colour.LIGHT_GRAY);
         graphics.fill(this.getX(), this.getY() + EDIT_PANEL_TOP, this.getRight(), this.getBottom(), Colour.DARK_GREY);
         graphics.drawString(font(), Component.translatable("gui.tint"), this.getX() + 5, this.getY() + 3, OutfitEditScreen.TEXT_COLOUR);
@@ -157,7 +156,7 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
     private void onTintButtonPushed(GuiEventListener button)
     {
         currTintEdit = ((TintButton) button).getTintId();
-        currTintColour = parent.getCurrentOutfitPart().tint[currTintEdit].toARGB();
+        currTintColour = parent.getCurrentOutfitPart().getTint(currTintEdit).toARGB();
         updateTints(true);
         tintReset.active = false;
         colourPicker.active = true;
@@ -268,7 +267,7 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
 
         if (parent.getCurrentOutfitPart() != null)
         {
-            parent.getCurrentOutfitPart().tint[currTintEdit] = Tint.fromARGB(currTintColour);
+            parent.getCurrentOutfitPart().setTint(currTintEdit, Tint.fromARGB(currTintColour));
         }
     }
 
@@ -363,7 +362,7 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
             }
 
             final OutfitPart currentPart = parent.getCurrentOutfitPart();
-            final int colour = currentPart != null ? currentPart.tint[tintId].toARGB() : defaultColour;
+            final int colour = currentPart != null ? currentPart.getTint(tintId).toARGB() : defaultColour;
             graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), colour);
         }
 
