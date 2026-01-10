@@ -96,21 +96,7 @@ public class GuiHSBSlider extends ExtendedSlider implements ITooltip
 
     public HSBSliderType getType()
     {
-        return type;
-    }
-
-    /**
-     * Sets the current slider value between 0-1F and calls the callback
-     * @param value New value
-     */
-    public void setValueWithCallback(double value)
-    {
-        this.setValue(value);
-
-        if (callback != null)
-        {
-            callback.onValueChangeHSBSlider(this, this.value);
-        }
+        return this.type;
     }
 
     /**

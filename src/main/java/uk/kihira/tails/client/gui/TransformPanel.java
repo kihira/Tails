@@ -100,7 +100,7 @@ public class TransformPanel extends Panel<OutfitEditScreen> implements IControlC
 
     protected void onChangeMountPointButtonPressed(GuiEventListener button)
     {
-        final OutfitPart outfitPart = parent.getCurrentOutfitPart();
+        final OutfitPart outfitPart = this.parent.getCurrentOutfitPart();
         if (outfitPart == null) return;
 
         // Move to next enum for MountPoint or back to 0 if at the end
@@ -109,27 +109,27 @@ public class TransformPanel extends Panel<OutfitEditScreen> implements IControlC
 
         outfitPart.mountPoint = MountPoint.values()[mountPointOrdinal];
 
-        mountPointButton.setMessage(Component.translatable("tails.mountpoint." + outfitPart.mountPoint.name()));
+        this.mountPointButton.setMessage(Component.translatable("tails.mountpoint." + outfitPart.mountPoint.name()));
     }
 
     @Override
     public boolean onValueChange(IControl<Float> control, Float oldValue, Float newValue)
     {
-        final OutfitPart outfitPart = parent.getCurrentOutfitPart();
+        final OutfitPart outfitPart = this.parent.getCurrentOutfitPart();
         if (outfitPart == null) return true;
 
         // Rot
-        if (control == xRotInput) outfitPart.rotation[0] = newValue;
-        else if (control == yRotInput) outfitPart.rotation[1] = newValue;
-        else if (control == zRotInput) outfitPart.rotation[2] = newValue;
+        if (control == this.xRotInput) outfitPart.rotation[0] = newValue;
+        else if (control == this.yRotInput) outfitPart.rotation[1] = newValue;
+        else if (control == this.zRotInput) outfitPart.rotation[2] = newValue;
         // Pos
-        else if (control == xPosInput) outfitPart.mountOffset[0] = newValue;
-        else if (control == yPosInput) outfitPart.mountOffset[1] = newValue;
-        else if (control == zPosInput) outfitPart.mountOffset[2] = newValue;
+        else if (control == this.xPosInput) outfitPart.mountOffset[0] = newValue;
+        else if (control == this.yPosInput) outfitPart.mountOffset[1] = newValue;
+        else if (control == this.zPosInput) outfitPart.mountOffset[2] = newValue;
         // Scale
-        else if (control == xScaleInput) outfitPart.scale[0] = newValue;
-        else if (control == yScaleInput) outfitPart.scale[1] = newValue;
-        else if (control == zScaleInput) outfitPart.scale[2] = newValue;
+        else if (control == this.xScaleInput) outfitPart.scale[0] = newValue;
+        else if (control == this.yScaleInput) outfitPart.scale[1] = newValue;
+        else if (control == this.zScaleInput) outfitPart.scale[2] = newValue;
 
         return true;
     }
@@ -137,19 +137,22 @@ public class TransformPanel extends Panel<OutfitEditScreen> implements IControlC
     @Override
     public void onOutfitPartSelected(@Nullable OutfitPart part)
     {
-        if (part == null) return;
+        if (part == null)
+        {
+            return;
+        }
 
-        xPosInput.setValue(part.mountOffset[0]);
-        yPosInput.setValue(part.mountOffset[1]);
-        zPosInput.setValue(part.mountOffset[2]);
+        this.xPosInput.setValue(part.mountOffset[0]);
+        this.yPosInput.setValue(part.mountOffset[1]);
+        this.zPosInput.setValue(part.mountOffset[2]);
 
-        xRotInput.setValue(part.rotation[0]);
-        yRotInput.setValue(part.rotation[1]);
-        zRotInput.setValue(part.rotation[2]);
+        this.xRotInput.setValue(part.rotation[0]);
+        this.yRotInput.setValue(part.rotation[1]);
+        this.zRotInput.setValue(part.rotation[2]);
 
-        xScaleInput.setValue(part.scale[0]);
-        yScaleInput.setValue(part.scale[1]);
-        zScaleInput.setValue(part.scale[2]);
+        this.xScaleInput.setValue(part.scale[0]);
+        this.yScaleInput.setValue(part.scale[1]);
+        this.zScaleInput.setValue(part.scale[2]);
     }
 
     @Override

@@ -64,10 +64,10 @@ public class ColourPicker
         {
             int mouseX = (int) Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
             int mouseY = (int) Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
-            final int x = mouseX + TintPanel.COLOUR_PREVIEW_OFFSET;
-            final int y = mouseY + TintPanel.COLOUR_PREVIEW_OFFSET;
-            event.getGuiGraphics().fill(x - 1, y - 1, x + TintPanel.COLOUR_PREVIEW_SIZE + 1, y + TintPanel.COLOUR_PREVIEW_SIZE + 1, Colour.BLACK);
-            event.getGuiGraphics().fill(x, y, x + TintPanel.COLOUR_PREVIEW_SIZE, y + TintPanel.COLOUR_PREVIEW_SIZE, activeColourSelected);
+            final int x = mouseX + COLOUR_PREVIEW_OFFSET;
+            final int y = mouseY + COLOUR_PREVIEW_OFFSET;
+            event.getGuiGraphics().fill(x - 1, y - 1, x + COLOUR_PREVIEW_SIZE + 1, y + COLOUR_PREVIEW_SIZE + 1, Colour.BLACK);
+            event.getGuiGraphics().fill(x, y, x + COLOUR_PREVIEW_SIZE, y + COLOUR_PREVIEW_SIZE, activeColourSelected);
         }
     }
 
@@ -96,4 +96,7 @@ public class ColourPicker
     private static int activeColourSelected;
     private static boolean pickingColour;
     private static Consumer<Integer> colourPickedCallback;
+
+    public static final int COLOUR_PREVIEW_SIZE = 10;
+    public static final int COLOUR_PREVIEW_OFFSET = 3;
 }

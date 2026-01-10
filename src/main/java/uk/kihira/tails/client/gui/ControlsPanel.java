@@ -31,15 +31,13 @@ public class ControlsPanel extends Panel<OutfitEditScreen>
     }
 
     @Override
-        protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput)
+    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput)
     {
 
     }
 
     private void onResetAllButtonPressed(GuiEventListener button)
     {
-        //parent.partsListWidget.selectDefaultListEntry();
-        parent.refreshTintPane();
         parent.setActiveOutfitPart(null);
     }
 
@@ -57,8 +55,7 @@ public class ControlsPanel extends Panel<OutfitEditScreen>
     @Override
     protected int contentHeight()
     {
-        // todo
-        return 0;
+        return this.getHeight();
     }
 
     @Override

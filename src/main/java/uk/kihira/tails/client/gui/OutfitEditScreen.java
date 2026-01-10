@@ -137,37 +137,32 @@ public class OutfitEditScreen extends Screen
     @Override
     public void onClose()
     {
-        Tails.proxy.setActiveOutfit(playerUUID, Config.CONFIG.getLocalOutfit());
+        Tails.proxy.setActiveOutfit(this.playerUUID, Config.CONFIG.getLocalOutfit());
         super.onClose();
-    }
-
-    void refreshTintPane()
-    {
-        tintPanel.updateTints(true);
     }
 
     /**
      * Sets the current OutfitPart that is being edited to the one supplied
      * @param outfitPart The outfit part
      */
-    void setActiveOutfitPart(@Nullable OutfitPart outfitPart)
+    public void setActiveOutfitPart(@Nullable OutfitPart outfitPart)
     {
-        // todo should maintain a list of IOutfitPartSelected instead
-/*        getAllPanels().forEach((final Panel<?> panel) -> {
-            if (panel instanceof IOutfitPartSelected)
-            {
-                ((IOutfitPartSelected) panel).OnOutfitPartSelected(outfitPart);
-            }
-        });*/
+        this.currentOutfitPart = outfitPart;
 
-        currentOutfitPart = outfitPart;
+        this.children().forEach(child ->
+        {
+            if (child instanceof IOutfitPartSelected)
+            {
+                ((IOutfitPartSelected) child).onOutfitPartSelected(outfitPart);
+            }
+        });
     }
 
     /**
      * Adds a new OutfitPart to the Outfit and sets it to the current edited one
      * @param outfitPart The part to be added
      */
-    void addOutfitPart(OutfitPart outfitPart)
+    public void addOutfitPart(OutfitPart outfitPart)
     {
         this.outfit.addPart(outfitPart);
         setActiveOutfitPart(outfitPart);
@@ -178,23 +173,23 @@ public class OutfitEditScreen extends Screen
      * @return The selected part on the outfit. May be null if there is no part or outfit
      */
     @Nullable
-    OutfitPart getCurrentOutfitPart()
+    public OutfitPart getCurrentOutfitPart()
     {
-        if (outfit == null)
+        if (this.outfit == null)
         {
             return null;
         }
-        return currentOutfitPart;
+        return this.currentOutfitPart;
     }
 
     public void setOutfit(Outfit newOutfit)
     {
-        outfit = newOutfit;
-        Tails.proxy.setActiveOutfit(playerUUID, outfit);
+        this.outfit = newOutfit;
+        Tails.proxy.setActiveOutfit(this.playerUUID, this.outfit);
     }
 
     public Outfit getOutfit()
     {
-        return outfit;
+        return this.outfit;
     }
 }
