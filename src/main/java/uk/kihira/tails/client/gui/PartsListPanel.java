@@ -137,12 +137,6 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
             this.replaceEntries(PartRegistry.getPartsByMountPoint(mountPoint).map(PartEntry::new).toList());
         }
 
-        @Override
-        public void setSelected(PartsListPanel.PartsList.@Nullable PartEntry selected)
-        {
-            super.setSelected(selected);
-        }
-
         public class PartEntry extends ObjectSelectionList.Entry<PartEntry>
         {
             private static final int ADD_X = 1;

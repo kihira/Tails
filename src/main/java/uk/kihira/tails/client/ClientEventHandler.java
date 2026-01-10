@@ -29,6 +29,7 @@ import uk.kihira.tails.client.model.SharkTailModel;
 import uk.kihira.tails.client.model.head.FoxEarsModel;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.client.outfit.OutfitPart;
+import uk.kihira.tails.client.outfit.Tint;
 import uk.kihira.tails.client.render.LayerPart;
 import uk.kihira.tails.client.render.LegacyLayerPart;
 import uk.kihira.tails.common.Config;
@@ -130,7 +131,7 @@ public class ClientEventHandler
         @SubscribeEvent
         public static void registerRenderPipelines(final RegisterRenderPipelinesEvent event)
         {
-            event.registerPipeline(PartRenderer.PART_PIPELINE);
+            //event.registerPipeline(PartRenderer.PART_PIPELINE);
         }
 
         @SubscribeEvent
@@ -160,7 +161,7 @@ public class ClientEventHandler
                             new float[] {0, 1, 0},
                             new float[] {0, 0, 0},
                             new float[] {1, 1, 1},
-                            new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
+                            new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             new PartTexture[]{ new PartTexture(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19"), "Default", "Kihira") }),
                     new FoxTailModel(event.getEntityModels().bakeLayer(FOX_TAIL_LAYER_LOCATION)));
             registerPartWithModel(
@@ -172,7 +173,7 @@ public class ClientEventHandler
                             new float[] {0, 1, 0},
                             new float[] {0, 0, 0},
                             new float[] {1, 1, 1},
-                            new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
+                            new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             new PartTexture[]{ new PartTexture(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1"), "Default", "Kihira") }),
                     new SharkTailModel(event.getEntityModels().bakeLayer(SHARK_TAIL_LAYER_LOCATION)));
             registerPartWithModel(
@@ -184,7 +185,7 @@ public class ClientEventHandler
                             new float[] {0, 1, 0},
                             new float[] {0, 0, 0},
                             new float[] {1, 1, 1},
-                            new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
+                            new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             // new PartTexture[]{ new PartTexture(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Striped", "Kihira") }),
                             new PartTexture[]{ new PartTexture(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Default", "Kihira") }),
                     new DragonTailModel(event.getEntityModels().bakeLayer(DRAGON_TAIL_LAYER_LOCATION)));
@@ -197,7 +198,7 @@ public class ClientEventHandler
                             new float[] {0, 1, 0},
                             new float[] {0, 0, 0},
                             new float[] {1, 1, 1},
-                            new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
+                            new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             new PartTexture[]{ new PartTexture(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe"), "Default", "Kihira") }),
                     new RacoonTailModel(event.getEntityModels().bakeLayer(RACOON_TAIL_LAYER_LOCATION)));
             registerPartWithModel(
@@ -209,7 +210,7 @@ public class ClientEventHandler
                             new float[] {0, 1, 0},
                             new float[] {0, 0, 0},
                             new float[] {1, 1, 1},
-                            new float[][]{new float[]{1, 0, 0}, new float[]{0, 1, 0}, new float[]{0, 0, 1}},
+                            new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             new PartTexture[]{ new PartTexture(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6"), "Default", "Kihira") }),
                     new FoxEarsModel(event.getEntityModels().bakeLayer(FOX_EARS_LAYER_LOCATION)));
 

@@ -17,6 +17,7 @@ import uk.kihira.tails.client.gui.controls.IconButton;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.gui.controls.GuiHSBSlider;
 import uk.kihira.tails.Tails;
+import uk.kihira.tails.client.outfit.Tint;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -156,7 +157,7 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
     private void onTintButtonPushed(GuiEventListener button)
     {
         currTintEdit = ((TintButton) button).getTintId();
-        currTintColour = tintToArgb(parent.getCurrentOutfitPart().tint[currTintEdit]);
+        currTintColour = parent.getCurrentOutfitPart().tint[currTintEdit].toARGB();
         updateTints(true);
         tintReset.active = false;
         colourPicker.active = true;
@@ -174,7 +175,7 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
             return;
         }
 
-        currTintColour = tintToArgb(basePart.get().tint[currTintEdit]);
+        currTintColour = basePart.get().tint[currTintEdit].toARGB();
         updateTints(true);
         tintReset.active = false;
     }
@@ -218,33 +219,6 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
             this.currTintColour = Color.getHSBColor(hsbvals[0], hsbvals[1], hsbvals[2]).getRGB();
         }
         //updateTints(true);
-    }
-
-    /**
-     * Converts a vec3 of floats to the ARGB int format used by Minecraft
-     * @param tint The tint
-     */
-    protected int tintToArgb(float[] tint)
-    {
-        int col = Colour.BLACK;
-        col |= (int)(tint[0] * 255f) << 16;
-        col |= (int)(tint[1] * 255f) << 8;
-        col |= (int)(tint[2] * 255f);
-        return col;
-    }
-
-    /**
-     * Converts a ARGB int to a vec3 of floats
-     * @param argb The int value
-     * @return A vec3 of RGB
-     */
-    protected float[] argbToTint(int argb)
-    {
-        float[] tint = new float[3];
-        tint[0] = ((argb >> 16) & 0xFF) / 255f;
-        tint[1] = ((argb >> 8) & 0xFF) / 255f;
-        tint[2] = (argb & 0xFF) / 255f;
-        return tint;
     }
 
     /**
@@ -294,7 +268,7 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
 
         if (parent.getCurrentOutfitPart() != null)
         {
-            parent.getCurrentOutfitPart().tint[currTintEdit] = argbToTint(currTintColour);
+            parent.getCurrentOutfitPart().tint[currTintEdit] = Tint.fromARGB(currTintColour);
         }
     }
 
@@ -336,8 +310,7 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
     @Override
     protected int contentHeight()
     {
-        //todo
-        return 0;
+        return this.getHeight();
     }
 
     @Override
@@ -390,7 +363,7 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
             }
 
             final OutfitPart currentPart = parent.getCurrentOutfitPart();
-            final int colour = currentPart != null ? tintToArgb(currentPart.tint[tintId]) : defaultColour;
+            final int colour = currentPart != null ? currentPart.tint[tintId].toARGB() : defaultColour;
             graphics.fill(this.getX(), this.getY(), this.getRight(), this.getBottom(), colour);
         }
 

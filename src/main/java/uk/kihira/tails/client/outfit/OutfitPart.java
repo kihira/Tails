@@ -1,11 +1,13 @@
 package uk.kihira.tails.client.outfit;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.client.PartTexture;
 import uk.kihira.tails.Tails;
+import uk.kihira.tails.client.texture.ThreeTintTexture;
 
 import javax.annotation.Nullable;
 
@@ -14,19 +16,20 @@ import java.util.UUID;
 /**
  * Represents a part that is in an outfit
  */
-public class OutfitPart
+public class OutfitPart implements AutoCloseable
 {
     public final UUID basePart;
     public MountPoint mountPoint;
     public float[] mountOffset; // [x,y,z]
     public float[] rotation; // [x,y,z]
     public float[] scale; // [x,y,z]
-    public float[][] tint; // [[r,g,b],[r,g,b]]
+    public Tint[] tint; // [[r,g,b],[r,g,b],[r,g,b]]
     public PartTexture texture;
 
     // Client only fields
     private transient Part part;
-    public Identifier textureLoc;
+    public final Identifier textureIdentifier;
+    public transient final ThreeTintTexture tintedTexture;
 
     public OutfitPart(Part part)
     {
@@ -38,7 +41,13 @@ public class OutfitPart
         this.tint = part.tint;
         this.texture = part.textures[0];
 
-        this.textureLoc = Identifier.fromNamespaceAndPath(Tails.MOD_ID, String.format("texture/parts/%s/%s.png", part.id, this.texture.id()));
+        // TODO: We're mixing in client usage in what should be a common class.
+        // We also don't really want to use Minecraft.getInstance, maybe a builder or factory pattern would be better?
+        this.textureIdentifier = Identifier.fromNamespaceAndPath(Tails.MOD_ID, String.format("threetint_texture/%s", UUID.randomUUID()));
+        var baseTexture = Identifier.fromNamespaceAndPath(Tails.MOD_ID, String.format("texture/parts/%s/%s.png", part.id, this.texture.id()));
+        this.tintedTexture = ThreeTintTexture.create(this.textureIdentifier.toString(), baseTexture, this.tint[0], this.tint[1], this.tint[2]);
+
+        Minecraft.getInstance().getTextureManager().register(this.textureIdentifier, this.tintedTexture);
     }
 
     /**
@@ -53,5 +62,12 @@ public class OutfitPart
             part = PartRegistry.getPart(basePart).orElse(null);
         }
         return part;
+    }
+
+    @Override
+    public void close()
+    {
+        Minecraft.getInstance().getTextureManager().release(this.textureIdentifier);
+        this.tintedTexture.close();
     }
 }
