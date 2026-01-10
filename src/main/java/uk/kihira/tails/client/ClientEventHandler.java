@@ -1,11 +1,16 @@
 package uk.kihira.tails.client;
 
 import com.google.common.reflect.TypeToken;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
@@ -68,7 +73,8 @@ public class ClientEventHandler
         public static void onConnectToServer(ClientPlayerNetworkEvent.LoggingIn event)
         {
             //Add local player texture to map
-            if (Config.CONFIG.getLocalOutfit() != null) {
+            if (Config.CONFIG.getLocalOutfit() != null)
+            {
                 Tails.proxy.setActiveOutfit(Minecraft.getInstance().getGameProfile().id(), Config.CONFIG.getLocalOutfit());
             }
         }
@@ -108,25 +114,6 @@ public class ClientEventHandler
             event.registerEntityModifier(rendererType, modifier);
         }
 
-/*        @SubscribeEvent
-        public static void onClientTick(TickEvent.ClientTickEvent e)
-        {
-            if (e.phase == TickEvent.Phase.START)
-            {
-                if (clearAllPartInfo)
-                {
-                    Tails.proxy.clearAllPartsData();
-                    clearAllPartInfo = false;
-                }
-                //World can't be null if we want to send a packet it seems
-                else if (!sentPartInfoToServer)
-                {
-                    //PacketDistributor.SERVER.noArg().send(new PlayerDataMessage(Minecraft.getInstance().getGameProfile().getId(), Config.localOutfit, false));
-                    sentPartInfoToServer = true;
-                }
-            }
-        }*/
-
         @SubscribeEvent
         public static void onRenderWorldLast(RenderLevelStageEvent.AfterLevel event)
         {
@@ -140,6 +127,12 @@ public class ClientEventHandler
     @EventBusSubscriber(modid = Tails.MOD_ID, value = Dist.CLIENT)
     public static class Mod
     {
+        @SubscribeEvent
+        public static void registerRenderPipelines(final RegisterRenderPipelinesEvent event)
+        {
+            event.registerPipeline(PartRenderer.PART_PIPELINE);
+        }
+
         @SubscribeEvent
         public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event)
         {
