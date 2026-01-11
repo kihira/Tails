@@ -14,17 +14,18 @@ public class FoxEarsModel extends PartModel
 	public FoxEarsModel(ModelPart root)
 	{
 		super(root);
-		this.rightEar = root.getChild("head").getChild("rightEar");
-		this.leftEar = root.getChild("head").getChild("leftEar");
+		this.rightEar = this.partRoot.getChild("rightEar");
+		this.leftEar = this.partRoot.getChild("leftEar");
 	}
 
 	public static LayerDefinition createModelLayer()
 	{
 		// Create the mesh definition based on the player model so we can get the correct rotations etc
-		MeshDefinition meshdefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
-		PartDefinition head = meshdefinition.getRoot().clearRecursively().getChild("head");
+		var meshDefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
+		var emptyPlayerDefinition = meshDefinition.getRoot().clearRecursively();
+		var partRoot = emptyPlayerDefinition.getChild("head").addOrReplaceChild(PART_ROOT_NAME, CubeListBuilder.create(), PartPose.ZERO);
 
-		PartDefinition rightEar = head.addOrReplaceChild("rightEar",
+		var rightEar = partRoot.addOrReplaceChild("rightEar",
 				CubeListBuilder.create()
 						.texOffs(0, 19).addBox(4.0F, -5.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
 						.texOffs(4, 19).addBox(3.0F, -3.0F, 1.0F, 2.0F, 2.0F, 1.0F, CubeDeformation.NONE)
@@ -37,7 +38,7 @@ public class FoxEarsModel extends PartModel
 						.texOffs(8, 3).addBox(3.0F, -3.0F, 2.0F, 1.0F, 2.0F, 1.0F, CubeDeformation.NONE),
 				PartPose.offset(-1.0F, -7.0F, 0.0F)); // offset to the top of the head
 
-		PartDefinition leftEar = head.addOrReplaceChild("leftEar",
+		var leftEar = partRoot.addOrReplaceChild("leftEar",
 				CubeListBuilder.create()
 						.texOffs(0, 16).addBox(-5.0F, -5.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
 						.texOffs(4, 16).addBox(-5.0F, -3.0F, 1.0F, 2.0F, 2.0F, 1.0F, CubeDeformation.NONE)
@@ -50,6 +51,6 @@ public class FoxEarsModel extends PartModel
 						.texOffs(8, 3).addBox(-4.0F, -3.0F, 2.0F, 1.0F, 2.0F, 1.0F, CubeDeformation.NONE),
 				PartPose.offset(1.0F, -7.0F, 0.0F)); // offset to the top of the head
 
-		return LayerDefinition.create(meshdefinition, 16, 32);
+		return LayerDefinition.create(meshDefinition, 16, 32);
 	}
 }

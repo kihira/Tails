@@ -1,11 +1,15 @@
 package uk.kihira.tails.client.model;
 
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import org.joml.Math;
+import org.joml.Vector3f;
+import uk.kihira.tails.client.render.LayerPart;
+import uk.kihira.tails.client.render.LegacyLayerPart;
 
 public class SharkTailModel extends PartModel
 {
@@ -24,7 +28,7 @@ public class SharkTailModel extends PartModel
     public SharkTailModel(ModelPart root)
     {
         super(root);
-        this.tailBase = root.getChild("body").getChild("tailBase");
+        this.tailBase = this.partRoot.getChild("tailBase");
         this.tail1 = this.tailBase.getChild("tail1");
         this.tail2 = this.tail1.getChild("tail2");
         this.tail3 = this.tail2.getChild("tail3");
@@ -40,13 +44,14 @@ public class SharkTailModel extends PartModel
     public static LayerDefinition createModelLayer()
     {
         // Create the mesh definition based on the player model so we can get the correct rotations etc
-        MeshDefinition meshdefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
-        PartDefinition partdefinition = meshdefinition.getRoot().clearRecursively();
-        PartDefinition body = partdefinition.getChild("body");
+        // We create a "partRoot" which we can set for the offset/rotation/scale set by the player without needing to worry about our animations
+        var meshDefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
+        var emptyPlayerDefinition = meshDefinition.getRoot().clearRecursively();
+        var partRoot = emptyPlayerDefinition.getChild("body").addOrReplaceChild(PART_ROOT_NAME, CubeListBuilder.create(), PartPose.ZERO);
 
-        PartDefinition tailBase = body.addOrReplaceChild("tailBase",
+        PartDefinition tailBase = partRoot.addOrReplaceChild("tailBase",
                 CubeListBuilder.create().texOffs(0, 24).addBox(-2.0F, -2.0F, 0.0F, 4.0F, 4.0F, 4.0F, CubeDeformation.NONE),
-                PartPose.offsetAndRotation(0.0F, 11.0F, -0.6F, -0.6458F, 0.0F, 0.0F));
+                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.6458F, 0.0F, 0.0F));
 
         PartDefinition tail1 = tailBase.addOrReplaceChild("tail1",
                 CubeListBuilder.create().texOffs(0, 16).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 5.0F, CubeDeformation.NONE),
@@ -92,7 +97,7 @@ public class SharkTailModel extends PartModel
                 CubeListBuilder.create().texOffs(16, 1).addBox(-1.0F, -2.0F, -1.0F, 1.0F, 2.0F, 1.0F, CubeDeformation.NONE),
                 PartPose.offsetAndRotation(0.0F, -4.0F, 0.0F, 0.1367F, 0.0F, 0.0F));
 
-        return LayerDefinition.create(meshdefinition, 64, 32);
+        return LayerDefinition.create(meshDefinition, 64, 32);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class DragonTailModel extends PartModel
 	public DragonTailModel(ModelPart root)
 	{
 		super(root);
-		this.tailBase = root.getChild("body").getChild("tailBase");
+		this.tailBase = this.partRoot.getChild("tailBase");
 		this.tail1 = this.tailBase.getChild("tail1");
 		this.tail2 = this.tail1.getChild("tail2");
 		this.tail3 = this.tail2.getChild("tail3");
@@ -26,10 +26,11 @@ public class DragonTailModel extends PartModel
 	public static LayerDefinition createModelLayer()
 	{
 		// Create the mesh definition based on the player model so we can get the correct rotations etc
-		MeshDefinition meshdefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
-		PartDefinition body = meshdefinition.getRoot().clearRecursively().getChild("body");
+		var meshDefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
+		var emptyPlayerDefinition = meshDefinition.getRoot().clearRecursively();
+		var partRoot = emptyPlayerDefinition.getChild("body").addOrReplaceChild(PART_ROOT_NAME, CubeListBuilder.create(), PartPose.ZERO);
 
-		PartDefinition tailBase = body.addOrReplaceChild("tailBase",
+		PartDefinition tailBase = partRoot.addOrReplaceChild("tailBase",
 				CubeListBuilder.create()
 						.texOffs(22, 0).addBox(-2.5F, -2.5F, -2.0F, 5.0F, 5.0F, 8.0F, CubeDeformation.NONE)
 						.texOffs(22, 5).addBox(0.0F, -7.25F, -2.0F, 0.0F, 5.0F, 8.0F, CubeDeformation.NONE),
@@ -53,7 +54,7 @@ public class DragonTailModel extends PartModel
 						.texOffs(29, 6).addBox(0.0F, -5.0F, 1.0F, 0.0F, 5.0F, 7.0F, CubeDeformation.NONE),
 				PartPose.offsetAndRotation(0.0F, -0.4F, 7.5F, 0.3491F, 0.0F, 0.0F));
 
-		return LayerDefinition.create(meshdefinition, 64, 32);
+		return LayerDefinition.create(meshDefinition, 64, 32);
 	}
 
 	@Override

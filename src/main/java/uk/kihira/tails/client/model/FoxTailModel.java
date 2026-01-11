@@ -25,7 +25,7 @@ public class FoxTailModel extends PartModel
     public FoxTailModel(ModelPart root)
     {
         super(root);
-        this.tailBase = root.getChild("body").getChild("tailBase");
+        this.tailBase = this.partRoot.getChild("tailBase");
         this.tail1 = tailBase.getChild("tail1");
         this.tail2 = tail1.getChild("tail2");
         this.tail3 = tail2.getChild("tail3");
@@ -36,11 +36,11 @@ public class FoxTailModel extends PartModel
     public static LayerDefinition createBodyLayer()
     {
         // Create the mesh definition based on the player model so we can get the correct rotations etc
-        MeshDefinition meshdefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
-        PartDefinition partdefinition = meshdefinition.getRoot().clearRecursively();
-        PartDefinition body = partdefinition.getChild("body");
+        var meshDefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
+        var emptyPlayerDefinition = meshDefinition.getRoot().clearRecursively();
+        var partRoot = emptyPlayerDefinition.getChild("body").addOrReplaceChild(PART_ROOT_NAME, CubeListBuilder.create(), PartPose.ZERO);
 
-        PartDefinition tailBase = body.addOrReplaceChild("tailBase",
+        PartDefinition tailBase = partRoot.addOrReplaceChild("tailBase",
                         CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 3.0F, CubeDeformation.NONE),
                         PartPose.offsetAndRotation(0.0F, 11.0F, 1.5F, -0.2618F, 0.0F, 0.0F)); // offset to bottom of the body
 
@@ -64,7 +64,7 @@ public class FoxTailModel extends PartModel
                 CubeListBuilder.create().texOffs(12, 26).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 2.0F, CubeDeformation.NONE),
                 PartPose.offsetAndRotation(0.0F, 0.0F, 1.4F, 0.2618F, 0.0F, 0.0F));
 
-        return LayerDefinition.create(meshdefinition, 32, 32);
+        return LayerDefinition.create(meshDefinition, 32, 32);
     }
 
     @Override

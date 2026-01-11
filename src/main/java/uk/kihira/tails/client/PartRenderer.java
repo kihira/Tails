@@ -94,11 +94,11 @@ public class PartRenderer
     public void render(PoseStack poseStack, OutfitPart part)
     {
         poseStack.pushPose();
-        //matrixStack.translate(part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
-        poseStack.rotateAround(Axis.XP.rotationDegrees(part.rotation[0]), part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
-        poseStack.rotateAround(Axis.YP.rotationDegrees(part.rotation[1]), part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]);
-        poseStack.rotateAround(Axis.YP.rotationDegrees(part.rotation[2] + 180f), part.mountOffset[0], part.mountOffset[1], part.mountOffset[2]); // todo need to find out why its being rotated 180 degrees so this fix is no longer required
-        poseStack.scale(part.scale[0], part.scale[1], part.scale[2]);
+        poseStack.translate(part.mountOffset.x, part.mountOffset.y, part.mountOffset.z);
+        poseStack.rotateAround(Axis.XP.rotationDegrees(part.rotation.x), part.mountOffset.x, part.mountOffset.y, part.mountOffset.z);
+        poseStack.rotateAround(Axis.YP.rotationDegrees(part.rotation.y), part.mountOffset.x, part.mountOffset.y, part.mountOffset.z);
+        poseStack.rotateAround(Axis.YP.rotationDegrees(part.rotation.z + 180f), part.mountOffset.x, part.mountOffset.y, part.mountOffset.z); // todo need to find out why its being rotated 180 degrees so this fix is no longer required
+        poseStack.scale(part.scale.x, part.scale.y, part.scale.z);
         poseStack.scale(0.1f, 0.1f, 0.1f);
 
 

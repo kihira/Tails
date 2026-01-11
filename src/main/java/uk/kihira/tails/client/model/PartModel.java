@@ -11,34 +11,62 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import org.joml.Vector3f;
+import uk.kihira.tails.Tails;
+import uk.kihira.tails.client.render.LegacyLayerPart;
 
+import java.io.InvalidObjectException;
 import java.util.Collections;
 import java.util.function.Function;
 
 // ties us to only rendering on players but should be fine
 public abstract class PartModel extends HumanoidModel<AvatarRenderState>
 {
-    private static final ModelPart EMPTY_ROOT = new ModelPart(Collections.emptyList(), Collections.emptyMap());
+    protected final ModelPart partRoot;
 
     public PartModel()
     {
-        super(EMPTY_ROOT, RenderTypes::entityTranslucent);
+        this(EMPTY_MODEL, RenderTypes::entityTranslucent);
     }
 
     public PartModel(ModelPart root)
     {
-        super(root, RenderTypes::entityTranslucent);
+        this(root, RenderTypes::entityTranslucent);
     }
 
     public PartModel(ModelPart root, Function<Identifier, RenderType> renderType)
     {
         super(root, renderType);
+        // As we don't know where partRoot might be (because we currently base on the HumanoidModel), we need to search for it
+        var partRootParent = root.getAllParts().stream().filter(modelPart -> modelPart.hasChild(PART_ROOT_NAME)).findFirst();
+        if (partRootParent.isPresent())
+        {
+            this.partRoot = partRootParent.get().getChild(PART_ROOT_NAME);
+        }
+        else
+        {
+            Tails.LOGGER.fatal("{} has no ModelPart called '{}'. This is likely an incorrect setup model", this.getClass().getSimpleName(), PART_ROOT_NAME);
+            this.partRoot = root;
+        }
     }
 
     @Override
     public void setupAnim(AvatarRenderState renderState)
     {
         super.setupAnim(renderState);
+
+        var partDataQueue = renderState.getRenderData(LegacyLayerPart.PART_DATA_KEY);
+        if (partDataQueue != null)
+        {
+            var partData = partDataQueue.poll();
+            this.partRoot.offsetPos(partData.mountOffset);
+            this.partRoot.offsetRotation(partData.rotation);
+            // Scale is actual value, not offset
+            this.partRoot.xScale = partData.scale.x;
+            this.partRoot.yScale = partData.scale.y;
+            this.partRoot.zScale = partData.scale.z;
+
+        }
     }
 
     protected static float getAnimationTime(double cycleTime, long offset)
@@ -105,4 +133,7 @@ public abstract class PartModel extends HumanoidModel<AvatarRenderState>
 
         return Mth.sin(walkPos * 6F) * 12F * cameraYaw;
     }
+
+    public static final String PART_ROOT_NAME = "partRoot";
+    private static final ModelPart EMPTY_MODEL = new ModelPart(Collections.emptyList(), Collections.singletonMap(PART_ROOT_NAME, new ModelPart(Collections.emptyList(), Collections.emptyMap())));
 }

@@ -17,7 +17,7 @@ public class RacoonTailModel extends PartModel
 	public RacoonTailModel(ModelPart root)
 	{
 		super(root);
-		this.tailBase = root.getChild("body").getChild("tailBase");
+		this.tailBase = this.partRoot.getChild("tailBase");
 		this.tail1 = this.tailBase.getChild("tail1");
 		this.tail2 = this.tail1.getChild("tail2");
 		this.tailTip = this.tail2.getChild("tailTip");
@@ -26,10 +26,11 @@ public class RacoonTailModel extends PartModel
 	public static LayerDefinition createModelLayer()
 	{
 		// Create the mesh definition based on the player model so we can get the correct rotations etc
-		MeshDefinition meshdefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
-		PartDefinition body = meshdefinition.getRoot().clearRecursively().getChild("body");
+		var meshDefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
+		var emptyPlayerDefinition = meshDefinition.getRoot().clearRecursively();
+		var partRoot = emptyPlayerDefinition.getChild("body").addOrReplaceChild(PART_ROOT_NAME, CubeListBuilder.create(), PartPose.ZERO);
 
-		PartDefinition tailBase = body.addOrReplaceChild("tailBase",
+		PartDefinition tailBase = partRoot.addOrReplaceChild("tailBase",
 				CubeListBuilder.create().texOffs(12, 16).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 2.0F, CubeDeformation.NONE),
 				PartPose.offset(0.0F, 10.0F, 1.5F));
 
@@ -45,7 +46,7 @@ public class RacoonTailModel extends PartModel
 				CubeListBuilder.create().texOffs(0, 22).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 1.0F, CubeDeformation.NONE),
 				PartPose.offset(0.0F, 0.0F, 12.0F));
 
-		return LayerDefinition.create(meshdefinition, 64, 32);
+		return LayerDefinition.create(meshDefinition, 64, 32);
 	}
 
 	@Override
