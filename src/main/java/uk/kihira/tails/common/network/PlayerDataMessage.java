@@ -7,6 +7,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jspecify.annotations.NonNull;
@@ -54,11 +55,6 @@ public record PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) 
             }
         }
 
-        processMessage(data);
-    }
-
-    private static void processMessage(final PlayerDataMessage data)
-    {
         if (data.shouldRemove())
         {
             Tails.proxy.removeActiveOutfit(data.uuid());
@@ -67,7 +63,11 @@ public record PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) 
         {
             Tails.proxy.setActiveOutfit(data.uuid(), data.outfit());
         }
-        // Forward packet onto all clients
-        PacketDistributor.sendToAllPlayers(data);
+
+        if (context.connection().getDirection().getReceptionSide() == LogicalSide.SERVER)
+        {
+            // Forward packet onto all clients
+            PacketDistributor.sendToAllPlayers(data);
+        }
     }
 }
