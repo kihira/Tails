@@ -2,6 +2,7 @@ package uk.kihira.tails.client.outfit;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
+import org.joml.Vector3f;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.Part;
 import uk.kihira.tails.client.PartRegistry;
@@ -20,9 +21,9 @@ public class OutfitPart implements AutoCloseable
 {
     public final UUID basePart;
     public MountPoint mountPoint;
-    public float[] mountOffset; // [x,y,z]
-    public float[] rotation; // [x,y,z]
-    public float[] scale; // [x,y,z]
+    public Vector3f mountOffset; // [x,y,z]
+    public Vector3f rotation; // [x,y,z]
+    public Vector3f scale; // [x,y,z]
     private final Tint[] tint; // [[r,g,b],[r,g,b],[r,g,b]]
     private PartTexture texture;
 

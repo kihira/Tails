@@ -9,6 +9,7 @@ import uk.kihira.tails.client.Colour;
 import uk.kihira.tails.client.MountPoint;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.gui.controls.NumberInput;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -18,8 +19,8 @@ public class TransformPanel extends Panel<OutfitEditScreen> implements IControlC
     private static final float MIN_ROTATION = -180.f;
     private static final float INC_ROTATION = 1.f;
 
-    private static final float MAX_POSITION = 2.f;
-    private static final float MIN_POSITION = -2.f;
+    private static final float MAX_POSITION = 10.f;
+    private static final float MIN_POSITION = -10.f;
     private static final float INC_POSITION = .1f;
 
     private static final float MAX_SCALE = 2.f;
@@ -119,17 +120,17 @@ public class TransformPanel extends Panel<OutfitEditScreen> implements IControlC
         if (outfitPart == null) return true;
 
         // Rot
-        if (control == this.xRotInput) outfitPart.rotation[0] = newValue;
-        else if (control == this.yRotInput) outfitPart.rotation[1] = newValue;
-        else if (control == this.zRotInput) outfitPart.rotation[2] = newValue;
+        if (control == this.xRotInput) outfitPart.rotation.x = (float) Math.toRadians(newValue);
+        else if (control == this.yRotInput) outfitPart.rotation.y = (float) Math.toRadians(newValue);
+        else if (control == this.zRotInput) outfitPart.rotation.z = (float) Math.toRadians(newValue);
         // Pos
-        else if (control == this.xPosInput) outfitPart.mountOffset[0] = newValue;
-        else if (control == this.yPosInput) outfitPart.mountOffset[1] = newValue;
-        else if (control == this.zPosInput) outfitPart.mountOffset[2] = newValue;
+        else if (control == this.xPosInput) outfitPart.mountOffset.x = newValue;
+        else if (control == this.yPosInput) outfitPart.mountOffset.y = newValue;
+        else if (control == this.zPosInput) outfitPart.mountOffset.z = newValue;
         // Scale
-        else if (control == this.xScaleInput) outfitPart.scale[0] = newValue;
-        else if (control == this.yScaleInput) outfitPart.scale[1] = newValue;
-        else if (control == this.zScaleInput) outfitPart.scale[2] = newValue;
+        else if (control == this.xScaleInput) outfitPart.scale.x = newValue;
+        else if (control == this.yScaleInput) outfitPart.scale.y = newValue;
+        else if (control == this.zScaleInput) outfitPart.scale.z = newValue;
 
         return true;
     }
@@ -142,17 +143,17 @@ public class TransformPanel extends Panel<OutfitEditScreen> implements IControlC
             return;
         }
 
-        this.xPosInput.setValue(part.mountOffset[0]);
-        this.yPosInput.setValue(part.mountOffset[1]);
-        this.zPosInput.setValue(part.mountOffset[2]);
+        this.xPosInput.setValue(part.mountOffset.x);
+        this.yPosInput.setValue(part.mountOffset.y);
+        this.zPosInput.setValue(part.mountOffset.z);
 
-        this.xRotInput.setValue(part.rotation[0]);
-        this.yRotInput.setValue(part.rotation[1]);
-        this.zRotInput.setValue(part.rotation[2]);
+        this.xRotInput.setValue((float) Math.toDegrees(part.rotation.x));
+        this.yRotInput.setValue((float) Math.toDegrees(part.rotation.y));
+        this.zRotInput.setValue((float) Math.toDegrees(part.rotation.z));
 
-        this.xScaleInput.setValue(part.scale[0]);
-        this.yScaleInput.setValue(part.scale[1]);
-        this.zScaleInput.setValue(part.scale[2]);
+        this.xScaleInput.setValue(part.scale.x);
+        this.yScaleInput.setValue(part.scale.y);
+        this.zScaleInput.setValue(part.scale.z);
     }
 
     @Override

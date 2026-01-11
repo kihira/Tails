@@ -1,16 +1,11 @@
 package uk.kihira.tails.client;
 
 import com.google.common.reflect.TypeToken;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.shaders.UniformType;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.network.chat.Component;
@@ -21,6 +16,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
+import org.joml.Vector3f;
 import uk.kihira.tails.client.gui.OutfitEditScreen;
 import uk.kihira.tails.client.model.DragonTailModel;
 import uk.kihira.tails.client.model.FoxTailModel;
@@ -158,9 +154,9 @@ public class ClientEventHandler
                             "Fluffy Tail",
                             "Kihira",
                             MountPoint.CHEST,
-                            new float[] {0, 1, 0},
-                            new float[] {0, 0, 0},
-                            new float[] {1, 1, 1},
+                            new Vector3f(0, 1, 0),
+                            new Vector3f(0, 0, 0),
+                            new Vector3f(1, 1, 1),
                             new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             new PartTexture[]{ new PartTexture(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19"), "Default", "Kihira") }),
                     new FoxTailModel(event.getEntityModels().bakeLayer(FOX_TAIL_LAYER_LOCATION)));
@@ -170,9 +166,9 @@ public class ClientEventHandler
                             "Shark Tail",
                             "Kihira",
                             MountPoint.CHEST,
-                            new float[] {0, 1, 0},
-                            new float[] {0, 0, 0},
-                            new float[] {1, 1, 1},
+                            new Vector3f(0, 1, 0),
+                            new Vector3f(0, 0, 0),
+                            new Vector3f(1, 1, 1),
                             new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             new PartTexture[]{ new PartTexture(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1"), "Default", "Kihira") }),
                     new SharkTailModel(event.getEntityModels().bakeLayer(SHARK_TAIL_LAYER_LOCATION)));
@@ -182,9 +178,9 @@ public class ClientEventHandler
                             "Shark Tail",
                             "Kihira",
                             MountPoint.CHEST,
-                            new float[] {0, 1, 0},
-                            new float[] {0, 0, 0},
-                            new float[] {1, 1, 1},
+                            new Vector3f(0, 1, 0),
+                            new Vector3f(0, 0, 0),
+                            new Vector3f(1, 1, 1),
                             new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             // new PartTexture[]{ new PartTexture(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Striped", "Kihira") }),
                             new PartTexture[]{ new PartTexture(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Default", "Kihira") }),
@@ -195,9 +191,9 @@ public class ClientEventHandler
                             "Racoon Tail",
                             "Kihira",
                             MountPoint.CHEST,
-                            new float[] {0, 1, 0},
-                            new float[] {0, 0, 0},
-                            new float[] {1, 1, 1},
+                            new Vector3f(0, 1, 0),
+                            new Vector3f(0, 0, 0),
+                            new Vector3f(1, 1, 1),
                             new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             new PartTexture[]{ new PartTexture(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe"), "Default", "Kihira") }),
                     new RacoonTailModel(event.getEntityModels().bakeLayer(RACOON_TAIL_LAYER_LOCATION)));
@@ -207,9 +203,9 @@ public class ClientEventHandler
                             "Fox Ears",
                             "Kihira",
                             MountPoint.HEAD,
-                            new float[] {0, 1, 0},
-                            new float[] {0, 0, 0},
-                            new float[] {1, 1, 1},
+                            new Vector3f(0, 1, 0),
+                            new Vector3f(0, 0, 0),
+                            new Vector3f(1, 1, 1),
                             new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             new PartTexture[]{ new PartTexture(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6"), "Default", "Kihira") }),
                     new FoxEarsModel(event.getEntityModels().bakeLayer(FOX_EARS_LAYER_LOCATION)));

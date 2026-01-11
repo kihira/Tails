@@ -1,5 +1,6 @@
 package uk.kihira.tails.client;
 
+import org.joml.Vector3f;
 import uk.kihira.gltf.GltfModel;
 import uk.kihira.tails.client.model.PartModel;
 import uk.kihira.tails.client.outfit.Tint;
@@ -21,15 +22,15 @@ public final class Part
     public final int category = 0;
 
     public final MountPoint mountPoint;
-    public final float[] mountOffset;
-    public final float[] rotation;
-    public final float[] scale;
+    public final Vector3f mountOffset;
+    public final Vector3f rotation;
+    public final Vector3f scale;
     public final Tint[] tint;
     public final PartTexture[] textures;
 
     private transient PartModel model;
 
-    public Part(UUID id, String name, String author, MountPoint mountPoint, float[] defaultMountOffset, float[] defaultRotation, float[] defaultScale, Tint[] defaultTints, PartTexture[] textures)
+    public Part(UUID id, String name, String author, MountPoint mountPoint, Vector3f defaultMountOffset, Vector3f defaultRotation, Vector3f defaultScale, Tint[] defaultTints, PartTexture[] textures)
     {
         this.id = id;
         this.mountPoint = mountPoint;
