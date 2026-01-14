@@ -22,6 +22,7 @@ import uk.kihira.tails.client.model.DragonTailModel;
 import uk.kihira.tails.client.model.FoxTailModel;
 import uk.kihira.tails.client.model.RacoonTailModel;
 import uk.kihira.tails.client.model.SharkTailModel;
+import uk.kihira.tails.client.model.head.CatEarsModel;
 import uk.kihira.tails.client.model.head.FoxEarsModel;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.client.outfit.OutfitPart;
@@ -139,6 +140,7 @@ public class ClientEventHandler
             event.registerLayerDefinition(DRAGON_TAIL_LAYER_LOCATION, DragonTailModel::createModelLayer);
             event.registerLayerDefinition(RACOON_TAIL_LAYER_LOCATION, RacoonTailModel::createModelLayer);
             event.registerLayerDefinition(FOX_EARS_LAYER_LOCATION, FoxEarsModel::createModelLayer);
+            event.registerLayerDefinition(CAT_EARS_LAYER_LOCATION, CatEarsModel::createModelLayer);
         }
 
         /**
@@ -209,6 +211,18 @@ public class ClientEventHandler
                             new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                             new PartTexture[]{ new PartTexture(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6"), "Default", "Kihira") }),
                     new FoxEarsModel(event.getEntityModels().bakeLayer(FOX_EARS_LAYER_LOCATION)));
+            registerPartWithModel(
+                    new Part(
+                            UUID.fromString("bb6c78e9-41ae-4d79-a744-72bc18d6ccc7"),
+                            "Cat Ears",
+                            "Kihira",
+                            MountPoint.HEAD,
+                            new Vector3f(0, 1, 0),
+                            new Vector3f(0, 0, 0),
+                            new Vector3f(1, 1, 1),
+                            new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
+                            new PartTexture[]{ new PartTexture(UUID.fromString("bb6c78e9-41ae-4d79-a744-72bc18d6ccc7"), "Default", "Kihira") }),
+                    new CatEarsModel(event.getEntityModels().bakeLayer(CAT_EARS_LAYER_LOCATION)));
 
             partRenderer = new PartRenderer();
             {
@@ -241,4 +255,5 @@ public class ClientEventHandler
     private static final ModelLayerLocation DRAGON_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "dragon_tail"), "chest");
     private static final ModelLayerLocation RACOON_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "racoon_tail"), "chest");
     private static final ModelLayerLocation FOX_EARS_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "fox_ears"), "head");
+    public static final ModelLayerLocation CAT_EARS_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "cat_ears"), "head");
 }
