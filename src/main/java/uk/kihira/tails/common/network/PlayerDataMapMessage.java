@@ -10,6 +10,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jspecify.annotations.NonNull;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.Tails;
+import uk.kihira.tails.common.OutfitManager;
 
 import java.util.Map;
 import java.util.UUID;
@@ -35,7 +36,7 @@ public record PlayerDataMapMessage(String outfitMap) implements CustomPacketPayl
         var outfitMap = (Map<UUID, Outfit>) Tails.GSON.fromJson(data.outfitMap, new TypeToken<Map<UUID, Outfit>>() {}.getType());
         for (Map.Entry<UUID, Outfit> entry : outfitMap.entrySet())
         {
-            Tails.proxy.setActiveOutfit(entry.getKey(), entry.getValue());
+            OutfitManager.setActiveOutfit(entry.getKey(), entry.getValue());
         }
     }
 }

@@ -16,14 +16,14 @@ public class ServerEventHandler
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
         //Send current known tails to client
-        PacketDistributor.sendToPlayer((ServerPlayer) event.getEntity(), new PlayerDataMapMessage(Tails.GSON.toJson(Tails.proxy.getActiveOutfits())));
-        Tails.LOGGER.debug(String.format("Sent tail data of size %d to %s ", Tails.proxy.getActiveOutfits().size(), event.getEntity().getName()));
+        PacketDistributor.sendToPlayer((ServerPlayer) event.getEntity(), new PlayerDataMapMessage(Tails.GSON.toJson(OutfitManager.getActiveOutfits())));
+        Tails.LOGGER.debug(String.format("Sent tail data of size %d to %s ", OutfitManager.getActiveOutfits().size(), event.getEntity().getName()));
     }
 
     @SubscribeEvent
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
         //Server doesn't save tails so we discard
-        Tails.proxy.removeActiveOutfit(event.getEntity().getGameProfile().id());
+        OutfitManager.removeActiveOutfit(event.getEntity().getGameProfile().id());
     }
 }

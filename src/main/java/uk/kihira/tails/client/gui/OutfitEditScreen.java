@@ -7,6 +7,7 @@ import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.common.Config;
 import uk.kihira.tails.Tails;
+import uk.kihira.tails.common.OutfitManager;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -137,7 +138,7 @@ public class OutfitEditScreen extends Screen
     @Override
     public void onClose()
     {
-        Tails.proxy.setActiveOutfit(this.playerUUID, Config.CONFIG.getLocalOutfit());
+        OutfitManager.setActiveOutfit(this.playerUUID, Config.CONFIG.getLocalOutfit());
         super.onClose();
     }
 
@@ -185,7 +186,7 @@ public class OutfitEditScreen extends Screen
     public void setOutfit(Outfit newOutfit)
     {
         this.outfit = newOutfit;
-        Tails.proxy.setActiveOutfit(this.playerUUID, this.outfit);
+        OutfitManager.setActiveOutfit(this.playerUUID, this.outfit);
     }
 
     public Outfit getOutfit()

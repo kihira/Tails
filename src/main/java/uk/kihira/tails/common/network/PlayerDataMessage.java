@@ -13,6 +13,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jspecify.annotations.NonNull;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.Tails;
+import uk.kihira.tails.common.OutfitManager;
 
 import java.util.UUID;
 
@@ -57,11 +58,11 @@ public record PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) 
 
         if (data.shouldRemove())
         {
-            Tails.proxy.removeActiveOutfit(data.uuid());
+            OutfitManager.removeActiveOutfit(data.uuid());
         }
         else if (data.outfit() != null)
         {
-            Tails.proxy.setActiveOutfit(data.uuid(), data.outfit());
+            OutfitManager.setActiveOutfit(data.uuid(), data.outfit());
         }
 
         if (context.connection().getDirection().getReceptionSide() == LogicalSide.SERVER)
