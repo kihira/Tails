@@ -3,20 +3,16 @@ package uk.kihira.tails;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import net.minecraft.client.Minecraft;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.lifecycle.ClientStartedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.common.Config;
-import uk.kihira.tails.common.OutfitManager;
 
 import java.util.concurrent.ExecutionException;
 
@@ -29,9 +25,7 @@ public class Tails
     public static final Gson GSON = new GsonBuilder().create();
     public static final boolean DEBUG = true;
 
-    public static boolean hasRemote;
-
-    public Tails(IEventBus modEventBus, ModContainer container)
+    public Tails(ModContainer container)
     {
         container.registerConfig(ModConfig.Type.COMMON, Config.CONFIG_SPEC);
     }

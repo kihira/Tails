@@ -5,11 +5,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import uk.kihira.tails.client.toast.ToastManager;
-import uk.kihira.tails.common.Config;
 import uk.kihira.tails.common.OutfitManager;
-import uk.kihira.tails.common.network.PlayerDataMessage;
 
 public class ControlsPanel extends Panel<OutfitEditScreen>
 {
