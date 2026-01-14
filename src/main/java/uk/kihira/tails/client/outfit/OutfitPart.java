@@ -29,8 +29,8 @@ public class OutfitPart implements AutoCloseable
 
     // Client only fields
     private transient Part part;
-    public final Identifier textureIdentifier;
-    public transient final ThreeTintTexture tintedTexture;
+    private transient Identifier textureIdentifier;
+    private transient ThreeTintTexture tintedTexture;
 
     public OutfitPart(Part part)
     {
@@ -41,14 +41,6 @@ public class OutfitPart implements AutoCloseable
         this.scale = part.scale;
         this.tint = part.tint;
         this.texture = part.textures[0];
-
-        // TODO: We're mixing in client usage in what should be a common class.
-        // We also don't really want to use Minecraft.getInstance, maybe a builder or factory pattern would be better?
-        this.textureIdentifier = Identifier.fromNamespaceAndPath(Tails.MOD_ID, String.format("threetint_texture/%s", UUID.randomUUID()));
-        var baseTexture = Identifier.fromNamespaceAndPath(Tails.MOD_ID, String.format("texture/parts/%s/%s.png", part.id, this.texture.id()));
-        this.tintedTexture = ThreeTintTexture.create(this.textureIdentifier.toString(), baseTexture, this.tint[0], this.tint[1], this.tint[2]);
-
-        Minecraft.getInstance().getTextureManager().register(this.textureIdentifier, this.tintedTexture);
     }
 
     public Tint getTint(int index)
@@ -81,6 +73,23 @@ public class OutfitPart implements AutoCloseable
             this.part = PartRegistry.getPart(this.basePart).orElse(null);
         }
         return this.part;
+    }
+
+    public Identifier getTextureIdentifier()
+    {
+        // TODO: We're mixing in client usage in what should be a common class.
+        // We also don't really want to use Minecraft.getInstance, maybe a builder or factory pattern would be better?
+        // We also need to handle about deserialisation as well, hence putting it behind a getter for now.
+        if (this.textureIdentifier == null)
+        {
+            this.textureIdentifier = Identifier.fromNamespaceAndPath(Tails.MOD_ID, String.format("threetint_texture/%s", UUID.randomUUID()));
+            var baseTexture = Identifier.fromNamespaceAndPath(Tails.MOD_ID, String.format("texture/parts/%s/%s.png", part.id, this.texture.id()));
+            this.tintedTexture = ThreeTintTexture.create(this.textureIdentifier.toString(), baseTexture, this.tint[0], this.tint[1], this.tint[2]);
+
+            Minecraft.getInstance().getTextureManager().register(this.textureIdentifier, this.tintedTexture);
+        }
+
+        return this.textureIdentifier;
     }
 
     @Override

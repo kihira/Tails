@@ -64,7 +64,7 @@ public class LegacyLayerPart extends RenderLayer<AvatarRenderState, PlayerModel>
                 renderState.setRenderData(PART_DATA_KEY, partDataQueue);
 
                 int i = LivingEntityRenderer.getOverlayCoords(renderState, 0f);
-                nodeCollector.submitModel(model, renderState, poseStack, RenderTypes.entityTranslucent(part.textureIdentifier), packedLight, i, renderState.outlineColor, null);
+                nodeCollector.submitModel(model, renderState, poseStack, RenderTypes.entityTranslucent(part.getTextureIdentifier()), packedLight, i, renderState.outlineColor, null);
             }
         }
     }
