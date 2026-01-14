@@ -1,21 +1,16 @@
 package uk.kihira.tails.client.model;
 
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import org.joml.Vector3f;
 import uk.kihira.tails.Tails;
 import uk.kihira.tails.client.render.LegacyLayerPart;
 
-import java.io.InvalidObjectException;
 import java.util.Collections;
 import java.util.function.Function;
 

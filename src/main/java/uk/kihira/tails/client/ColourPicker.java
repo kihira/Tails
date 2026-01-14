@@ -10,12 +10,11 @@ import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import org.lwjgl.glfw.GLFW;
 import uk.kihira.tails.Tails;
-import uk.kihira.tails.client.gui.TintPanel;
 
 import java.util.function.Consumer;
 
 @EventBusSubscriber(modid = Tails.MOD_ID, value = Dist.CLIENT)
-public class ColourPicker
+public final class ColourPicker
 {
     public static void startPickingColour(Consumer<Integer> colourPickedCallback)
     {

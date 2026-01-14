@@ -38,13 +38,13 @@ public class LegacyLayerPart extends RenderLayer<AvatarRenderState, PlayerModel>
     @Override
     public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int packedLight, AvatarRenderState renderState, float yRot, float xRot)
     {
-        Outfit outfit = renderState.getRenderData(LayerPart.OUTFIT_KEY);
+        var outfit = renderState.getRenderData(LayerPart.OUTFIT_KEY);
         if (outfit == null)
         {
             return;
         }
 
-        for (OutfitPart part : outfit.getParts())
+        for (var part : outfit.getParts())
         {
             var basePart = part.getPart();
             if (basePart != null && part.mountPoint == mountPoint)
@@ -55,17 +55,6 @@ public class LegacyLayerPart extends RenderLayer<AvatarRenderState, PlayerModel>
                     return;
                 }
 
-                poseStack.pushPose();
-
-                // todo this doesn't translate right, it doesn't seem to be relative to the offset/pivot point
-                // this likely needs to be done in setupAnim of the model in PartModel which means we need to ensure the
-                // data is in the renderstate. We currently have the outfit but need to associate which part has what data
-                //poseStack.translate(part.mountOffset[0], -part.mountOffset[1], part.mountOffset[2]);
-  /*              poseStack.rotateAround(Axis.XP.rotationDegrees(part.rotation[0]), 0, 0, 0);
-                poseStack.rotateAround(Axis.YP.rotationDegrees(part.rotation[1]), 0, 0, 0);
-                poseStack.rotateAround(Axis.ZP.rotationDegrees(part.rotation[2]), 0, 0, 0);
-                poseStack.scale(part.scale[0], part.scale[1], part.scale[2]);*/
-
                 // We're technically replicating data in outfit within the same render data, however we are putting it in a
                 // slightly easier place to get, and we're putting it into an order.
                 // As of the time of writing this, the list of "submitted models" are rendered in the order they are submitted,
@@ -74,9 +63,8 @@ public class LegacyLayerPart extends RenderLayer<AvatarRenderState, PlayerModel>
                 partDataQueue.add(part);
                 renderState.setRenderData(PART_DATA_KEY, partDataQueue);
 
-                int i = LivingEntityRenderer.getOverlayCoords(renderState, 0.0F);
+                int i = LivingEntityRenderer.getOverlayCoords(renderState, 0f);
                 nodeCollector.submitModel(model, renderState, poseStack, RenderTypes.entityTranslucent(part.textureIdentifier), packedLight, i, renderState.outlineColor, null);
-                poseStack.popPose();
             }
         }
     }
