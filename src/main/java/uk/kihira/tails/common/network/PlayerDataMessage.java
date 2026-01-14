@@ -11,6 +11,7 @@ import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.Tails;
 import uk.kihira.tails.common.OutfitManager;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 import static uk.kihira.tails.common.network.Codecs.UUID_CODEC;
 
-public record PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) implements CustomPacketPayload
+public record PlayerDataMessage(UUID uuid, @Nullable Outfit outfit) implements CustomPacketPayload
 {
     public static final CustomPacketPayload.Type<PlayerDataMessage> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Tails.MOD_ID, PlayerDataMessage.class.getSimpleName().toLowerCase()));
 
@@ -28,15 +29,8 @@ public record PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) 
             PlayerDataMessage::uuid,
             ByteBufCodecs.STRING_UTF8,
             data -> data.outfit() == null ? "" : Tails.GSON.toJson(data.outfit()),
-            ByteBufCodecs.BOOL,
-            PlayerDataMessage::shouldRemove,
-            (uuid, outfitJson, shouldRemove) -> new PlayerDataMessage(uuid, outfitJson.isEmpty() ? null : Tails.GSON.fromJson(outfitJson, Outfit.class), shouldRemove)
+            (uuid, outfitJson) -> new PlayerDataMessage(uuid, outfitJson.isEmpty() ? null : Tails.GSON.fromJson(outfitJson, Outfit.class))
     );
-
-    public PlayerDataMessage(final FriendlyByteBuf buffer)
-    {
-        this(buffer.readUUID(), Tails.GSON.fromJson(buffer.readUtf(), Outfit.class), buffer.readBoolean());
-    }
 
     @Override
     public @NonNull Type<? extends CustomPacketPayload> type()
@@ -56,19 +50,13 @@ public record PlayerDataMessage(UUID uuid, Outfit outfit, boolean shouldRemove) 
             }
         }
 
-        if (data.shouldRemove())
+        if (data.outfit() == null)
         {
-            OutfitManager.removeActiveOutfit(data.uuid());
+            OutfitManager.removeOutfitForPlayer(data.uuid());
         }
-        else if (data.outfit() != null)
+        else
         {
-            OutfitManager.setActiveOutfit(data.uuid(), data.outfit());
-        }
-
-        if (context.connection().getDirection().getReceptionSide() == LogicalSide.SERVER)
-        {
-            // Forward packet onto all clients
-            PacketDistributor.sendToAllPlayers(data);
+            OutfitManager.setOutfitForPlayer(data.uuid(), data.outfit());
         }
     }
 }

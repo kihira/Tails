@@ -36,7 +36,7 @@ public record PlayerDataMapMessage(String outfitMap) implements CustomPacketPayl
         var outfitMap = (Map<UUID, Outfit>) Tails.GSON.fromJson(data.outfitMap, new TypeToken<Map<UUID, Outfit>>() {}.getType());
         for (Map.Entry<UUID, Outfit> entry : outfitMap.entrySet())
         {
-            OutfitManager.setActiveOutfit(entry.getKey(), entry.getValue());
+            OutfitManager.setOutfitForPlayer(entry.getKey(), entry.getValue());
         }
     }
 }

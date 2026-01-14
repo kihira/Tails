@@ -3,6 +3,7 @@ package uk.kihira.tails;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.kihira.tails.client.PartRegistry;
 import uk.kihira.tails.common.Config;
+import uk.kihira.tails.common.OutfitManager;
 
 import java.util.concurrent.ExecutionException;
 

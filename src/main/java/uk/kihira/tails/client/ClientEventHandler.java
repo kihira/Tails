@@ -16,6 +16,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 import uk.kihira.tails.client.gui.OutfitEditScreen;
 import uk.kihira.tails.client.model.DragonTailModel;
@@ -43,9 +44,6 @@ public class ClientEventHandler
 {
     private static PartRenderer partRenderer;
 
-    private static boolean sentPartInfoToServer = false;
-    private static boolean clearAllPartInfo = false;
-
     // Add Tails Editor button to pause menu
     @SubscribeEvent
     public static void onScreenInitPost(ScreenEvent.Init.Post event)
@@ -59,27 +57,6 @@ public class ClientEventHandler
                     .build();
             event.addListener(tailsButton);
         }
-    }
-
-    /*
-     *** Tails syncing ***
-     */
-    @SubscribeEvent
-    public static void onConnectToServer(ClientPlayerNetworkEvent.LoggingIn event)
-    {
-        //Add local player texture to map
-        if (Config.CONFIG.getLocalOutfit() != null)
-        {
-            OutfitManager.setActiveOutfit(Minecraft.getInstance().getGameProfile().id(), Config.CONFIG.getLocalOutfit());
-        }
-    }
-
-    @SubscribeEvent
-    public static void onDisconnect(ClientPlayerNetworkEvent.LoggingOut e)
-    {
-        Tails.hasRemote = false;
-        sentPartInfoToServer = false;
-        clearAllPartInfo = true;
     }
 
     @SubscribeEvent
@@ -100,9 +77,9 @@ public class ClientEventHandler
         BiConsumer<LivingEntity, LivingEntityRenderState> modifier = (entity, renderState) -> {
             var uuid = entity.getUUID();
             // Exclude entities that already have an outfit as this is likely coming from the part list window
-            if (entity instanceof AbstractClientPlayer && OutfitManager.hasActiveOutfit(uuid) && renderState.getRenderData(LayerPart.OUTFIT_KEY) == null)
+            if (entity instanceof AbstractClientPlayer && OutfitManager.hasOutfit(uuid) && renderState.getRenderData(LayerPart.OUTFIT_KEY) == null)
             {
-                renderState.setRenderData(LayerPart.OUTFIT_KEY, OutfitManager.getActiveOutfit(uuid));
+                renderState.setRenderData(LayerPart.OUTFIT_KEY, OutfitManager.getOutfitForPlayer(uuid));
             }
         };
 
@@ -237,7 +214,8 @@ public class ClientEventHandler
         //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda")).get())); // dragon
             .addPart(new OutfitPart(PartRegistry.getPart(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe")).get())) // racoon
             .addPart(new OutfitPart(PartRegistry.getPart(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6")).get())); // fox ears
-        Config.CONFIG.setLocalOutfit(outfit);
+
+        OutfitManager.setOutfitForPlayer(Minecraft.getInstance().getGameProfile().id(), Config.CONFIG.getLocalOutfit());
     }
 
     private static final ModelLayerLocation FOX_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "fox_tail"), "chest");

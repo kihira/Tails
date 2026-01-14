@@ -8,7 +8,6 @@ import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import uk.kihira.tails.client.toast.ToastManager;
 import uk.kihira.tails.common.Config;
-import uk.kihira.tails.Tails;
 import uk.kihira.tails.common.OutfitManager;
 import uk.kihira.tails.common.network.PlayerDataMessage;
 
@@ -46,10 +45,8 @@ public class ControlsPanel extends Panel<OutfitEditScreen>
     {
         var minecraft = this.minecraft();
         var outfit = parent.getOutfit();
-        //Update part info, set local and send it to the server
-        Config.CONFIG.setLocalOutfit(outfit);
-        OutfitManager.setActiveOutfit(minecraft.getGameProfile().id(), outfit);
-        ClientPacketDistributor.sendToServer(new PlayerDataMessage(minecraft.getGameProfile().id(), outfit, false));
+        //Update outfit, set local and send it to the server
+        OutfitManager.setOutfitForPlayer(minecraft.getGameProfile().id(), outfit);
         ToastManager.INSTANCE.createCenteredToast(parent.width / 2, parent.height - 40, 100, /*TextFormatting.GREEN + */"Saved!");
         minecraft.setScreen(null);
     }

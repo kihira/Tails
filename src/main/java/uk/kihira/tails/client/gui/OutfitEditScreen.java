@@ -138,7 +138,7 @@ public class OutfitEditScreen extends Screen
     @Override
     public void onClose()
     {
-        OutfitManager.setActiveOutfit(this.playerUUID, Config.CONFIG.getLocalOutfit());
+        OutfitManager.setOutfitForPlayer(this.playerUUID, Config.CONFIG.getLocalOutfit());
         super.onClose();
     }
 
@@ -186,7 +186,7 @@ public class OutfitEditScreen extends Screen
     public void setOutfit(Outfit newOutfit)
     {
         this.outfit = newOutfit;
-        OutfitManager.setActiveOutfit(this.playerUUID, this.outfit);
+        OutfitManager.setOutfitForPlayer(this.playerUUID, this.outfit);
     }
 
     public Outfit getOutfit()
