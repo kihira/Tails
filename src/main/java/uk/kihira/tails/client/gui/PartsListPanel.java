@@ -106,10 +106,9 @@ public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPa
         final int mountPointOrdinal = mountPointOrdinalNext >= MountPoint.values().length ? 0 : mountPointOrdinalNext;
 
         this.mountPoint = MountPoint.values()[mountPointOrdinal];
+        this.mountPointButton.setMessage(Component.translatable("tails.mountpoint." + mountPoint.name()));
 
         this.initAddPartList(this.mountPoint);
-
-        this.mountPointButton.setMessage(Component.translatable("tails.mountpoint." + mountPoint.name()));
     }
 
     private void initAddPartList(MountPoint mountPoint)
@@ -198,11 +197,13 @@ public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPa
     {
         protected final OutfitPart outfitPart;
         protected final Part part;
+        private final Outfit previewOutfit = new Outfit();
 
         BasePartEntry(OutfitPart outfitPart)
         {
             this.outfitPart = outfitPart;
             this.part = outfitPart.getPart();
+            this.previewOutfit.addPart(this.outfitPart);
         }
         @Nonnull
         @Override
@@ -243,12 +244,9 @@ public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPa
                 renderState.xRot = 0;
                 renderState.isInvisible = true; // todo temp whilst we're still rendering a player?
 
-                // todo create OutfitBuilder?
-                var outfit = new Outfit();
-                outfit.addPart(part);
-                renderState.setRenderData(LayerPart.OUTFIT_KEY, outfit);
+                renderState.setRenderData(LayerPart.OUTFIT_KEY, this.previewOutfit);
 
-                Vector3f position = new Vector3f(0f, 0f, 0f);
+                var position = new Vector3f(0f, 0f, 0f);
                 switch (part.mountPoint)
                 {
                     case HEAD -> position.y = 2f;
