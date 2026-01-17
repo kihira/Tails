@@ -28,14 +28,15 @@ import java.util.Collections;
 
 public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPartSelected
 {
-    private MountPoint mountPoint; // todo temporary until UI rework. Tabs with search?
-
     private final ExtendedButton addPartTabButton;
     private final ExtendedButton editPartTabButton;
     private final ExtendedButton mountPointButton;
     private final PartsList<AddPartEntry> addPartsList;
     private final PartsList<EditPartEntry> editPartsList;
     private final int listTop = 38;
+
+    private MountPoint mountPoint; // todo temporary until UI rework. Tabs with search?
+    private float partRotation;
 
     PartsListPanel(OutfitEditScreen parent, int x, int y, int width, int height)
     {
@@ -84,6 +85,8 @@ public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPa
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
+        this.partRotation += partialTicks;
+
         graphics.fill(getX(), getY(), getRight(), getY() + this.listTop, OutfitEditScreen.SOFT_BLACK);
         graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable("tails.gui.parts"), this.getWidth() / 2, getY() + 5, OutfitEditScreen.TEXT_COLOUR);
 
@@ -116,7 +119,21 @@ public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPa
 
     private void initEditPartList()
     {
+        var existingSelectedPart = this.editPartsList.getSelected();
         this.editPartsList.replaceEntries(this.parent.getOutfit().getParts().stream().map(EditPartEntry::new).toList());
+
+        if (existingSelectedPart != null)
+        {
+            // Reselect previously selected part if it still exists
+            for (var entry : this.editPartsList.children())
+            {
+                if (entry.outfitPart == existingSelectedPart.outfitPart)
+                {
+                    this.editPartsList.setSelected(entry);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -177,9 +194,8 @@ public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPa
         }
     }
 
-    public static abstract class BasePartEntry<E extends BasePartEntry<E>> extends ObjectSelectionList.Entry<E>
+    public abstract class BasePartEntry<E extends BasePartEntry<E>> extends ObjectSelectionList.Entry<E>
     {
-        private float rotation;
         protected final OutfitPart outfitPart;
         protected final Part part;
 
@@ -198,8 +214,6 @@ public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPa
         @Override
         public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovering, float partialTicks)
         {
-            this.rotation += partialTicks;
-
             final var font = Minecraft.getInstance().font;
             graphics.drawString(font, this.part.name, this.getContentX() + 3, this.getContentY() + 3, OutfitEditScreen.TEXT_COLOUR);
 
@@ -240,7 +254,7 @@ public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPa
                     case HEAD -> position.y = 2f;
                     case CHEST -> position.y = 0.7f;
                 }
-                var rot = new Quaternionf().rotationXYZ(Math.toRadians(180f), Math.toRadians(rotation), 0f);
+                var rot = new Quaternionf().rotationXYZ(Math.toRadians(180f), Math.toRadians(PartsListPanel.this.partRotation), 0f);
                 graphics.submitEntityRenderState(renderState, 20f, position, rot, null, x, y, right, bottom);
 
                 //poseStack.rotateAround(Axis.YP.rotationDegrees(this.rotation), 0, 0, 0);
