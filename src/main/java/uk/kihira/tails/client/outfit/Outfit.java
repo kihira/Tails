@@ -1,6 +1,7 @@
 package uk.kihira.tails.client.outfit;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public final class Outfit
@@ -16,7 +17,7 @@ public final class Outfit
         this.parts = new ArrayList<>();
     }
 
-    public ArrayList<OutfitPart> getParts()
+    public List<OutfitPart> getParts()
     {
         return this.parts;
     }

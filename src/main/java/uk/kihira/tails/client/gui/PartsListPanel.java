@@ -1,8 +1,8 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -17,38 +17,67 @@ import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Math;
-import org.jspecify.annotations.Nullable;
 import uk.kihira.tails.client.*;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.render.LayerPart;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 
 public class PartsListPanel extends Panel<OutfitEditScreen>
 {
     private MountPoint mountPoint; // todo temporary until UI rework. Tabs with search?
 
+    private final ExtendedButton addPartTabButton;
+    private final ExtendedButton editPartTabButton;
     private final ExtendedButton mountPointButton;
-    private final PartsList partsList;
-    private final OutfitEditScreen parent;
+    private final PartsList<AddPartEntry> addPartsList;
+    private final PartsList<EditPartEntry> editPartsList;
     private final int listTop = 38;
 
     PartsListPanel(OutfitEditScreen parent, int x, int y, int width, int height)
     {
         super(parent, x, y, width, height);
-        this.parent = parent;
         this.mountPoint = MountPoint.CHEST;
 
-        this.partsList = new PartsList(this.parent.getMinecraft(), this.getWidth(), this.getHeight() - this.listTop, this.getY() + this.listTop);
-        this.partsList.setX(0);
-        this.partsList.initPartList(this.mountPoint);
-        addChild(this.partsList);
+        addChild(this.addPartTabButton = new ExtendedButton(this.getX(), this.getY() + 16, this.getWidth() / 2, 20,
+                Component.translatable("tails.gui.parts.add"),
+                this::onAddPartTabButtonPressed));
+
+        addChild(this.editPartTabButton = new ExtendedButton(this.getX() + (this.getWidth() / 2), this.getY() + 16, this.getWidth() / 2, 20,
+                Component.translatable("tails.gui.parts.edit"),
+                this::onEditPartTabButtonPressed));
+
+        this.addPartsList = new PartsList<>(this.parent.getMinecraft(), this.getWidth(), this.getHeight() - this.listTop - 22, this.getY() + this.listTop);
+        this.addPartsList.setX(0);
+        this.initAddPartList(this.mountPoint);
+        addChild(this.addPartsList);
+
+        this.editPartsList = new PartsList<>(this.parent.getMinecraft(), this.getWidth(), this.getHeight() - this.listTop - 22, this.getY() + this.listTop);
+        this.editPartsList.setX(0);
 
         final int buttonWidth = 100;
-        this.addChild(this.mountPointButton = new ExtendedButton(this.getX() + ((this.getWidth() - buttonWidth) / 2), this.getY() + 15, buttonWidth, 20,
+        this.addChild(this.mountPointButton = new ExtendedButton(this.getX() + ((this.getWidth() - buttonWidth) / 2), this.getHeight() - 20, buttonWidth, 20,
                 Component.translatable("tails.mountpoint." + mountPoint.name()),
                 this::onMountPointButtonPressed));
+    }
+
+    private void onEditPartTabButtonPressed(Button button)
+    {
+        removeChild(this.addPartsList);
+        addChild(this.editPartsList);
+        this.mountPointButton.active = false;
+
+        // Need to refresh the list in case parts have been added/removed
+        this.initEditPartList();
+    }
+
+    private void onAddPartTabButtonPressed(Button button)
+    {
+        removeChild(this.editPartsList);
+        addChild(this.addPartsList);
+        this.mountPointButton.active = true;
     }
 
     @Override
@@ -74,9 +103,19 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
 
         this.mountPoint = MountPoint.values()[mountPointOrdinal];
 
-        this.partsList.initPartList(this.mountPoint);
+        this.initAddPartList(this.mountPoint);
 
         this.mountPointButton.setMessage(Component.translatable("tails.mountpoint." + mountPoint.name()));
+    }
+
+    private void initAddPartList(MountPoint mountPoint)
+    {
+        this.addPartsList.replaceEntries(PartRegistry.getPartsByMountPoint(mountPoint).map(AddPartEntry::new).toList());
+    }
+
+    private void initEditPartList()
+    {
+        this.editPartsList.replaceEntries(this.parent.getOutfit().getParts().stream().map(EditPartEntry::new).toList());
     }
 
     @Override
@@ -91,10 +130,9 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
         return 0;
     }
 
-    public class PartsList extends ObjectSelectionList<PartsListPanel.PartsList.PartEntry>
+    public static class PartsList<E extends BasePartEntry<E>> extends ObjectSelectionList<E>
     {
         private static final int ITEM_HEIGHT = 55;
-        private float rotation;
 
         PartsList(Minecraft minecraft, int listWidth, int height, int y)
         {
@@ -111,7 +149,6 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
         public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
         {
             super.renderWidget(graphics, mouseX, mouseY, partialTicks);
-            this.rotation += partialTicks;
         }
 
         @Override
@@ -131,125 +168,182 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
         {
             return this.getRowRight() + 2;
         }
+    }
 
-        private void initPartList(MountPoint mountPoint)
+    public static abstract class BasePartEntry<E extends BasePartEntry<E>> extends ObjectSelectionList.Entry<E>
+    {
+        private float rotation;
+        protected final OutfitPart outfitPart;
+        protected final Part part;
+
+        BasePartEntry(OutfitPart outfitPart)
         {
-            this.replaceEntries(PartRegistry.getPartsByMountPoint(mountPoint).map(PartEntry::new).toList());
+            this.outfitPart = outfitPart;
+            this.part = outfitPart.getPart();
+        }
+        @Nonnull
+        @Override
+        public Component getNarration()
+        {
+            return Component.translatable("narrator.select", this.part.name);
         }
 
-        public class PartEntry extends ObjectSelectionList.Entry<PartEntry>
+        @Override
+        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovering, float partialTicks)
         {
-            private static final int ADD_X = 1;
-            private static final int ADD_Y = 38;
-            private static final int ADD_WIDTH = 12;
-            private static final int ADD_HEIGHT = 12;
-            private static final int ADD_COLOUR = 0xFF666666;
+            this.rotation += partialTicks;
 
-            final OutfitPart outfitPart;
-            final Part part;
+            final var font = Minecraft.getInstance().font;
+            graphics.drawString(font, this.part.name, this.getContentX() + 3, this.getContentY() + 3, OutfitEditScreen.TEXT_COLOUR);
 
-            PartEntry(Part part)
+            graphics.fill(this.getContentXMiddle(), this.getContentY() + 14, this.getContentRight(), this.getContentBottom(), OutfitEditScreen.SOFT_BLACK);
+            renderPart(this.outfitPart, graphics, this.getContentXMiddle(), this.getContentY() + 14, this.getContentRight(), this.getContentBottom(), partialTicks);
+        }
+
+        private void renderPart(OutfitPart part, GuiGraphics graphics, int x, int y, int right, int bottom, float partialTick)
+        {
+            var poseStack = graphics.pose().pushMatrix();
+
+            var basePart = part.getPart();
+            if (basePart == null) return;
+
+            var model = basePart.getModel();
+            if (model != null)
             {
-                this.part = part;
-                this.outfitPart = new OutfitPart(part);
-            }
+                var player = Minecraft.getInstance().player;
+                var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+                var renderer = dispatcher.getRenderer(player);
+                var renderState = (LivingEntityRenderState) renderer.createRenderState(player, partialTick);
+                renderState.lightCoords = 15728880;
+                renderState.shadowPieces.clear();
+                renderState.outlineColor = 0;
+                renderState.bodyRot = 0;
+                renderState.yRot = 0;
+                renderState.xRot = 0;
+                renderState.isInvisible = true; // todo temp whilst we're still rendering a player?
 
-            @Override
-            public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovering, float partialTicks)
-            {
-                final Font font = Minecraft.getInstance().font;
-                graphics.drawString(font, this.part.name, this.getContentX()+3, this.getContentY()+3, -1);
+                // todo create OutfitBuilder?
+                var outfit = new Outfit();
+                outfit.addPart(part);
+                renderState.setRenderData(LayerPart.OUTFIT_KEY, outfit);
 
-                if (hovering || PartsList.this.getSelected() == this)
+                Vector3f position = new Vector3f(0f, 0f, 0f);
+                switch (part.mountPoint)
                 {
-                    //Yeah its not nice but eh, works
-                    var stack = graphics.pose().pushMatrix();
-                    stack.translate(this.getX() + 5, this.getContentY() + 15);
-                    stack.scale(.6f, .6f);
-
-                    graphics.drawString(font, Component.translatable("gui.author"), 0, 0, OutfitEditScreen.TEXT_COLOUR);
-                    stack.translate(font.width(Component.translatable("gui.author")) + 2, 0);
-                    graphics.drawString(font,part.author, 0, 0, -1);
-                    stack.popMatrix();
-
-                    // Draw "add" button
-                    //graphics.fill(this.getContentX() + ADD_X, this.getContentY() + ADD_Y, this.getContentX() + ADD_X + ADD_WIDTH, this.getContentY() + ADD_Y + ADD_HEIGHT, ADD_COLOUR);
-                    graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.withDefaultNamespace("widget/button"), this.getContentX()+ADD_X, this.getContentY()+ADD_Y, ADD_WIDTH, ADD_HEIGHT);
-                    graphics.drawCenteredString(font, "+", this.getContentX() + ((ADD_X + ADD_WIDTH) / 2) + 1, this.getContentY() + ADD_Y + (ADD_HEIGHT / 4) - 1, OutfitEditScreen.TEXT_COLOUR);
+                    case HEAD -> position.y = 2f;
+                    case CHEST -> position.y = 0.7f;
                 }
+                var rot = new Quaternionf().rotationXYZ(Math.toRadians(180f), Math.toRadians(rotation), 0f);
+                graphics.submitEntityRenderState(renderState, 20f, position, rot, null, x, y, right, bottom);
 
-                graphics.fill(this.getContentXMiddle(), this.getContentY()+14, this.getContentRight(), this.getContentBottom(), OutfitEditScreen.SOFT_BLACK); // TODO keep? useful mostly for debugging render area
-                renderPart(this.outfitPart, graphics, this.getContentXMiddle(), this.getContentY()+14, this.getContentRight(), this.getContentBottom(), partialTicks);
+                //poseStack.rotateAround(Axis.YP.rotationDegrees(this.rotation), 0, 0, 0);
+                //poseStack.scale(PART_SCALE, PART_SCALE, PART_SCALE);
             }
-
-            @Override
-            public boolean mouseClicked(MouseButtonEvent event, boolean scrolling)
+            else
             {
-                if (GuiBaseScreen.isMouseOver(event.x(), event.y(), getX() + ADD_X, getY() + ADD_Y, getX() + ADD_X + ADD_WIDTH, getY() + ADD_Y + ADD_HEIGHT))
-                {
-                    parent.addOutfitPart(new OutfitPart(part));
-                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1f));
-
-                    return true;
-                }
-
-                PartsList.this.setSelected(this);
-                return false;
+                //graphics.blitSprite(x - 16, y - 16, 0, 0, 32, 32, 0);
+                // todo render loading circle
             }
 
-            @Nonnull
-            @Override
-            public Component getNarration()
+            poseStack.popMatrix();
+        }
+    }
+
+    public class AddPartEntry extends BasePartEntry<AddPartEntry>
+    {
+        private static final int ADD_X = 1;
+        private static final int ADD_Y = 38;
+        private static final int ADD_WIDTH = 12;
+        private static final int ADD_HEIGHT = 12;
+        private static final int ADD_COLOUR = 0xFF666666;
+
+        AddPartEntry(Part part)
+        {
+            super(new OutfitPart(part));
+        }
+
+        @Override
+        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovering, float partialTicks)
+        {
+            super.renderContent(graphics, mouseX, mouseY, hovering, partialTicks);
+
+            if (hovering || PartsListPanel.this.addPartsList.getSelected() == this)
             {
-                return Component.translatable("narrator.select", this.part.name);
-            }
+                final var font = Minecraft.getInstance().font;
+                //Yeah its not nice but eh, works
+                var stack = graphics.pose().pushMatrix();
+                stack.translate(this.getX() + 5, this.getContentY() + 15);
+                stack.scale(.6f, .6f);
 
-            private void renderPart(OutfitPart part, GuiGraphics graphics, int x, int y, int right, int bottom, float partialTick)
+                graphics.drawString(font, Component.translatable("gui.author"), 0, 0, OutfitEditScreen.TEXT_COLOUR);
+                stack.translate(font.width(Component.translatable("gui.author")) + 2, 0);
+                graphics.drawString(font,part.author, 0, 0, -1);
+                stack.popMatrix();
+
+                // Draw "add" button
+                //graphics.fill(this.getContentX() + ADD_X, this.getContentY() + ADD_Y, this.getContentX() + ADD_X + ADD_WIDTH, this.getContentY() + ADD_Y + ADD_HEIGHT, ADD_COLOUR);
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.withDefaultNamespace("widget/button"), this.getContentX()+ADD_X, this.getContentY()+ADD_Y, ADD_WIDTH, ADD_HEIGHT);
+                graphics.drawCenteredString(font, "+", this.getContentX() + ((ADD_X + ADD_WIDTH) / 2) + 1, this.getContentY() + ADD_Y + (ADD_HEIGHT / 4) - 1, OutfitEditScreen.TEXT_COLOUR);
+            }
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean scrolling)
+        {
+            if (GuiBaseScreen.isMouseOver(event.x(), event.y(), getX() + ADD_X, getY() + ADD_Y, getX() + ADD_X + ADD_WIDTH, getY() + ADD_Y + ADD_HEIGHT))
             {
-                var poseStack = graphics.pose().pushMatrix();
+                parent.addOutfitPart(new OutfitPart(this.part));
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1f));
 
-                var basePart = part.getPart();
-                if (basePart == null) return;
-
-                var model = basePart.getModel();
-                if (model != null)
-                {
-                    var player = Minecraft.getInstance().player;
-                    var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-                    var renderer = dispatcher.getRenderer(player);
-                    var renderState = (LivingEntityRenderState) renderer.createRenderState(player, partialTick);
-                    renderState.lightCoords = 15728880;
-                    renderState.shadowPieces.clear();
-                    renderState.outlineColor = 0;
-                    renderState.isInvisible = true; // todo temp whilst we're still rendering a player?
-
-                    // todo create OutfitBuilder?
-                    var outfit = new Outfit();
-                    outfit.addPart(part);
-                    renderState.setRenderData(LayerPart.OUTFIT_KEY, outfit);
-
-                    // TODO position and scale is _fine_ for tails but need it to work for other parts. maybe we just be lazy with
-                    // switch for now based on mount point
-                    Vector3f position = new Vector3f(0f, 0f, 0f);
-                    switch (part.mountPoint)
-                    {
-                        case HEAD -> position.y = 2f;
-                        case CHEST -> position.y = 0.7f;
-                    }
-                    var rot = new Quaternionf().rotationXYZ(Math.toRadians(180f), Math.toRadians(rotation), 0f);
-                    graphics.submitEntityRenderState(renderState, 20f, position, rot, null, x, y, right, bottom);
-
-                    //poseStack.rotateAround(Axis.YP.rotationDegrees(this.rotation), 0, 0, 0);
-                    //poseStack.scale(PART_SCALE, PART_SCALE, PART_SCALE);
-                }
-                else
-                {
-                    //graphics.blitSprite(x - 16, y - 16, 0, 0, 32, 32, 0);
-                    // todo render loading circle
-                }
-
-                poseStack.popMatrix();
+                return true;
             }
+            return false;
+        }
+    }
+
+    public class EditPartEntry extends BasePartEntry<EditPartEntry>
+    {
+        private static final int REMOVE_X = 1;
+        private static final int REMOVE_Y = 38;
+        private static final int REMOVE_WIDTH = 12;
+        private static final int REMOVE_HEIGHT = 12;
+
+        EditPartEntry(OutfitPart part)
+        {
+            super(part);
+        }
+
+        @Override
+        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovering, float partialTicks)
+        {
+            super.renderContent(graphics, mouseX, mouseY, hovering, partialTicks);
+
+            // TODO draw tint boxes
+
+            if (hovering || PartsListPanel.this.editPartsList.getSelected() == this)
+            {
+                final var font = Minecraft.getInstance().font;
+
+                // Draw remove button
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.withDefaultNamespace("widget/button"), this.getContentX() + REMOVE_X, this.getContentY() + REMOVE_Y, REMOVE_WIDTH, REMOVE_HEIGHT);
+                graphics.drawCenteredString(font, "-", this.getContentX() + ((REMOVE_X + REMOVE_WIDTH) / 2) + 1, this.getContentY() + REMOVE_Y + (REMOVE_HEIGHT / 4) - 1, OutfitEditScreen.TEXT_COLOUR);
+            }
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean scrolling)
+        {
+            PartsListPanel.this.editPartsList.setSelected(this);
+            parent.setActiveOutfitPart(this.outfitPart);
+
+            if (GuiBaseScreen.isMouseOver(event.x(), event.y(), getX() + REMOVE_X, getY() + REMOVE_Y, getX() + REMOVE_X + REMOVE_WIDTH, getY() + REMOVE_Y + REMOVE_HEIGHT))
+            {
+                parent.removeOutfitPart(this.outfitPart);
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1f));
+
+                return true;
+            }
+            return false;
         }
     }
 }

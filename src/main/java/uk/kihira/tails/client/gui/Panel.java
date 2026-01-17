@@ -43,6 +43,11 @@ public abstract class Panel<T extends Screen> extends AbstractContainerWidget
         this.children.add(child);
     }
 
+    public void removeChild(AbstractWidget child)
+    {
+        this.children.remove(child);
+    }
+
     public void resize(int x, int y, int newWidth, int newHeight)
     {
         this.left = x;

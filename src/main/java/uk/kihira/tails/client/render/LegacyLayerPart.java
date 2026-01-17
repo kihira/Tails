@@ -1,7 +1,6 @@
 package uk.kihira.tails.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
@@ -15,12 +14,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextKey;
 import uk.kihira.tails.Tails;
 import uk.kihira.tails.client.MountPoint;
-import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.client.outfit.OutfitPart;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayDeque;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
 @ParametersAreNonnullByDefault

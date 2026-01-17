@@ -59,5 +59,7 @@
   "tails.mountpoint.LEFT_LEG": "Left Leg",
   "tails.mountpoint.RIGHT_LEG": "Right Leg",
   "tails.editor.title": "Tails Editor",
-  "tails.gui.panel.controls": "Controls"
+  "tails.gui.panel.controls": "Controls",
+  "tails.gui.parts.add": "Add",
+  "tails.gui.parts.edit": "Edit"
 }

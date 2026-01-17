@@ -169,6 +169,15 @@ public class OutfitEditScreen extends Screen
         setActiveOutfitPart(outfitPart);
     }
 
+    public void removeOutfitPart(OutfitPart outfitPart)
+    {
+        this.outfit.removePart(outfitPart);
+        if (this.currentOutfitPart == outfitPart)
+        {
+            setActiveOutfitPart(null);
+        }
+    }
+
     /**
      * Gets the current part on the outfit that is selected
      * @return The selected part on the outfit. May be null if there is no part or outfit
