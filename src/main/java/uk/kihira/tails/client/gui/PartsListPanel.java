@@ -17,6 +17,7 @@ import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Math;
+import org.jspecify.annotations.Nullable;
 import uk.kihira.tails.client.*;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.client.outfit.OutfitPart;
@@ -25,7 +26,7 @@ import uk.kihira.tails.client.render.LayerPart;
 import javax.annotation.Nonnull;
 import java.util.Collections;
 
-public class PartsListPanel extends Panel<OutfitEditScreen>
+public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPartSelected
 {
     private MountPoint mountPoint; // todo temporary until UI rework. Tabs with search?
 
@@ -128,6 +129,12 @@ public class PartsListPanel extends Panel<OutfitEditScreen>
     protected double scrollRate()
     {
         return 0;
+    }
+
+    @Override
+    public void onOutfitPartSelected(@Nullable OutfitPart part)
+    {
+        this.initEditPartList();
     }
 
     public static class PartsList<E extends BasePartEntry<E>> extends ObjectSelectionList<E>
