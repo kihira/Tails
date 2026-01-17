@@ -174,7 +174,7 @@ public class ClientEventHandler
                         "Fox Ears",
                         "Kihira",
                         MountPoint.HEAD,
-                        new Vector3f(0, 1, 0),
+                        new Vector3f(0, 0, 0),
                         new Vector3f(0, 0, 0),
                         new Vector3f(1, 1, 1),
                         new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
