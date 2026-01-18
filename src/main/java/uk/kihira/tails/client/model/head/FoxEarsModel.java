@@ -6,7 +6,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.model.player.PlayerModel;
 import uk.kihira.tails.client.model.PartModel;
 
-public class FoxEarsModel extends PartModel
+public final class FoxEarsModel extends PartModel
 {
 	private final ModelPart rightEar;
 	private final ModelPart leftEar;
@@ -27,28 +27,28 @@ public class FoxEarsModel extends PartModel
 
 		var rightEar = partRoot.addOrReplaceChild("rightEar",
 				CubeListBuilder.create()
-						.texOffs(0, 19).addBox(3.0F, -11.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(4, 19).addBox(2.0F, -10.0F, 1.0F, 2.0F, 2.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(0, 4).addBox(1.0F, -10.0F, 1.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(4, 2).addBox(2.0F, -11.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(4, 6).addBox(3.0F, -12.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(0, 12).addBox(4.0F, -11.0F, 1.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(10, 12).addBox(2.0F, -8.0F, 1.0F, 2.0F, 1.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(4, 12).addBox(3.0F, -11.0F, 2.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(8, 3).addBox(2.0F, -10.0F, 2.0F, 1.0F, 2.0F, 1.0F, CubeDeformation.NONE),
+						.texOffs(0, 19).addBox(4.0F, -11.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(4, 19).addBox(3.0F, -10.0F, 1.0F, 2.0F, 2.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(0, 4).addBox(2.0F, -10.0F, 1.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(4, 2).addBox(3.0F, -11.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(4, 6).addBox(4.0F, -12.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(0, 12).addBox(5.0F, -11.0F, 1.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(10, 12).addBox(3.0F, -8.0F, 1.0F, 2.0F, 1.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(4, 12).addBox(4.0F, -11.0F, 2.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(8, 3).addBox(3.0F, -10.0F, 2.0F, 1.0F, 2.0F, 1.0F, CubeDeformation.NONE),
 				PartPose.ZERO);
 
 		var leftEar = partRoot.addOrReplaceChild("leftEar",
 				CubeListBuilder.create()
-						.texOffs(0, 16).addBox(-4.0F, -11.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(4, 16).addBox(-4.0F, -10.0F, 1.0F, 2.0F, 2.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(0, 0).addBox(-2.0F, -10.0F, 1.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(4, 0).addBox(-3.0F, -11.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(4, 4).addBox(-4.0F, -12.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(0, 8).addBox(-5.0F, -11.0F, 1.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(10, 14).addBox(-4.0F, -8.0F, 1.0F, 2.0F, 1.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(4, 8).addBox(-4.0F, -11.0F, 2.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
-						.texOffs(8, 3).addBox(-3.0F, -10.0F, 2.0F, 1.0F, 2.0F, 1.0F, CubeDeformation.NONE),
+						.texOffs(0, 16).addBox(-5.0F, -11.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(4, 16).addBox(-5.0F, -10.0F, 1.0F, 2.0F, 2.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(0, 0).addBox(-3.0F, -10.0F, 1.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(4, 0).addBox(-4.0F, -11.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(4, 4).addBox(-5.0F, -12.0F, 1.0F, 1.0F, 1.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(0, 8).addBox(-6.0F, -11.0F, 1.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(10, 14).addBox(-5.0F, -8.0F, 1.0F, 2.0F, 1.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(4, 8).addBox(-5.0F, -11.0F, 2.0F, 1.0F, 3.0F, 1.0F, CubeDeformation.NONE)
+						.texOffs(8, 3).addBox(-4.0F, -10.0F, 2.0F, 1.0F, 2.0F, 1.0F, CubeDeformation.NONE),
 				PartPose.ZERO);
 
 		return LayerDefinition.create(meshDefinition, 16, 32);
