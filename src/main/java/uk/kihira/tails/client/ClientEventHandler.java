@@ -135,7 +135,7 @@ public class ClientEventHandler
                 new Part(
                         UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1"),
                         "Shark Tail",
-                        "Kihira",
+                        "access_denied",
                         MountPoint.CHEST,
                         new Vector3f(0, 1, 0),
                         new Vector3f(0, 0, 0),
@@ -147,7 +147,7 @@ public class ClientEventHandler
                 new Part(
                         UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"),
                         "Shark Tail",
-                        "Kihira",
+                        "TTFTCUTS",
                         MountPoint.CHEST,
                         new Vector3f(0, 1, 0),
                         new Vector3f(0, 0, 0),
@@ -172,7 +172,7 @@ public class ClientEventHandler
                 new Part(
                         UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6"),
                         "Fox Ears",
-                        "Kihira",
+                        "Adeon",
                         MountPoint.HEAD,
                         new Vector3f(0, 0, 0),
                         new Vector3f(0, 0, 0),
