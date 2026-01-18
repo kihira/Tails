@@ -114,6 +114,7 @@ public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPa
     private void initAddPartList(MountPoint mountPoint)
     {
         this.addPartsList.replaceEntries(PartRegistry.getPartsByMountPoint(mountPoint).map(AddPartEntry::new).toList());
+        this.addPartsList.setScrollAmount(0);
     }
 
     private void initEditPartList()
