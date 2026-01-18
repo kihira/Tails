@@ -23,8 +23,8 @@ class PreviewPanel extends Panel<OutfitEditScreen>
     private double pitch = Math.toRadians(180d);
     private double zoom;
     private boolean isCrouching = false;
-    private ExtendedSlider headYawSlider;
-    private ExtendedSlider headPitchSlider;
+    private final ExtendedSlider headYawSlider;
+    private final ExtendedSlider headPitchSlider;
 
     private final IconButton resetCameraButton;
     private final IconButton helpButton;
@@ -54,8 +54,8 @@ class PreviewPanel extends Panel<OutfitEditScreen>
                 .create(this.getX() + 4, this.getBottom() - 20, 80, 16, Component.translatable("tails.gui.button.crouch"), (button, value) -> this.isCrouching = value);
         addChild(crouchingButton);
 
-        addChild(this.headYawSlider = new ExtendedSlider(this.getX() + 90, this.getBottom() - 26, 80, 12, Component.translatable("tails.gui.slider.head_yaw"), Component.empty(), -90f, 90f, 0f, 1f, 0, true));
-        addChild(this.headPitchSlider = new ExtendedSlider(this.getX() + 90, this.getBottom() - 13, 80, 12, Component.translatable("tails.gui.slider.head_pitch"), Component.empty(), -90f, 90f, 0f, 1f, 0, true));
+        addChild(this.headYawSlider = new PitchYawSlider(this.getX() + 90, this.getBottom() - 13, 80, 12, Component.translatable("tails.gui.slider.head_yaw"), -90f, 90f, 0f));
+        addChild(this.headPitchSlider = new PitchYawSlider(this.getX() + 90, this.getBottom() - 13, 80, 12, Component.translatable("tails.gui.slider.head_pitch"), -90f, 90f, 0f));
     }
 
     @Override
@@ -139,8 +139,7 @@ class PreviewPanel extends Panel<OutfitEditScreen>
     @Override
     protected int contentHeight()
     {
-        //todo
-        return 0;
+        return this.getHeight();
     }
 
     @Override
@@ -161,5 +160,19 @@ class PreviewPanel extends Panel<OutfitEditScreen>
     protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput)
     {
 
+    }
+
+    private static class PitchYawSlider extends ExtendedSlider
+    {
+        PitchYawSlider(int x, int y, int width, int height, Component text, float min, float max, float defaultValue)
+        {
+            super(x, y, width, height, text, Component.empty(), min, max, defaultValue, 1, 0, true);
+        }
+
+        @Override
+        protected void updateMessage()
+        {
+            this.setMessage(prefix);
+        }
     }
 }
