@@ -15,7 +15,7 @@ public class ControlsPanel extends Panel<OutfitEditScreen>
         super(parent, left, top, right, bottom);
 
         //Reset/Save
-        addChild(new ExtendedButton(this.getX() + 3, this.getBottom() - 25, 46, 20, Component.translatable("gui.button.reset"), this::onResetAllButtonPressed));
+        addChild(new ExtendedButton(this.getX() + 3, this.getBottom() - 25, 46, 20, Component.translatable("tails.gui.button.reset"), this::onResetAllButtonPressed));
         addChild(new ExtendedButton(this.getRight() - 49, this.getBottom() - 25, 46, 20, Component.translatable("gui.done"), this::onSaveAllButtonPressed));
     }
 

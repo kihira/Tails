@@ -137,7 +137,7 @@ public class ClientEventHandler
                         "Shark Tail",
                         "access_denied",
                         MountPoint.CHEST,
-                        new Vector3f(0, 1, 0),
+                        new Vector3f(0, 8.6f, .5f),
                         new Vector3f(0, 0, 0),
                         new Vector3f(1, 1, 1),
                         new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
@@ -146,10 +146,10 @@ public class ClientEventHandler
         registerPartWithModel(
                 new Part(
                         UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"),
-                        "Shark Tail",
+                        "Dragon Tail",
                         "TTFTCUTS",
                         MountPoint.CHEST,
-                        new Vector3f(0, 1, 0),
+                        new Vector3f(0, 8.6f, .5f),
                         new Vector3f(0, 0, 0),
                         new Vector3f(1, 1, 1),
                         new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},

@@ -3,12 +3,15 @@ package uk.kihira.tails.client.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.neoforged.neoforge.client.gui.widget.ExtendedSlider;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Math;
@@ -19,6 +22,12 @@ class PreviewPanel extends Panel<OutfitEditScreen>
     private double yaw = 0d;
     private double pitch = Math.toRadians(180d);
     private double zoom;
+    private boolean isCrouching = false;
+    private ExtendedSlider headYawSlider;
+    private ExtendedSlider headPitchSlider;
+
+    private final IconButton resetCameraButton;
+    private final IconButton helpButton;
 
     private static final int MAX_ZOOM = 100;
     private static final int MIN_ZOOM = 10;
@@ -32,10 +41,21 @@ class PreviewPanel extends Panel<OutfitEditScreen>
         // Scale zoom based on width
         this.zoom = Math.clamp(MIN_ZOOM, MAX_ZOOM, Math.lerp(MIN_ZOOM, MAX_ZOOM, (float) this.getWidth() /this.getHeight()));
 
-        // Reset Camera
-        addChild(new IconButton(this.getRight() - 18,  this.getY() + 22, IconButton.Icons.UNDO, this::onUndoButtonPressed, Component.translatable("gui.button.reset.camera")));
         // Help
-        addChild(new IconButton(this.getRight() - 18, this.getY() + 4, IconButton.Icons.QUESTION, this::onHelpButtonPressed, Component.translatable("gui.button.help.camera")));
+        addChild(this.helpButton = new IconButton(this.getRight() - 18, this.getY() + 4, IconButton.Icons.QUESTION, this::onHelpButtonPressed, Component.translatable("tails.gui.button.help.camera")));
+        this.helpButton.setTooltip(Tooltip.create(Component.translatable("tails.gui.button.help.camera")));
+
+        // Reset Camera
+        addChild(this.resetCameraButton = new IconButton(this.getRight() - 18,  this.getY() + 22, IconButton.Icons.UNDO, this::onUndoButtonPressed, Component.translatable("tails.gui.button.reset.camera")));
+        this.resetCameraButton.setTooltip(Tooltip.create(Component.translatable("tails.gui.button.reset.camera")));
+
+         // Pose Control
+        var crouchingButton = CycleButton.onOffBuilder(false)
+                .create(this.getX() + 4, this.getBottom() - 20, 80, 16, Component.translatable("tails.gui.button.crouch"), (button, value) -> this.isCrouching = value);
+        addChild(crouchingButton);
+
+        addChild(this.headYawSlider = new ExtendedSlider(this.getX() + 90, this.getBottom() - 26, 80, 12, Component.translatable("tails.gui.slider.head_yaw"), Component.empty(), -90f, 90f, 0f, 1f, 0, true));
+        addChild(this.headPitchSlider = new ExtendedSlider(this.getX() + 90, this.getBottom() - 13, 80, 12, Component.translatable("tails.gui.slider.head_pitch"), Component.empty(), -90f, 90f, 0f, 1f, 0, true));
     }
 
     @Override
@@ -45,13 +65,15 @@ class PreviewPanel extends Panel<OutfitEditScreen>
 
         renderPlayer(graphics, this.getX(), this.getY(), this.getRight(), this.getBottom(), (float) this.yaw, (float) this.pitch);
 
+        // Render pose control
+
         super.renderWidget(graphics, mouseX, mouseY, partialTicks);
     }
 
     private void onUndoButtonPressed(GuiEventListener button)
     {
-        this.yaw = 0;
-        this.pitch = 10F;
+        this.yaw = 0d;
+        this.pitch = Math.toRadians(180d);
     }
 
     private void onHelpButtonPressed(GuiEventListener button)
@@ -64,27 +86,47 @@ class PreviewPanel extends Panel<OutfitEditScreen>
         var player = this.minecraft().player;
         var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         var renderer = dispatcher.getRenderer(player);
-        var renderState = (LivingEntityRenderState) renderer.createRenderState(player, 1f);
+        var renderState = (AvatarRenderState) renderer.createRenderState(player, 1f);
         renderState.lightCoords = 15728880;
         renderState.shadowPieces.clear();
         renderState.outlineColor = 0;
         renderState.bodyRot = 0;
-        renderState.yRot = 0;
-        renderState.xRot = 0;
+        renderState.yRot = (float) this.headYawSlider.getValue();
+        renderState.xRot = (float) this.headPitchSlider.getValue();
+        renderState.isCrouching = this.isCrouching;
+        //renderState.rightArmPose = HumanoidModel.ArmPose.SPYGLASS;
 
         Vector3f position = new Vector3f(0f, renderState.boundingBoxHeight / 2f, 0f);
         graphics.submitEntityRenderState(renderState, Mth.floor(this.zoom), position, new Quaternionf().rotationXYZ(pitch, yaw, 0f), null, x, y, right, bottom);
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent p_446698_, boolean p_435133_)
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick)
     {
+        // Process any buttons etc first before capturing the mouse for panning
+        for (var child : this.children())
+        {
+            if (child.isMouseOver(event.x(), event.y()))
+            {
+                return super.mouseClicked(event, isDoubleClick);
+            }
+        }
+
         return true;
     }
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY)
     {
+        // Process any buttons etc first before capturing the mouse for panning
+        for (var child : this.children())
+        {
+            if (child.isMouseOver(event.x(), event.y()))
+            {
+                return super.mouseDragged(event, dragX, dragY);
+            }
+        }
+
         if (event.button() == InputConstants.MOUSE_BUTTON_LEFT)
         {
             this.yaw += dragX * .1f;

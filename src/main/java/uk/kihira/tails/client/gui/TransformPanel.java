@@ -1,6 +1,7 @@
 package uk.kihira.tails.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -69,11 +70,16 @@ public class TransformPanel extends Panel<OutfitEditScreen> implements IControlC
         addChild(yScaleInput = new NumberInput(this.getX() + secondInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, maxIntPlacesScale, maxDecimalPlacesScale, this));
         addChild(zScaleInput = new NumberInput(this.getX() + thirdInputX, this.getY() + spacing * 5, WIDTH, MIN_SCALE, MAX_SCALE, INC_SCALE, maxIntPlacesScale, maxDecimalPlacesScale, this));
 
-        String mountPoint = MountPoint.values()[0].name();
+        var mountPoint = MountPoint.values()[0].name();
         final OutfitPart outfitPart = parent.getCurrentOutfitPart();
-        if (outfitPart != null) mountPoint = outfitPart.mountPoint.name();
+        if (outfitPart != null)
+        {
+            mountPoint = outfitPart.mountPoint.name();
+        }
 
-        addChild(mountPointButton = new ExtendedButton( this.getX() + 5,  this.getY() + spacing * 7, width - 10, 20, Component.translatable("tails.mountpoint." + mountPoint), this::onChangeMountPointButtonPressed));
+        addChild(this.mountPointButton = new ExtendedButton( this.getX() + 5,  this.getY() + spacing * 7, width - 10, 20, Component.translatable("tails.mountpoint." + mountPoint), this::onChangeMountPointButtonPressed));
+        this.mountPointButton.active = false;
+        this.mountPointButton.setTooltip(Tooltip.create(Component.translatable("tails.gui.mountpoint.notsupported")));
     }
 
     @Override
@@ -95,7 +101,8 @@ public class TransformPanel extends Panel<OutfitEditScreen> implements IControlC
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {
+    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput)
+    {
 
     }
 
@@ -159,8 +166,7 @@ public class TransformPanel extends Panel<OutfitEditScreen> implements IControlC
     @Override
     protected int contentHeight()
     {
-        //todo
-        return 0;
+        return this.getHeight();
     }
 
     @Override

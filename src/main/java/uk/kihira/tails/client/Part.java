@@ -1,32 +1,31 @@
 package uk.kihira.tails.client;
 
 import org.joml.Vector3f;
-import uk.kihira.gltf.GltfModel;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import uk.kihira.tails.client.model.PartModel;
 import uk.kihira.tails.client.outfit.Tint;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
  * Represents a Part that has a name, author, model and various details about how it should render
  */
-@Nullable
 public final class Part
 {
     // Non render details
-    public final UUID id; // A UUID for a file that contains the model and texture. Also the UUID for the part
+    public final @NonNull UUID id; // A UUID for a file that contains the model and texture. Also the UUID for the part
     public final String author;
-    public final String name;
+    public final @NonNull String name;
     public final String[] tags = new String[]{};
     public final int category = 0;
 
-    public final MountPoint mountPoint;
+    public final @NonNull MountPoint mountPoint;
     public final Vector3f mountOffset;
     public final Vector3f rotation;
     public final Vector3f scale;
     public final Tint[] tint;
-    public final PartTexture[] textures;
+    public final @NonNull PartTexture[] textures;
 
     private transient PartModel model;
 

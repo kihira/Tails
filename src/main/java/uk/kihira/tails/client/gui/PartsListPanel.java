@@ -294,8 +294,8 @@ public class PartsListPanel extends Panel<OutfitEditScreen> implements IOutfitPa
                 stack.translate(this.getX() + 5, this.getContentY() + 15);
                 stack.scale(.6f, .6f);
 
-                graphics.drawString(font, Component.translatable("gui.author"), 0, 0, OutfitEditScreen.TEXT_COLOUR);
-                stack.translate(font.width(Component.translatable("gui.author")) + 2, 0);
+                graphics.drawString(font, Component.translatable("tails.gui.author"), 0, 0, OutfitEditScreen.TEXT_COLOUR);
+                stack.translate(font.width(Component.translatable("tails.gui.author")) + 2, 0);
                 graphics.drawString(font,part.author, 0, 0, -1);
                 stack.popMatrix();
 

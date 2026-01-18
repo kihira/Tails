@@ -75,7 +75,7 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
             }
             catch (NumberFormatException ignored) { }
         });
-        this.hexText.addFormatter(this::formatHexText);
+        this.hexText.addFormatter((String text, int displayPos) -> FormattedCharSequence.forward(text, Style.EMPTY.withColor(this.currentTint.toARGB())));
 
         //RGB sliders
         this.rgbSliders = new GuiHSBSlider[3];
@@ -93,12 +93,14 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
         addChild(this.hsbSliders[2] = new GuiHSBSlider(this.getX() + 5, this.getY() + EDIT_PANEL_TOP + 55, SLIDER_WIDTH, SLIDER_HEIGHT, 1f, 0f, this, GuiHSBSlider.HSBSliderType.BRIGHTNESS));
 
         //Reset/Save
-        addChild(this.tintReset = new IconButton(this.getRight() - 20, this.getY() + EDIT_PANEL_TOP + 5, IconButton.Icons.UNDO, this::onResetButtonPressed, Component.translatable("gui.button.reset")));
+        addChild(this.tintReset = new IconButton(this.getRight() - 20, this.getY() + EDIT_PANEL_TOP + 5, IconButton.Icons.UNDO, this::onResetButtonPressed, Component.translatable("tails.gui.button.reset")));
         this.tintReset.active = false;
+        this.tintReset.setTooltip(Tooltip.create(Component.translatable("tails.gui.button.tint_reset.tooltip")));
 
         //Colour Picker
-        addChild(this.colourPicker = new IconButton(this.getRight() - 36, this.getY() + EDIT_PANEL_TOP + 5, IconButton.Icons.EYEDROPPER, this::onColourPickerButtonPressed, Component.translatable("gui.button.picker.0"), Component.translatable("gui.button.picker.1")));
+        addChild(this.colourPicker = new IconButton(this.getRight() - 36, this.getY() + EDIT_PANEL_TOP + 5, IconButton.Icons.EYEDROPPER, this::onColourPickerButtonPressed, Component.translatable("tails.gui.button.picker"), Component.translatable("tails.gui.button.picker.tooltip")));
         this.colourPicker.visible = false;
+        this.colourPicker.setTooltip(Tooltip.create(Component.translatable("tails.gui.button.picker.tooltip")));
 
         setCurrentTintIndex(TINT_INDEX_NONE);
     }
@@ -108,15 +110,15 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
     {
         graphics.fill(this.getX(), this.getY(), this.getRight(), this.getY() + EDIT_PANEL_TOP, Colour.LIGHT_GRAY);
         graphics.fill(this.getX(), this.getY() + EDIT_PANEL_TOP, this.getRight(), this.getBottom(), Colour.DARK_GREY);
-        graphics.drawString(font(), Component.translatable("gui.tint"), this.getX() + 5, this.getY() + 3, OutfitEditScreen.TEXT_COLOUR);
+        graphics.drawString(font(), Component.translatable("tails.gui.tint"), this.getX() + 5, this.getY() + 3, OutfitEditScreen.TEXT_COLOUR);
 
         //Editing tint pane
         if (this.currentTintIndex != TINT_INDEX_NONE)
         {
             graphics.hLine(this.getX(), this.getRight(), EDIT_PANEL_TOP, Colour.BLACK);
-            graphics.drawString(font(), Component.translatable("gui.tint.edit", this.currentTintIndex + 1), this.getX() + 5, this.getY() + EDIT_PANEL_TOP + 5, OutfitEditScreen.TEXT_COLOUR);
+            graphics.drawString(font(), Component.translatable("tails.gui.tint.edit", this.currentTintIndex + 1), this.getX() + 5, this.getY() + EDIT_PANEL_TOP + 5, OutfitEditScreen.TEXT_COLOUR);
 
-            graphics.drawString(font(), Component.translatable("gui.hex").append(":"),  this.getX() + 5,  this.getY() + EDIT_PANEL_TOP + 21, OutfitEditScreen.TEXT_COLOUR);
+            graphics.drawString(font(), Component.translatable("tails.gui.hex").append(":"),  this.getX() + 5,  this.getY() + EDIT_PANEL_TOP + 21, OutfitEditScreen.TEXT_COLOUR);
             this.hexText.setVisible(true);
         }
         else
@@ -310,11 +312,6 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
         return -1;
     }
 
-    private FormattedCharSequence formatHexText(String text, int displayPos)
-    {
-        return FormattedCharSequence.forward(text, Style.EMPTY.withColor(this.currentTint.toARGB()));
-    }
-
     @Override
     protected int contentHeight()
     {
@@ -346,7 +343,7 @@ public class TintPanel extends Panel<OutfitEditScreen> implements GuiHSBSlider.I
 
         TintButton(int x, int y, int tintId, int defaultColour, OnPress pressedAction)
         {
-            super(x, y, BTN_SIZE, BTN_SIZE, Component.translatable("gui.tint"), pressedAction);
+            super(x, y, BTN_SIZE, BTN_SIZE, Component.translatable("tails.gui.tint"), pressedAction);
             this.tintId = tintId;
             this.defaultColour = defaultColour;
         }
