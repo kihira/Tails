@@ -18,10 +18,7 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import org.joml.Vector3f;
 import uk.kihira.tails.client.gui.OutfitEditScreen;
-import uk.kihira.tails.client.model.DragonTailModel;
-import uk.kihira.tails.client.model.FoxTailModel;
-import uk.kihira.tails.client.model.RacoonTailModel;
-import uk.kihira.tails.client.model.SharkTailModel;
+import uk.kihira.tails.client.model.*;
 import uk.kihira.tails.client.model.head.CatEarsModel;
 import uk.kihira.tails.client.model.head.FoxEarsModel;
 import uk.kihira.tails.client.model.head.SmallCatEarsModel;
@@ -112,6 +109,7 @@ public class ClientEventHandler
         event.registerLayerDefinition(FOX_EARS_LAYER_LOCATION, FoxEarsModel::createModelLayer);
         event.registerLayerDefinition(CAT_EARS_LAYER_LOCATION, CatEarsModel::createModelLayer);
         event.registerLayerDefinition(SMALL_CAT_EARS_LAYER_LOCATION, SmallCatEarsModel::createModelLayer);
+        event.registerLayerDefinition(DEVIL_TAIL_LAYER_LOCATION, DevilTailModel::createModelLayer);
     }
 
     /**
@@ -206,6 +204,18 @@ public class ClientEventHandler
                         new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                         new PartTexture[]{ new PartTexture(UUID.fromString("ec0fc665-8a23-44bc-8cbe-1189c5a49b85"), "Default", "Kihira") }),
                 new SmallCatEarsModel(event.getEntityModels().bakeLayer(SMALL_CAT_EARS_LAYER_LOCATION)));
+        registerPartWithModel(
+                new Part(
+                        UUID.fromString("833c8546-79e9-434f-9938-a9b4082fbd22"),
+                        "Devil Tail",
+                        "Kihira",
+                        MountPoint.CHEST,
+                        new Vector3f(0, 0, 0),
+                        new Vector3f(0, 0, 0),
+                        new Vector3f(1, 1, 1),
+                        new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
+                        new PartTexture[]{ new PartTexture(UUID.fromString("833c8546-79e9-434f-9938-a9b4082fbd22"), "Default", "Kihira") }),
+                new DevilTailModel(event.getEntityModels().bakeLayer(DEVIL_TAIL_LAYER_LOCATION)));
 
         partRenderer = new PartRenderer();
         for (var modelType : event.getSkins())
@@ -230,4 +240,5 @@ public class ClientEventHandler
     private static final ModelLayerLocation FOX_EARS_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "fox_ears"), "head");
     private static final ModelLayerLocation CAT_EARS_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "cat_ears"), "head");
     private static final ModelLayerLocation SMALL_CAT_EARS_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "small_cat_ears"), "head");
+    private static final ModelLayerLocation DEVIL_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "devil_tail"), "chest");
 }

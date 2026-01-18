@@ -6,7 +6,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.model.player.PlayerModel;
 import uk.kihira.tails.client.model.PartModel;
 
-public class SmallCatEarsModel extends PartModel
+public final class SmallCatEarsModel extends PartModel
 {
     private final ModelPart leftEar;
     private final ModelPart rightEar;
