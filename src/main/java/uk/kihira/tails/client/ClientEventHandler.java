@@ -24,6 +24,7 @@ import uk.kihira.tails.client.model.RacoonTailModel;
 import uk.kihira.tails.client.model.SharkTailModel;
 import uk.kihira.tails.client.model.head.CatEarsModel;
 import uk.kihira.tails.client.model.head.FoxEarsModel;
+import uk.kihira.tails.client.model.head.SmallCatEarsModel;
 import uk.kihira.tails.client.outfit.Outfit;
 import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.outfit.Tint;
@@ -110,6 +111,7 @@ public class ClientEventHandler
         event.registerLayerDefinition(RACOON_TAIL_LAYER_LOCATION, RacoonTailModel::createModelLayer);
         event.registerLayerDefinition(FOX_EARS_LAYER_LOCATION, FoxEarsModel::createModelLayer);
         event.registerLayerDefinition(CAT_EARS_LAYER_LOCATION, CatEarsModel::createModelLayer);
+        event.registerLayerDefinition(SMALL_CAT_EARS_LAYER_LOCATION, SmallCatEarsModel::createModelLayer);
     }
 
     /**
@@ -141,7 +143,7 @@ public class ClientEventHandler
                         new Vector3f(0, 0, 0),
                         new Vector3f(1, 1, 1),
                         new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
-                        new PartTexture[]{ new PartTexture(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1"), "Default", "Kihira") }),
+                        new PartTexture[]{ new PartTexture(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1"), "Default", "access_denied") }),
                 new SharkTailModel(event.getEntityModels().bakeLayer(SHARK_TAIL_LAYER_LOCATION)));
         registerPartWithModel(
                 new Part(
@@ -154,7 +156,7 @@ public class ClientEventHandler
                         new Vector3f(1, 1, 1),
                         new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                         // new PartTexture[]{ new PartTexture(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Striped", "Kihira") }),
-                        new PartTexture[]{ new PartTexture(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Default", "Kihira") }),
+                        new PartTexture[]{ new PartTexture(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda"), "Default", "TTFTCUTS") }),
                 new DragonTailModel(event.getEntityModels().bakeLayer(DRAGON_TAIL_LAYER_LOCATION)));
         registerPartWithModel(
                 new Part(
@@ -178,7 +180,7 @@ public class ClientEventHandler
                         new Vector3f(0, 0, 0),
                         new Vector3f(1, 1, 1),
                         new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
-                        new PartTexture[]{ new PartTexture(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6"), "Default", "Kihira") }),
+                        new PartTexture[]{ new PartTexture(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6"), "Default", "Adeon") }),
                 new FoxEarsModel(event.getEntityModels().bakeLayer(FOX_EARS_LAYER_LOCATION)));
         registerPartWithModel(
                 new Part(
@@ -192,6 +194,18 @@ public class ClientEventHandler
                         new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
                         new PartTexture[]{ new PartTexture(UUID.fromString("bb6c78e9-41ae-4d79-a744-72bc18d6ccc7"), "Default", "Kihira") }),
                 new CatEarsModel(event.getEntityModels().bakeLayer(CAT_EARS_LAYER_LOCATION)));
+        registerPartWithModel(
+                new Part(
+                        UUID.fromString("ec0fc665-8a23-44bc-8cbe-1189c5a49b85"),
+                        "Small Cat Ears",
+                        "Kihira",
+                        MountPoint.HEAD,
+                        new Vector3f(0, 0, 0),
+                        new Vector3f(0, 0, 0),
+                        new Vector3f(1, 1, 1),
+                        new Tint[]{new Tint(1, 0, 0), new Tint(0, 1, 0), new Tint(0, 0, 1)},
+                        new PartTexture[]{ new PartTexture(UUID.fromString("ec0fc665-8a23-44bc-8cbe-1189c5a49b85"), "Default", "Kihira") }),
+                new SmallCatEarsModel(event.getEntityModels().bakeLayer(SMALL_CAT_EARS_LAYER_LOCATION)));
 
         partRenderer = new PartRenderer();
         for (var modelType : event.getSkins())
@@ -206,14 +220,6 @@ public class ClientEventHandler
             //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightLeg, event.getContext().getModelSet(), MountPoint.RIGHT_LEG));
         }
 
-        // todo temp
-        var outfit = new Outfit()
-        //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("b783d4b9-dd0e-41bb-8aa3-87efac967c19")).get())); // fox
-        //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("c371a5c1-7f08-4b3a-974b-abf8bc639cd1")).get())); // shark
-        //outfit.parts.add(new OutfitPart(PartRegistry.getPart(UUID.fromString("42db3167-aa40-4d9d-bf22-68944ef65cda")).get())); // dragon
-            .addPart(new OutfitPart(PartRegistry.getPart(UUID.fromString("b119ff1e-d8ed-4454-a77f-141916e77ebe")).get())) // racoon
-            .addPart(new OutfitPart(PartRegistry.getPart(UUID.fromString("7ee6ceb1-bcbf-44f3-98a5-969094f7f1d6")).get())); // fox ears
-
         OutfitManager.setOutfitForPlayer(Minecraft.getInstance().getGameProfile().id(), Config.CONFIG.getLocalOutfit());
     }
 
@@ -222,5 +228,6 @@ public class ClientEventHandler
     private static final ModelLayerLocation DRAGON_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "dragon_tail"), "chest");
     private static final ModelLayerLocation RACOON_TAIL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "racoon_tail"), "chest");
     private static final ModelLayerLocation FOX_EARS_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "fox_ears"), "head");
-    public static final ModelLayerLocation CAT_EARS_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "cat_ears"), "head");
+    private static final ModelLayerLocation CAT_EARS_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "cat_ears"), "head");
+    private static final ModelLayerLocation SMALL_CAT_EARS_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(Tails.MOD_ID, "small_cat_ears"), "head");
 }
