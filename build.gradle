@@ -1,116 +1,113 @@
+// 경로: build.gradle (프로젝트 루트)
 plugins {
-    id 'java-library'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.80'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 }
 
-version = mod_version
-group = mod_group_id
+// ──────────────────────────────────────────────
+// 기본 정보
+// ──────────────────────────────────────────────
+version     = '1.20.1-1.0.0'
+group       = 'com.akashiro'
+archivesBaseName = 'tails'
 
-repositories {
-    mavenLocal()
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
-base {
-    archivesName = mod_id
-}
+// ──────────────────────────────────────────────
+// Minecraft / Forge 버전
+// ──────────────────────────────────────────────
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+    // AccessTransformer가 필요하면 아래 주석 해제
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-runs {
-    configureEach {
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
-        systemProperty 'forge.logging.console.level', 'debug'
-
-        modSource project.sourceSets.main
-    }
-
-    client {
-        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
-    }
-
-    server {
-        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
-        programArgument '--nogui'
-    }
-
-    // This run config launches GameTestServer and runs all registered gametests, then exits.
-    // By default, the server will crash when no gametests are provided.
-    // The gametest system is also enabled by default for other run configs under the /test command.
-    gameTestServer {
-        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
-    }
-
-    data {
-        // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
-        // workingDirectory project.file('run-data')
-
-        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-    }
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-dependencies {
-    implementation "net.neoforged:neoforge:${neo_version}"
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
-    testImplementation 'org.assertj:assertj-core:3.19.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
-}
-
-// This block of code expands all declared replace properties in the specified resource targets.
-// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
-// When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
-// See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
-tasks.withType(ProcessResources).configureEach {
-    var replaceProperties = [
-            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
-            neo_version         : neo_version, neo_version_range: neo_version_range,
-            loader_version_range: loader_version_range,
-            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-            mod_authors         : mod_authors, mod_description: mod_description,
-    ]
-    inputs.properties replaceProperties
-
-    filesMatching(['META-INF/mods.toml']) {
-        expand replaceProperties + [project: project]
-    }
-}
-
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            from components.java
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                tails {
+                    source sourceSets.main
+                }
+            }
         }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/repo"
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                tails {
+                    source sourceSets.main
+                }
+            }
         }
-        maven {
-            url 'https://pkgs.dev.azure.com/kihira/Tails/_packaging/Tails/maven/v1'
-            credentials {
-                username "AZURE_ARTIFACTS"
-                password System.getenv("AZURE_ARTIFACTS_ENV_ACCESS_TOKEN") ?: "${azureArtifactsGradleAccessToken}"
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'tails',
+                    '--all',
+                    '--output', file('src/generated/resources/'),
+                    '--existing', file('src/main/resources/')
+            mods {
+                tails {
+                    source sourceSets.main
+                }
             }
         }
     }
 }
 
+// ──────────────────────────────────────────────
+// 의존성
+// ──────────────────────────────────────────────
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.2.20'
+
+    // Gson — Forge가 이미 포함하고 있지만 명시
+    // implementation 'com.google.code.gson:gson:2.10.1'
+
+    // Guava (ArrayListMultimap) — Forge 포함
+    // implementation 'com.google.guava:guava:32.1.2-jre'
+}
+
+// ──────────────────────────────────────────────
+// 빌드 설정
+// ──────────────────────────────────────────────
+jar {
+    manifest {
+        attributes([
+                'Specification-Title'     : 'tails',
+                'Specification-Vendor'    : 'Akashiro',
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : 'Akashiro',
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+// sources jar 생성
+java {
+    withSourcesJar()
+}
+
+// ──────────────────────────────────────────────
+// 인코딩
+// ──────────────────────────────────────────────
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-}
-
-if (System.getenv("BRANCH_NAME") != null && System.getenv("BRANCH_NAME") != "master") {
-    version += "-${System.getenv("BRANCH_NAME")}"
-}
-if (System.getenv("BUILD_NUMBER") != null) {
-    version += "-${System.getenv("BUILD_NUMBER")}"
-}
-
-test {
-	useJUnitPlatform()
+    options.encoding = 'UTF-8'
 }

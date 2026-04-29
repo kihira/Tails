@@ -1,0 +1,54 @@
+Tails Mod Description
+=====================
+
+1. Overview
+Tails is a customization mod that lets players equip extra cosmetic parts such as tails, ears, wings, and muzzles.
+This 1.20.1 port keeps the feel of the original Tails mod while rebuilding it for a modern Forge environment.
+
+2. Main Features
+- Tail, ear, wing, and muzzle selection
+- Per-part texture selection
+- Three-color tint system
+- Rotating character preview
+- Library save and load support
+- Real-time preview while editing
+- Multiplayer appearance synchronization
+
+3. Controls
+- Default hotkey: U
+- Press U to open the Tails editor.
+- Choose the body part from the top tabs.
+- Select the desired part from the list on the left.
+- Change textures in the texture section below.
+- Edit colors from the tint panel on the right.
+- Press Save to store the current setup and sync it to the server.
+- Closing without saving restores the previous setup.
+
+4. Tail Abilities
+In this port, every tail except the raccoon tail gives a direct gameplay effect to the player.
+
+- Fluffy Fox Tail: increased movement speed
+- Twin Tails: increased movement speed
+- Nine Tails: faster movement than the normal fox tail, higher jump than the bunny tail, and attack power similar to the devil tail
+- Dragon Tail: increased armor and knockback resistance
+- Raccoon Tail: no special effect
+- Devil Tail: +3 damage per hit
+- Cat Tail: no fall damage
+- Bird Tail: slower falling and reduced fall damage
+- Shark Tail: faster swimming and refreshed air underwater
+- Bunny Tail: increased jump height
+
+5. How Effects Work
+- Tail effects only apply while that specific tail is equipped.
+- Changing tails removes the previous tail effect and applies the new one.
+- For example, if a player switches from the cat tail to the devil tail, fall damage immunity is removed and the attack bonus is applied instead.
+- Nine Tails is part of the fox tail family, but it uses its own upgraded stat profile.
+
+6. Notes
+- This mod is built for Minecraft Forge 1.20.1.
+- Some systems may differ slightly from the original mod internally, but the overall customization feel is preserved as closely as possible.
+- Tail balance and passive effects may be adjusted later.
+
+7. Credits
+- Original mod: Kihira
+- 1.20.1 port and extensions: current port work

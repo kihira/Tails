@@ -1,41 +1,90 @@
-[![Build Status](https://dev.azure.com/kihira/Tails/_apis/build/status/kihira.Tails?branchName=develop)](https://dev.azure.com/kihira/Tails/_build/latest?definitionId=3&branchName=develop)
-# Tails
-A small mod that adds in a variety of tails
+# Tails 1.20.1 Unofficial Port
 
-# Build and setup
-The standard build task will generate a shaded and non shaded version, with the non shaded having the `nonshaded` classifier
-Before it can be built however, a workspace must be setup.
+Unofficial Minecraft Forge 1.20.1 port of **Tails** by **Kihira**.
 
-### Workspace
-To setup a workspace for general develop run `gradle setupDecompWorkspace`
-This will automatically download all required dependencies
+This repository is intended to make the port reviewable in public and to provide a clean place for pull requests against the original project.
 
-To setup a workspace for CI building, run `gradle setupCIWorkspace`
+## Status
 
-### Building
-The standard build can be run by running `gradle build` which will output a shaded and nonshaded jar including sources.
+- Target loader: Minecraft Forge `1.20.1`
+- Port status: playable work-in-progress
+- Goal: preserve the original look and behavior of the editor, rendering, and customization flow as closely as possible
 
-To only generate a `nonshaded` jar, run `gradle reobfJar`  
-To generate only a `sources` jar, run `gradle sourcejar`  
-To generate only a `shaded` jar, run `gradle reobfShadowJar`  
+## Original Project
 
-# Maven 
-A maven repository is available at http://maven.foxes.rocks/
+- Original author: **Kihira**
+- Upstream repository: <https://github.com/kihira/Tails>
+- Upstream CurseForge page: <https://www.curseforge.com/minecraft/mc-mods/tails>
 
-To include this as a dependency in your project, add the following replacing `<version>` with the version you want.
+## Important Disclaimer
+
+This is an **unofficial port**.
+
+- It is **not affiliated with, endorsed by, or published by Kihira**
+- If an official modern version becomes available, users should prefer the official release
+- This repository should clearly remain labeled as an unofficial port on GitHub, CurseForge, and release notes
+
+## Planned Pull Request
+
+The upstream repository currently exposes a `develop` branch, and the original README indicates that contributions are typically submitted there.
+
+- Intended PR target repository: <https://github.com/kihira/Tails>
+- Intended PR target branch: `develop`
+- Your public fork URL: `https://github.com/AkashiroSku/Tails`
+- Your working branch example: `forge-1.20.1-port`
+
+## What This Port Includes
+
+- Restored player part rendering flow for tails, ears, wings, and muzzle
+- Generated tint texture handling for modern Forge
+- GUI layout adjusted to resemble the original editor more closely
+- Live preview updates while editing
+- Localization cleanup
+- Tail-specific gameplay bonuses
+
+## Screenshots
+
+### In-Game Showcase
+
+![In-game front showcase](docs/images/pr/in-game-front-showcase.png)
+
+![In-game shark tail showcase](docs/images/pr/in-game-shark-tail.png)
+
+### Editor Showcase
+
+![Editor tail selection](docs/images/pr/editor-tail-selection.png)
+
+![Editor tint preview](docs/images/pr/editor-tint-preview.png)
+
+## Build
+
+Use the standard Forge Gradle flow from the project root:
+
+```bash
+./gradlew build
 ```
-repositories {
-    maven {
-        name = 'Kihira Maven'
-        url = 'http://maven.foxes.rocks'
-    }
-}
-dependencies {
-    deobfCompile "uk.kihira.tails:Tails:<version>:nonshaded"
-}
+
+On Windows:
+
+```powershell
+.\gradlew.bat build
 ```
 
-# Submitted PR's
-I use a git flow system so master is used for releases, develop for development etc. You can read more about it [here](http://nvie.com/posts/a-successful-git-branching-model/) or a quick cheatsheet [here](https://danielkummer.github.io/git-flow-cheatsheet/)
+## Public Repository Checklist
 
-Basically if you want to submit a language patch, submit it against the develop branch. Read [here](https://help.github.com/articles/using-pull-requests#changing-the-branch-range-and-destination-repository) on how to change branches when submitting a PR
+Before sharing this repo publicly, replace these placeholders:
+
+- `https://github.com/AkashiroSku/Tails/tree/<forge-1.20.1-port>`
+- `https://github.com/AkashiroSku/Tails/compare/<forge-1.20.1-port>`
+
+Recommended repository description:
+
+> Unofficial Minecraft Forge 1.20.1 port of Kihira's Tails mod.
+
+## Suggested CurseForge Wording
+
+> Original mod by Kihira. This is an unofficial Forge 1.20.1 port and is not affiliated with or endorsed by the original author. Source code and pull request are public on GitHub.
+
+## License Note
+
+The upstream GitHub repository and CurseForge project both present **MIT** licensing information. Before publishing releases from this port, verify that the repository metadata, packaged metadata, and release page all consistently reflect the intended license and attribution.
