@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -22,8 +23,6 @@ import uk.kihira.tails.client.model.*;
 import uk.kihira.tails.client.model.head.CatEarsModel;
 import uk.kihira.tails.client.model.head.FoxEarsModel;
 import uk.kihira.tails.client.model.head.SmallCatEarsModel;
-import uk.kihira.tails.client.outfit.Outfit;
-import uk.kihira.tails.client.outfit.OutfitPart;
 import uk.kihira.tails.client.outfit.Tint;
 import uk.kihira.tails.client.render.LayerPart;
 import uk.kihira.tails.client.render.LegacyLayerPart;
@@ -59,27 +58,20 @@ public class ClientEventHandler
     @SubscribeEvent
     public static void onRegisterRenderStateModifiers(RegisterRenderStateModifiersEvent event)
     {
-        // This should work but type checking is failing
-/*            TypeToken<AvatarRenderer<AbstractClientPlayer>> rendererType = new TypeToken<>() {};
-        BiConsumer<Avatar, AvatarRenderState> modifier = (player, renderState) -> {
-            var uuid = player.getUUID();
-            if (OutfitManager.hasActiveOutfit(uuid))
-            {
-                renderState.setRenderData(LayerPart.OUTFIT_KEY, OutfitManager.getActiveOutfit(uuid));
-            }
-        };
-        event.registerEntityModifier(rendererType, modifier);*/
-
         TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>> rendererType = new TypeToken<>() {};
         BiConsumer<LivingEntity, LivingEntityRenderState> modifier = (entity, renderState) -> {
             var uuid = entity.getUUID();
-            // Exclude entities that already have an outfit as this is likely coming from the part list window
-            if (entity instanceof AbstractClientPlayer && OutfitManager.hasOutfit(uuid) && renderState.getRenderData(LayerPart.OUTFIT_KEY) == null)
+            if (entity instanceof AbstractClientPlayer player)
             {
-                renderState.setRenderData(LayerPart.OUTFIT_KEY, OutfitManager.getOutfitForPlayer(uuid));
+                // Exclude entities that already have an outfit as this is likely coming from the part list window
+                if (OutfitManager.hasOutfit(uuid) && renderState.getRenderData(LayerPart.OUTFIT_KEY) == null)
+                {
+                    renderState.setRenderData(LayerPart.OUTFIT_KEY, OutfitManager.getOutfitForPlayer(uuid));
+                }
+                // Always attach motion angles as it may be used in the part view window so it doesn't have an outfit
+                renderState.setRenderData(PartAnimation.MOTION_KEY, PartAnimation.getMotionAngles(player, renderState.partialTick));
             }
         };
-
         event.registerEntityModifier(rendererType, modifier);
     }
 
@@ -224,10 +216,10 @@ public class ClientEventHandler
             var model = renderPlayer.getModel();
             renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.head, event.getContext().getModelSet(), MountPoint.HEAD));
             renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.body, event.getContext().getModelSet(), MountPoint.CHEST));
-            //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftArm, event.getContext().getModelSet(), MountPoint.LEFT_ARM));
-            //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightArm, event.getContext().getModelSet(), MountPoint.RIGHT_ARM));
-            //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftLeg, event.getContext().getModelSet(), MountPoint.LEFT_LEG));
-            //renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightLeg, event.getContext().getModelSet(), MountPoint.RIGHT_LEG));
+            renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftArm, event.getContext().getModelSet(), MountPoint.LEFT_ARM));
+            renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightArm, event.getContext().getModelSet(), MountPoint.RIGHT_ARM));
+            renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.leftLeg, event.getContext().getModelSet(), MountPoint.LEFT_LEG));
+            renderPlayer.addLayer(new LegacyLayerPart(renderPlayer, model.rightLeg, event.getContext().getModelSet(), MountPoint.RIGHT_LEG));
         }
 
         OutfitManager.setOutfitForPlayer(Minecraft.getInstance().getGameProfile().id(), Config.CONFIG.getLocalOutfit());

@@ -38,11 +38,15 @@ public class FoxTailModel extends PartModel
         // Create the mesh definition based on the player model so we can get the correct rotations etc
         var meshDefinition = PlayerModel.createMesh(CubeDeformation.NONE, false);
         var emptyPlayerDefinition = meshDefinition.getRoot().clearRecursively();
-        var partRoot = emptyPlayerDefinition.getChild("body").addOrReplaceChild(PART_ROOT_NAME, CubeListBuilder.create(), PartPose.ZERO);
+        var partRoot = emptyPlayerDefinition.getChild("body")
+                .addOrReplaceChild(PART_ROOT_NAME,
+                        CubeListBuilder.create(),
+                        // TODO: This is hisotrical in the scale, location etc, but should we be scaling models?
+                        PartPose.offsetAndRotation(0f, 10.4f, 1.6f, (float) Math.toRadians(-20f), 0f, 0f).withScale(0.8f)); // offset to bottom of the body
 
         PartDefinition tailBase = partRoot.addOrReplaceChild("tailBase",
                         CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 3.0F, CubeDeformation.NONE),
-                        PartPose.offsetAndRotation(0.0F, 11.0F, 1.5F, -0.2618F, 0.0F, 0.0F)); // offset to bottom of the body
+                        PartPose.ZERO);
 
         PartDefinition tail1 = tailBase.addOrReplaceChild("tail1",
                 CubeListBuilder.create().texOffs(10, 0).addBox(-1.5F, -1.5F, 0.0F, 3.0F, 3.0F, 2.0F, CubeDeformation.NONE),
@@ -68,48 +72,39 @@ public class FoxTailModel extends PartModel
     }
 
     @Override
-    public void setupAnim(AvatarRenderState renderState) {
+    public void setupAnim(AvatarRenderState renderState)
+    {
         super.setupAnim(renderState);
 
-        var timestep = getAnimationTime(AVERAGE_SPEED, renderState.id);
-
-        var yOffset = 1f;
+        var timestep = getAnimationTime(SLOW_SPEED, renderState.id);
+        var motion = renderState.getRenderData(PartAnimation.MOTION_KEY);
         var xAngleOffset = 0f;
-        var swayDampen = 0f;
+        var yAngleOffset = 0f;
         var zAngleOffset = 0f;
+        var swayDampen = 0f;
+        var swayPhaseOffset = 1f;
 
-        xAngleOffset = renderState.walkAnimationSpeed * 0.2f; // Good for when running
-        //xAngleOffset = (float) -deltaMovement.y * 0.5f; // Need to invert
-
-        xAngleOffset = Mth.clamp(xAngleOffset, -1f, 0.35f); // Limit lifting of tail
-        swayDampen = (1 - (xAngleOffset * LOW_SWAY_DAMPEN)); //Used to suppress sway when running TODO: Ideally this should be a curve
-
-        var bodyYaw = Mth.rotLerp(renderState.partialTick, renderState.yRot, renderState.bodyRot);
-        var bodyYawSin = Mth.sin(bodyYaw * Mth.PI / 180f);
-        var bodyYawCos = -Mth.cos(bodyYaw * Mth.PI / 180f);
-        float f2 = (float) (renderState.speedValue * bodyYawCos - renderState.speedValue * bodyYawSin) * 100F;
-        //zAngleOffset = (float) -Math.toRadians(f2) * 3f;
-
-        //zAngleOffset = Mth.clamp(zAngleOffset, -0.5f, 0.5f);
-
-/*            var angles = getMotionAngles(player, partialTick);
-        xAngleOffset = angles[0];
-        yAngleOffset = angles[1];
-        zAngleOffset = angles[2];
-
-        xAngleOffset = Mth.clamp(xAngleOffset * 0.6f, -1f, 0.45f);
-        zAngleOffset = Mth.clamp(zAngleOffset, -0.5f, 0.5f);
-        swayDampen = (1 - (xAngleOffset * 2F)); //Used to suppress sway when running*/
-
-        if (renderState.shouldApplyFlyingYRot) {
-            // seems to work okay when using an elytra
-            zAngleOffset = renderState.yRot * -0.02f;
+        if (renderState.isPassenger)
+        {
+            xAngleOffset = (float) Math.toRadians(22f);
+            yAngleOffset = 0f;
+            zAngleOffset = 0f;
+            swayDampen = 0.5f;
+        }
+        else
+        {
+            xAngleOffset = Mth.clamp(motion.xAngle() * 0.6f, -1f, 0.45f);
+            yAngleOffset = motion.yAngle();
+            zAngleOffset = Mth.clamp(motion.zAngle(), -0.5f, 0.5f);
+            swayDampen = 1f - xAngleOffset * 2f;
         }
 
-        this.tailBase.setRotation(xAngleOffset, (((-zAngleOffset / 2F) + (Mth.cos(timestep + yOffset) / 8F)) * swayDampen), -zAngleOffset / 8F);
-        this.tail1.setRotation(-0.2617993877991494f + xAngleOffset + Math.abs(zAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 1 + yOffset) / 8F) * swayDampen, -zAngleOffset / 8F);
-        this.tail2.setRotation(-0.2617993877991494f + (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 1.5F + yOffset) / 8F) * swayDampen, -zAngleOffset / 8F);
-        this.tail3.setRotation(-0.4363323129985824f + (xAngleOffset / 2F), ((-zAngleOffset / 2F) + Mth.cos(timestep - 2 + yOffset) / 20F) * swayDampen, -zAngleOffset / 20F);
+        this.tailBase.setRotation(xAngleOffset, (((-zAngleOffset / 2f) + (Mth.cos(timestep + swayPhaseOffset) / 8f)) * swayDampen + yAngleOffset), -zAngleOffset / 8f);
+        this.tail1.setRotation(-0.2617993877991494f + xAngleOffset + Math.abs(zAngleOffset / 2f), ((-zAngleOffset / 2f) + Mth.cos(timestep - 1 + swayPhaseOffset) / 8f) * swayDampen, -zAngleOffset / 8f);
+        this.tail2.setRotation(-0.2617993877991494f + (xAngleOffset / 2f), ((-zAngleOffset / 2f) + Mth.cos(timestep - 1.5f + swayPhaseOffset) / 8F) * swayDampen, -zAngleOffset / 8f);
+        this.tail3.setRotation(-0.4363323129985824f + (xAngleOffset / 2f), ((-zAngleOffset / 2f) + Mth.cos(timestep - 2f + swayPhaseOffset) / 20f) * swayDampen, -zAngleOffset / 20f);
+        this.tail4.setRotation(0.2617993877991494f - (xAngleOffset / 2f), ((-zAngleOffset / 2f) + Mth.cos(timestep - 3f + swayPhaseOffset) / 8f) * swayDampen, 0f);
+        this.tail5.setRotation(0.2617993877991494f - (xAngleOffset / 2.5f), ((-zAngleOffset / 2f) + Mth.cos(timestep - 4f + swayPhaseOffset) / 8f) * swayDampen, 0f);
     }
 
     private static final float HEAVY_SWAP_DAMPEN = 4f;
